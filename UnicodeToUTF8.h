@@ -1,0 +1,1 @@
+void UnicodeToUTF8( const BYTE* pIn, BYTE** ppOut );

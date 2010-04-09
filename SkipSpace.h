@@ -1,0 +1,1 @@
+LPCTSTR SkipSpace(LPCTSTR p);

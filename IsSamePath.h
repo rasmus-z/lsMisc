@@ -1,0 +1,1 @@
+BOOL IsSamePath(LPCTSTR p1, LPCTSTR p2);

@@ -1,0 +1,26 @@
+#include <windows.h>
+#include <tchar.h>
+
+void URLEncode(const BYTE* pIn, size_t nSize, LPTSTR* pOut)
+{
+	static TCHAR *hexChars = _T("0123456789ABCDEF");
+	if ( pIn==NULL || nSize==0 || pOut==NULL)
+		return;
+
+	*pOut = new char[nSize*3 + 1];
+	if( *pOut==NULL )
+		return;
+
+	UINT nCount = 0;
+	UINT nLeng = 0;
+	while((nCount < nSize) && ((nLeng+3) <= (nSize*3) ))
+	{
+		(*pOut)[nLeng++] = _T('%');
+		(*pOut)[nLeng++] = hexChars[(pIn[nCount] & 0xF0) >> 4];
+		(*pOut)[nLeng++] = hexChars[pIn[nCount] & 0x0F];
+
+		nCount++;
+	}
+	(*pOut)[nLeng] = _T('\0');
+    return;
+}

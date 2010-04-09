@@ -1,0 +1,1 @@
+void URLEncode(const BYTE* pIn, size_t nSize, LPTSTR* pOut);

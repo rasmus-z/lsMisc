@@ -1,0 +1,1 @@
+HWND GetTopParent(HWND h);

@@ -1,0 +1,1 @@
+bool addBaseElement(_bstr_t& bstrHtml, LPCWSTR pSourceURL);

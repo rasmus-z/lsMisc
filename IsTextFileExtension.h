@@ -1,0 +1,1 @@
+BOOL IsTextFileExtension(LPCTSTR lpcExtention);

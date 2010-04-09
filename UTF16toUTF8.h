@@ -1,0 +1,1 @@
+BYTE* UTF16toUTF8(LPCWSTR pIN, BOOL bUrlEncode = FALSE);

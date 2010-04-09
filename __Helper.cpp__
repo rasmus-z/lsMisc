@@ -1,0 +1,148 @@
+#pragma warning(disable:4786 )
+#include <windows.h>
+#include <shlobj.h>
+#include <commctrl.h>
+#include <string>
+#include <vector>
+#include <malloc.h>
+#include <shlwapi.h>
+#include <string.h>
+#include <tchar.h>
+#include <assert.h>
+#include <map>
+#include <list>
+#pragma comment(lib, "shlwapi.lib")
+
+using namespace std;
+
+#include "__Helper.h"
+#include "HelpDefines.h"
+
+
+BOOL GetClipboardTextsW(HWND hWnd, wstring& strData)
+{
+	if( !IsClipboardFormatAvailable(CF_TEXT) )
+		return FALSE;
+	if( !OpenClipboard(hWnd) )
+		return FALSE;
+
+	struct ClipboardCloser {
+		~ClipboardCloser() {::CloseClipboard();}
+	} closer;
+
+	HANDLE hData = ::GetClipboardData(CF_TEXT);
+	if( NULL == hData )
+		return FALSE;
+
+	LPCWSTR p = (LPCWSTR)GlobalLock(hData);
+	if(!p)
+		return FALSE;
+
+	strData = p;
+	GlobalUnlock(hData);
+		
+		
+	return TRUE;
+}
+
+
+
+
+
+
+
+
+int FindSelectedItem(HWND hWndList)
+{
+	int nSelItem = -1;
+	for( int i=0 ; i < SendMessage( hWndList, LVM_GETITEMCOUNT, 0, 0) ; i++ )
+	{
+		LV_ITEM lvi;
+		lvi.mask = LVIF_STATE;
+		lvi.iItem = i;
+		lvi.iSubItem = 0;
+		lvi.stateMask = 0xFFFF;		
+		SendMessage(hWndList, LVM_GETITEM, 0, (LPARAM)&lvi);
+		if (lvi.state & LVIS_SELECTED)
+		{
+			nSelItem = i;
+			break;
+		}
+	}
+	return nSelItem;
+}
+
+
+
+
+
+
+
+
+LPTSTR myStrStrI(
+	LPCTSTR lpFirst,
+	LPCTSTR lpSrch
+)
+{
+	if ( lpFirst==NULL || *lpFirst==0 || lpSrch==NULL || *lpSrch==0 )
+	{
+		return (LPTSTR)lpFirst;
+	}
+
+	const size_t length = _tcslen(lpSrch);
+
+	if ( length > _tcslen(lpFirst) )
+		return NULL;
+
+	for( LPCTSTR p = lpFirst; NULL != (p = myStrChrI(p, lpSrch[0])); p++ )
+	{
+		if ( !_tcsncicmp( p, lpSrch, length ) )
+		{
+			return (LPTSTR)p;
+		}
+	}
+
+	return NULL;
+}
+
+
+
+
+
+
+
+
+
+
+BOOL getAllChild(HWND h, LPCTSTR pClass, LPCTSTR pText, std::list<HWND>& cs)
+{
+	HWND h2 = ::GetWindow(h, GW_CHILD);
+	if ( h2 == NULL )
+		return FALSE;
+
+//	bool found = false;
+
+
+	if(isWindowClassText(h2, pClass, pText))
+	{
+		cs.push_back(h2);
+	}
+
+	for(h2 = ::GetWindow(h2, GW_HWNDFIRST); IsWindow(h2); h2 = ::GetWindow(h2, GW_HWNDNEXT))
+	{
+		if(isWindowClassText(h2, pClass, pText))
+		{
+			cs.push_back(h2);
+		}
+	}
+
+	return cs.size() != 0;
+}
+
+
+
+
+
+
+
+

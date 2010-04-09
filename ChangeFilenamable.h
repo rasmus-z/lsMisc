@@ -1,0 +1,1 @@
+BOOL ChangeFilenamable(LPTSTR pch);

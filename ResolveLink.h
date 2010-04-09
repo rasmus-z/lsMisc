@@ -1,0 +1,1 @@
+BOOL ResolveLink(LPCTSTR lpszFileIn, HWND hWnd, LPTSTR target);

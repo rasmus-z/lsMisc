@@ -1,0 +1,1 @@
+BOOL SHDeleteFile(LPCTSTR lpFile);

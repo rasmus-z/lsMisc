@@ -1,0 +1,1 @@
+BOOL RemoveLastInValidURLChar(LPTSTR lpString);

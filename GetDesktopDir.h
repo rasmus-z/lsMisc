@@ -1,0 +1,1 @@
+BOOL GetDesktopDir(LPTSTR lpBuf, DWORD dwSize);

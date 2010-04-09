@@ -1,0 +1,1 @@
+BOOL IsAllDigit(LPCTSTR lpText);
