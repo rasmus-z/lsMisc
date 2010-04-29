@@ -97,20 +97,7 @@ struct TEC {
 	}
 };
 ***/
-template <typename RETTYPE, typename _1ARG> struct WINAPIEveryCloser1
-{
-	typedef RETTYPE (WINAPI*FUNCTYPE)(_1ARG);
 
-	FUNCTYPE f_;
-	_1ARG a1_;
-	WINAPIEveryCloser1(FUNCTYPE f, _1ARG a1) {
-		f_ = f;
-		a1_ = a1;
-	}
-	~WINAPIEveryCloser1() {
-		f_(a1_);
-	}
-};
 
 // class for CPP delete
 //template <typename T> struct CPPDeleterType
