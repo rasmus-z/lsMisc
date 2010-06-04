@@ -36,6 +36,7 @@ void CreateFolderIniPath(HINSTANCE hInst, LPTSTR pOut)
 			wsprintf(message, "%s is not found. Exiting.", szT);
 			throw std::string(message);
 		}
+		lstrcpy(pOut, szT);
 	}
 	else
 	{
