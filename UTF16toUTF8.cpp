@@ -33,7 +33,7 @@ BYTE* UTF16toUTF8(LPCWSTR pIN, BOOL bUrlEncode)
 	{
 		int nEncodeSize = nRet*3;
 		BYTE* pOut2 = NULL;
-		UrlEncode2(pOut, lstrlen((char*)pOut), (char**)&pOut2, 1);
+		UrlEncode2(pOut, lstrlenA((char*)pOut), (char**)&pOut2, 1);
 		free(pOut);
 		return pOut2;
 	}
