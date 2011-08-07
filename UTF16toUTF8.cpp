@@ -1,6 +1,6 @@
 #include <windows.h>
+#include <string>
 #include "UTF16toUTF8.h"
-
 
 BYTE* UTF16toUTF8(LPCWSTR pIN)
 {
@@ -57,7 +57,7 @@ LPCWSTR UTF8toUTF16(LPBYTE pIN)
 	if ( nReqSize == 0 )
 		return NULL;
 
-	LPWSTR pOut = (LPWSTR)malloc(nReqSize);
+	LPWSTR pOut = (LPWSTR)malloc(nReqSize*sizeof(WCHAR));
 	int nRet = MultiByteToWideChar(CP_UTF8,
 		0,
 		(const char*)pIN,
@@ -79,4 +79,15 @@ LPCWSTR UTF8toUTF16(LPBYTE pIN)
 	}
 **/
 	return pOut;;
+}
+
+bool UTF8toUTF16(LPBYTE pIN, std::wstring& w)
+{
+	LPCWSTR pOut = UTF8toUTF16(pIN);
+	if(!pOut)
+		return false;
+
+	w = pOut;
+	free((void*)pOut);
+	return true;
 }
