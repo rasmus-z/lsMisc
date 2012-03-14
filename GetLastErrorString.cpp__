@@ -1,6 +1,8 @@
 #include <windows.h>
 
-LPCTSTR GetLastErrorString(AString& strError, DWORD dwErrorNo)
+#include "tstring.h"
+// LPCTSTR GetLastErrorString(AString& strError, DWORD dwErrorNo)
+LPCTSTR GetLastErrorString(tstring& strError, DWORD dwErrorNo)
 {
 	LPVOID lpMsgBuf = NULL;
 

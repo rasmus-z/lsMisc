@@ -1,1 +1,2 @@
-std::string ChangeFilenamable2(LPCTSTR pch);
+#include "tstring.h"
+tstring ChangeFilenamable2(LPCTSTR pch);
