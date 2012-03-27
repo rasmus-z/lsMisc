@@ -181,6 +181,10 @@ SOURCE=..\IsAllDigit.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\IsFileExists.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\IsHasExtension.cpp
 # End Source File
 # Begin Source File
@@ -402,6 +406,10 @@ SOURCE=..\IsAllDigit.h
 # Begin Source File
 
 SOURCE=..\IsDirectory.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\IsFileExists.h
 # End Source File
 # Begin Source File
 
