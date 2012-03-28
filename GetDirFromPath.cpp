@@ -5,6 +5,7 @@
 #include <tchar.h>
 
 #include "GetDirFromPath.h"
+#pragma comment(lib,"shlwapi.lib")
 
 
 tstring GetDirFromPath(LPCTSTR pszPathName)
@@ -21,7 +22,9 @@ tstring GetDirFromPath(LPCTSTR pszPathName)
 	LPTSTR pSep = _tcsrchr(p, _T('\\'));
 	if( pSep==NULL )
 	{// illegal path
-		return _T("");
+		pSep = _tcsrchr(p, _T('/'));
+		if(pSep==NULL)
+			return _T("");
 	}
 	
 	*(pSep+1) = 0;
