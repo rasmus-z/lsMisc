@@ -1,0 +1,1 @@
+BOOL GetWorkingArea(HWND h,RECT* pRetRect);
