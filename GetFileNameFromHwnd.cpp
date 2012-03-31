@@ -1,4 +1,5 @@
 #include <windows.h>
+#include <tchar.h>
 #include <tlhelp32.h>
 
 BOOL GetFileNameFromHwnd(HWND hWnd, LPTSTR lpszFileName, DWORD nSize)
@@ -21,7 +22,7 @@ BOOL GetFileNameFromHwnd(HWND hWnd, LPTSTR lpszFileName, DWORD nSize)
         DWORD (WINAPI *lpfGetModuleFileNameEx)
                             (HANDLE, HMODULE, LPTSTR, DWORD);
 
-        HINSTANCE hInstLib = LoadLibrary("PSAPI.DLL");
+        HINSTANCE hInstLib = LoadLibrary(_T("PSAPI.DLL"));
         if ( hInstLib == NULL )
             return FALSE ;
 
@@ -59,7 +60,7 @@ BOOL GetFileNameFromHwnd(HWND hWnd, LPTSTR lpszFileName, DWORD nSize)
         }
         FreeLibrary( hInstLib ) ;
     }
-
+#if !UNICODE
     else if ( osverinfo.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS )
     {
         HANDLE (WINAPI *lpfCreateSnapshot)(DWORD, DWORD);
@@ -94,7 +95,7 @@ BOOL GetFileNameFromHwnd(HWND hWnd, LPTSTR lpszFileName, DWORD nSize)
                 do {
                     if (pe.th32ProcessID == dwProcessId)
                     {
-                        lstrcpy(lpszFileName, pe.szExeFile);
+                        lstrcpyA(lpszFileName, pe.szExeFile);
                         bResult = TRUE;
                         break;
                     }
@@ -104,8 +105,7 @@ BOOL GetFileNameFromHwnd(HWND hWnd, LPTSTR lpszFileName, DWORD nSize)
             CloseHandle(hSnapshot);
         }
     }
-    else
-        return FALSE;
-
+#endif
+ 
     return bResult;
 }
