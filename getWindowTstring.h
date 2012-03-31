@@ -1,0 +1,1 @@
+tstring getWindowTstring(HWND h);
