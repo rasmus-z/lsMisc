@@ -1,7 +1,7 @@
 #include <windows.h>
 #include <tchar.h>
 
-#import "vbegexp.tlb" no_namespace named_guids
+#import "vbregexp.tlb" no_namespace named_guids
 
 static IRegExpPtr pReg;
 BOOL vbregMatch(LPCTSTR subject, LPCTSTR regex)
