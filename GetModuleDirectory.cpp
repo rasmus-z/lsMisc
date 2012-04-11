@@ -1,7 +1,9 @@
 #include <windows.h>
+#include <tchar.h>
 #include "tstring.h"
 #include "GetModuleDirectory.h"
 #include "GetDirFromPath.h"
+#include "HelpDefines.h"
 
 BOOL GetModuleDirectory(HINSTANCE hInstance, LPTSTR pDir, DWORD dwCount)
 {
@@ -16,4 +18,11 @@ BOOL GetModuleDirectory(HINSTANCE hInstance, LPTSTR pDir, DWORD dwCount)
 	return TRUE;
 }
 
+tstring GetModuleDirectory(HINSTANCE hInstance)
+{
+	TCHAR szT[MAX_PATH];
+	if(!GetModuleDirectory(hInstance, szT, _countof(szT)))
+		return _T("");
 
+	return szT;
+}
