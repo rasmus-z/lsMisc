@@ -10,8 +10,10 @@
 #include "tstring.h"
 
 void StdStringReplaceW(std::wstring& src, LPCWSTR pszKey, LPCWSTR pszRepWord);
-void StdStringReplaceA(std::string& src, LPCSTR pszKey, LPCSTR pszRepWord);
+// void StdStringReplaceA(std::string& src, LPCSTR pszKey, LPCSTR pszRepWord);
 
 #ifdef UNICODE
+#define StdStringReplace StdStringReplaceW
 #else
+// #define StdStringReplace StdStringReplaceA
 #endif

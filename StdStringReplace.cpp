@@ -20,7 +20,7 @@ void StdStringReplaceW(std::wstring& src, LPCWSTR pszKey, LPCWSTR pszRepWord)
 	return;
 }
 
-void StdStringReplaceA(std::string& src, LPCSTR pszKey, LPCSTR pszRepWord)
+void StdStringReplaceA_obsolete(std::string& src, LPCSTR pszKey, LPCSTR pszRepWord)
 {
 	int nPos = 0;
 	size_t len = strlen(pszKey);

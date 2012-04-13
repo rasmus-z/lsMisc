@@ -1,7 +1,7 @@
 #include <windows.h>
 #include <tchar.h>
 #include <assert.h>
-
+#include <malloc.h>
 #include "SHDeleteFile.h"
 
 BOOL SHDeleteFile(LPCTSTR lpFile)
@@ -27,7 +27,7 @@ BOOL SHDeleteFile(LPCTSTR lpFile)
 		return FALSE;
 	} while(false);
 
-	LPTSTR p = (LPTSTR)malloc(len + (2*sizeof(TCHAR)));
+	LPTSTR p = (LPTSTR)_alloca( (len+2)*sizeof(TCHAR) );
 	if(!p)
 		return FALSE;
 	_tcscpy(p, lpFile);
@@ -41,6 +41,5 @@ BOOL SHDeleteFile(LPCTSTR lpFile)
 	sfo.fFlags = FOF_ALLOWUNDO;
 
 	int ret = SHFileOperation(&sfo);
-	free(p);
 	return ret==0;
 }
