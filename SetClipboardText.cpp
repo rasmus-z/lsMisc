@@ -10,16 +10,16 @@ BOOL SetClipboardTextA(HWND hWnd, LPCSTR pSTR)
 		return FALSE;
 	}
 
-	size_t strsize = lstrlen(pSTR);
+	size_t strsize = lstrlenA(pSTR);
 	HGLOBAL h = GlobalAlloc(GMEM_MOVEABLE|GMEM_DDESHARE,
-		strsize+sizeof(TCHAR));
+		strsize+sizeof(char));
 	
 	if(h==NULL)
 		return FALSE;
 
 	BOOL bRet = FALSE;
-	LPTSTR p = (LPTSTR)GlobalLock(h);
-	lstrcpy(p, pSTR);
+	LPSTR p = (LPSTR)GlobalLock(h);
+	lstrcpyA(p, pSTR);
 	if( OpenClipboard(hWnd) )
 	{
 		if( EmptyClipboard() )
