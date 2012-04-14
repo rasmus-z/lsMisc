@@ -43,7 +43,7 @@ BYTE* UTF16toUTF8(LPCWSTR pIN)
 }
 
 
-LPCWSTR UTF8toUTF16(LPBYTE pIN)
+LPWSTR UTF8toUTF16(const LPBYTE pIN)
 {
 	
 	int nReqSize = MultiByteToWideChar(
@@ -81,7 +81,7 @@ LPCWSTR UTF8toUTF16(LPBYTE pIN)
 	return pOut;;
 }
 
-bool UTF8toUTF16(LPBYTE pIN, std::wstring& w)
+bool UTF8toUTF16(const LPBYTE pIN, std::wstring& w)
 {
 	LPCWSTR pOut = UTF8toUTF16(pIN);
 	if(!pOut)

@@ -1,3 +1,3 @@
 BYTE* UTF16toUTF8(LPCWSTR pIN);
-LPCWSTR UTF8toUTF16(LPBYTE pIN);
-bool UTF8toUTF16(LPBYTE pIN, std::wstring& w);
+LPWSTR UTF8toUTF16(const LPBYTE pIN);
+bool UTF8toUTF16(const LPBYTE pIN, std::wstring& w);
