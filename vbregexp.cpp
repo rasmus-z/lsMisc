@@ -32,6 +32,43 @@ BOOL vbregMatch(LPCTSTR subject, LPCTSTR regex)
 			LONG count=0; 
 			if(SUCCEEDED(pCol->get_Count(&count)) && count > 0)
 				return TRUE;
+		}
+	}
+
+	return FALSE;
+}
+
+
+LPCTSTR vbregReplace(LPCTSTR source,
+					 LPCTSTR replace, 
+					 LPCTSTR regex,
+					 BOOL bGlobal,
+					 BOOL bCaseInsensitive)
+{
+	if(pReg==NULL)
+	{
+		CoInitialize(NULL); 
+		HRESULT hr = pReg.CreateInstance(CLSID_RegExp);
+		if(FAILED(hr))
+		{
+			return FALSE;
+		} 
+	}
+
+	_bstr_t bstrSource(source);
+	_bstr_t bstrReplace(replace);
+	_bstr_t bstrRegex(regex);
+
+	pReg->put_Global(bGlobal?VARIANT_TRUE:VARIANT_FALSE); 
+	pReg->put_IgnoreCase(bCaseInsensitive?VARIANT_TRUE:VARIANT_FALSE); 
+	pReg->put_Pattern(bstrRegex); 
+
+	_bstr_t bstrRet = pReg->Replace(bstrSource, bstrReplace);
+
+	return _tcsdup(bstrRet);
+}
+
+
 //			IDispatchPtr pDisp2;
 //			for(long i=0; SUCCEEDED(pCol->get_Item(i, &pDisp2)) ; ++i)
 //			{
@@ -47,8 +84,3 @@ BOOL vbregMatch(LPCTSTR subject, LPCTSTR regex)
 //					delete[] buf; 
 //				} 
 //			}
-		}
-	}
-
-	return FALSE;
-}
