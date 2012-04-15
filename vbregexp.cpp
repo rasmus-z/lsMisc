@@ -1,5 +1,6 @@
 #include <windows.h>
 #include <tchar.h>
+#include "vbregexp.h"
 
 #import "vbregexp.tlb" no_namespace named_guids
 
