@@ -3,43 +3,44 @@
 #include <shlwapi.h>
 #include <string>
 #include "CreateFolderIniPath.h"
+#include "tstring.h"
 
 void CreateFolderIniPath(HINSTANCE hInst, LPTSTR pOut)
 {
-	char* lpszExt;
-	char szT[MAX_PATH];
+	TCHAR* lpszExt;
+	TCHAR szT[MAX_PATH];
 
 	if(!GetModuleFileName(NULL, szT, sizeof(szT)))
 	{
-		throw std::string("Fatal Error");
+		throw tstring(_T("Fatal Error"));
 	}
 
-	lpszExt    = strrchr(szT, '\\');
+	lpszExt    = _tcsrchr(szT, _T('\\'));
 	*lpszExt = 0;
 
-	char szFolder[MAX_PATH];
-	char szI[MAX_PATH];
-	wsprintf(szI, "%s\\folder.ini", szT);
-	GetPrivateProfileString("presettings", 
-		"folder",
-		"",
+	TCHAR szFolder[MAX_PATH];
+	TCHAR szI[MAX_PATH];
+	wsprintf(szI, _T("%s\\folder.ini"), szT);
+	GetPrivateProfileString(_T("presettings"), 
+		_T("folder"),
+		_T(""),
 		szFolder,
 		sizeof(szFolder)-1,
 		szI);
 
 	if(szFolder[0] != 0 )
 	{
-		wsprintf(szT, "%s\\CBRevamper.ini", szFolder);
+		wsprintf(szT, _T("%s\\CBRevamper.ini"), szFolder);
 		if(!PathFileExists(szT))
 		{
-			char message[MAX_PATH + 128];
-			wsprintf(message, "%s is not found. Exiting.", szT);
-			throw std::string(message);
+			TCHAR message[MAX_PATH + 128];
+			wsprintf(message, _T("%s is not found. Exiting."), szT);
+			throw tstring(message);
 		}
 		lstrcpy(pOut, szT);
 	}
 	else
 	{
-		wsprintf(pOut, "%s\\CBRevamper.ini", szT);
+		wsprintf(pOut, _T("%s\\CBRevamper.ini"), szT);
 	}
 }
