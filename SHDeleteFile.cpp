@@ -4,7 +4,7 @@
 #include <malloc.h>
 #include "SHDeleteFile.h"
 
-BOOL SHDeleteFile(LPCTSTR lpFile)
+BOOL SHDeleteFile(LPCTSTR lpFile, const BOOL bNoErrorUI)
 {
 	size_t len = _tcslen(lpFile);
 	if(!lpFile || lpFile[0]==0 || len <= 3)
@@ -38,7 +38,7 @@ BOOL SHDeleteFile(LPCTSTR lpFile)
 	sfo.wFunc = FO_DELETE;
 	sfo.pFrom = p;
 	sfo.pTo   = NULL;  // ignored
-	sfo.fFlags = FOF_ALLOWUNDO;
+	sfo.fFlags = FOF_ALLOWUNDO | (bNoErrorUI ? FOF_NOERRORUI:0);
 
 	int ret = SHFileOperation(&sfo);
 	return ret==0;
