@@ -10,8 +10,6 @@ BOOL GetProcessList(std::vector<PROCESSENTRY32>& ret)
 		return FALSE;
 
 	PROCESSENTRY32 pe;
-	int httpdcount = 0;
-	int mysqldcount = 0;
 	pe.dwSize=sizeof(PROCESSENTRY32);
 	BOOL retval=Process32First(hSnapshot,&pe);
 	while(retval)
