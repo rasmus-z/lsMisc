@@ -1,1 +1,1 @@
-LPCTSTR GetLastErrorString(AString& strError, DWORD dwErrorNo);
+tstring GetLastErrorString(DWORD dwErrorNo, BOOL* pSeikou = NULL);

@@ -1,23 +1,37 @@
 #include <windows.h>
 
 #include "tstring.h"
-// LPCTSTR GetLastErrorString(AString& strError, DWORD dwErrorNo)
-LPCTSTR GetLastErrorString(tstring& strError, DWORD dwErrorNo)
+#include "GetLastErrorString.h"
+tstring GetLastErrorString(DWORD dwErrorNo, BOOL* pSeikou )
 {
 	LPVOID lpMsgBuf = NULL;
-
-	FormatMessage(
+	tstring strRet;
+ 
+	if( (0==FormatMessage(
 		FORMAT_MESSAGE_ALLOCATE_BUFFER |
 		FORMAT_MESSAGE_FROM_SYSTEM |
 		FORMAT_MESSAGE_IGNORE_INSERTS|FORMAT_MESSAGE_MAX_WIDTH_MASK,
 		NULL,
 		dwErrorNo,
 		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-		(LPTSTR) &lpMsgBuf,
+		(LPTSTR)&lpMsgBuf,
 		0,
-		NULL
-	);
-
-
-	return lpMsgBuf;
+		NULL)) || lpMsgBuf==NULL )
+	{
+		if(pSeikou)
+		{
+			*pSeikou = FALSE;
+		}
+		return strRet;
+	}
+ 
+	strRet = (LPTSTR)lpMsgBuf;
+	LocalFree(lpMsgBuf);
+ 
+	if (pSeikou)
+	{
+		*pSeikou = TRUE;
+	}
+ 
+	return strRet;
 }
