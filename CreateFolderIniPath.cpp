@@ -5,7 +5,7 @@
 #include "CreateFolderIniPath.h"
 #include "tstring.h"
 
-void CreateFolderIniPath(HINSTANCE hInst, LPTSTR pOut)
+void CreateFolderIniPath(HINSTANCE hInst, LPTSTR pOut, LPCTSTR pErrorTemplate)
 {
 	TCHAR* lpszExt;
 	TCHAR szT[MAX_PATH];
@@ -34,7 +34,7 @@ void CreateFolderIniPath(HINSTANCE hInst, LPTSTR pOut)
 		if(!PathFileExists(szT))
 		{
 			TCHAR message[MAX_PATH + 128];
-			wsprintf(message, _T("%s is not found. Exiting."), szT);
+			wsprintf(message, (pErrorTemplate ? pErrorTemplate : _T("%s is not found. Exiting.")), szT);
 			throw tstring(message);
 		}
 		lstrcpy(pOut, szT);
