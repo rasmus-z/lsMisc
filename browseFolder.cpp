@@ -9,8 +9,7 @@
 BOOL browseFolder( HWND hParent, LPCTSTR lpszTitle, LPTSTR pFolder )
 {
 	BOOL bRet = FALSE;
-
-
+   
 	TCHAR szDisplayName[_MAX_PATH];
 	TCHAR szBuffer[_MAX_PATH];
 
