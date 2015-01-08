@@ -5,7 +5,7 @@
 #include "CreateFolderIniPath.h"
 #include "tstring.h"
 
-void CreateFolderIniPath(HINSTANCE hInst, LPTSTR pOut, LPCTSTR pErrorTemplate)
+void CreateFolderIniPath(HINSTANCE hInst, LPCTSTR pIniFileName, LPTSTR pOut, LPCTSTR pErrorTemplate)
 {
 	TCHAR* lpszExt;
 	TCHAR szT[MAX_PATH];
@@ -30,7 +30,7 @@ void CreateFolderIniPath(HINSTANCE hInst, LPTSTR pOut, LPCTSTR pErrorTemplate)
 
 	if(szFolder[0] != 0 )
 	{
-		wsprintf(szT, _T("%s\\CBRevamper.ini"), szFolder);
+		wsprintf(szT, _T("%s\\%s"), szFolder, pIniFileName);
 		if(!PathFileExists(szT))
 		{
 			TCHAR message[MAX_PATH + 128];
@@ -41,6 +41,6 @@ void CreateFolderIniPath(HINSTANCE hInst, LPTSTR pOut, LPCTSTR pErrorTemplate)
 	}
 	else
 	{
-		wsprintf(pOut, _T("%s\\CBRevamper.ini"), szT);
+		wsprintf(pOut, _T("%s\\%s"), szT, pIniFileName);
 	}
 }

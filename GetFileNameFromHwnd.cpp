@@ -2,6 +2,8 @@
 #include <tchar.h>
 #include <tlhelp32.h>
 
+#include "GetFileNameFromHwnd.h"
+
 BOOL GetFileNameFromHwnd(HWND hWnd, LPTSTR lpszFileName, DWORD nSize)
 {
     BOOL bResult = FALSE;

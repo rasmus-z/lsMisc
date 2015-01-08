@@ -1,27 +1,26 @@
-////////////////////////////////////////////////////////////////////
-//http://www20.big.or.jp/~koma/dir_WEB/contents/program/012.html
-
-#include <windows.h>
+#include "tstring.h"
 #include "StdStringReplace.h"
 
-void StdStringReplaceW(std::wstring& src, LPCWSTR pszKey, LPCWSTR pszRepWord)
+std::wstring StdStringReplaceW(std::wstring str, const std::wstring& from, const std::wstring& to) 
 {
-	int nPos = 0;
-	size_t len = wcslen(pszKey);
-	while((nPos = src.find(pszKey, nPos)) != std::string::npos){
-		src.replace(nPos, len, pszRepWord);
-	}
-	
-	return;
+    size_t start_pos = 0;
+    while((start_pos = str.find(from, start_pos)) != std::string::npos) 
+	{
+        str.replace(start_pos, from.length(), to);
+        start_pos += to.length(); // Handles case where 'to' is a substring of 'from'
+    }
+    return str;
 }
 
-void StdStringReplaceA_obsolete(std::string& src, LPCSTR pszKey, LPCSTR pszRepWord)
+std::string StdStringReplaceA(std::string str, const std::string& from, const std::string& to) 
 {
-	int nPos = 0;
-	size_t len = strlen(pszKey);
-	while((nPos = src.find(pszKey, nPos)) != std::string::npos){
-		src.replace(nPos, len, pszRepWord);
-	}
-	
-	return;
+    size_t start_pos = 0;
+    while((start_pos = str.find(from, start_pos)) != std::string::npos) 
+	{
+        str.replace(start_pos, from.length(), to);
+        start_pos += to.length();
+    }
+    return str;
 }
+
+
