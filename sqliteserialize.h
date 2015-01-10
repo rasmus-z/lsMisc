@@ -1,0 +1,1 @@
+BOOL createDB(LPCWSTR pDBPath, LPCSTR pTableName);

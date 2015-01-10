@@ -5,28 +5,32 @@
 #include "CreateFolderIniPath.h"
 #include "tstring.h"
 
-void CreateFolderIniPath(HINSTANCE hInst, LPCTSTR pIniFileName, LPTSTR pOut, LPCTSTR pErrorTemplate)
+void GetFolderIniDir(HINSTANCE hInst, LPTSTR szFolder, DWORD nfSize)
 {
-	TCHAR* lpszExt;
 	TCHAR szT[MAX_PATH];
-
-	if(!GetModuleFileName(NULL, szT, sizeof(szT)))
+	if(!GetModuleFileName(NULL, szT, sizeof(szT)/sizeof(TCHAR)))
 	{
 		throw tstring(_T("Fatal Error"));
 	}
 
-	lpszExt    = _tcsrchr(szT, _T('\\'));
-	*lpszExt = 0;
+	*_tcsrchr(szT, _T('\\'))=0;
 
-	TCHAR szFolder[MAX_PATH];
 	TCHAR szI[MAX_PATH];
 	wsprintf(szI, _T("%s\\folder.ini"), szT);
 	GetPrivateProfileString(_T("presettings"), 
 		_T("folder"),
 		_T(""),
 		szFolder,
-		sizeof(szFolder)-1,
+		nfSize,
 		szI);
+}
+
+void CreateFolderIniPath(HINSTANCE hInst, LPCTSTR pIniFileName, LPTSTR pOut, LPCTSTR pErrorTemplate)
+{
+	TCHAR szT[MAX_PATH];
+	TCHAR szFolder[MAX_PATH];
+	
+	GetFolderIniDir(hInst, szFolder, (sizeof(szFolder)/sizeof(TCHAR))-sizeof(TCHAR));
 
 	if(szFolder[0] != 0 )
 	{
