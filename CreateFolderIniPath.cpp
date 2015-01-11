@@ -5,7 +5,7 @@
 #include "CreateFolderIniPath.h"
 #include "tstring.h"
 
-void GetFolderIniDir(HINSTANCE hInst, LPTSTR szFolder, DWORD nfSize)
+bool GetFolderIniDir(HINSTANCE hInst, LPTSTR szFolder, DWORD nfSize)
 {
 	TCHAR szT[MAX_PATH];
 	if(!GetModuleFileName(NULL, szT, sizeof(szT)/sizeof(TCHAR)))
@@ -17,12 +17,18 @@ void GetFolderIniDir(HINSTANCE hInst, LPTSTR szFolder, DWORD nfSize)
 
 	TCHAR szI[MAX_PATH];
 	wsprintf(szI, _T("%s\\folder.ini"), szT);
-	GetPrivateProfileString(_T("presettings"), 
+	if(GetPrivateProfileString(_T("presettings"), 
 		_T("folder"),
 		_T(""),
 		szFolder,
 		nfSize,
-		szI);
+		szI))
+	{
+		return true;
+	}
+
+	lstrcat(szFolder, szT);
+	return false;
 }
 
 void CreateFolderIniPath(HINSTANCE hInst, LPCTSTR pIniFileName, LPTSTR pOut, LPCTSTR pErrorTemplate)
@@ -30,9 +36,8 @@ void CreateFolderIniPath(HINSTANCE hInst, LPCTSTR pIniFileName, LPTSTR pOut, LPC
 	TCHAR szT[MAX_PATH];
 	TCHAR szFolder[MAX_PATH];
 	
-	GetFolderIniDir(hInst, szFolder, (sizeof(szFolder)/sizeof(TCHAR))-sizeof(TCHAR));
-
-	if(szFolder[0] != 0 )
+	if(GetFolderIniDir(hInst, szFolder, (sizeof(szFolder)/sizeof(TCHAR))-sizeof(TCHAR))
+	   && (szFolder[0] != 0 ))
 	{
 		wsprintf(szT, _T("%s\\%s"), szFolder, pIniFileName);
 		if(!PathFileExists(szT))
@@ -45,6 +50,12 @@ void CreateFolderIniPath(HINSTANCE hInst, LPCTSTR pIniFileName, LPTSTR pOut, LPC
 	}
 	else
 	{
-		wsprintf(pOut, _T("%s\\%s"), szT, pIniFileName);
+//		if(!GetModuleFileName(NULL, szT, sizeof(szT)/sizeof(TCHAR)))
+//		{
+//			throw tstring(_T("Fatal Error"));
+//		}
+
+//		*_tcsrchr(szT, _T('\\'))=0;
+		wsprintf(pOut, _T("%s\\%s"), szFolder, pIniFileName);
 	}
 }
