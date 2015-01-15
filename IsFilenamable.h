@@ -1,0 +1,1 @@
+BOOL IsFilenamable(LPTSTR pch);
