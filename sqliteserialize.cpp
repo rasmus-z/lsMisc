@@ -295,7 +295,7 @@ BOOL sqlWritePrivateProfileString(
 
 	sqlite3* pDB=NULL;
 
-	if(SQLITE_OK != sqlite3_open16(lpFileName, &pDB))
+	if(SQLITE_OK != dbman sqlite3_open16(lpFileName, &pDB))
 		return FALSE;
 	stlsoft::scoped_handle<sqlite3*> ma(pDB, sqlite3_close);
 
@@ -396,6 +396,8 @@ BOOL sqlGetPrivateProfileString(
 	}
 
 	LPWSTR pRet = (LPWSTR)sqlite3_column_text16(pStmtSelect, 0);
+	if(!pRet)
+		return FALSE;
 
 	lstrcpyn(lpReturnedString, pRet, nSize);
 
