@@ -234,14 +234,10 @@ BOOL sqlWritePrivateProfileString(
   LPCTSTR lpString,
   LPCTSTR lpFileName )
 {
-	if(!IsFileExistsW(lpFileName))
+	222if(!IsFileExistsW(lpFileName))
 	{
 		if(!createDB(lpFileName, lpAppName))
 		{
-//			CString message = (LPCTSTR)I18N(L"Failed to create group file");
-//			message += L" : ";
-//			message += m_pszGroupDBName;
-//			AfxMessageBox(message);
 			return FALSE;
 		}
 	}
@@ -251,48 +247,6 @@ BOOL sqlWritePrivateProfileString(
 	if(SQLITE_OK != sqlite3_open16(lpFileName, &pDB))
 		return FALSE;
 	stlsoft::scoped_handle<sqlite3*> ma(pDB, sqlite3_close);
-/*
-	{
-		stTransactionScope stts(pDB);
-		static sqlite3_stmt* pStmtUpdate = NULL;
-		if(pStmtUpdate==NULL)
-		{
-			LPCWSTR pKata = L"UPDATE [%s] SET c2=?2 WHERE c1=?1 ;";
-			LPWSTR p = (LPWSTR)malloc(wcslen(pKata)*2 + wcslen(lpAppName)*2 + 2);
-			stlsoft::scoped_handle<void*> mahh( (void*)p, free);
-			wsprintf(p, pKata, lpAppName);
-			int ret = sqlite3_prepare16_v2(pDB,
-				p, // L"insert into group values('?','?')",
-				-1,
-				&pStmtUpdate,
-				0);
-
-			if(ret != SQLITE_OK)
-			{
-				return FALSE;
-			}
-		}
-		if(SQLITE_OK != sqlite3_reset(pStmtUpdate))
-			return FALSE;
-
-		if(SQLITE_OK != sqlite3_bind_text16(pStmtUpdate, 1, lpKeyName, -1, SQLITE_STATIC))
-			return FALSE;
-
-		if(SQLITE_OK != sqlite3_bind_text16(pStmtUpdate, 2, lpString, -1, SQLITE_STATIC))
-			return FALSE;
-
-		if(SQLITE_DONE != sqlite3_step(pStmtUpdate))
-			return FALSE;
-	}
-	
-	if(sqlite3_changes(pDB)==1)
-	{
-		return TRUE;
-	}
-	
-*/
-
-
 
 	stTransactionScope stts(pDB);
 
@@ -315,8 +269,6 @@ BOOL sqlWritePrivateProfileString(
 		}
 	}
 	
-	if(SQLITE_OK != sqlite3_reset(pStmtInsert))
-		return FALSE;
 
 	if(SQLITE_OK != sqlite3_reset(pStmtInsert))
 		return FALSE;
@@ -331,6 +283,113 @@ BOOL sqlWritePrivateProfileString(
 	}
 
 	return TRUE;
+}
+
+BOOL sqlGetPrivateProfileString(
+    LPCTSTR lpAppName,
+    LPCTSTR lpKeyName,
+    LPCTSTR lpDefault,
+    LPTSTR lpReturnedString,
+    DWORD nSize,
+    LPCWSTR lpFileName)
+{
+
+
+
+
+
+
+
+
+
+
+
+
+
+	if(!IsFileExistsW(lpFileName))
+	{
+		return FALSE;
+	}
+
+	sqlite3* pDB=NULL;
+
+	if(SQLITE_OK != sqlite3_open16(lpFileName, &pDB))
+		return FALSE;
+	stlsoft::scoped_handle<sqlite3*> ma(pDB, sqlite3_close);
+
+	stTransactionScope stts(pDB);
+
+	static sqlite3_stmt* pStmtSelect = NULL;
+	if(pStmtSelect==NULL)
+	{
+		LPCWSTR pKata = L"SELECT c2 FROM ? WHERE [c1] = ?;";
+		int ret = sqlite3_prepare16_v2(pDB,
+			pKata,
+			-1,
+			&pStmtSelect,
+			0);
+
+		if(ret != SQLITE_OK)
+		{
+			return FALSE;
+		}
+	}
+	
+
+	if(SQLITE_OK != sqlite3_reset(pStmtSelect))
+		return FALSE;
+	if(SQLITE_OK != sqlite3_bind_text16(pStmtSelect, 1, lpAppName, -1, SQLITE_STATIC))
+		return FALSE;
+	if(SQLITE_OK != sqlite3_bind_text16(pStmtSelect, 2, lpKeyName, -1, SQLITE_STATIC))
+		return FALSE;
+
+	if(SQLITE_DONE != sqlite3_step(pStmtSelect))
+	{
+		return FALSE;
+	}
+
+	LPWSTR pRet = (LPWSTR)sqlite3_column_text16(pStmtSelect, 0);
+	return TRUE;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 BOOL sqlWritePrivateProfileInt(
