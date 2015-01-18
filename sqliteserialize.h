@@ -18,3 +18,10 @@ BOOL sqlGetPrivateProfileString(
     LPTSTR lpReturnedString,
     DWORD nSize,
     LPCWSTR lpFileName);
+
+UINT sqlGetPrivateProfileInt(
+    LPCWSTR lpAppName,
+    LPCWSTR lpKeyName,
+    INT nDefault,
+    LPCWSTR lpFileName
+    );

@@ -252,6 +252,7 @@ static sqlite3_stmt* getInsertStatement(sqlite3* pDB,LPCWSTR pApp)
 	}
 	return pRet;
 }
+/*
 static sqlite3_stmt* getUpdateStatement(sqlite3* pDB,LPCWSTR pApp)
 {
 	static std::map<std::wstring, sqlite3_stmt*> theUpdateMap;
@@ -276,7 +277,7 @@ static sqlite3_stmt* getUpdateStatement(sqlite3* pDB,LPCWSTR pApp)
 	}
 	return pRet;
 }
-	
+*/	
 
 BOOL sqlWritePrivateProfileString(
   LPCTSTR lpAppName,
@@ -348,19 +349,6 @@ BOOL sqlGetPrivateProfileString(
     DWORD nSize,
     LPCWSTR lpFileName)
 {
-
-
-
-
-
-
-
-
-
-
-
-
-
 	if(!IsFileExistsW(lpFileName))
 	{
 		return FALSE;
@@ -401,53 +389,17 @@ BOOL sqlGetPrivateProfileString(
 	if(SQLITE_OK != sqlite3_bind_text16(pStmtSelect, ++index, lpKeyName, -1, SQLITE_STATIC))
 		return FALSE;
 
-	if(SQLITE_DONE != sqlite3_step(pStmtSelect))
+	int sqRet = sqlite3_step(pStmtSelect);
+	if(sqRet != SQLITE_ROW && sqRet != SQLITE_DONE)
 	{
 		return FALSE;
 	}
 
 	LPWSTR pRet = (LPWSTR)sqlite3_column_text16(pStmtSelect, 0);
+
+	lstrcpyn(lpReturnedString, pRet, nSize);
+
 	return TRUE;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
 
 BOOL sqlWritePrivateProfileInt(
@@ -463,4 +415,26 @@ BOOL sqlWritePrivateProfileInt(
 		lpKeyName,
 		szT,
 		lpFileName);
+}
+
+UINT sqlGetPrivateProfileInt(
+    LPCWSTR lpAppName,
+    LPCWSTR lpKeyName,
+    INT nDefault,
+    LPCWSTR lpFileName
+    )
+{
+	TCHAR szT[32];
+	if(!sqlGetPrivateProfileString(
+		lpAppName,
+		lpKeyName,
+		L"",
+		szT,
+		sizeof(szT)/sizeof(szT[0]),
+		lpFileName))
+	{
+		return nDefault;
+	}
+
+	return _wtoi(szT);
 }
