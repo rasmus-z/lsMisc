@@ -1,6 +1,8 @@
+#pragma warning(disable :4786)
 #include <windows.h>
 #include <assert.h>
 #include <string>
+#include <map>
 #include <stlsoft/smartptr/scoped_handle.hpp>
 #include "sqlite3.h"
 #include "sqliteserialize.h"
@@ -226,7 +228,55 @@ int stTransactionScope::cc_;
 sqlite3_stmt* stTransactionScope::stmtBegin_;
 sqlite3_stmt* stTransactionScope::stmtCommit_;
 
+static sqlite3_stmt* getInsertStatement(sqlite3* pDB,LPCWSTR pApp)
+{
+	static std::map<std::wstring, sqlite3_stmt*> theInsertMap;
+	sqlite3_stmt* pRet = theInsertMap[pApp];
+	if(!pRet)
+	{
+		LPCWSTR pKata = L"INSERT OR REPLACE INTO [%s] VALUES (?, ?);";
+		LPWSTR p = (LPWSTR)malloc(wcslen(pKata)*2 + wcslen(pApp)*2 + 2);
+		stlsoft::scoped_handle<void*> mahh( (void*)p, free);
+		wsprintf(p, pKata, pApp);
+		int ret = sqlite3_prepare16_v2(pDB,
+			p,
+			-1,
+			&pRet,
+			0);
 
+		if(ret != SQLITE_OK)
+		{
+			return NULL;
+		}
+		theInsertMap[pApp]=pRet;
+	}
+	return pRet;
+}
+static sqlite3_stmt* getUpdateStatement(sqlite3* pDB,LPCWSTR pApp)
+{
+	static std::map<std::wstring, sqlite3_stmt*> theUpdateMap;
+	sqlite3_stmt* pRet = theUpdateMap[pApp];
+	if(!pRet)
+	{
+		LPCWSTR pKata = L"UPDATE [%s] SET c2=? WHERE c1=?;";
+		LPWSTR p = (LPWSTR)malloc(wcslen(pKata)*2 + wcslen(pApp)*2 + 2);
+		stlsoft::scoped_handle<void*> mahh( (void*)p, free);
+		wsprintf(p, pKata, pApp);
+		int ret = sqlite3_prepare16_v2(pDB,
+			p,
+			-1,
+			&pRet,
+			0);
+
+		if(ret != SQLITE_OK)
+		{
+			return NULL;
+		}
+		theUpdateMap[pApp]=pRet;
+	}
+	return pRet;
+}
+	
 
 BOOL sqlWritePrivateProfileString(
   LPCTSTR lpAppName,
@@ -234,7 +284,7 @@ BOOL sqlWritePrivateProfileString(
   LPCTSTR lpString,
   LPCTSTR lpFileName )
 {
-	222if(!IsFileExistsW(lpFileName))
+	if(!IsFileExistsW(lpFileName))
 	{
 		if(!createDB(lpFileName, lpAppName))
 		{
@@ -248,41 +298,46 @@ BOOL sqlWritePrivateProfileString(
 		return FALSE;
 	stlsoft::scoped_handle<sqlite3*> ma(pDB, sqlite3_close);
 
-	stTransactionScope stts(pDB);
-
-	static sqlite3_stmt* pStmtInsert = NULL;
-	if(pStmtInsert==NULL)
+	int sqRet=0;
 	{
-		LPCWSTR pKata = L"INSERT OR REPLACE INTO [%s] VALUES (?, ?);";
-		LPWSTR p = (LPWSTR)malloc(wcslen(pKata)*2 + wcslen(lpAppName)*2 + 2);
-		stlsoft::scoped_handle<void*> mahh( (void*)p, free);
-		wsprintf(p, pKata, lpAppName);
-		int ret = sqlite3_prepare16_v2(pDB,
-			p, // L"insert into group values('?','?')",
-			-1,
-			&pStmtInsert,
-			0);
+		stTransactionScope stts(pDB);
 
-		if(ret != SQLITE_OK)
-		{
+		sqlite3_stmt* pStmtInsert = getInsertStatement(pDB,lpAppName);
+
+		if(SQLITE_OK != sqlite3_reset(pStmtInsert))
 			return FALSE;
-		}
+
+		int index=0;
+		if(SQLITE_OK != sqlite3_bind_text16(pStmtInsert, ++index, lpKeyName, -1, SQLITE_STATIC))
+			return FALSE;
+		if(SQLITE_OK != sqlite3_bind_text16(pStmtInsert, ++index, lpString, -1, SQLITE_STATIC))
+			return FALSE;
+
+		sqRet = sqlite3_step(pStmtInsert);
 	}
-	
 
-	if(SQLITE_OK != sqlite3_reset(pStmtInsert))
-		return FALSE;
-	if(SQLITE_OK != sqlite3_bind_text16(pStmtInsert, 1, lpKeyName, -1, SQLITE_STATIC))
-		return FALSE;
-	if(SQLITE_OK != sqlite3_bind_text16(pStmtInsert, 2, lpString, -1, SQLITE_STATIC))
-		return FALSE;
-
-	if(SQLITE_DONE != sqlite3_step(pStmtInsert))
+/*
+	if(SQLITE_DONE != sqRet)
 	{
-		return FALSE;
-	}
+		stTransactionScope stts(pDB);
 
-	return TRUE;
+		sqlite3_stmt* pStmtUpdate = getUpdateStatement(pDB,lpAppName);
+		
+		if(SQLITE_OK != sqlite3_reset(pStmtUpdate))
+			return FALSE;
+
+		int index=0;
+		if(SQLITE_OK != sqlite3_bind_text16(pStmtUpdate, ++index, lpString, -1, SQLITE_STATIC))
+			return FALSE;
+
+		if(SQLITE_OK != sqlite3_bind_text16(pStmtUpdate, ++index, lpKeyName, -1, SQLITE_STATIC))
+			return FALSE;
+
+		if(SQLITE_DONE != sqlite3_step(pStmtUpdate))
+			return FALSE;
+	}
+*/
+	return SQLITE_DONE == sqRet;
 }
 
 BOOL sqlGetPrivateProfileString(
@@ -322,9 +377,12 @@ BOOL sqlGetPrivateProfileString(
 	static sqlite3_stmt* pStmtSelect = NULL;
 	if(pStmtSelect==NULL)
 	{
-		LPCWSTR pKata = L"SELECT c2 FROM ? WHERE [c1] = ?;";
+		LPCWSTR pKata = L"SELECT c2 FROM [%s] WHERE c1 = ?;";
+		LPWSTR p = (LPWSTR)malloc(wcslen(pKata)*2 + wcslen(lpAppName)*2 + 2);
+		stlsoft::scoped_handle<void*> mahh( (void*)p, free);
+		wsprintf(p, pKata, lpAppName);
 		int ret = sqlite3_prepare16_v2(pDB,
-			pKata,
+			p,
 			-1,
 			&pStmtSelect,
 			0);
@@ -338,9 +396,9 @@ BOOL sqlGetPrivateProfileString(
 
 	if(SQLITE_OK != sqlite3_reset(pStmtSelect))
 		return FALSE;
-	if(SQLITE_OK != sqlite3_bind_text16(pStmtSelect, 1, lpAppName, -1, SQLITE_STATIC))
-		return FALSE;
-	if(SQLITE_OK != sqlite3_bind_text16(pStmtSelect, 2, lpKeyName, -1, SQLITE_STATIC))
+
+	int index=0;
+	if(SQLITE_OK != sqlite3_bind_text16(pStmtSelect, ++index, lpKeyName, -1, SQLITE_STATIC))
 		return FALSE;
 
 	if(SQLITE_DONE != sqlite3_step(pStmtSelect))

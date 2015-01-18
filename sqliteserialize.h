@@ -10,3 +10,11 @@ BOOL sqlWritePrivateProfileInt(
   LPCTSTR lpKeyName,
   int nData,
   LPCTSTR lpFileName );
+
+BOOL sqlGetPrivateProfileString(
+    LPCTSTR lpAppName,
+    LPCTSTR lpKeyName,
+    LPCTSTR lpDefault,
+    LPTSTR lpReturnedString,
+    DWORD nSize,
+    LPCWSTR lpFileName);
