@@ -1,9 +1,9 @@
 #include <windows.h>
 #include "tstring.h"
-#include "GetClipboardTexts.h"
+#include "GetClipboardText.h"
 
 using namespace std;
-BOOL GetClipboardTextsA(HWND hWnd, string& strData)
+BOOL GetClipboardTextA(HWND hWnd, string& strData)
 {
 	if( !IsClipboardFormatAvailable(CF_TEXT) )
 		return FALSE;
@@ -29,7 +29,7 @@ BOOL GetClipboardTextsA(HWND hWnd, string& strData)
 	return TRUE;
 }
 
-BOOL GetClipboardTextsW(HWND hWnd, wstring& strData)
+BOOL GetClipboardTextW(HWND hWnd, wstring& strData)
 {
 	if( !IsClipboardFormatAvailable(CF_UNICODETEXT) )
 		return FALSE;
