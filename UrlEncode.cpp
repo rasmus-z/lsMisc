@@ -31,10 +31,12 @@ HOME : http://www.geocities.co.jp/SilkRoad/4511/
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 
-#include "UrlEncode2.h"
 
-void UrlEncode2(const unsigned char	*csource,
+#include "UrlEncode.h"
+
+void UrlEncode(const unsigned char	*csource,
 						size_t	nSize,
 						char** pOut,
 						int bUseMalloc)
@@ -98,4 +100,52 @@ void UrlEncode2(const unsigned char	*csource,
 		if(lcount == llength) { break; }							/* 文字列の終端に達した場合、ループを抜ける */
 	}
 	return ;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// http://www.emoticode.net/c/urlencode-in-plain-c.html
+static char hex[] = "0123456789abcdef";
+
+char i2a(char code) {
+	return hex[code & 15];
+}
+
+char *urlencodenew( char *pstr )
+{
+	char 
+		*buf,
+		*pbuf;
+
+	pbuf = buf = (char *)malloc( strlen(pstr) * 3 + 1 );
+
+	while(*pstr){
+		if( isalnum(*pstr) || *pstr == '-' || *pstr == '_' || *pstr == '.' || *pstr == '~' ){
+			*pbuf++ = *pstr;
+		}
+		else if( *pstr == ' ' ){
+			*pbuf++ = '+';
+		}
+		else{
+			*pbuf++ = '%',
+				*pbuf++ = i2a(*pstr >> 4),
+				*pbuf++ = i2a(*pstr & 15);
+		}
+		pstr++;
+	}
+	*pbuf = '\0';
+
+	return buf;
 }
