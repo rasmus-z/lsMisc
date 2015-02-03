@@ -132,16 +132,16 @@ char *urlencodenew( char *pstr )
 	pbuf = buf = (char *)malloc( strlen(pstr) * 3 + 1 );
 
 	while(*pstr){
-		if( isalnum(*pstr) || *pstr == '-' || *pstr == '_' || *pstr == '.' || *pstr == '~' ){
+		if( (*pstr >0 && isalnum(*pstr)) || *pstr == '-' || *pstr == '_' || *pstr == '.' || *pstr == '~' ){
 			*pbuf++ = *pstr;
 		}
 		else if( *pstr == ' ' ){
 			*pbuf++ = '+';
 		}
 		else{
-			*pbuf++ = '%',
-				*pbuf++ = i2a(*pstr >> 4),
-				*pbuf++ = i2a(*pstr & 15);
+			*pbuf++ = '%';
+			*pbuf++ = i2a(*pstr >> 4);
+			*pbuf++ = i2a(*pstr & 15);
 		}
 		pstr++;
 	}
