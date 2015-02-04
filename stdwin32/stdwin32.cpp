@@ -1,6 +1,7 @@
 #include <windows.h>
 #include <stlsoft/smartptr/scoped_handle.hpp>
 #include <string>
+#include <vector>
 using namespace std;
 #include "stdwin32.h"
 
@@ -87,6 +88,68 @@ wstring stdGetParentDirectory(LPCWSTR pPath)
 	*pT=0;
 	return p;
 }
+
+
+vector<wstring> stdSplitSCedPath(LPCWSTR pPath)
+{
+	vector<wstring> ret;
+
+	LPCWSTR p = pPath;
+	wstring cur;
+	bool inq=false;
+	for( ; *p ; ++p)
+	{
+		if(inq)
+		{
+			if(*p=='\"')
+			{
+				if(!cur.empty())
+				{
+					ret.push_back(cur);
+					cur=L"";
+				}
+				inq=false;
+			}
+			else 
+			{
+				cur += *p;
+			}
+		}
+		else
+		{ // not inq
+			if(*p=='\"')
+			{
+				inq=true;
+			}
+			else if(*p==L';')
+			{
+				if(!cur.empty())
+				{
+					ret.push_back(cur);
+					cur=L"";
+				}
+			}
+			else
+			{
+				cur+=*p;
+			}
+		}
+	}
+
+	if(!cur.empty())
+	{
+		ret.push_back(cur);
+		cur=L"";
+	}
+
+	return ret;
+}
+
+
+
+
+
+
 
 
 
