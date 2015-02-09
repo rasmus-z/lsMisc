@@ -111,6 +111,7 @@ static LPWSTR UTF8toUTF16(const LPBYTE pIN)
 }
 #ifdef _DEBUG
 static std::set<wstring> nai;
+static std::set<wstring> aru;
 void shownai()
 {
 	std::set<wstring>::iterator it;
@@ -128,6 +129,24 @@ void shownai()
 		OutputDebugString(L"---------------------NOTI18N------->>>>>>>>>>>>\r\n");
 		OutputDebugString(message.c_str());
 		OutputDebugString(L"---------------------NOTI18N-------<<<<<<<<<<<<\r\n");
+	}
+
+
+
+	message = L"";
+	for ( it = aru.begin() ; it != aru.end() ; ++it )
+	{
+		if(it->size()==0)
+			continue;
+		message += *it;
+		message += L"\r\n";
+	}
+
+	if(message.length()!=0)
+	{
+		OutputDebugString(L"---------------------DUPLICATEI18N------->>>>>>>>>>>>\r\n");
+		OutputDebugString(message.c_str());
+		OutputDebugString(L"---------------------DUPLICATEI18N-------<<<<<<<<<<<<\r\n");
 	}
 }
 #endif  // _DEBUG
@@ -364,7 +383,15 @@ void initLangmap(LPCWSTR pLang)
 							}
 							
 							if(left.size() != 0)
+							{
+#ifdef _DEBUG
+								if(!i18map[left].empty())
+								{
+									aru.insert(left);
+								}
+#endif
 								i18map[left] = right;
+							}
 
 							pTok = wcstok(NULL, L"\n");
 						}
