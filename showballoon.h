@@ -1,0 +1,1 @@
+BOOL showballoon(std::wstring title, std::wstring text, std::wstring iconexe, UINT uTrayID);
