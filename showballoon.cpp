@@ -6,22 +6,22 @@
 #include <string>
 using namespace std;
 
+#include "showballoon.h"
+
 #pragma comment(lib,"Comctl32.lib")
 
-static HICON ghIcon;
-
-static BOOL NotifyIconize(UINT uID, DWORD dwMessage, LPCWSTR pInfoTitle , LPCWSTR pInfo)
+static BOOL NotifyIconize(HWND hWnd, UINT uID, DWORD dwMessage, HICON hIcon, LPCWSTR pInfoTitle , LPCWSTR pInfo)
 {
 	NOTIFYICONDATAW nid;
 	ZeroMemory(&nid,sizeof(nid));
 	nid.cbSize = sizeof(NOTIFYICONDATAW);
-	nid.hWnd = NULL;
+	nid.hWnd = hWnd;
 	nid.uID = uID;
 	nid.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP | 0x00000010;
 	nid.dwInfoFlags      = 0x00000001;
 	nid.uTimeout         = 300;
 	nid.uCallbackMessage = 0; //WM_APP_TRAYMESSAGE;
-	nid.hIcon = ghIcon; //LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON_MAIN));
+	nid.hIcon = hIcon; //LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON_MAIN));
 	lstrcpyW(nid.szTip, L"dater");
 	if(pInfoTitle)
 		lstrcpyW( nid.szInfoTitle, pInfoTitle );
@@ -37,10 +37,11 @@ static BOOL NotifyIconize(UINT uID, DWORD dwMessage, LPCWSTR pInfoTitle , LPCWST
 
 
 
-BOOL showballoon(wstring title, wstring text, wstring iconexe, UINT uTrayID)
+BOOL showballoon(HWND hWnd, const wstring& title, const wstring& text, HICON hIcon, UINT uTrayID, BOOL bOnlyModify)
 {
 	CoInitialize(NULL);
 
+/**
 	if(!iconexe.empty())
 	{
 		SHFILEINFOW sfi={0};
@@ -55,7 +56,7 @@ BOOL showballoon(wstring title, wstring text, wstring iconexe, UINT uTrayID)
 
 		ghIcon = sfi.hIcon;
 	} 	
-	
+**/	
 
 	InitCommonControls();
 	HWND hBalloon = CreateWindowW(L"tooltips_class32",
@@ -71,36 +72,42 @@ BOOL showballoon(wstring title, wstring text, wstring iconexe, UINT uTrayID)
 		NULL);
 	if(!hBalloon)
 	{
-		MessageBoxW(NULL, L"balloon",NULL,MB_ICONERROR);
-		return __LINE__;
+		// MessageBoxW(NULL, L"balloon",NULL,MB_ICONERROR);
+		return FALSE;
 	}
 	if(!SendMessageW(hBalloon,
 		TTM_SETTITLE, // Adds a standard icon and title string to a ToolTip    
 		1,
 		(LPARAM)L"title"))
 	{
-		MessageBoxW(NULL, L"balloon sendmessage",NULL,MB_ICONERROR);
-		return __LINE__;
+		// MessageBoxW(NULL, L"balloon sendmessage",NULL,MB_ICONERROR);
+		return FALSE;
 	}
 
-	NotifyIconize(uTrayID,NIM_DELETE, NULL, NULL);
-	if(!NotifyIconize(uTrayID,NIM_ADD, NULL, NULL))
+	if(!bOnlyModify)
 	{
-		MessageBoxA(NULL, "NotifyAdd",NULL,MB_ICONERROR);
-		return __LINE__;
+		NotifyIconize(hWnd,uTrayID,NIM_DELETE, hIcon, NULL, NULL);
+		if(!NotifyIconize(hWnd,uTrayID,NIM_ADD, hIcon, NULL, NULL))
+		{
+			// MessageBoxA(NULL, "NotifyAdd",NULL,MB_ICONERROR);
+			return FALSE;
+		}
 	}
 
 
-
-	if(!NotifyIconize(uTrayID, NIM_MODIFY, title.c_str(), text.c_str() ))
+	if(!NotifyIconize(hWnd,uTrayID, NIM_MODIFY, hIcon, title.c_str(), text.c_str() ))
 	{
-		MessageBoxA(NULL, "NotifyModify",NULL,MB_ICONERROR);
-		return __LINE__;
+		// MessageBoxA(NULL, "NotifyModify",NULL,MB_ICONERROR);
+		return FALSE;
 	}
-	Sleep(5000);
-	NotifyIconize(uTrayID, NIM_DELETE, NULL, NULL);
+
+	if(!bOnlyModify)
+	{
+		Sleep(5000);
+		NotifyIconize(hWnd,uTrayID, NIM_DELETE, hIcon, NULL, NULL);
+	}
 	DestroyWindow(hBalloon);
-	DestroyIcon(ghIcon);
-	return 0;
+//	DestroyIcon(ghIcon);
+	return TRUE;
 }
 

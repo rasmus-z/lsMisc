@@ -1,1 +1,7 @@
-BOOL showballoon(std::wstring title, std::wstring text, std::wstring iconexe, UINT uTrayID);
+BOOL showballoon(
+				 HWND hWnd, 
+				 const std::wstring& title, 
+				 const std::wstring& text, 
+				 HICON hIcon, 
+				 UINT uTrayID,
+				 BOOL bOnlyModify=FALSE);
