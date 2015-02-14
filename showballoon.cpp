@@ -10,7 +10,7 @@ using namespace std;
 
 #pragma comment(lib,"Comctl32.lib")
 
-static BOOL NotifyIconize(HWND hWnd, UINT uID, DWORD dwMessage, HICON hIcon, LPCWSTR pInfoTitle , LPCWSTR pInfo)
+static BOOL NotifyIconize(HWND hWnd, UINT uID, DWORD dwMessage, HICON hIcon, int duration, LPCWSTR pInfoTitle , LPCWSTR pInfo)
 {
 	NOTIFYICONDATAW nid;
 	ZeroMemory(&nid,sizeof(nid));
@@ -37,26 +37,9 @@ static BOOL NotifyIconize(HWND hWnd, UINT uID, DWORD dwMessage, HICON hIcon, LPC
 
 
 
-BOOL showballoon(HWND hWnd, const wstring& title, const wstring& text, HICON hIcon, UINT uTrayID, BOOL bOnlyModify)
+BOOL showballoon(HWND hWnd, const wstring& title, const wstring& text, HICON hIcon, int duration, UINT uTrayID, BOOL bOnlyModify)
 {
 	CoInitialize(NULL);
-
-/**
-	if(!iconexe.empty())
-	{
-		SHFILEINFOW sfi={0};
-		SHGetFileInfoW(iconexe.c_str(),
-					   0,
-					   &sfi, 
-					   sizeof(SHFILEINFO), 
-					   // SHGFI_SYSICONINDEX|
-					   SHGFI_ICON|
-					   SHGFI_SMALLICON);
-
-
-		ghIcon = sfi.hIcon;
-	} 	
-**/	
 
 	InitCommonControls();
 	HWND hBalloon = CreateWindowW(L"tooltips_class32",
@@ -86,8 +69,8 @@ BOOL showballoon(HWND hWnd, const wstring& title, const wstring& text, HICON hIc
 
 	if(!bOnlyModify)
 	{
-		NotifyIconize(hWnd,uTrayID,NIM_DELETE, hIcon, NULL, NULL);
-		if(!NotifyIconize(hWnd,uTrayID,NIM_ADD, hIcon, NULL, NULL))
+		NotifyIconize(hWnd,uTrayID,NIM_DELETE, hIcon, duration, NULL, NULL);
+		if(!NotifyIconize(hWnd,uTrayID,NIM_ADD, hIcon, duration,NULL, NULL))
 		{
 			// MessageBoxA(NULL, "NotifyAdd",NULL,MB_ICONERROR);
 			return FALSE;
@@ -95,7 +78,7 @@ BOOL showballoon(HWND hWnd, const wstring& title, const wstring& text, HICON hIc
 	}
 
 
-	if(!NotifyIconize(hWnd,uTrayID, NIM_MODIFY, hIcon, title.c_str(), text.c_str() ))
+	if(!NotifyIconize(hWnd,uTrayID, NIM_MODIFY, hIcon, duration,title.c_str(), text.c_str() ))
 	{
 		// MessageBoxA(NULL, "NotifyModify",NULL,MB_ICONERROR);
 		return FALSE;
@@ -103,8 +86,8 @@ BOOL showballoon(HWND hWnd, const wstring& title, const wstring& text, HICON hIc
 
 	if(!bOnlyModify)
 	{
-		Sleep(5000);
-		NotifyIconize(hWnd,uTrayID, NIM_DELETE, hIcon, NULL, NULL);
+		Sleep(duration);
+		NotifyIconize(hWnd,uTrayID, NIM_DELETE, hIcon, duration,NULL, NULL);
 	}
 	DestroyWindow(hBalloon);
 //	DestroyIcon(ghIcon);
