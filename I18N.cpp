@@ -420,7 +420,7 @@ LPCWSTR I18N(LPCWSTR pIN)
 		initLangmap();
 
 	i18nlock lock;
-	wstring ret = i18map[pIN];
+	wstring& ret = i18map[pIN];
 	if(ret.size()!=0)
 		return ret.c_str();
 
