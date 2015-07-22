@@ -1,0 +1,1 @@
+BOOL StartProcess(LPCTSTR lpFile, BOOL bUseCreateProcess = FALSE);
