@@ -1,5 +1,4 @@
 #include <windows.h>
-#include <stlsoft/smartptr/scoped_handle.hpp>
 #include <string>
 #include <vector>
 using namespace std;
@@ -77,16 +76,22 @@ wstring stdGetParentDirectory(LPCWSTR pPath)
 		return Nil;
 
 	LPWSTR p = wcsdup(pPath);
-	stlsoft::scoped_handle<void*> ma(p, free);
+
 	size_t len = wcslen(p);
 	if(p[len-1]==L'\\')
 		p[len-1]=0;
 
 	LPWSTR pT = wcsrchr(p, L'\\');
 	if(!pT)
+	{
+		free(p);
 		return Nil;
+	}
+
 	*pT=0;
-	return p;
+	wstring ret(p);
+	free(p);
+	return ret;
 }
 
 
