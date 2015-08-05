@@ -86,7 +86,8 @@ BOOL showballoon(HWND hWnd, const wstring& title, const wstring& text, HICON hIc
 
 	if(!bOnlyModify)
 	{
-		Sleep(duration);
+		// Sleep(duration);
+		MessageBox(NULL,"aaa","aaa",0);
 		NotifyIconize(hWnd,uTrayID, NIM_DELETE, hIcon, duration,NULL, NULL);
 	}
 	DestroyWindow(hBalloon);
