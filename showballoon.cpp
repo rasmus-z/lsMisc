@@ -10,7 +10,13 @@ using namespace std;
 
 #pragma comment(lib,"Comctl32.lib")
 
-static BOOL NotifyIconize(HWND hWnd, UINT uID, DWORD dwMessage, HICON hIcon, int duration, LPCWSTR pInfoTitle , LPCWSTR pInfo)
+static BOOL NotifyIconize(HWND hWnd, 
+						  UINT uID,
+						  DWORD dwMessage, 
+						  HICON hIcon, 
+						  int duration,
+						  LPCWSTR pInfoTitle , 
+						  LPCWSTR pInfo)
 {
 	NOTIFYICONDATAW nid;
 	ZeroMemory(&nid,sizeof(nid));
@@ -19,14 +25,14 @@ static BOOL NotifyIconize(HWND hWnd, UINT uID, DWORD dwMessage, HICON hIcon, int
 	nid.uID = uID;
 	nid.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP | 0x00000010;
 	nid.dwInfoFlags      = 0x00000001;
-	nid.uTimeout         = 300;
+	nid.uTimeout         = duration;
 	nid.uCallbackMessage = 0; //WM_APP_TRAYMESSAGE;
 	nid.hIcon = hIcon; //LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON_MAIN));
-	lstrcpyW(nid.szTip, L"dater");
+	lstrcpynW(nid.szTip, pInfoTitle, ARRAYSIZE(nid.szTip));
 	if(pInfoTitle)
-		lstrcpyW( nid.szInfoTitle, pInfoTitle );
+		lstrcpynW( nid.szInfoTitle, pInfoTitle, ARRAYSIZE(nid.szInfoTitle));
 	if(pInfo)
-		lstrcpyW( nid.szInfo, pInfo );
+		lstrcpynW( nid.szInfo, pInfo, ARRAYSIZE(nid.szInfo) );
 	
 	BOOL ret= Shell_NotifyIconW( dwMessage,&nid);
 	//DestroyIcon(sfi.hIcon);
@@ -37,7 +43,13 @@ static BOOL NotifyIconize(HWND hWnd, UINT uID, DWORD dwMessage, HICON hIcon, int
 
 
 
-BOOL showballoon(HWND hWnd, const wstring& title, const wstring& text, HICON hIcon, int duration, UINT uTrayID, BOOL bOnlyModify)
+BOOL showballoon(HWND hWnd, 
+				 const wstring& title,
+				 const wstring& text,
+				 HICON hIcon, 
+				 int duration, 
+				 UINT uTrayID, 
+				 BOOL bOnlyModify)
 {
 	CoInitialize(NULL);
 
@@ -86,8 +98,7 @@ BOOL showballoon(HWND hWnd, const wstring& title, const wstring& text, HICON hIc
 
 	if(!bOnlyModify)
 	{
-		// Sleep(duration);
-		MessageBox(NULL,"aaa","aaa",0);
+		Sleep(duration);
 		NotifyIconize(hWnd,uTrayID, NIM_DELETE, hIcon, duration,NULL, NULL);
 	}
 	DestroyWindow(hBalloon);
