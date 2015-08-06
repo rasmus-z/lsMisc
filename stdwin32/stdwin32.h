@@ -31,4 +31,16 @@ namespace stdwin32 {
 	#define string_format string_formatA
 #endif
 
+
+
+std::string trimA(const std::string& str,
+                 const std::string& whitespace = " \t");
+std::wstring trimW(const std::wstring& str,
+                 const std::wstring& whitespace = L" \t");
+#ifdef UNICODE
+	#define trim trimW
+#else
+	#define trim trimA
+#endif
+
 }

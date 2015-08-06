@@ -1,12 +1,22 @@
 #pragma warning(disable:4786)
 
 #include <windows.h>
+
+#include <algorithm> 
+#include <cassert>
+#include <cctype>
+#include <cstdarg>
+#include <cstdio>
+#include <functional> 
+#include <locale>
 #include <string>
 #include <vector>
-#include <cstdio>
-#include <cstdarg>
-#include <cassert>
-#include <stdio.h>
+
+
+
+
+
+
 
 using namespace std;
 #include "stdwin32.h"
@@ -205,6 +215,30 @@ std::wstring string_formatW(const std::wstring fmt, ...)
 
 
 
+std::string trimA(const std::string& str,
+                 const std::string& whitespace)
+{
+    const auto strBegin = str.find_first_not_of(whitespace);
+    if (strBegin == std::string::npos)
+        return ""; // no content
+
+    const auto strEnd = str.find_last_not_of(whitespace);
+    const auto strRange = strEnd - strBegin + 1;
+
+    return str.substr(strBegin, strRange);
+}
+std::wstring trimW(const std::wstring& str,
+                 const std::wstring& whitespace)
+{
+    const auto strBegin = str.find_first_not_of(whitespace);
+    if (strBegin == std::string::npos)
+        return L""; // no content
+
+    const auto strEnd = str.find_last_not_of(whitespace);
+    const auto strRange = strEnd - strBegin + 1;
+
+    return str.substr(strBegin, strRange);
+}
 
 
 
