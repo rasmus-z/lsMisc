@@ -158,7 +158,7 @@ vector<wstring> stdSplitSCedPath(LPCWSTR pPath)
 }
 
 
-std::string string_format(const std::string fmt, ...)
+std::string string_formatA(const std::string fmt, ...)
 {
     int size = ((int)fmt.size()) * 2 + 50;   // Use a rubric appropriate for your code
     std::string str;
@@ -168,6 +168,27 @@ std::string string_format(const std::string fmt, ...)
         va_start(ap, fmt);
         int n = _vsnprintf((char *)str.data(), size, fmt.c_str(), ap);
 		
+        va_end(ap);
+        if (n > -1 && n < size) {  // Everything worked
+            str.resize(n);
+            return str;
+        }
+        if (n > -1)  // Needed size returned
+            size = n + 1;   // For null char
+        else
+            size *= 2;      // Guess at a larger size (OS specific)
+    }
+    return str;
+}
+std::wstring string_formatW(const std::wstring fmt, ...)
+{
+    int size = ((int)fmt.size()) * 2 + 50;   // Use a rubric appropriate for your code
+    std::wstring str;
+    va_list ap;
+    while (1) {     // Maximum two passes on a POSIX system...
+        str.resize(size);
+        va_start(ap, fmt);
+        int n = _vsnwprintf((WCHAR *)str.data(), size, fmt.c_str(), ap);
         va_end(ap);
         if (n > -1 && n < size) {  // Everything worked
             str.resize(n);

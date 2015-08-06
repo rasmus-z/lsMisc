@@ -12,9 +12,23 @@ namespace stdwin32 {
 	#define stdGetModuleFileName stdGetModuleFileNameA
 #endif
 
+
+
+
 	BOOL stdIsFullPath(LPCWSTR pD);
 	std::wstring stdCombinePath(LPCWSTR pD1, LPCWSTR pD2);
 	std::wstring stdGetParentDirectory(LPCWSTR pPath);
 	std::vector<std::wstring> stdSplitSCedPath(LPCWSTR pPath);
-	std::string string_format(const std::string fmt, ...);
+	
+
+
+
+	std::string string_formatA(const std::string fmt, ...);
+	std::wstring string_formatW(const std::wstring fmt, ...);
+#ifdef UNICODE
+	#define string_format string_formatW
+#else
+	#define string_format string_formatA
+#endif
+
 }
