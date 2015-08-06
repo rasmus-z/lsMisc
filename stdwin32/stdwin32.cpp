@@ -1,6 +1,13 @@
+#pragma warning(disable:4786)
+
 #include <windows.h>
 #include <string>
 #include <vector>
+#include <cstdio>
+#include <cstdarg>
+#include <cassert>
+#include <stdio.h>
+
 using namespace std;
 #include "stdwin32.h"
 
@@ -9,14 +16,14 @@ namespace stdwin32 {
 
 static const wchar_t* Nil=L"";
 
-wstring stdGetModuleFileName(HINSTANCE hInst)
+wstring stdGetModuleFileNameW(HINSTANCE hInst)
 {
 	LPWSTR p = NULL;
 	size_t size = 64;
 	for(;;)
 	{
 		p = (LPWSTR)realloc(p, size*sizeof(wchar_t));
-		if(GetModuleFileName(hInst, p, size) < size)
+		if(GetModuleFileNameW(hInst, p, size) < size)
 			break;
 		size*=2;
 	}
@@ -150,6 +157,29 @@ vector<wstring> stdSplitSCedPath(LPCWSTR pPath)
 	return ret;
 }
 
+
+std::string string_format(const std::string fmt, ...)
+{
+    int size = ((int)fmt.size()) * 2 + 50;   // Use a rubric appropriate for your code
+    std::string str;
+    va_list ap;
+    while (1) {     // Maximum two passes on a POSIX system...
+        str.resize(size);
+        va_start(ap, fmt);
+        int n = _vsnprintf((char *)str.data(), size, fmt.c_str(), ap);
+		
+        va_end(ap);
+        if (n > -1 && n < size) {  // Everything worked
+            str.resize(n);
+            return str;
+        }
+        if (n > -1)  // Needed size returned
+            size = n + 1;   // For null char
+        else
+            size *= 2;      // Guess at a larger size (OS specific)
+    }
+    return str;
+}
 
 
 
