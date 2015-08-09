@@ -218,24 +218,24 @@ std::wstring string_formatW(const std::wstring fmt, ...)
 std::string trimA(const std::string& str,
                  const std::string& whitespace)
 {
-    const auto strBegin = str.find_first_not_of(whitespace);
+	const std::string::size_type strBegin = str.find_first_not_of(whitespace);
     if (strBegin == std::string::npos)
         return ""; // no content
 
-    const auto strEnd = str.find_last_not_of(whitespace);
-    const auto strRange = strEnd - strBegin + 1;
+    const std::string::size_type strEnd = str.find_last_not_of(whitespace);
+    const std::string::size_type strRange = strEnd - strBegin + 1;
 
     return str.substr(strBegin, strRange);
 }
 std::wstring trimW(const std::wstring& str,
                  const std::wstring& whitespace)
 {
-    const auto strBegin = str.find_first_not_of(whitespace);
+    const std::wstring::size_type strBegin = str.find_first_not_of(whitespace);
     if (strBegin == std::string::npos)
         return L""; // no content
 
-    const auto strEnd = str.find_last_not_of(whitespace);
-    const auto strRange = strEnd - strBegin + 1;
+    const std::wstring::size_type strEnd = str.find_last_not_of(whitespace);
+    const std::wstring::size_type strRange = strEnd - strBegin + 1;
 
     return str.substr(strBegin, strRange);
 }
