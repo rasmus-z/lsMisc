@@ -487,7 +487,7 @@ void i18nChangeMenuText(HMENU menu)
 
 		MENUITEMINFO miiset;
 		miiset.cbSize=sizeof(miiset);
-		miiset.fMask = MIIM_STRING;
+		miiset.fMask = 0x00000040; //MIIM_STRING;
 		miiset.dwTypeData = text;
 		SetMenuItemInfo(menu,i,TRUE, &miiset);
 		
