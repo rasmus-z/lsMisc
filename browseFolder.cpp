@@ -3,9 +3,11 @@
 #include <objbase.h>
 #include <shlobj.h>
 
+#include <io.h>
+
 #include "browseFolder.h"
 
-#define TRACE (void)0
+#define TRACE(t1,t2) (void)0
 
 
 struct FOLDER_PROPS

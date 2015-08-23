@@ -10,8 +10,9 @@ tstring GetFilableUserName()
 	if ( !GetUserName(szUser, &d) )
 		return _T("unknown");
 
-	if ( !ChangeFilenamable(szUser) )
+	tstring ret = ChangeFilenamable(szUser);
+	if(ret.size()==0)
 		return _T("unknown");
 
-	return szUser;
+	return ret;
 }
