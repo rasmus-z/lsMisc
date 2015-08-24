@@ -17,10 +17,27 @@
 #include "../ChangeFilenamable.h"
 #include "../GetVersionString.h"
 
-
+#include <stlsoft/smartptr/scoped_handle.hpp>
 
 int main()
 {
+	// kernel object
+	{
+		HANDLE h = CreateMutex(NULL, FALSE, NULL);
+		if (h == NULL)
+			return -1;
+
+		stlsoft::scoped_handle<HANDLE> ko(h, CloseHandle);
+	}
+
+	{
+		FILE* f = fopen("C:\\T\\Test.txt", "w");
+		if (!f)
+			return -1;
+
+		stlsoft::scoped_handle<FILE*> fo(f, fclose);
+	}
+
 	TCHAR buf[MAX_PATH];
 
 	// Get file description for explorer.exe
