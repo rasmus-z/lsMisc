@@ -28,6 +28,9 @@ HOME : http://www.geocities.co.jp/SilkRoad/4511/
 書き換えたものです。私は C 言語については全くの初心者ですので、
 ソースもいいかげんです。正しく直して使って下さい(^^;
 */
+
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
