@@ -2,19 +2,19 @@
 
 #include "tstring.h"
 #include "GetLastErrorString.h"
-tstring GetLastErrorString(DWORD dwErrorNo, BOOL* pSeikou )
+std::string GetLastErrorStringA(DWORD dwErrorNo, BOOL* pSeikou )
 {
 	LPVOID lpMsgBuf = NULL;
-	tstring strRet;
+	std::string strRet;
  
-	if( (0==FormatMessage(
+	if( (0==FormatMessageA(
 		FORMAT_MESSAGE_ALLOCATE_BUFFER |
 		FORMAT_MESSAGE_FROM_SYSTEM |
 		FORMAT_MESSAGE_IGNORE_INSERTS|FORMAT_MESSAGE_MAX_WIDTH_MASK,
 		NULL,
 		dwErrorNo,
 		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-		(LPTSTR)&lpMsgBuf,
+		(LPSTR)&lpMsgBuf,
 		0,
 		NULL)) || lpMsgBuf==NULL )
 	{
@@ -25,7 +25,42 @@ tstring GetLastErrorString(DWORD dwErrorNo, BOOL* pSeikou )
 		return strRet;
 	}
  
-	strRet = (LPTSTR)lpMsgBuf;
+	strRet = (LPSTR)lpMsgBuf;
+	LocalFree(lpMsgBuf);
+ 
+	if (pSeikou)
+	{
+		*pSeikou = TRUE;
+	}
+ 
+	return strRet;
+}
+
+
+std::wstring GetLastErrorStringW(DWORD dwErrorNo, BOOL* pSeikou )
+{
+	LPVOID lpMsgBuf = NULL;
+	std::wstring strRet;
+ 
+	if( (0==FormatMessageW(
+		FORMAT_MESSAGE_ALLOCATE_BUFFER |
+		FORMAT_MESSAGE_FROM_SYSTEM |
+		FORMAT_MESSAGE_IGNORE_INSERTS|FORMAT_MESSAGE_MAX_WIDTH_MASK,
+		NULL,
+		dwErrorNo,
+		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+		(LPWSTR)&lpMsgBuf,
+		0,
+		NULL)) || lpMsgBuf==NULL )
+	{
+		if(pSeikou)
+		{
+			*pSeikou = FALSE;
+		}
+		return strRet;
+	}
+ 
+	strRet = (LPWSTR)lpMsgBuf;
 	LocalFree(lpMsgBuf);
  
 	if (pSeikou)
