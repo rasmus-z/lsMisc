@@ -1,7 +1,7 @@
 #include <windows.h>
 #include <tchar.h>
 #include <shlwapi.h>
-#include <string>
+//#include <string>
 #include "CreateFolderIniPath.h"
 #include "tstring.h"
 
