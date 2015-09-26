@@ -26,6 +26,22 @@ namespace stdwin32 {
 
 static const wchar_t* Nil=L"";
 
+string stdGetModuleFileNameA(HINSTANCE hInst)
+{
+	LPSTR p = NULL;
+	size_t size = 64;
+	for(;;)
+	{
+		p = (LPSTR)realloc(p, size*sizeof(char));
+		if(GetModuleFileNameA(hInst, p, size) < size)
+			break;
+		size*=2;
+	}
+	
+	string ret=p;
+	free((void*)p);
+	return ret;
+}
 wstring stdGetModuleFileNameW(HINSTANCE hInst)
 {
 	LPWSTR p = NULL;
