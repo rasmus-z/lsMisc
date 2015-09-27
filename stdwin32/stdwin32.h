@@ -3,6 +3,8 @@
 #include <vector>
 #include <string>
 #include <windows.h>
+#include "../tstring.h"
+
 namespace stdwin32 {
 
 	std::string stdGetModuleFileNameA(HINSTANCE hInst=NULL);
@@ -34,14 +36,16 @@ namespace stdwin32 {
 
 
 
-std::string trimA(const std::string& str,
-                 const std::string& whitespace = " \t");
-std::wstring trimW(const std::wstring& str,
-                 const std::wstring& whitespace = L" \t");
+	std::string trimA(const std::string& str,
+					 const std::string& whitespace = " \t");
+	std::wstring trimW(const std::wstring& str,
+					 const std::wstring& whitespace = L" \t");
 #ifdef UNICODE
 	#define trim trimW
 #else
 	#define trim trimA
 #endif
 
+
+	bool isTdigit(const tstring& str);
 }

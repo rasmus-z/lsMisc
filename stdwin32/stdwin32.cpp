@@ -259,4 +259,18 @@ std::wstring trimW(const std::wstring& str,
 
 
 
+
+bool isTdigit(const tstring& str)
+{
+	if(str.size()==0)
+		return false;
+
+	for(tstring::const_iterator it=str.begin() ; it != str.end() ; ++it)
+	{
+		if(!isdigit(*it))
+			return false;
+	}
+	return true;
+}
+
 } // namespace stdwin32
