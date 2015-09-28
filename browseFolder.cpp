@@ -81,7 +81,7 @@ static int CALLBACK BrowseCallbackProc(HWND hWnd,		// Window handle to the brows
 					// fail if pidl is a link
 					if (sfi.dwAttributes & SFGAO_LINK)
 					{
-						TRACE(_T("SFGAO_LINK\n"));
+						TRACE(_T("SFGAO_LINK\n"),0);
 						bRet = FALSE;
 					}
 				}
