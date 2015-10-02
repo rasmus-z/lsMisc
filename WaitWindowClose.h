@@ -1,0 +1,2 @@
+
+DWORD WaitWindowClose();
