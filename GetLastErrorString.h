@@ -1,3 +1,4 @@
+#pragma once
 #include "tstring.h"
 
 std::string GetLastErrorStringA(DWORD dwErrorNo, BOOL* pSeikou=NULL );
