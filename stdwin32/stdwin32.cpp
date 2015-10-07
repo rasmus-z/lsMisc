@@ -1,5 +1,6 @@
 #pragma warning(disable:4786)
 
+
 #include <windows.h>
 
 #include <algorithm> 
@@ -108,7 +109,7 @@ wstring stdGetParentDirectory(LPCWSTR pPath)
 	if(!pPath || pPath[0]==0)
 		return Nil;
 
-	LPWSTR p = wcsdup(pPath);
+	LPWSTR p = _wcsdup(pPath);
 
 	size_t len = wcslen(p);
 	if(p[len-1]==L'\\')
