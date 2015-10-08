@@ -29,7 +29,9 @@ HOME : http://www.geocities.co.jp/SilkRoad/4511/
 ソースもいいかげんです。正しく直して使って下さい(^^;
 */
 
+#ifndef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
+#endif
 
 #include <stdlib.h>
 #include <stdio.h>

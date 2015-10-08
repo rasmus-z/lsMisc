@@ -188,7 +188,7 @@ void initLangmap(LPCWSTR pLang)
 					TCHAR szLang[4];
 					lstrcpy(szLang, stLang);
 					{
-						wcslwr(szLang);
+						_wcslwr(szLang);
 						TCHAR szT[MAX_PATH]={0};
 						GetModuleFileName(NULL,szT,(sizeof(szT)/sizeof(szT[0]))-1);
 						*(wcsrchr(szT, L'\\'))=0;
@@ -481,7 +481,7 @@ void i18nChangeMenuText(HMENU menu)
 		CFreer maBuff(pBuff);
 		GetMenuString(menu,i,pBuff,len+1,MF_BYPOSITION|MFT_STRING);
 
-		LPWSTR text = wcsdup(I18N(pBuff));
+		LPWSTR text = _wcsdup(I18N(pBuff));
 		CFreer maText(text);
 		
 
