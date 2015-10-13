@@ -1,4 +1,5 @@
 #pragma warning(disable:4786)
+#pragma once
 
 #include <vector>
 #include <string>
@@ -20,7 +21,7 @@ namespace stdwin32 {
 
 	BOOL stdIsFullPath(LPCWSTR pD);
 	std::wstring stdCombinePath(LPCWSTR pD1, LPCWSTR pD2);
-	std::wstring stdGetParentDirectory(LPCWSTR pPath);
+	std::wstring stdGetParentDirectory(LPCWSTR pPath, bool bAddBackslach=false);
 	std::vector<std::wstring> stdSplitSCedPath(LPCWSTR pPath);
 	
 

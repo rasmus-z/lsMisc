@@ -104,7 +104,7 @@ wstring stdCombinePath(LPCWSTR pD1, LPCWSTR pD2)
 }
 
 
-wstring stdGetParentDirectory(LPCWSTR pPath)
+wstring stdGetParentDirectory(LPCWSTR pPath, bool bAddBackslach)
 {
 	if(!pPath || pPath[0]==0)
 		return Nil;
@@ -122,7 +122,11 @@ wstring stdGetParentDirectory(LPCWSTR pPath)
 		return Nil;
 	}
 
-	*pT=0;
+	if(!bAddBackslach)
+		*pT=0;
+	else
+		*(pT+1)=0;
+
 	wstring ret(p);
 	free(p);
 	return ret;
