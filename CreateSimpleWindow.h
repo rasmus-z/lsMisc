@@ -1,5 +1,5 @@
 
-HWND CreateSimpleWindow(HINSTANCE hInst, 
-						LPCTSTR pClassName, 
-						LPCTSTR pWinName,
-						WNDPROC WndProc);
+HWND CreateSimpleWindow(HINSTANCE hInst = NULL, 
+						LPCTSTR pClassName = NULL, 
+						LPCTSTR pWinName = NULL,
+						WNDPROC WndProc = NULL);

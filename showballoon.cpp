@@ -7,6 +7,7 @@
 using namespace std;
 
 #include "showballoon.h"
+#include "../MyUtility/CreateSimpleWindow.h"
 
 #pragma comment(lib,"Comctl32.lib")
 
@@ -50,35 +51,9 @@ static BOOL NotifyIconize(HWND hWnd,
 //	return DefWindowProc(hwnd,uMsg,wParam,lParam);
 //}
 
-HWND createSimpleWindow()
-{
-	LPCTSTR pClass=TEXT("SimpleWindowForBalloon");
-	WNDCLASS wndcls = {0};
-	wndcls.style = 0; //CS_DBLCLKS | CS_HREDRAW | CS_VREDRAW;
-	wndcls.cbClsExtra = 0;
-	wndcls.cbWndExtra = 0;
-	wndcls.hInstance = GetModuleHandle(NULL);
-	wndcls.hIcon = NULL;
-	wndcls.hCursor =NULL;// LoadCursor(NULL, IDC_IBEAM);
-	wndcls.hbrBackground = NULL; //HBRUSH(COLOR_GRAYTEXT+1);
-	wndcls.lpszMenuName = NULL;
-	wndcls.lpszClassName = pClass;
-	wndcls.lpfnWndProc = DefWindowProc;
-	if(0==RegisterClass(&wndcls))
-		return NULL;
 
-	return CreateWindowEx(
-		0, // exstyle
-		pClass,
-		TEXT(""), // window name
-		0, //WS_OVERLAPPEDWINDOW,
-		0,0,0,0,
-		NULL, // parent
-		NULL, // menu
-		NULL, // inst
-		NULL // lparam
-		);
-}
+
+
 
 BOOL showballoon(HWND hWnd, 
 				 const wstring& title,
@@ -93,7 +68,7 @@ BOOL showballoon(HWND hWnd,
 	HWND hwndToDel = NULL;
 	if(hWnd==NULL)
 	{
-		hWnd = createSimpleWindow();
+		hWnd = CreateSimpleWindow();
 		hwndToDel= hWnd;
 	}
 
