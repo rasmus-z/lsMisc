@@ -1,3 +1,4 @@
+#include <afx.h>
 #include <windows.h>
 #include <tchar.h>
 #include <TlHelp32.h>
@@ -6,7 +7,7 @@
 #include <vector>
 
 #pragma comment(lib,"Shell32.lib")
-#pragma comment(lib,"comsuppw.lib")
+// #pragma comment(lib,"comsuppw.lib")
 #pragma comment(lib,"Advapi32.lib")
 
 
@@ -16,11 +17,18 @@
 #include "../ProcessList.h"
 #include "../ChangeFilenamable.h"
 #include "../GetVersionString.h"
+#include "../LCMapCommon.h"
 
 #include <stlsoft/smartptr/scoped_handle.hpp>
 
 int main()
 {
+	{
+		std::wstring as(L"aaaa", 4);
+		LPCWSTR p=L"Ç†Ç†Ç†ÉAÉAÉA ±±±";
+		CString s = Kata2Hira(p);
+		s=Hira2Kata(p);
+	}
 	// kernel object
 	{
 		HANDLE h = CreateMutex(NULL, FALSE, NULL);
