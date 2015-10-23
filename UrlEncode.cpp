@@ -128,22 +128,22 @@ char i2a(char code) {
 	return hex[code & 15];
 }
 
-char *urlencodenew( char *pstr )
+char *urlencodenew(char *pstr)
 {
-	char 
+	char
 		*buf,
 		*pbuf;
 
-	pbuf = buf = (char *)malloc( strlen(pstr) * 3 + 1 );
+	pbuf = buf = (char *)malloc(strlen(pstr) * 3 + 1);
 
-	while(*pstr){
-		if( (*pstr >0 && isalnum(*pstr)) || *pstr == '-' || *pstr == '_' || *pstr == '.' || *pstr == '~' ){
+	while (*pstr) {
+		if ((*pstr >0 && isalnum(*pstr)) || *pstr == '-' || *pstr == '_' || *pstr == '.' || *pstr == '~') {
 			*pbuf++ = *pstr;
 		}
-		else if( *pstr == ' ' ){
+		else if (*pstr == ' ') {
 			*pbuf++ = '+';
 		}
-		else{
+		else {
 			*pbuf++ = '%';
 			*pbuf++ = i2a(*pstr >> 4);
 			*pbuf++ = i2a(*pstr & 15);
@@ -153,4 +153,88 @@ char *urlencodenew( char *pstr )
 	*pbuf = '\0';
 
 	return buf;
+}
+
+char *urlencodenew2(char *pstr, size_t size)
+{
+	char
+		*buf,
+		*pbuf;
+
+	pbuf = buf = (char *)malloc(size * 3 + 1);
+
+	while (size--) {
+		if ((*pstr >0 && isalnum(*pstr)) || *pstr == '-' || *pstr == '_' || *pstr == '.' || *pstr == '~') {
+			*pbuf++ = *pstr;
+		}
+		else if (*pstr == ' ') {
+			*pbuf++ = '+';
+		}
+		else {
+			*pbuf++ = '%';
+			*pbuf++ = i2a(*pstr >> 4);
+			*pbuf++ = i2a(*pstr & 15);
+		}
+		pstr++;
+	}
+	*pbuf = '\0';
+
+	return buf;
+}
+
+
+static char a2ibyte(char c)
+{
+	switch (c) {
+	case '0': return 0x0;
+	case '1': return 0x1;
+	case '2': return 0x2;
+	case '3': return 0x3;
+	case '4': return 0x4;
+	case '5': return 0x5;
+	case '6': return 0x6;
+	case '7': return 0x7;
+	case '8': return 0x8;
+	case '9': return 0x9;
+	case 'a':case 'A': return 0xa;
+	case 'b':case 'B': return 0xb;
+	case 'c':case 'C': return 0xc;
+	case 'd':case 'D': return 0xd;
+	case 'e':case 'E': return 0xe;
+	case 'f':case 'F': return 0xf;
+	}
+	return 0;
+}
+static char a2i(char c1, char c2)
+{
+	return (a2ibyte(c1) << 4) | (a2ibyte(c2));
+}
+unsigned char* urldecode(const char* penc, unsigned int* pSize)
+{
+	unsigned int size = 0;
+	unsigned char* pOrig = (unsigned char*)malloc(strlen(penc) + 1);
+	unsigned char* p = pOrig;
+	for (; *penc; ++penc, ++p, ++size)
+	{
+		char c = *penc;
+		if (c == '%')
+		{
+			penc++;
+			if (!*penc)
+				break;
+			char c1, c2;
+			c1 = *penc;
+			penc++;
+			if (!*penc)
+				break;
+
+			c2 = *penc;
+			c = a2i(c1, c2);
+		}
+
+		*p = c;
+	}
+	*p = 0;
+	*pSize = size;
+	return pOrig;
 }
