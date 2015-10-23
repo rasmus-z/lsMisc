@@ -118,13 +118,13 @@ void shownai()
 	wstring message;
 	for ( it = nai.begin() ; it != nai.end() ; ++it )
 	{
-		if(it->size()==0)
+		if(it->empty())
 			continue;
 		message += *it;
 		message += L"\r\n";
 	}
 
-	if(message.length()!=0)
+	if (!message.empty())
 	{
 		OutputDebugString(L"---------------------NOTI18N------->>>>>>>>>>>>\r\n");
 		OutputDebugString(message.c_str());
@@ -136,7 +136,7 @@ void shownai()
 	message = L"";
 	for ( it = aru.begin() ; it != aru.end() ; ++it )
 	{
-		if(it->size()==0)
+		if(it->empty())
 			continue;
 		message += *it;
 		message += L"\r\n";
@@ -386,7 +386,7 @@ wstring i18nInitLangmap(LPCWSTR pLang)
 								}
 							}
 							
-							if(left.size() != 0)
+							if(!left.empty())
 							{
 #ifdef _DEBUG
 								if(!i18map[left].empty())
@@ -427,7 +427,7 @@ LPCWSTR I18N(LPCWSTR pIN)
 
 	i18nlock lock;
 	wstring& ret = i18map[pIN];
-	if(ret.size()!=0)
+	if(!ret.empty())
 		return ret.c_str();
 
 #ifdef _DEBUG
