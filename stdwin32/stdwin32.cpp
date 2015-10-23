@@ -80,6 +80,10 @@ BOOL stdIsFullPath(LPCWSTR pD)
 	return FALSE;
 }
 
+wstring stdCombinePath(const wstring& d1, const wstring& d2)
+{
+	return stdCombinePath(d1.c_str(), d2.c_str());
+}
 
 wstring stdCombinePath(LPCWSTR pD1, LPCWSTR pD2)
 {

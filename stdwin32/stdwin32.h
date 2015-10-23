@@ -21,6 +21,7 @@ namespace stdwin32 {
 
 	BOOL stdIsFullPath(LPCWSTR pD);
 	std::wstring stdCombinePath(LPCWSTR pD1, LPCWSTR pD2);
+	std::wstring stdCombinePath(const wstring& d1, const wstring& d2);
 	std::wstring stdGetParentDirectory(LPCWSTR pPath, bool bAddBackslach=false);
 	std::vector<std::wstring> stdSplitSCedPath(LPCWSTR pPath);
 	

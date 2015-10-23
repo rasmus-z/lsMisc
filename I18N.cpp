@@ -153,8 +153,14 @@ void shownai()
 
 
 static bool langinit=false;
+static TCHAR stLang[4];
 
-void initLangmap(LPCWSTR pLang)
+wstring i18nGetCurrentLang()
+{
+	return stLang;
+}
+
+wstring i18nInitLangmap(LPCWSTR pLang)
 {
 	TCHAR szLang[4];
 	if(!pLang || pLang[0]==0)
@@ -167,8 +173,6 @@ void initLangmap(LPCWSTR pLang)
 		pLang = szLang;
 	}
 
-
-	static TCHAR stLang[4];
 	assert(pLang[0]==0 || lstrlen(pLang)==3);
 	if(lstrcmpi(pLang,stLang)!=0)
 	{
@@ -409,6 +413,8 @@ void initLangmap(LPCWSTR pLang)
 			langinit=true;
 		}
 	}
+
+	return stLang;
 }
 
 LPCWSTR I18N(LPCWSTR pIN)
@@ -417,7 +423,7 @@ LPCWSTR I18N(LPCWSTR pIN)
 		InitCS();
 
 	if(!langinit)
-		initLangmap();
+		i18nInitLangmap();
 
 	i18nlock lock;
 	wstring& ret = i18map[pIN];
