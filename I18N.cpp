@@ -142,7 +142,7 @@ void shownai()
 		message += L"\r\n";
 	}
 
-	if(message.length()!=0)
+	if(!message.empty())
 	{
 		OutputDebugString(L"---------------------DUPLICATEI18N------->>>>>>>>>>>>\r\n");
 		OutputDebugString(message.c_str());
