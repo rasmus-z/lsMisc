@@ -4,6 +4,47 @@
 
 #include "GetFileNameFromHwnd.h"
 
+static BOOL (WINAPI *lpfEnumProcessModules)
+                    (HANDLE, HMODULE*, DWORD, LPDWORD);
+static DWORD (WINAPI *lpfGetModuleFileNameEx)
+                    (HANDLE, HMODULE, LPTSTR, DWORD);
+static bool init()
+{
+	static bool initted = false;
+	static bool ok=false;
+	if(initted)
+		return ok;
+	initted=true;
+
+	static HINSTANCE sthPSAPI;
+	if(!sthPSAPI)
+		sthPSAPI = LoadLibrary(_T("PSAPI.DLL"));
+    if ( sthPSAPI == NULL )
+		return ok=false;
+
+    lpfEnumProcessModules = (BOOL(WINAPI *)
+        (HANDLE, HMODULE *, DWORD, LPDWORD))GetProcAddress(
+                    sthPSAPI, "EnumProcessModules");
+	if(lpfEnumProcessModules==NULL)
+		return ok=false;
+#ifdef UNICODE
+    lpfGetModuleFileNameEx =(DWORD (WINAPI *)
+        (HANDLE, HMODULE, LPWSTR, DWORD))GetProcAddress(
+                    sthPSAPI, "GetModuleFileNameExW");
+	if(lpfGetModuleFileNameEx==NULL)
+		return ok=false;
+#else
+    lpfGetModuleFileNameEx =(DWORD (WINAPI *)
+        (HANDLE, HMODULE, LPSTR, DWORD))GetProcAddress(
+                    sthPSAPI, "GetModuleFileNameExA");
+	if(lpfGetModuleFileNameEx==NULL)
+		return ok=false;
+#endif
+
+	return ok=true;
+}
+
+
 BOOL GetFileNameFromHwnd(HWND hWnd, LPTSTR lpszFileName, DWORD nSize)
 {
     BOOL bResult = FALSE;
@@ -19,28 +60,7 @@ BOOL GetFileNameFromHwnd(HWND hWnd, LPTSTR lpszFileName, DWORD nSize)
 
     if ( osverinfo.dwPlatformId == VER_PLATFORM_WIN32_NT )
     {
-        BOOL (WINAPI *lpfEnumProcessModules)
-                            (HANDLE, HMODULE*, DWORD, LPDWORD);
-        DWORD (WINAPI *lpfGetModuleFileNameEx)
-                            (HANDLE, HMODULE, LPTSTR, DWORD);
-
-        HINSTANCE hInstLib = LoadLibrary(_T("PSAPI.DLL"));
-        if ( hInstLib == NULL )
-            return FALSE ;
-
-        lpfEnumProcessModules = (BOOL(WINAPI *)
-            (HANDLE, HMODULE *, DWORD, LPDWORD))GetProcAddress(
-                        hInstLib, "EnumProcessModules");
-#ifdef UNICODE
-        lpfGetModuleFileNameEx =(DWORD (WINAPI *)
-            (HANDLE, HMODULE, LPWSTR, DWORD))GetProcAddress(
-                        hInstLib, "GetModuleFileNameExW");
-#else
-        lpfGetModuleFileNameEx =(DWORD (WINAPI *)
-            (HANDLE, HMODULE, LPSTR, DWORD))GetProcAddress(
-                        hInstLib, "GetModuleFileNameExA");
-#endif
-        if ( lpfEnumProcessModules && lpfGetModuleFileNameEx )
+        if ( init() )
         {
             HANDLE hProcess;
             hProcess = OpenProcess(
@@ -60,7 +80,7 @@ BOOL GetFileNameFromHwnd(HWND hWnd, LPTSTR lpszFileName, DWORD nSize)
                 CloseHandle( hProcess ) ;
             }
         }
-        FreeLibrary( hInstLib ) ;
+        //FreeLibrary( hInstLib ) ;
     }
 #if !UNICODE
     else if ( osverinfo.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS )
