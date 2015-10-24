@@ -2,12 +2,14 @@
 #pragma warning(disable: 4503)
 
 #include <windows.h>
+#include <tchar.h>
 #include <assert.h>
 #include <map>
 #include <set>
 #include <string>
 using namespace std;
 
+#include "tstring.h"
 #include "I18N.h"
 #define countof(a) (sizeof(a)/sizeof(a[0]))
 
@@ -126,9 +128,9 @@ void shownai()
 
 	if (!message.empty())
 	{
-		OutputDebugString(L"---------------------NOTI18N------->>>>>>>>>>>>\r\n");
-		OutputDebugString(message.c_str());
-		OutputDebugString(L"---------------------NOTI18N-------<<<<<<<<<<<<\r\n");
+		OutputDebugString(_T("---------------------NOTI18N------->>>>>>>>>>>>\r\n"));
+		OutputDebugStringW(message.c_str());
+		OutputDebugString(_T("---------------------NOTI18N-------<<<<<<<<<<<<\r\n"));
 	}
 
 
@@ -144,9 +146,9 @@ void shownai()
 
 	if(!message.empty())
 	{
-		OutputDebugString(L"---------------------DUPLICATEI18N------->>>>>>>>>>>>\r\n");
-		OutputDebugString(message.c_str());
-		OutputDebugString(L"---------------------DUPLICATEI18N-------<<<<<<<<<<<<\r\n");
+		OutputDebugString(_T("---------------------DUPLICATEI18N------->>>>>>>>>>>>\r\n"));
+		OutputDebugStringW(message.c_str());
+		OutputDebugString(_T("---------------------DUPLICATEI18N-------<<<<<<<<<<<<\r\n"));
 	}
 }
 #endif  // _DEBUG
@@ -155,12 +157,12 @@ void shownai()
 static bool langinit=false;
 static TCHAR stLang[4];
 
-wstring i18nGetCurrentLang()
+LPCTSTR i18nGetCurrentLang()
 {
 	return stLang;
 }
 
-wstring i18nInitLangmap(LPCWSTR pLang)
+LPCTSTR i18nInitLangmap(HINSTANCE hInst, LPCTSTR pLang)
 {
 	TCHAR szLang[4];
 	if(!pLang || pLang[0]==0)
@@ -192,16 +194,16 @@ wstring i18nInitLangmap(LPCWSTR pLang)
 					TCHAR szLang[4];
 					lstrcpy(szLang, stLang);
 					{
-						_wcslwr(szLang);
+						_tcslwr(szLang);
 						TCHAR szT[MAX_PATH]={0};
-						GetModuleFileName(NULL,szT,(sizeof(szT)/sizeof(szT[0]))-1);
-						*(wcsrchr(szT, L'\\'))=0;
+						GetModuleFileName(hInst,szT,(sizeof(szT)/sizeof(szT[0]))-1);
+						*(_tcsrchr(szT, L'\\'))=0;
 
 						TCHAR szTry[MAX_PATH];
-						wsprintf(szTry, L"%s\\lang\\%s.txt",szT, szLang);
+						wsprintf(szTry, _T("%s\\lang\\%s.txt"),szT, szLang);
 
 						
-						FILE* f=_wfopen(szTry, L"rb");
+						FILE* f=_tfopen(szTry, _T("rb"));
 						if(!f)
 							break;
 
@@ -271,11 +273,11 @@ wstring i18nInitLangmap(LPCWSTR pLang)
 						pB[count-1]=0;
 
 						
-						TCHAR* pA = (TCHAR*)UTF8toUTF16(pB);
+						WCHAR* pA = (WCHAR*)UTF8toUTF16(pB);
 						free(pB);
 						
 
-						LPCTSTR pTok = wcstok(pA, L"\n");
+						LPCWSTR pTok = wcstok(pA, L"\n");
 						while(pTok)
 						{
 							wstring left;
@@ -436,6 +438,10 @@ LPCWSTR I18N(LPCWSTR pIN)
 	return pIN;
 }
 
+
+
+#ifdef UNICODE
+
 static BOOL CALLBACK enumDlgChild(
   HWND hwnd,
   LPARAM lParam)
@@ -444,9 +450,9 @@ static BOOL CALLBACK enumDlgChild(
 	if(!GetClassName(hwnd, szClass, countof(szClass)))
 		return TRUE;
 
-	if(lstrcmpi(szClass, L"Static")!=0 &&
-	   lstrcmpi(szClass, L"Button")!=0 &&
-	   lstrcmpi(szClass, L"ScrollBar")!=0 )
+	if(lstrcmpi(szClass, _T("Static"))!=0 &&
+	   lstrcmpi(szClass, _T("Button"))!=0 &&
+	   lstrcmpi(szClass, _T("ScrollBar"))!=0 )
 	{
 		return TRUE;
 	}
@@ -514,5 +520,6 @@ void i18nChangeMenuText(HMENU menu)
 	}
 }
 
+#endif // UNICODE
 
 } // namespace Ambiesoft
