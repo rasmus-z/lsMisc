@@ -462,7 +462,7 @@ static BOOL CALLBACK enumDlgChild(
 	return TRUE;
 }
 
-void i18nChangeWindowText(HWND hwnd)
+void i18nChangeWindowTextW(HWND hwnd)
 {
 	int size = ::GetWindowTextLength(hwnd);
 	if(size)
@@ -475,14 +475,14 @@ void i18nChangeWindowText(HWND hwnd)
 		delete[] p;
 	}
 }
-void i18nChangeChildWindowText(HWND hDlg)
+void i18nChangeChildWindowTextW(HWND hDlg)
 {
 	EnumChildWindows(hDlg,
 		enumDlgChild,
 		0);
 }
 
-void i18nChangeMenuText(HMENU menu)
+void i18nChangeMenuTextW(HMENU menu)
 {
 	int count = GetMenuItemCount(menu);
 	for(int i=0 ; i<count ; ++i)

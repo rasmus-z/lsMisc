@@ -21,9 +21,9 @@ void i18nChangeChildWindowTextW(HWND hwnd);
 void i18nChangeMenuTextW(HMENU menu);
 
 #ifdef UNICODE
-#define i18nChangeWindowText i18nChangeWindowTextW
-#define i18nChangeChildWindowText i18nChangeChildWindowTextW
-#define i18nChangeMenuText i18nChangeMenuTextW
+inline void i18nChangeWindowText(HWND hwnd){ i18nChangeWindowTextW(hwnd); }
+inline void i18nChangeChildWindowText(HWND hDlg){ i18nChangeChildWindowTextW(hDlg); }
+inline void i18nChangeMenuText(HMENU menu) { i18nChangeMenuTextW(menu); }
 #endif
 
 } // namespace Ambiesoft
