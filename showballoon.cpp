@@ -7,7 +7,7 @@
 using namespace std;
 
 #include "showballoon.h"
-#include "../MyUtility/CreateSimpleWindow.h"
+#include "CreateSimpleWindow.h"
 
 #pragma comment(lib,"Comctl32.lib")
 
@@ -17,7 +17,8 @@ static BOOL NotifyIconize(HWND hWnd,
 						  HICON hIcon, 
 						  int duration,
 						  LPCWSTR pInfoTitle , 
-						  LPCWSTR pInfo)
+						  LPCWSTR pInfo,
+						  DWORD nBalloonIcon = 0)
 {
 	NOTIFYICONDATAW nid;
 	ZeroMemory(&nid,sizeof(nid));
@@ -25,7 +26,7 @@ static BOOL NotifyIconize(HWND hWnd,
 	nid.hWnd = hWnd;
 	nid.uID = uID;
 	nid.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP | 0x00000010;
-	nid.dwInfoFlags      = 0x00000001;
+	nid.dwInfoFlags      = nBalloonIcon ;
 	nid.uTimeout         = duration;
 	nid.uCallbackMessage = 0; //WM_APP_TRAYMESSAGE;
 	nid.hIcon = hIcon; //LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON_MAIN));
@@ -61,7 +62,8 @@ BOOL showballoon(HWND hWnd,
 				 HICON hIcon, 
 				 int duration, 
 				 UINT uTrayID, 
-				 BOOL bOnlyModify)
+				 BOOL bOnlyModify,
+				 DWORD dwBalloonIcon)
 {
 	// CoInitialize(NULL);
 
@@ -109,7 +111,7 @@ BOOL showballoon(HWND hWnd,
 	}
 
 
-	if(!NotifyIconize(hWnd,uTrayID, NIM_MODIFY, hIcon, duration,title.c_str(), text.c_str() ))
+	if(!NotifyIconize(hWnd,uTrayID, NIM_MODIFY, hIcon, duration,title.c_str(), text.c_str(),dwBalloonIcon  ))
 	{
 		// MessageBoxA(NULL, "NotifyModify",NULL,MB_ICONERROR);
 		return FALSE;

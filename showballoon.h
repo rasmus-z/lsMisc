@@ -5,4 +5,5 @@ BOOL showballoon(
 				 HICON hIcon, 
 				 int duration,
 				 UINT uTrayID,
-				 BOOL bOnlyModify=FALSE);
+				 BOOL bOnlyModify=FALSE,
+				 DWORD dwBalloonIcon=0);
