@@ -27,3 +27,12 @@ BOOL GetOpenFile(
 				 LPCTSTR pInitialDir,
 				 LPCTSTR pTitle,
 				 wstring* fullpath, wstring* path=NULL);
+
+BOOL GetSaveFile(
+				 HWND hWnd, 
+				 LPCTSTR pFilter, 
+				 LPCTSTR pInitialDir,
+				 LPCTSTR pInitialFile,
+				 LPCTSTR pDefExt,
+				 LPCTSTR pTitle,
+				 wstring* fullpath, wstring* path=NULL);
