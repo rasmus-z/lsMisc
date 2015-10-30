@@ -1,6 +1,18 @@
 #pragma warning(disable :4786)
 #pragma warning(disable: 4503)
 
+#ifndef UNICODE
+	#define UNICODE
+#endif
+
+#ifndef _UNICODE
+	#define _UNICODE
+#endif
+
+#ifndef _CRT_SECURE_NO_WARNINGS
+	#define _CRT_SECURE_NO_WARNINGS
+#endif
+
 #include <windows.h>
 #include <tchar.h>
 #include <assert.h>
@@ -171,19 +183,19 @@ void shownai()
 
 
 static bool langinit=false;
-static TCHAR stLang[4];
+static WCHAR stLang[4];
 
-LPCTSTR i18nGetCurrentLang()
+LPCWSTR i18nGetCurrentLang()
 {
 	return stLang;
 }
 
 
-LPCTSTR i18nInitLangmap(HINSTANCE hInst, LPCTSTR pLang)
+LPCWSTR i18nInitLangmap(HINSTANCE hInst, LPCWSTR pLang)
 {
 	ghInst = hInst;
 
-	TCHAR szLang[4];
+	WCHAR szLang[4];
 	if(!pLang || pLang[0]==0)
 	{
 		::GetLocaleInfo(LOCALE_SYSTEM_DEFAULT ,
