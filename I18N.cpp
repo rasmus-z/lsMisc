@@ -10,10 +10,13 @@
 using namespace std;
 
 #include "tstring.h"
+
 #include "I18N.h"
 #define countof(a) (sizeof(a)/sizeof(a[0]))
 
 namespace Ambiesoft {
+
+static HINSTANCE ghInst;
 
 static CRITICAL_SECTION cs;
 static void UninitCS()
@@ -50,6 +53,15 @@ struct CFreer {
 		free(p_);
 	}
 };
+
+struct FileFreer {
+	FILE* f_;
+	FileFreer(FILE* f) : f_(f) {}
+	~FileFreer() {
+		fclose(f_);
+	}
+};
+
 
 typedef std::map<wstring,wstring> I18NSTRINGMAP;
 static I18NSTRINGMAP i18map;
@@ -116,6 +128,10 @@ static std::set<wstring> nai;
 static std::set<wstring> aru;
 void shownai()
 {
+	WCHAR szModule[MAX_PATH] = {0};
+	GetModuleFileNameW(ghInst, szModule, MAX_PATH);
+	wstring strModule(szModule);
+
 	std::set<wstring>::iterator it;
 	wstring message;
 	for ( it = nai.begin() ; it != nai.end() ; ++it )
@@ -128,9 +144,9 @@ void shownai()
 
 	if (!message.empty())
 	{
-		OutputDebugString(_T("---------------------NOTI18N------->>>>>>>>>>>>\r\n"));
+		OutputDebugStringW( (L"---------------------NOTI18N-------" + strModule + L">>>>>>>>>>>>\r\n").c_str());
 		OutputDebugStringW(message.c_str());
-		OutputDebugString(_T("---------------------NOTI18N-------<<<<<<<<<<<<\r\n"));
+		OutputDebugStringW( (L"---------------------NOTI18N-------" + strModule + L"<<<<<<<<<<<<\r\n").c_str());
 	}
 
 
@@ -146,9 +162,9 @@ void shownai()
 
 	if(!message.empty())
 	{
-		OutputDebugString(_T("---------------------DUPLICATEI18N------->>>>>>>>>>>>\r\n"));
+		OutputDebugStringW( (L"---------------------DUPLICATEI18N-------" + strModule + L">>>>>>>>>>>>\r\n").c_str());
 		OutputDebugStringW(message.c_str());
-		OutputDebugString(_T("---------------------DUPLICATEI18N-------<<<<<<<<<<<<\r\n"));
+		OutputDebugStringW( (L"---------------------DUPLICATEI18N-------" + strModule + L"<<<<<<<<<<<<\r\n").c_str());
 	}
 }
 #endif  // _DEBUG
@@ -162,8 +178,11 @@ LPCTSTR i18nGetCurrentLang()
 	return stLang;
 }
 
+
 LPCTSTR i18nInitLangmap(HINSTANCE hInst, LPCTSTR pLang)
 {
+	ghInst = hInst;
+
 	TCHAR szLang[4];
 	if(!pLang || pLang[0]==0)
 	{
@@ -207,6 +226,7 @@ LPCTSTR i18nInitLangmap(HINSTANCE hInst, LPCTSTR pLang)
 						if(!f)
 							break;
 
+						FileFreer ffreer(f);
 
 						BYTE* pB=NULL;
 						BYTE b;
@@ -275,7 +295,7 @@ LPCTSTR i18nInitLangmap(HINSTANCE hInst, LPCTSTR pLang)
 						
 						WCHAR* pA = (WCHAR*)UTF8toUTF16(pB);
 						free(pB);
-						
+						CFreer pAFreer(pA);
 
 						LPCWSTR pTok = wcstok(pA, L"\n");
 						while(pTok)
@@ -401,7 +421,6 @@ LPCTSTR i18nInitLangmap(HINSTANCE hInst, LPCTSTR pLang)
 
 							pTok = wcstok(NULL, L"\n");
 						}
-						free(pA);
 
 					}
 
