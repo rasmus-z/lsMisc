@@ -72,7 +72,7 @@ BOOL CreateShortcutFile(LPCTSTR pszShortcutFile,
 {
 	BOOL bFailed = TRUE;
 	HRESULT hr;
-	IShellLinkWPtr pShellLink = NULL;
+
 	TCHAR szTempDir[MAX_PATH] = {0};
 	DWORD dwTP = GetTempPath(MAX_PATH, szTempDir);
 	if(dwTP==0 || !PathIsDirectory(szTempDir))
@@ -82,30 +82,33 @@ BOOL CreateShortcutFile(LPCTSTR pszShortcutFile,
 
 	TCHAR szTempFile[MAX_PATH] = {0};
 	CoInitialize(NULL);
-    hr = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_IShellLink, (LPVOID*)&pShellLink);
-	if(SUCCEEDED(hr) && pShellLink != NULL)
 	{
-		IPersistFilePtr pPFile = NULL;
-		hr = pShellLink->QueryInterface(IID_IPersistFile, (LPVOID*)&pPFile);
-		if(SUCCEEDED(hr) && pPFile != NULL)
+		IShellLinkWPtr pShellLink = NULL;
+		hr = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_IShellLink, (LPVOID*)&pShellLink);
+		if(SUCCEEDED(hr) && pShellLink != NULL)
 		{
-			hr = pShellLink->SetPath(pszTargetFile);
-			if(SUCCEEDED(hr))
+			IPersistFilePtr pPFile = NULL;
+			hr = pShellLink->QueryInterface(IID_IPersistFile, (LPVOID*)&pPFile);
+			if(SUCCEEDED(hr) && pPFile != NULL)
 			{
-				bFailed = FALSE;
-				if(iIconLocation != -1)
+				hr = pShellLink->SetPath(pszTargetFile);
+				if(SUCCEEDED(hr))
 				{
-					bFailed |= FAILED(pShellLink->SetIconLocation(pszTargetFile, iIconLocation));
+					bFailed = FALSE;
+					if(iIconLocation != -1)
+					{
+						bFailed |= FAILED(pShellLink->SetIconLocation(pszTargetFile, iIconLocation));
+					}
+
+					bFailed |= FAILED(pShellLink->SetArguments(pszArg));
+					bFailed |= FAILED(pShellLink->SetWorkingDirectory(pszCurDir));
+
+					
+					if(0==GetTempFileName(szTempDir, L"cbs", 0, szTempFile))
+						return FALSE;
+
+					bFailed |= FAILED(pPFile->Save(szTempFile, TRUE));
 				}
-
-				bFailed |= FAILED(pShellLink->SetArguments(pszArg));
-				bFailed |= FAILED(pShellLink->SetWorkingDirectory(pszCurDir));
-
-				
-				if(0==GetTempFileName(szTempDir, L"cbs", 0, szTempFile))
-					return FALSE;
-
-				bFailed |= FAILED(pPFile->Save(szTempFile, TRUE));
 			}
 		}
 	}
