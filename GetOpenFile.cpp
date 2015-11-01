@@ -6,6 +6,10 @@ using namespace std;
 
 #include"GetOpenFile.h"
 
+#ifndef OFN_DONTADDTORECENT
+	#define OFN_DONTADDTORECENT 0x2000000 
+#endif
+
 BOOL GetOpenFile(
 				 HWND hWnd, 
 				 LPCTSTR pFilter, 
