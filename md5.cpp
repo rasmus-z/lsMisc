@@ -1,4 +1,7 @@
 
+#include "stdafx.h"
+
+
 // https://msdn.microsoft.com/en-us/library/aa382380%28VS.85%29.aspx
 #include <windows.h>
 #include <tchar.h>
