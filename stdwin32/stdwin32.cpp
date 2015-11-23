@@ -282,4 +282,20 @@ bool isTdigit(const tstring& str)
 	return true;
 }
 
+
+wstring stdGetCurrentDirectory()
+{
+	DWORD len = GetCurrentDirectory(0, NULL);
+	TCHAR* p = new TCHAR[len];
+	p[0]=0;
+	GetCurrentDirectory(len,p);
+	wstring ret(p);
+	delete[] p;
+	return ret;
+}
+
+
+
+
+
 } // namespace stdwin32

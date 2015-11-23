@@ -50,4 +50,6 @@ namespace stdwin32 {
 
 
 	bool isTdigit(const tstring& str);
+
+	std::wstring stdGetCurrentDirectory();
 }
