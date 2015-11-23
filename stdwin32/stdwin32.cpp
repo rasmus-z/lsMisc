@@ -1,4 +1,6 @@
 #pragma warning(disable:4786)
+#include "stdafx.h"
+#pragma warning(disable:4786)
 
 
 #include <windows.h>
