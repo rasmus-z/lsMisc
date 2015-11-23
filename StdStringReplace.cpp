@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "tstring.h"
 #include "StdStringReplace.h"
 

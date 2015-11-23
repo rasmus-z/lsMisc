@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include <windows.h>
 #include "IsFileExists.h"
 BOOL IsFileExistsW(LPCWSTR pPath)

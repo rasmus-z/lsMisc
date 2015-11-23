@@ -1,3 +1,4 @@
+#include "stdafx.h"
 
 /*
 ----- UrlEncode ŠÖ” for C Œ¾Œê Version 1.02 Beta -----
@@ -122,9 +123,8 @@ void UrlEncode(const unsigned char	*csource,
 
 
 // http://www.emoticode.net/c/urlencode-in-plain-c.html
-static char hex[] = "0123456789abcdef";
-
-char i2a(char code) {
+static char i2a(char code) {
+	static char hex[] = "0123456789abcdef";
 	return hex[code & 15];
 }
 

@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include <windows.h>
 #include <tchar.h>
 #include <tlhelp32.h>

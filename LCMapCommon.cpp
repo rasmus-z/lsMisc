@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include <AFX.h>
 #include "LCMapCommon.h"
 

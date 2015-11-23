@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include <windows.h>
 #include <string>
 #include "UTF16toUTF8.h"
