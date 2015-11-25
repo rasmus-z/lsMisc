@@ -32,7 +32,7 @@ static const wchar_t* Nil=L"";
 string stdGetModuleFileNameA(HINSTANCE hInst)
 {
 	LPSTR p = NULL;
-	size_t size = 64;
+	DWORD size = 64;
 	for(;;)
 	{
 		p = (LPSTR)realloc(p, size*sizeof(char));
@@ -48,7 +48,7 @@ string stdGetModuleFileNameA(HINSTANCE hInst)
 wstring stdGetModuleFileNameW(HINSTANCE hInst)
 {
 	LPWSTR p = NULL;
-	size_t size = 64;
+	DWORD size = 64;
 	for(;;)
 	{
 		p = (LPWSTR)realloc(p, size*sizeof(wchar_t));
