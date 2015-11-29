@@ -21,7 +21,6 @@
 #include <string>
 using namespace std;
 
-#include "tstring.h"
 
 #include "I18N.h"
 #define countof(a) (sizeof(a)/sizeof(a[0]))
@@ -198,7 +197,7 @@ LPCWSTR i18nInitLangmap(HINSTANCE hInst, LPCWSTR pLang)
 	WCHAR szLang[4];
 	if(!pLang || pLang[0]==0)
 	{
-		::GetLocaleInfo(LOCALE_SYSTEM_DEFAULT ,
+		::GetLocaleInfoW(LOCALE_SYSTEM_DEFAULT ,
 						LOCALE_SABBREVLANGNAME,
 						szLang, 
 						4);
@@ -207,10 +206,10 @@ LPCWSTR i18nInitLangmap(HINSTANCE hInst, LPCWSTR pLang)
 	}
 
 	assert(pLang[0]==0 || lstrlen(pLang)==3);
-	if(lstrcmpi(pLang,stLang)!=0)
+	if(lstrcmpiW(pLang,stLang)!=0)
 	{
 		langinit = false;
-		lstrcpy(stLang, pLang);
+		lstrcpyW(stLang, pLang);
 		i18map.clear();
 	}
 	
@@ -227,11 +226,11 @@ LPCWSTR i18nInitLangmap(HINSTANCE hInst, LPCWSTR pLang)
 					{
 						_tcslwr(szLang);
 						TCHAR szT[MAX_PATH]={0};
-						GetModuleFileName(hInst,szT,(sizeof(szT)/sizeof(szT[0]))-1);
+						GetModuleFileNameW(hInst,szT,(sizeof(szT)/sizeof(szT[0]))-1);
 						*(_tcsrchr(szT, L'\\'))=0;
 
 						TCHAR szTry[MAX_PATH];
-						wsprintf(szTry, _T("%s\\lang\\%s.txt"),szT, szLang);
+						wsprintfW(szTry, _T("%s\\lang\\%s.txt"),szT, szLang);
 
 						
 						FILE* f=_tfopen(szTry, _T("rb"));
@@ -471,19 +470,19 @@ LPCWSTR I18N(LPCWSTR pIN)
 
 
 
-#ifdef UNICODE
+
 
 static BOOL CALLBACK enumDlgChild(
   HWND hwnd,
   LPARAM lParam)
 {
 	TCHAR szClass[256];
-	if(!GetClassName(hwnd, szClass, countof(szClass)))
+	if(!GetClassNameW(hwnd, szClass, countof(szClass)))
 		return TRUE;
 
-	if(lstrcmpi(szClass, _T("Static"))!=0 &&
-	   lstrcmpi(szClass, _T("Button"))!=0 &&
-	   lstrcmpi(szClass, _T("ScrollBar"))!=0 )
+	if(lstrcmpiW(szClass, _T("Static"))!=0 &&
+	   lstrcmpiW(szClass, _T("Button"))!=0 &&
+	   lstrcmpiW(szClass, _T("ScrollBar"))!=0 )
 	{
 		return TRUE;
 	}
@@ -493,36 +492,36 @@ static BOOL CALLBACK enumDlgChild(
 	return TRUE;
 }
 
-void i18nChangeWindowTextW(HWND hwnd)
+void i18nChangeWindowText(HWND hwnd)
 {
 	int size = ::GetWindowTextLength(hwnd);
 	if(size)
 	{
 		LPTSTR p = new TCHAR[size+1];
-		if(size == ::GetWindowText(hwnd, p, size+1))
+		if(size == ::GetWindowTextW(hwnd, p, size+1))
 		{
-			::SetWindowText(hwnd, I18N(p));
+			::SetWindowTextW(hwnd, I18N(p));
 		}
 		delete[] p;
 	}
 }
-void i18nChangeChildWindowTextW(HWND hDlg)
+void i18nChangeChildWindowText(HWND hDlg)
 {
 	EnumChildWindows(hDlg,
 		enumDlgChild,
 		0);
 }
 
-void i18nChangeMenuTextW(HMENU menu)
+void i18nChangeMenuText(HMENU menu)
 {
 	int count = GetMenuItemCount(menu);
 	for(int i=0 ; i<count ; ++i)
 	{
-		int len = GetMenuString(menu, i, NULL, 0, MF_BYPOSITION|MFT_STRING);
+		int len = GetMenuStringW(menu, i, NULL, 0, MF_BYPOSITION|MFT_STRING);
 		int buffsize = (len+1)*sizeof(TCHAR);
 		TCHAR* pBuff = (TCHAR*)malloc(buffsize);
 		CFreer maBuff(pBuff);
-		GetMenuString(menu,i,pBuff,len+1,MF_BYPOSITION|MFT_STRING);
+		GetMenuStringW(menu,i,pBuff,len+1,MF_BYPOSITION|MFT_STRING);
 
 		LPWSTR text = _wcsdup(I18N(pBuff));
 		CFreer maText(text);
@@ -532,7 +531,7 @@ void i18nChangeMenuTextW(HMENU menu)
 		miiset.cbSize=sizeof(miiset);
 		miiset.fMask = 0x00000040; //MIIM_STRING;
 		miiset.dwTypeData = text;
-		SetMenuItemInfo(menu,i,TRUE, &miiset);
+		SetMenuItemInfoW(menu,i,TRUE, &miiset);
 		
 
 
@@ -540,7 +539,7 @@ void i18nChangeMenuTextW(HMENU menu)
 		mii.cbSize = sizeof(mii);
 		mii.fMask = MIIM_SUBMENU ;
 		
-		GetMenuItemInfo(menu, i, TRUE, &mii);
+		GetMenuItemInfoW(menu, i, TRUE, &mii);
 
 		if(mii.hSubMenu)
 		{
@@ -551,6 +550,6 @@ void i18nChangeMenuTextW(HMENU menu)
 	}
 }
 
-#endif // UNICODE
+
 
 } // namespace Ambiesoft
