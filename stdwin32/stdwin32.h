@@ -26,8 +26,8 @@ namespace stdwin32 {
 	std::wstring stdGetParentDirectory(const std::wstring& path, bool bAddBackslach=false);
 	std::wstring stdGetParentDirectory(LPCWSTR pPath, bool bAddBackslach=false);
 	
-	wstring stdGetFileName(const std::wstring& full);
-	wstring stdGetFileName(LPCWSTR pFull);
+	std::wstring stdGetFileName(const std::wstring& full);
+	std::wstring stdGetFileName(LPCWSTR pFull);
 
 	std::vector<std::wstring> stdSplitSCedPath(LPCWSTR pPath);
 	

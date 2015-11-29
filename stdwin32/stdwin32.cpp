@@ -14,8 +14,8 @@
 #include <locale>
 #include <string>
 #include <vector>
-
-
+#include <shlwapi.h>
+#pragma comment(lib,"shlwapi.lib")
 
 
 
