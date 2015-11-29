@@ -142,6 +142,14 @@ wstring stdGetParentDirectory(LPCWSTR pPath, bool bAddBackslach)
 	return ret;
 }
 
+wstring stdGetFileName(const wstring& full)
+{
+	return stdGetFileName(full.c_str());
+}
+wstring stdGetFileName(LPCWSTR pFull)
+{
+	return PathFindFileName(pFull);
+}
 
 vector<wstring> stdSplitSCedPath(LPCWSTR pPath)
 {
