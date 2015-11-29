@@ -1,0 +1,1 @@
+BOOL DeleteIECache(BOOL bNormal, BOOL bCookie, BOOL bHistory);
