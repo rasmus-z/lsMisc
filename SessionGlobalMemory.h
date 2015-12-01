@@ -1,5 +1,7 @@
 #pragma once
 
+namespace Ambiesoft {
+
 template<class T>
 class CSessionGlobalMemory
 {
@@ -129,3 +131,5 @@ private:
 	LPSTR m_pName;
 	LPSTR m_pMutexName;
 };
+
+}  // namespace
