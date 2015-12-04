@@ -13,13 +13,17 @@
 // 7. Look the debugger output when the program exists. Untranslated words will be printed.
 
 namespace Ambiesoft {
-LPCWSTR i18nInitLangmap(HINSTANCE hInst=NULL, LPCWSTR pLang = NULL);
-LPCWSTR i18nGetCurrentLang();
-LPCWSTR I18N(LPCWSTR pIN);
+	LPCWSTR i18nInitLangmap(HINSTANCE hInst=NULL, LPCWSTR pLang = NULL);
+	LPCWSTR i18nGetCurrentLang();
 
-void i18nChangeWindowText(HWND hwnd);
-void i18nChangeChildWindowText(HWND hwnd);
-void i18nChangeMenuText(HMENU menu);
+	LPCWSTR I18NW(LPCWSTR pIN);
+#ifdef UNICODE
+	inline LPCWSTR I18N(LPCWSTR pIN) { return I18NW(pIN); }
+#else
+	inline LPCSTR I18N(LPCSTR pIN) { return I18NA(pIN); }
+#endif
 
-
+	void i18nChangeWindowText(HWND hwnd);
+	void i18nChangeChildWindowText(HWND hwnd);
+	void i18nChangeMenuText(HMENU menu);
 } // namespace Ambiesoft

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include <windows.h>
+#include <Commdlg.h>
 #include <tchar.h>
 #include <string.h>
 #include <string>

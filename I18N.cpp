@@ -449,7 +449,7 @@ LPCWSTR i18nInitLangmap(HINSTANCE hInst, LPCWSTR pLang)
 	return stLang;
 }
 
-LPCWSTR I18N(LPCWSTR pIN)
+LPCWSTR I18NW(LPCWSTR pIN)
 {
 	if(!bCinit)
 		InitCS();
