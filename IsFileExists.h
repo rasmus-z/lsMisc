@@ -1,3 +1,5 @@
+#pragma once
+
 #ifdef UNICODE
 #define IsFileExists IsFileExistsW
 #else

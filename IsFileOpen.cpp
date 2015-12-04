@@ -1,3 +1,4 @@
+#include "StdAfx.h"
 #include <windows.h>
 #include "IsFileOpen.h"
 

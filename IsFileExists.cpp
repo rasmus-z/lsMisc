@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include <windows.h>
 #include "IsFileExists.h"
+#include "CreateWString.h"
+
 BOOL IsFileExistsW(LPCWSTR pPath)
 {
 	DWORD dwTempAttr = ::GetFileAttributesW(pPath);
@@ -8,6 +10,6 @@ BOOL IsFileExistsW(LPCWSTR pPath)
 }
 BOOL IsFileExistsA(LPCSTR pPath)
 {
-	DWORD dwTempAttr = ::GetFileAttributesA(pPath);
-	return ( dwTempAttr != 0xFFFFFFFF && !(dwTempAttr & FILE_ATTRIBUTE_DIRECTORY) );
+	CREATEWSTRING(pPath);
+	return IsFileExistsW(pPathW);
 }
