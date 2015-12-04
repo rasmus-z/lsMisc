@@ -1,3 +1,5 @@
+#include "stdafx.h"
+
 #include <windows.h>
 #include <tchar.h>
 #include <objbase.h>
@@ -7,7 +9,7 @@
 
 #include "browseFolder.h"
 
-#define TRACE(t1,t2) (void)0
+//#define TRACE(t1,t2) (void)0
 
 
 struct FOLDER_PROPS
