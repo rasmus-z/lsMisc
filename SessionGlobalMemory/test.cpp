@@ -2,22 +2,19 @@
 //
 
 #include "stdafx.h"
-#include <windows.h>
-#include <conio.h>
-#include <stdlib.h>
-#include <time.h>
+
 #include "SessionGlobalMemory.h"
 using namespace Ambiesoft;
 
 struct Data {
 	int d[3];
 	Data(const Data& data) {
-		memcpy(this, &data, sizeof(this));
+		memcpy(d, &data.d, sizeof(d));
 		ctorcount++;
 	}
 
 	Data() {
-		memset(d,0,sizeof(this));
+		memset(d,0,sizeof(d));
 		ctorcount++;
 	}
 
@@ -67,7 +64,7 @@ int main(int argc, char* argv[])
 				Data data = sgData;
 				Data::print();
 
-				data = sgData;
+				//data = sgData;
 				printf("Data Read:\t%d, %d, %d\n", data.d[0], data.d[1], data.d[2]);
 			}
 			break;
