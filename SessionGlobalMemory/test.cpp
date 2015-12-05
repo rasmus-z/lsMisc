@@ -12,6 +12,10 @@ struct Data {
 		memcpy(d, &data.d, sizeof(d));
 		ctorcount++;
 	}
+	Data(const Data&& data) {
+		memcpy(d, &data.d, sizeof(d));
+		ctorcount++;
+	}
 
 	Data() {
 		memset(d,0,sizeof(d));
