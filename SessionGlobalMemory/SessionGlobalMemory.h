@@ -7,6 +7,35 @@ class CSessionGlobalMemory
 {
 public:
 	explicit CSessionGlobalMemory(LPCSTR pName) {
+		init(pName);
+	}
+	~CSessionGlobalMemory() {
+		release();
+	}
+
+	operator T() {
+		ensure();
+		Locker l(m_);
+		//T t;
+		//memcpy(&t, p_, sizeof(t));
+
+		return *((T*)p_);
+	}
+
+	void get(T* pt) {
+		ensure();
+		Locker l(m_);
+		memcpy(pt, p_, sizeof(t));
+	}
+
+	void operator =(const T& t) {
+		set(t);
+	}
+
+protected:
+	void* p_;
+	CSessionGlobalMemory() {}
+	void init(LPCSTR pName) {
 		h_ = NULL;
 		p_ = NULL;
 		m_ = NULL;
@@ -18,36 +47,7 @@ public:
 		m_pMutexName = (LPSTR)LocalAlloc(LMEM_FIXED, len + sizeof("_Mutex") - 1 + sizeof(char));
 		lstrcpyA(m_pMutexName, pName);
 		lstrcatA(m_pMutexName, "_Mutex");
-
 	}
-	~CSessionGlobalMemory() {
-		release();
-	}
-
-	operator T() {
-		return get();
-	}
-
-	void operator =(const T& t) {
-		set(t);
-		//return t;
-	}
-
-
-
-private:
-	class Locker {
-	public:
-		HANDLE m_;
-		Locker(HANDLE m) {
-			m_ = m;
-			WaitForSingleObject(m, INFINITE);
-		}
-		~Locker() {
-			ReleaseMutex(m_);
-		}
-	};
-
 	void release() {
 		if (p_)
 		{
@@ -109,14 +109,9 @@ private:
 		}
 	}
 
-	T get() {
-		ensure();
-		Locker l(m_);
-		T t;
-		memcpy(&t, p_, sizeof(t));
+	//T get() {
+	//}
 
-		return t;
-	}
 
 	void set(const T& t) {
 		ensure();
@@ -124,12 +119,44 @@ private:
 		memcpy(p_, &t, sizeof(t));
 	}
 
+private:
+	class Locker {
+	public:
+		HANDLE m_;
+		Locker(HANDLE m) {
+			m_ = m;
+			WaitForSingleObject(m, INFINITE);
+		}
+		~Locker() {
+			ReleaseMutex(m_);
+		}
+	};
+
+
 	bool first_;
 	HANDLE h_;
-	void* p_;
 	HANDLE m_;
 	LPSTR m_pName;
 	LPSTR m_pMutexName;
+
+	// prohibitted, use NTS
+	T* operator &() {}
 };
+
+// Non Thread Safe
+template<class T>
+class CSessionGlobalMemoryNTS : CSessionGlobalMemory<T>
+{
+public:
+	explicit CSessionGlobalMemoryNTS(LPCSTR pName) {
+		init(pName);
+	}
+	T* operator &() {
+		ensure();
+		return (T*)p_;
+	}
+};
+
+
 
 }  // namespace
