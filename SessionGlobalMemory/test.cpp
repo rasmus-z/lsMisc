@@ -44,12 +44,16 @@ int main(int argc, char* argv[])
 	CSessionGlobalMemory<Data> sgData("sgData");
 	CSessionGlobalMemoryNTS<Data> sgDataNTS("sgData");
 
-	CSessionGlobalMemory<Data> tmp(sgData);
-	CSessionGlobalMemory<int> tmp2 = getSGMEM(3, "sgINT");
-	CSessionGlobalMemory<int> tmp3 = getSGMEM(3, "sgINTtmp");
+	//CSessionGlobalMemory<Data> tmp(sgData);
+	CSessionGlobalMemory<int> tmp2 (getSGMEM(3, "sgINT"));
+	CSessionGlobalMemory<int> tmp3 (getSGMEM(3, "sgINTtmp"));
 	tmp3=tmp2;
 	tmp2=std::move(tmp3);
 
+	std::string sa = "aaa";
+	std::string sb;
+	sb = std::move(sa);
+	sb = "bbb";
 	bool quit=false;
 	for(; !quit;)
 	{

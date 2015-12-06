@@ -5,20 +5,22 @@ namespace Ambiesoft {
 template<class T>
 class CSessionGlobalMemory
 {
+	 typedef typename CSessionGlobalMemory<T> MYT;
+
 public:
 	explicit CSessionGlobalMemory(LPCSTR pName) {
 		init(pName);
 	}
-	CSessionGlobalMemory(const CSessionGlobalMemory& rhv)
+	CSessionGlobalMemory(const MYT& rhv)
 	{
 		init(rhv.m_pName);
 	}
-	CSessionGlobalMemory(CSessionGlobalMemory&& rhv)
+	CSessionGlobalMemory(MYT&& rhv)
 	{
-		move(rhv);
+		move(std::move(rhv));
 	}
 
-	void move(CSessionGlobalMemory&& rhv) {
+	void move(MYT&& rhv) {
 		m_pName = rhv.m_pName;
 		rhv.m_pName = NULL;
 
@@ -34,18 +36,19 @@ public:
 		p_ = rhv.p_;
 		rhv.p_ = NULL;
 	}
-	void operator=(const CSessionGlobalMemory& rhv) {
-		if(this==&rhv)
-			return;
-
-		release();
-		init(rhv.m_pName);
+	MYT& operator=(const MYT& rhv) {
+		if (this != reinterpret_cast<MYT*>(const_cast<MYT*>(&rhv)))
+		{
+			release();
+			init(rhv.m_pName);
+		}
+		return *this;
 	}
-	CSessionGlobalMemory& operator=(CSessionGlobalMemory&& rhv) {
-		if(this==&rhv)
-			return *this;
-
-		move(rhv);
+	MYT& operator=(MYT&& rhv) {
+		if (this != reinterpret_cast<MYT*>(&rhv))
+		{
+			move(std::move(rhv));
+		}
 		return *this;
 	}
 
@@ -68,7 +71,7 @@ public:
 		memcpy(pt, p_, sizeof(t));
 	}
 
-	CSessionGlobalMemory& operator =(const T& t) {
+	MYT& operator =(const T& t) {
 		set(t);
 		return *this;
 	}
@@ -181,7 +184,7 @@ private:
 	LPSTR m_pMutexName;
 
 	// prohibitted, use NTS
-	T* operator &() {}
+	// T* operator &() {}
 };
 
 // Non Thread Safe
