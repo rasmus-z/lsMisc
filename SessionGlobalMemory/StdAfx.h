@@ -17,7 +17,7 @@
 #include <conio.h>
 #include <stdlib.h>
 #include <time.h>
-
+#include <string>
 // TODO: reference additional headers your program requires here
 
 //{{AFX_INSERT_LOCATION}}

@@ -9,6 +9,46 @@ public:
 	explicit CSessionGlobalMemory(LPCSTR pName) {
 		init(pName);
 	}
+	CSessionGlobalMemory(const CSessionGlobalMemory& rhv)
+	{
+		init(rhv.m_pName);
+	}
+	CSessionGlobalMemory(CSessionGlobalMemory&& rhv)
+	{
+		move(rhv);
+	}
+
+	void move(CSessionGlobalMemory&& rhv) {
+		m_pName = rhv.m_pName;
+		rhv.m_pName = NULL;
+
+		m_pMutexName = rhv.m_pMutexName;
+		rhv.m_pMutexName = NULL;
+
+		m_ = rhv.m_;
+		rhv.m_ = NULL;
+
+		h_ = rhv.h_;
+		rhv.h_ = NULL;
+
+		p_ = rhv.p_;
+		rhv.p_ = NULL;
+	}
+	void operator=(const CSessionGlobalMemory& rhv) {
+		if(this==&rhv)
+			return;
+
+		release();
+		init(rhv.m_pName);
+	}
+	CSessionGlobalMemory& operator=(CSessionGlobalMemory&& rhv) {
+		if(this==&rhv)
+			return *this;
+
+		move(rhv);
+		return *this;
+	}
+
 	~CSessionGlobalMemory() {
 		release();
 	}
@@ -28,8 +68,9 @@ public:
 		memcpy(pt, p_, sizeof(t));
 	}
 
-	void operator =(const T& t) {
+	CSessionGlobalMemory& operator =(const T& t) {
 		set(t);
+		return *this;
 	}
 
 protected:
