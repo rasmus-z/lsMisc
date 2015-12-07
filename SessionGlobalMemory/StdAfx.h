@@ -18,6 +18,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string>
+#include <cassert>
 // TODO: reference additional headers your program requires here
 
 //{{AFX_INSERT_LOCATION}}

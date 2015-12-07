@@ -1,8 +1,17 @@
 #pragma once
 
+#include <cassert>
+
+#ifdef _DEBUG
+#define AMBIESOFT_VERIFY(e) assert(e)
+#define AMBIESOFT_VERIFY_ZERO(e) assert(0==(e))
+#else
+#define AMBIESOFT_VERIFY(e)			((void)(e))
+#define AMBIESOFT_VERIFY_ZERO(e)	((void)(e))
+#endif
 
 #if _MSC_VER < 1600		// less than VC2010
-#define _AMBIESOFT_NO_RVALUE
+#define AMBIESOFT_NO_RVALUE_
 #endif
 
 namespace Ambiesoft {
@@ -10,14 +19,24 @@ namespace Ambiesoft {
 template<class T>
 class CSessionGlobalMemory
 {
-	 typedef typename CSessionGlobalMemory<T> MYT;
+	typedef typename CSessionGlobalMemory<T> MYT;
+#ifdef _DEBUG
+	int initialized_;
+#endif
 
 public:
 	explicit CSessionGlobalMemory(LPCSTR pName) {
+#ifdef _DEBUG
+		initialized_ = 0;
+#endif
 		init(pName);
 	}
 	CSessionGlobalMemory(const MYT& rhv)
 	{
+#ifdef _DEBUG
+		initialized_ = 0;
+#endif
+
 		init(rhv.m_pName);
 	}
 	MYT& operator=(const MYT& rhv) {
@@ -29,10 +48,16 @@ public:
 		return *this;
 	}
 
-#if !defined(_AMBIESOFT_NO_RVALUE)
+#if !defined(AMBIESOFT_NO_RVALUE_)
 	CSessionGlobalMemory(MYT&& rhv)
 	{
+#ifdef _DEBUG
+		initialized_ = 0;
+#endif
 		move(std::move(rhv));
+#ifdef _DEBUG
+		initialized_ = 1;
+#endif
 	}
 	MYT& operator=(MYT&& rhv) {
 		if (this != reinterpret_cast<MYT*>(&rhv))
@@ -73,10 +98,10 @@ public:
 		return *((T*)p_);
 	}
 
-	void get(T* pt) {
+	void get(T& t) {
 		ensure();
 		Locker l(m_);
-		memcpy(pt, p_, sizeof(t));
+		memcpy(&t, p_, sizeof(t));
 	}
 
 	MYT& operator =(const T& t) {
@@ -88,6 +113,10 @@ protected:
 	void* p_;
 
 	void init(LPCSTR pName) {
+#ifdef _DEBUG
+		assert(initialized_ == 0);
+		initialized_ = 1;
+#endif
 		h_ = NULL;
 		p_ = NULL;
 		m_ = NULL;
@@ -101,30 +130,36 @@ protected:
 		lstrcatA(m_pMutexName, "_Mutex");
 	}
 	void release() {
+#ifdef _DEBUG
+		assert(initialized_ == 1);
+		initialized_ = 0;
+#endif
+
 		if (p_)
 		{
-			UnmapViewOfFile(p_);
+			AMBIESOFT_VERIFY(UnmapViewOfFile(p_));
 			p_ = NULL;
 		}
 
 		if (h_)
 		{
-			CloseHandle(h_);
+			AMBIESOFT_VERIFY(CloseHandle(h_));
 			h_ = NULL;
 		}
 
 		if (m_)
 		{
-			CloseHandle(m_);
+			AMBIESOFT_VERIFY(CloseHandle(m_));
 			m_ = NULL;
 		}
-		LocalFree(m_pName);
-		LocalFree(m_pMutexName);
+		AMBIESOFT_VERIFY_ZERO(LocalFree(m_pName));
+		AMBIESOFT_VERIFY_ZERO(LocalFree(m_pMutexName));
 	}
 	void ensure() {
 		if (!m_)
 		{
 			m_ = CreateMutexA(NULL, FALSE, m_pMutexName);
+			assert(m_);
 		}
 
 		bool first = false;
@@ -136,6 +171,7 @@ protected:
 				PAGE_READWRITE,
 				0, sizeof(T),
 				m_pName);
+			assert(h_);
 			if (h_ && GetLastError() != ERROR_ALREADY_EXISTS)
 			{
 				first = true;
@@ -148,6 +184,7 @@ protected:
 				FILE_MAP_READ | FILE_MAP_WRITE,
 				0, 0,
 				sizeof(T));
+			assert(p_);
 		}
 
 		if (first)
@@ -180,7 +217,7 @@ private:
 			WaitForSingleObject(m, INFINITE);
 		}
 		~Locker() {
-			ReleaseMutex(m_);
+			AMBIESOFT_VERIFY(ReleaseMutex(m_));
 		}
 	};
 
