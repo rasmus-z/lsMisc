@@ -1,5 +1,10 @@
 #pragma once
 
+
+#if _MSC_VER < 1600		// less than VC2010
+#define _AMBIESOFT_NO_RVALUE
+#endif
+
 namespace Ambiesoft {
 
 template<class T>
@@ -15,11 +20,32 @@ public:
 	{
 		init(rhv.m_pName);
 	}
+	MYT& operator=(const MYT& rhv) {
+		if (this != reinterpret_cast<MYT*>(const_cast<MYT*>(&rhv)))
+		{
+			release();
+			init(rhv.m_pName);
+		}
+		return *this;
+	}
+
+#if !defined(_AMBIESOFT_NO_RVALUE)
 	CSessionGlobalMemory(MYT&& rhv)
 	{
 		move(std::move(rhv));
 	}
+	MYT& operator=(MYT&& rhv) {
+		if (this != reinterpret_cast<MYT*>(&rhv))
+		{
+			release();
+			move(std::move(rhv));
+		}
+		return *this;
+	}
 
+	~CSessionGlobalMemory() {
+		release();
+	}
 	void move(MYT&& rhv) {
 		m_pName = rhv.m_pName;
 		rhv.m_pName = NULL;
@@ -36,25 +62,7 @@ public:
 		p_ = rhv.p_;
 		rhv.p_ = NULL;
 	}
-	MYT& operator=(const MYT& rhv) {
-		if (this != reinterpret_cast<MYT*>(const_cast<MYT*>(&rhv)))
-		{
-			release();
-			init(rhv.m_pName);
-		}
-		return *this;
-	}
-	MYT& operator=(MYT&& rhv) {
-		if (this != reinterpret_cast<MYT*>(&rhv))
-		{
-			move(std::move(rhv));
-		}
-		return *this;
-	}
-
-	~CSessionGlobalMemory() {
-		release();
-	}
+#endif
 
 	operator T() {
 		ensure();
@@ -78,7 +86,7 @@ public:
 
 protected:
 	void* p_;
-	CSessionGlobalMemory() {}
+
 	void init(LPCSTR pName) {
 		h_ = NULL;
 		p_ = NULL;
@@ -192,8 +200,8 @@ template<class T>
 class CSessionGlobalMemoryNTS : CSessionGlobalMemory<T>
 {
 public:
-	explicit CSessionGlobalMemoryNTS(LPCSTR pName) {
-		init(pName);
+	explicit CSessionGlobalMemoryNTS(LPCSTR pName) : CSessionGlobalMemory<T>(pName) {
+
 	}
 	T* operator &() {
 		ensure();

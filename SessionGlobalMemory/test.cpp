@@ -12,10 +12,7 @@ struct Data {
 		memcpy(d, &data.d, sizeof(d));
 		ctorcount++;
 	}
-	Data(const Data&& data) {
-		memcpy(d, &data.d, sizeof(d));
-		ctorcount++;
-	}
+
 
 	Data() {
 		memset(d,0,sizeof(d));
@@ -48,11 +45,14 @@ int main(int argc, char* argv[])
 	CSessionGlobalMemory<int> tmp2 (getSGMEM(3, "sgINT"));
 	CSessionGlobalMemory<int> tmp3 (getSGMEM(3, "sgINTtmp"));
 	tmp3=tmp2;
+#if !defined(_AMBIESOFT_NO_RVALUE)
 	tmp2=std::move(tmp3);
-
+#endif
 	std::string sa = "aaa";
 	std::string sb;
+#if !defined(_AMBIESOFT_NO_RVALUE)
 	sb = std::move(sa);
+#endif
 	sb = "bbb";
 	bool quit=false;
 	for(; !quit;)

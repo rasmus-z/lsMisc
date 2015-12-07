@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+# Visual C++ Express 2010
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "test2010.vcxproj", "{44D6B2A7-DD77-4142-B64B-22B4ECC2A5F9}"
 EndProject
 Global
