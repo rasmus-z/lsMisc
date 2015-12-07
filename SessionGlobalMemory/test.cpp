@@ -6,6 +6,9 @@
 #include "SessionGlobalMemory.h"
 using namespace Ambiesoft;
 
+#if _MSC_VER < 1600		// less than VC2010
+#define _countof(a) (sizeof(a)/sizeof(a[0]))
+#endif 
 struct Data {
 	int d[1024];
 	int checksum_;
