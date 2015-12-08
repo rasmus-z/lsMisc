@@ -2,6 +2,8 @@
 #include <vector>
 #include "tstring.h"
 
+namespace Ambiesoft {
+
 class COption
 {
 	tstring option_;
@@ -54,3 +56,5 @@ public:
 
 	friend CommandLineOption;
 };
+
+}

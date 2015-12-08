@@ -1,7 +1,8 @@
 #pragma once
 
+#include <windows.h>
+#include <tchar.h>
 #include <vector>
-using namespace std;
 
 #include "tstring.h"
 
@@ -78,7 +79,7 @@ class CCommandLineParser
 
 	CAvailableCommandLineInfo* FindAvailableCL(LPCTSTR pOption)
 	{
-		for(int i=0 ; i < clicount_ ; ++i)
+		for(size_t i=0 ; i < clicount_ ; ++i)
 		{
 			CAvailableCommandLineInfo* pCLI = pCLI_;
 			pCLI += i;
@@ -90,28 +91,32 @@ class CCommandLineParser
 		return NULL;
 	}
 
-	vector<CInputCommandLineInfo> inputs_;
-	vector<CInputCommandLineInfo>::iterator current_;
+	std::vector<CInputCommandLineInfo> inputs_;
+	std::vector<CInputCommandLineInfo>::iterator current_;
+	std::vector<CInputCommandLineInfo>::iterator* pcurrent_;
 public:
 	CInputCommandLineInfo* GetNext()
 	{
-		if(!current_)
-			current_ = inputs_.begin();
-		else
-			++current_;
-
-		if(current_ == inputs_.end())
+		if(!pcurrent_)
 		{
-			current_=NULL;
+			pcurrent_ = &current_;
+			*pcurrent_ = inputs_.begin();
+		}
+		else
+			++(*pcurrent_);
+
+		if(*pcurrent_ == inputs_.end())
+		{
+			pcurrent_=NULL;
 			return NULL;
 		}
 
-		return current_;
+		return &**pcurrent_;
 	}
 
 	CCommandLineParser(int argc, LPTSTR* targv,CAvailableCommandLineInfo* pCLI, size_t count)
 	{
-		current_ = NULL;
+		pcurrent_ = NULL;
 
 		argc_ = argc;
 		targv_ = targv;

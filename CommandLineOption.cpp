@@ -1,6 +1,8 @@
 
 #include "CommandLineOption.cpp.h"
 
+namespace Ambiesoft {
+
 void CommandLineOption::AddOption(LPCTSTR pOption, size_t argcount)
 {
 
@@ -32,3 +34,5 @@ void CommandLineOption::Parse(int argc, TCHAR** targv)
 
 		}
 }
+
+} // namespace
