@@ -94,7 +94,6 @@ void testwriter(int span)
 
 int main(int argc, char* argv[])
 {
-
 	// test.exe -reader 100
 	if (argc > 1)
 	{
@@ -103,11 +102,13 @@ int main(int argc, char* argv[])
 		// puts(argv[i]);
 		if (_strcmpi(argv[i], "-reader") == 0)
 		{
+			SetConsoleTitleA("reader");			
 			testreader(atoi(argv[i + 1]));
 			return 0;
 		}
 		else if (_strcmpi(argv[i], "-writer") == 0)
 		{
+			SetConsoleTitleA("writer");
 			testwriter(atoi(argv[i + 1]));
 			return 0;
 		}
@@ -128,6 +129,7 @@ int main(int argc, char* argv[])
 	tmp3=tmp2;
 #if !defined(AMBIESOFT_NO_RVALUE_)
 	tmp2=std::move(tmp3);
+	tmp2=9999;
 #endif
 	std::string sa = "aaa";
 	std::string sb;
