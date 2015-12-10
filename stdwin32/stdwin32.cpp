@@ -215,7 +215,8 @@ std::string string_formatA(const std::string fmt, ...)
     while (1) {     // Maximum two passes on a POSIX system...
         str.resize(size);
         va_start(ap, fmt);
-        int n = _vsnprintf((char *)str.data(), size, fmt.c_str(), ap);
+
+        int n = _vsnprintf_s((char *)str.data(), size, size-1, fmt.c_str(), ap);
 		
         va_end(ap);
         if (n > -1 && n < size) {  // Everything worked
@@ -237,7 +238,7 @@ std::wstring string_formatW(const std::wstring fmt, ...)
     while (1) {     // Maximum two passes on a POSIX system...
         str.resize(size);
         va_start(ap, fmt);
-        int n = _vsnwprintf((WCHAR *)str.data(), size, fmt.c_str(), ap);
+        int n = _vsnwprintf_s((WCHAR *)str.data(), size, size-1, fmt.c_str(), ap);
         va_end(ap);
         if (n > -1 && n < size) {  // Everything worked
             str.resize(n);

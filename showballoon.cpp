@@ -1,3 +1,5 @@
+#include "stdafx.h"
+
 #define WIN32_LEAN_AND_MEAN		// Windows
 #include <windows.h>
 #include <commctrl.h>
@@ -30,7 +32,8 @@ static BOOL NotifyIconize(HWND hWnd,
 	nid.uTimeout         = duration;
 	nid.uCallbackMessage = 0; //WM_APP_TRAYMESSAGE;
 	nid.hIcon = hIcon; //LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON_MAIN));
-	lstrcpynW(nid.szTip, pInfoTitle, ARRAYSIZE(nid.szTip));
+	if(pInfoTitle)
+		lstrcpynW(nid.szTip, pInfoTitle, ARRAYSIZE(nid.szTip));
 	if(pInfoTitle)
 		lstrcpynW( nid.szInfoTitle, pInfoTitle, ARRAYSIZE(nid.szInfoTitle));
 	if(pInfo)

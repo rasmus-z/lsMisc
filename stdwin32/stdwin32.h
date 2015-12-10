@@ -45,9 +45,9 @@ namespace stdwin32 {
 
 
 	std::string trimA(const std::string& str,
-					 const std::string& whitespace = " \t");
+					 const std::string& whitespace = " \t\r\n");
 	std::wstring trimW(const std::wstring& str,
-					 const std::wstring& whitespace = L" \t");
+					 const std::wstring& whitespace = L" \t\r\n");
 #ifdef UNICODE
 	#define trim trimW
 #else
