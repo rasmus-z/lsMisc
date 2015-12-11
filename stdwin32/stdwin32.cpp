@@ -14,6 +14,8 @@
 #include <locale>
 #include <string>
 #include <vector>
+#include <memory.h>
+
 #include <shlwapi.h>
 #pragma comment(lib,"shlwapi.lib")
 
@@ -148,7 +150,10 @@ wstring stdGetFileName(const wstring& full)
 }
 wstring stdGetFileName(LPCWSTR pFull)
 {
-	return PathFindFileName(pFull);
+	WCHAR* p = wcsdup(pFull);
+	wstring ret = PathFindFileNameW(p);
+	free((void*)p);
+	return ret;
 }
 
 vector<wstring> stdSplitSCedPath(LPCWSTR pPath)
@@ -216,8 +221,11 @@ std::string string_formatA(const std::string fmt, ...)
         str.resize(size);
         va_start(ap, fmt);
 
+#if _MSC_VER <= 1200
+		int n = _vsnprintf((char *)str.data(), size, fmt.c_str(), ap);
+#else
         int n = _vsnprintf_s((char *)str.data(), size, size-1, fmt.c_str(), ap);
-		
+#endif	
         va_end(ap);
         if (n > -1 && n < size) {  // Everything worked
             str.resize(n);
@@ -238,7 +246,12 @@ std::wstring string_formatW(const std::wstring fmt, ...)
     while (1) {     // Maximum two passes on a POSIX system...
         str.resize(size);
         va_start(ap, fmt);
+
+#if _MSC_VER <= 1200
+        int n = _vsnwprintf((WCHAR *)str.data(), size, fmt.c_str(), ap);
+#else
         int n = _vsnwprintf_s((WCHAR *)str.data(), size, size-1, fmt.c_str(), ap);
+#endif
         va_end(ap);
         if (n > -1 && n < size) {  // Everything worked
             str.resize(n);
@@ -301,9 +314,9 @@ bool isTdigit(const tstring& str)
 wstring stdGetCurrentDirectory()
 {
 	DWORD len = GetCurrentDirectory(0, NULL);
-	TCHAR* p = new TCHAR[len];
+	WCHAR* p = new WCHAR[len];
 	p[0]=0;
-	GetCurrentDirectory(len,p);
+	GetCurrentDirectoryW(len,p);
 	wstring ret(p);
 	delete[] p;
 	return ret;
