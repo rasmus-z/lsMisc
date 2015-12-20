@@ -1,12 +1,8 @@
 #pragma warning(disable :4786)
 #pragma warning(disable: 4503)
 
-#ifndef UNICODE
-	#define UNICODE
-#endif
-
-#ifndef _UNICODE
-	#define _UNICODE
+#if !defined(UNICODE)
+#error UNICODE required
 #endif
 
 #ifndef _CRT_SECURE_NO_WARNINGS
@@ -23,7 +19,10 @@ using namespace std;
 
 
 #include "I18N.h"
+
+#ifndef countof
 #define countof(a) (sizeof(a)/sizeof(a[0]))
+#endif
 
 namespace Ambiesoft {
 
@@ -190,7 +189,7 @@ LPCWSTR i18nGetCurrentLang()
 }
 
 
-LPCWSTR i18nInitLangmap(HINSTANCE hInst, LPCWSTR pLang)
+LPCWSTR i18nInitLangmap(HINSTANCE hInst, LPCWSTR pLang, LPCWSTR pAppName)
 {
 	ghInst = hInst;
 
@@ -213,6 +212,14 @@ LPCWSTR i18nInitLangmap(HINSTANCE hInst, LPCWSTR pLang)
 		i18map.clear();
 	}
 	
+	WCHAR szAppName[MAX_PATH]; szAppName[0]=0;
+	if(pAppName == NULL)
+	{
+		GetModuleFileNameW(hInst, szAppName, countof(szAppName));
+		*_tcsrchr(szAppName, L'.')=0;
+		pAppName = _tcsrchr(szAppName, L'\\')+1;
+	}
+
 	if(!langinit)
 	{
 		{
@@ -230,7 +237,7 @@ LPCWSTR i18nInitLangmap(HINSTANCE hInst, LPCWSTR pLang)
 						*(_tcsrchr(szT, L'\\'))=0;
 
 						TCHAR szTry[MAX_PATH];
-						wsprintfW(szTry, _T("%s\\lang\\%s.txt"),szT, szLang);
+						wsprintfW(szTry, _T("%s\\lang\\%s%s.txt"),szT, pAppName, szLang);
 
 						
 						FILE* f=_tfopen(szTry, _T("rb"));

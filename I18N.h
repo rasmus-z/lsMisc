@@ -4,7 +4,7 @@
 // 1. Include I18N.h and I18N.cpp to your project.
 // 2. Call i18nInitLangmap() at startup, or i18nInitLangmap(L"jpn") for specifying language.
 // 3. Create a Folder named "lang" under the exe-residing-folder, and place a lang file in it 
-//    and name it like "jpn.txt".
+//    and name it like "myapp.jpn.txt" where myapp is name of the application.
 // 4. jpn.txt format is like follows:
 //    "Hello"="‚±‚ñ‚É‚¿‚Í"
 //    "Goodby"="‚³‚æ‚¤‚È‚ç"
@@ -13,7 +13,7 @@
 // 7. Look the debugger output when the program exists. Untranslated words will be printed.
 
 namespace Ambiesoft {
-	LPCWSTR i18nInitLangmap(HINSTANCE hInst=NULL, LPCWSTR pLang = NULL);
+	LPCWSTR i18nInitLangmap(HINSTANCE hInst=NULL, LPCWSTR pLang = NULL, LPCWSTR pAppName=NULL);
 	LPCWSTR i18nGetCurrentLang();
 
 	LPCWSTR I18NW(LPCWSTR pIN);
