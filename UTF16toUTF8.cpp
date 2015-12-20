@@ -30,19 +30,23 @@ BYTE* UTF16toUTF8(LPCWSTR pIN)
 	if ( nRet==0 || nRet != nReqSize )
 		return NULL;
 
-/**
-	if ( bUrlEncode )
-	{
-		int nEncodeSize = nRet*3;
-		BYTE* pOut2 = NULL;
-		UrlEncode2(pOut, lstrlenA((char*)pOut), (char**)&pOut2, 1);
-		free(pOut);
-		return pOut2;
-	}
-**/
 	return pOut;;
 }
 
+LPWSTR UTF16_convertEndian(LPCWSTR pIN)
+{
+	if (pIN == NULL)
+		return NULL;
+
+	LPWSTR p = wcsdup(pIN);
+	LPWSTR pRet = p;
+	for (; *pIN; ++pIN, ++p)
+	{
+		*p = ((*pIN & 0xFF) << 8) | ((*pIN & 0xFF00) >> 8);
+	}
+	*p = 0;
+	return pRet;
+}
 
 LPWSTR UTF8toUTF16(const LPBYTE pIN)
 {

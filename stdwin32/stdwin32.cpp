@@ -151,7 +151,7 @@ wstring stdGetFileName(const wstring& full)
 }
 wstring stdGetFileName(LPCWSTR pFull)
 {
-	WCHAR* p = wcsdup(pFull);
+	WCHAR* p = _wcsdup(pFull);
 	wstring ret = PathFindFileNameW(p);
 	free((void*)p);
 	return ret;
