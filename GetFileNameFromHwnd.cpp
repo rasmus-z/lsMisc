@@ -9,6 +9,18 @@ static BOOL (WINAPI *lpfEnumProcessModules)
                     (HANDLE, HMODULE*, DWORD, LPDWORD);
 static DWORD (WINAPI *lpfGetModuleFileNameEx)
                     (HANDLE, HMODULE, LPTSTR, DWORD);
+typedef BOOL (WINAPI *LPFEnumProcessModulesEx)
+					(HANDLE, HMODULE*, DWORD, LPDWORD, DWORD);
+static LPFEnumProcessModulesEx lpfEnumProcessModulesEx;
+
+typedef BOOL (WINAPI *LPFQueryFullProcessImageNameW)(
+	HANDLE hProcess,
+	DWORD  dwFlags,
+	LPTSTR lpExeName,
+	PDWORD lpdwSize
+	);
+static LPFQueryFullProcessImageNameW lpfQueryFullProcessImageNameW;
+
 static bool init()
 {
 	static bool initted = false;
@@ -22,6 +34,15 @@ static bool init()
 		sthPSAPI = LoadLibrary(_T("PSAPI.DLL"));
     if ( sthPSAPI == NULL )
 		return ok=false;
+
+	static HINSTANCE sthKernel;
+	if (!sthKernel)
+		sthKernel = LoadLibrary(_T("kernel32.dll"));
+	if (sthKernel == NULL)
+		return ok = false;
+
+	lpfEnumProcessModulesEx = (LPFEnumProcessModulesEx)GetProcAddress(
+		sthPSAPI, "EnumProcessModulesEx");
 
     lpfEnumProcessModules = (BOOL(WINAPI *)
         (HANDLE, HMODULE *, DWORD, LPDWORD))GetProcAddress(
@@ -42,9 +63,23 @@ static bool init()
 		return ok=false;
 #endif
 
+	lpfQueryFullProcessImageNameW = (LPFQueryFullProcessImageNameW)GetProcAddress(
+		sthKernel, "QueryFullProcessImageNameW");
 	return ok=true;
 }
 
+#ifndef LIST_MODULES_ALL
+#define LIST_MODULES_ALL 0x03
+#endif
+
+static BOOL getModuleFromHProcess(HANDLE hProcess, HMODULE* phModule)
+{
+	DWORD dwNeed = 0;
+	if (lpfEnumProcessModulesEx)
+		return lpfEnumProcessModulesEx(hProcess, phModule, sizeof(*phModule), &dwNeed, LIST_MODULES_ALL);
+
+	return lpfEnumProcessModules(hProcess, phModule, sizeof(*phModule), &dwNeed);
+}
 
 BOOL GetFileNameFromHwnd(HWND hWnd, LPTSTR lpszFileName, DWORD nSize)
 {
@@ -69,15 +104,23 @@ BOOL GetFileNameFromHwnd(HWND hWnd, LPTSTR lpszFileName, DWORD nSize)
                     FALSE, dwProcessId);
             if ( hProcess )
             {
-                HMODULE hModule;
-                DWORD dwNeed;
-                if (lpfEnumProcessModules(hProcess,
-                            &hModule, sizeof(hModule), &dwNeed))
-                {
-                    if ( lpfGetModuleFileNameEx(hProcess, hModule,
-                                            lpszFileName, nSize) )
-                        bResult = TRUE;
-                }
+				if (lpfQueryFullProcessImageNameW)
+				{
+					DWORD dwSize = nSize;
+					bResult = lpfQueryFullProcessImageNameW(hProcess,
+						0,
+						lpszFileName,
+						&dwSize);
+				}
+				else
+				{
+					HMODULE hModule;
+					if (getModuleFromHProcess(hProcess, &hModule))
+					{
+						if (lpfGetModuleFileNameEx(hProcess, hModule, lpszFileName, nSize))
+							bResult = TRUE;
+					}
+				}
                 CloseHandle( hProcess ) ;
             }
         }
