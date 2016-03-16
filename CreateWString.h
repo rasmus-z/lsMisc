@@ -1,4 +1,7 @@
 #pragma once
+#include <malloc.h>
+
+
 inline static size_t GetConverToWCount(LPCSTR pIN)
 {
 	return MultiByteToWideChar(
