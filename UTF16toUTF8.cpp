@@ -38,7 +38,11 @@ LPWSTR UTF16_convertEndian(LPCWSTR pIN)
 	if (pIN == NULL)
 		return NULL;
 
+#if 0
 	LPWSTR p = wcsdup(pIN);
+#else
+	LPWSTR p = _wcsdup(pIN);
+#endif
 	LPWSTR pRet = p;
 	for (; *pIN; ++pIN, ++p)
 	{

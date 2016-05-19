@@ -1,8 +1,6 @@
 #pragma warning(disable :4786)
-#include <windows.h>
-#include <assert.h>
-#include <string>
-#include <map>
+#include "stdafx.h"
+#include <cassert>
 #include <stlsoft/smartptr/scoped_handle.hpp>
 #include "sqlite3.h"
 #include "sqliteserialize.h"
