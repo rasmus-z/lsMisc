@@ -360,6 +360,8 @@ BOOL sqlGetPrivateProfileString(
     DWORD nSize,
     LPCWSTR lpFileName)
 {
+	lstrcpyn(lpReturnedString, lpDefault, nSize);
+
 	if(!IsFileExistsW(lpFileName))
 	{
 		return FALSE;
