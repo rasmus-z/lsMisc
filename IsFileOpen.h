@@ -1,4 +1,4 @@
-
+#pragma once
 enum ISFILEOPEN {
 	ISFILEOPEN_NO,
 	ISFILEOPEN_YES,

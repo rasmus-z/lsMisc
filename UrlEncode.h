@@ -1,3 +1,5 @@
+#pragma once
+
 void UrlEncode(const unsigned char	*csource,
 						size_t	nSize,
 						char** pOut,
