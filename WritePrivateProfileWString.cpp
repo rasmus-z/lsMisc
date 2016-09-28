@@ -15,12 +15,12 @@ BOOL WritePrivateProfileWString(const TCHAR *lpszSection, const TCHAR *lpszKey, 
 	
 	char szBuff[4096] = {0};
 	int cpylen = min(sizeof(szBuff), (lstrlen(lpszIn)+1)*sizeof(TCHAR));
-	memcpy(szBuff, lpszIn, sizeof(szBuff));
+	memcpy(szBuff, lpszIn, cpylen);
 	szBuff[ sizeof(szBuff)-1 ] = 0;
 	
 	return WritePrivateProfileStruct(lpszSection,
 		lpszKey,
-		(LPVOID)lpszIn,
+		(LPVOID)szBuff,
 		sizeof(szBuff),
 		lpszFile);
 }
