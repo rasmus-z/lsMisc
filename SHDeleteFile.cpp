@@ -1,17 +1,19 @@
 #include "StdAfx.h"
 #include <windows.h>
+#include <Shellapi.h>
 #include <tchar.h>
+
 #include <assert.h>
 #include <malloc.h>
+
 #include "SHDeleteFile.h"
 
-BOOL SHDeleteFile(LPCTSTR lpFile, const BOOL bNoErrorUI)
+BOOL SHDeleteFile(LPCTSTR lpFile, const BOOL bNoErrorUI, const BOOL bCompleteDelete)
 {
 	size_t len = _tcslen(lpFile);
 	if(!lpFile || lpFile[0]==0 || len <= 3)
 		return FALSE;
 
-	// ƒtƒ‹ƒpƒX‚Ì‚Ý‹–‚·
 	do
 	{
 #ifndef UNICODE
@@ -39,7 +41,7 @@ BOOL SHDeleteFile(LPCTSTR lpFile, const BOOL bNoErrorUI)
 	sfo.wFunc = FO_DELETE;
 	sfo.pFrom = p;
 	sfo.pTo   = NULL;  // ignored
-	sfo.fFlags = FOF_ALLOWUNDO | (bNoErrorUI ? FOF_NOERRORUI:0);
+	sfo.fFlags = (bCompleteDelete ? FOF_NOCONFIRMATION : FOF_ALLOWUNDO) | (bNoErrorUI ? FOF_NOERRORUI:0);
 
 	int ret = SHFileOperation(&sfo);
 	return ret==0;
