@@ -1,8 +1,10 @@
+#include "stdafx.h"
+
 #include <tchar.h>
 #include <windows.h>
-#include <objidl.h>
+//#include <objidl.h>
 #include <shlobj.H>
-#include <shlwapi.h>
+//#include <shlwapi.h>
 #pragma comment(lib, "shlwapi.lib")
 
 #include "ResolveLink.h"
