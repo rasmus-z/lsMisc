@@ -22,7 +22,7 @@ BOOL ResolveLink(LPCTSTR lpszFileIn, HWND hWnd, LPTSTR target)
 			if (SUCCEEDED(psl->QueryInterface(IID_IPersistFile, (LPVOID*)&ppf)))
 			{
 #ifdef UNICODE
-				WCHAR* pIn = wcsdup(lpszFileIn);
+				WCHAR* pIn = _wcsdup(lpszFileIn);
 #else
 				int nAllocLeng = lstrlen(lpszFileIn)+sizeof(WCHAR);
 				WCHAR* pIn = new WCHAR[nAllocLeng];
