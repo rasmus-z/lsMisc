@@ -59,4 +59,32 @@ namespace stdwin32 {
 	bool isTdigit(const tstring& str);
 
 	std::wstring stdGetCurrentDirectory();
+
+
+
+	bool hasEndingA (std::string const &fullString, std::string const &ending);
+	bool hasEndingW (std::wstring const &fullString, std::wstring const &ending);
+#ifdef UNICODE
+	#define hasEnding hasEndingW
+#else
+	#define hasEnding hasEndingA
+#endif
+
+
+	bool hasEndingIA (std::string const &fullString, std::string const &ending);
+	bool hasEndingIW (std::wstring const &fullString, std::wstring const &ending);
+#ifdef UNICODE
+	#define hasEndingI hasEndingIW
+#else
+	#define hasEndingI hasEndingIA
+#endif
+
+
+
+
+
+
+
+
 }
+

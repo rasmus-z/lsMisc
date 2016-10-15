@@ -324,7 +324,40 @@ wstring stdGetCurrentDirectory()
 }
 
 
+bool hasEndingA (std::string const &fullString, std::string const &ending) {
+    if (fullString.length() >= ending.length()) {
+        return (0 == fullString.compare (fullString.length() - ending.length(), ending.length(), ending));
+    } else {
+        return false;
+    }
+}
+bool hasEndingW (std::wstring const &fullString, std::wstring const &ending) {
+    if (fullString.length() >= ending.length()) {
+        return (0 == fullString.compare (fullString.length() - ending.length(), ending.length(), ending));
+    } else {
+        return false;
+    }
+}
 
+
+bool hasEndingIA (std::string const &fullString, std::string const &ending) {
+	string fullI(fullString);
+	std::transform(fullI.begin(), fullI.end(), fullI.begin(), ::tolower);
+
+	string endI(ending);
+	std::transform(endI.begin(), endI.end(), endI.begin(), ::tolower);
+
+	return hasEndingA(fullI, endI);
+}
+bool hasEndingIW (std::wstring const &fullString, std::wstring const &ending) {
+	wstring fullI(fullString);
+	std::transform(fullI.begin(), fullI.end(), fullI.begin(), ::towlower);
+
+	wstring endI(ending);
+	std::transform(endI.begin(), endI.end(), endI.begin(), ::towlower);
+
+	return hasEndingW(fullI, endI);
+}
 
 
 } // namespace stdwin32
