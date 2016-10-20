@@ -81,6 +81,13 @@ namespace stdwin32 {
 
 
 
+	std::string stdItoA(int i);
+	std::wstring stdItoW(int i);
+#ifdef UNICODE
+	#define stdItoT stdItoW
+#else
+	#define stdItoT stdItoA
+#endif
 
 
 

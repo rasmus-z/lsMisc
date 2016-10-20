@@ -24,7 +24,7 @@
 
 
 
-using namespace std;
+// using namespace std;
 #include "stdwin32.h"
 
 
@@ -32,7 +32,7 @@ namespace stdwin32 {
 
 static const wchar_t* Nil=L"";
 
-string stdGetModuleFileNameA(HINSTANCE hInst)
+std::string stdGetModuleFileNameA(HINSTANCE hInst)
 {
 	LPSTR p = NULL;
 	DWORD size = 64;
@@ -44,11 +44,11 @@ string stdGetModuleFileNameA(HINSTANCE hInst)
 		size*=2;
 	}
 	
-	string ret=p;
+	std::string ret=p;
 	free((void*)p);
 	return ret;
 }
-wstring stdGetModuleFileNameW(HINSTANCE hInst)
+std::wstring stdGetModuleFileNameW(HINSTANCE hInst)
 {
 	LPWSTR p = NULL;
 	DWORD size = 64;
@@ -60,7 +60,7 @@ wstring stdGetModuleFileNameW(HINSTANCE hInst)
 		size*=2;
 	}
 	
-	wstring ret=p;
+	std::wstring ret=p;
 	free((void*)p);
 	return ret;
 }
@@ -85,12 +85,12 @@ BOOL stdIsFullPath(LPCWSTR pD)
 	return FALSE;
 }
 
-wstring stdCombinePath(const wstring& d1, const wstring& d2)
+std::wstring stdCombinePath(const std::wstring& d1, const std::wstring& d2)
 {
 	return stdCombinePath(d1.c_str(), d2.c_str());
 }
 
-wstring stdCombinePath(LPCWSTR pD1, LPCWSTR pD2)
+std::wstring stdCombinePath(LPCWSTR pD1, LPCWSTR pD2)
 {
 	
 	if(!pD1 || !pD1[0])
@@ -102,8 +102,8 @@ wstring stdCombinePath(LPCWSTR pD1, LPCWSTR pD2)
 	if(stdIsFullPath(pD2))
 		return pD2;
 
-	wstring ret = pD1;
-	wstring::iterator it = ret.end();
+	std::wstring ret = pD1;
+	std::wstring::iterator it = ret.end();
 	--it;
 	if(*it!=L'\\')
 		ret += L'\\';
@@ -113,11 +113,11 @@ wstring stdCombinePath(LPCWSTR pD1, LPCWSTR pD2)
 }
 
 
-wstring stdGetParentDirectory(const wstring& path, bool bAddBackslach)
+std::wstring stdGetParentDirectory(const std::wstring& path, bool bAddBackslach)
 {
 	return stdGetParentDirectory(path.c_str(), bAddBackslach);
 }
-wstring stdGetParentDirectory(LPCWSTR pPath, bool bAddBackslach)
+std::wstring stdGetParentDirectory(LPCWSTR pPath, bool bAddBackslach)
 {
 	if(!pPath || pPath[0]==0)
 		return Nil;
@@ -140,29 +140,29 @@ wstring stdGetParentDirectory(LPCWSTR pPath, bool bAddBackslach)
 	else
 		*(pT+1)=0;
 
-	wstring ret(p);
+	std::wstring ret(p);
 	free(p);
 	return ret;
 }
 
-wstring stdGetFileName(const wstring& full)
+std::wstring stdGetFileName(const std::wstring& full)
 {
 	return stdGetFileName(full.c_str());
 }
-wstring stdGetFileName(LPCWSTR pFull)
+std::wstring stdGetFileName(LPCWSTR pFull)
 {
 	WCHAR* p = _wcsdup(pFull);
-	wstring ret = PathFindFileNameW(p);
+	std::wstring ret = PathFindFileNameW(p);
 	free((void*)p);
 	return ret;
 }
 
-vector<wstring> stdSplitSCedPath(LPCWSTR pPath)
+std::vector<std::wstring> stdSplitSCedPath(LPCWSTR pPath)
 {
-	vector<wstring> ret;
+	std::vector<std::wstring> ret;
 
 	LPCWSTR p = pPath;
-	wstring cur;
+	std::wstring cur;
 	bool inq=false;
 	for( ; *p ; ++p)
 	{
@@ -312,13 +312,13 @@ bool isTdigit(const tstring& str)
 }
 
 
-wstring stdGetCurrentDirectory()
+std::wstring stdGetCurrentDirectory()
 {
 	DWORD len = GetCurrentDirectory(0, NULL);
 	WCHAR* p = new WCHAR[len];
 	p[0]=0;
 	GetCurrentDirectoryW(len,p);
-	wstring ret(p);
+	std::wstring ret(p);
 	delete[] p;
 	return ret;
 }
@@ -341,23 +341,32 @@ bool hasEndingW (std::wstring const &fullString, std::wstring const &ending) {
 
 
 bool hasEndingIA (std::string const &fullString, std::string const &ending) {
-	string fullI(fullString);
+	std::string fullI(fullString);
 	std::transform(fullI.begin(), fullI.end(), fullI.begin(), ::tolower);
 
-	string endI(ending);
+	std::string endI(ending);
 	std::transform(endI.begin(), endI.end(), endI.begin(), ::tolower);
 
 	return hasEndingA(fullI, endI);
 }
 bool hasEndingIW (std::wstring const &fullString, std::wstring const &ending) {
-	wstring fullI(fullString);
+	std::wstring fullI(fullString);
 	std::transform(fullI.begin(), fullI.end(), fullI.begin(), ::towlower);
 
-	wstring endI(ending);
+	std::wstring endI(ending);
 	std::transform(endI.begin(), endI.end(), endI.begin(), ::towlower);
 
 	return hasEndingW(fullI, endI);
 }
+
+
+std::string stdItoA(int i) {
+	return string_formatA("%d", i);
+}
+std::wstring stdItoW(int i) {
+	return string_formatW(L"%d", i);
+}
+
 
 
 } // namespace stdwin32
