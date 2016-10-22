@@ -6,7 +6,8 @@
 HWND CreateSimpleWindow(HINSTANCE hInst, 
 						LPCTSTR pClassName, 
 						LPCTSTR pWinName,
-						WNDPROC WndProc)
+						WNDPROC WndProc,
+						void* param)
 {
 	hInst = hInst ? hInst : GetModuleHandle(NULL);
 	pClassName = pClassName ? pClassName : TEXT("CreateSimpleWindowClass");
@@ -44,5 +45,5 @@ HWND CreateSimpleWindow(HINSTANCE hInst,
 		NULL,
 		NULL,
 		hInst,
-		NULL);
+		param);
 }

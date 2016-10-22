@@ -44,16 +44,40 @@ static BOOL NotifyIconize(HWND hWnd,
 	return ret;
 }
 
-	
-//static LRESULT CALLBACK WaitWindowProc(
-//   HWND   hwnd,
-//   UINT   uMsg,
-//   WPARAM wParam,
-//   LPARAM lParam
-//)
-//{
-//	return DefWindowProc(hwnd,uMsg,wParam,lParam);
-//}
+
+
+LRESULT CALLBACK WaitWindowProc(
+   HWND   hwnd,
+   UINT   uMsg,
+   WPARAM wParam,
+   LPARAM lParam
+)
+{
+	static UINT sntimer;
+	static int sCounter;
+	static int smaxcount;
+	switch(uMsg)
+	{
+	case WM_CREATE:
+		sntimer=SetTimer(hwnd, 0, 1000, NULL);
+		
+		smaxcount = (int)((CREATESTRUCT*)lParam)->lpCreateParams;
+		break;
+	case WM_TIMER:
+		sCounter++;
+		if(sCounter>=smaxcount)
+		{
+			KillTimer(hwnd,sntimer);
+			DestroyWindow(hwnd);
+		}
+		break;
+	case WM_DESTROY:
+		PostQuitMessage(0);
+		break;
+	}
+
+	return DefWindowProc(hwnd,uMsg,wParam,lParam);
+}
 
 
 
@@ -73,7 +97,12 @@ BOOL showballoon(HWND hWnd,
 	HWND hwndToDel = NULL;
 	if(hWnd==NULL)
 	{
-		hWnd = CreateSimpleWindow();
+		hWnd = CreateSimpleWindow(
+			NULL,
+			NULL,
+			_T("SimpleWindow"),
+			WaitWindowProc,
+			(void*)(duration/1000));
 		hwndToDel= hWnd;
 	}
 
@@ -122,7 +151,16 @@ BOOL showballoon(HWND hWnd,
 
 	if(!bOnlyModify)
 	{
-		Sleep(duration);
+		// Sleep(duration);
+		MSG msg;
+		while( GetMessage(&msg, NULL, 0, 0) ) 
+		{
+			// if( !TranslateAccelerator (msg.hwnd, hAccelTable, &msg) ) 
+			{
+				TranslateMessage( &msg );
+				DispatchMessage( &msg );
+			}
+		}
 		NotifyIconize(hWnd,uTrayID, NIM_DELETE, hIcon, duration,NULL, NULL);
 	}
 //	DestroyWindow(hBalloon);
