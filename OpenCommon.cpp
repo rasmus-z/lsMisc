@@ -14,3 +14,4 @@ BOOL OpenCommon(HWND hWnd, LPCTSTR pApp, LPCTSTR pCommand, LPCTSTR pDirectory)
 
 	return ShellExecuteEx(&sei);
 }
+
