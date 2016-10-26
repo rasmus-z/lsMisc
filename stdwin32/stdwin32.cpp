@@ -222,7 +222,7 @@ std::string string_formatA(const std::string fmt, ...)
         str.resize(size);
         va_start(ap, fmt);
 
-#if _MSC_VER <= 1200
+#if _MSC_VER <= 1400
 		int n = _vsnprintf((char *)str.data(), size, fmt.c_str(), ap);
 #else
         int n = _vsnprintf_s((char *)str.data(), size, size-1, fmt.c_str(), ap);
@@ -248,7 +248,7 @@ std::wstring string_formatW(const std::wstring fmt, ...)
         str.resize(size);
         va_start(ap, fmt);
 
-#if _MSC_VER <= 1200
+#if _MSC_VER <= 1400
         int n = _vsnwprintf((WCHAR *)str.data(), size, fmt.c_str(), ap);
 #else
         int n = _vsnwprintf_s((WCHAR *)str.data(), size, size-1, fmt.c_str(), ap);
