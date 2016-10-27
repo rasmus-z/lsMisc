@@ -71,7 +71,7 @@ BOOL GetOpenFile(
 				 LPCTSTR pFilter, 
 				 LPCTSTR pInitialDir,
 				 LPCTSTR pTitle,
-				 wstring* fullpath, wstring* path=NULL);
+				 std::wstring* fullpath, std::wstring* path=NULL);
 
 BOOL GetSaveFile(
 				 HWND hWnd, 
@@ -80,4 +80,4 @@ BOOL GetSaveFile(
 				 LPCTSTR pInitialFile,
 				 LPCTSTR pDefExt,
 				 LPCTSTR pTitle,
-				 wstring* fullpath, wstring* path=NULL);
+				 std::wstring* fullpath, std::wstring* path=NULL);

@@ -8,6 +8,8 @@ using namespace std;
 
 #include"GetOpenFile.h"
 
+#pragma comment(lib,"Comdlg32.lib")
+
 #ifndef OFN_DONTADDTORECENT
 	#define OFN_DONTADDTORECENT 0x2000000 
 #endif
