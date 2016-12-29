@@ -22,7 +22,7 @@ CLogger::~CLogger()
 	}
 }
 
-void CLogger::Prepare()
+bool CLogger::Prepare()
 {
 	tstring file = stdGetFileName(stdGetModuleFileName()) + _T(".log");
 
@@ -37,10 +37,24 @@ void CLogger::Prepare()
 	if (m_hLog == INVALID_HANDLE_VALUE)
 	{
 		m_hLog = NULL;
+		return false;
 	}
+
+	return true;
 }
 
-bool CLogger::Out(LPCSTR pSTR, BOOL bAppendRet)
+bool CLogger::Out(LPCSTR p1, DWORD d1)
+{
+	char szT[32];
+	wsprintfA(szT, "%d", d1);
+
+	string s(p1);
+	s += szT;
+
+	return Out(s.c_str());
+}
+
+bool CLogger::Out(LPCSTR pSTR)
 {
 	if (!m_hLog)
 		return false;
@@ -68,7 +82,7 @@ bool CLogger::Out(LPCSTR pSTR, BOOL bAppendRet)
 		&dwWritten,
 		NULL);
 
-	if (bAppendRet)
+	if (true)
 	{
 		bFailed |= !WriteFile(m_hLog,
 			"\r\n",

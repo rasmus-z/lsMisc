@@ -10,8 +10,12 @@ class CLogger
 
 	static HANDLE m_hLog;
 public:
-	static void Prepare();
-	static bool Out(LPCSTR pSTR, BOOL bAppendRet = FALSE);
+	static bool Prepare();
+	static bool IsReady() {
+		return m_hLog != NULL;
+	}
+	static bool Out(LPCSTR p1);
+	static bool Out(LPCSTR p1, DWORD d1);
 };
 
 
