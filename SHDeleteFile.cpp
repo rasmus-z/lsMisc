@@ -8,7 +8,7 @@
 
 #include "SHDeleteFile.h"
 
-BOOL SHDeleteFile(LPCTSTR lpFile, const BOOL bNoUI, const BOOL bCompleteDelete)
+BOOL SHDeleteFile(LPCTSTR lpFile, SHDELETEFLAG sdf)
 {
 	size_t len = _tcslen(lpFile);
 	if(!lpFile || lpFile[0]==0 || len <= 3)
@@ -41,7 +41,14 @@ BOOL SHDeleteFile(LPCTSTR lpFile, const BOOL bNoUI, const BOOL bCompleteDelete)
 	sfo.wFunc = FO_DELETE;
 	sfo.pFrom = p;
 	sfo.pTo   = NULL;  // ignored
-	sfo.fFlags = (bCompleteDelete ? FOF_NOCONFIRMATION : FOF_ALLOWUNDO) | (bNoUI ? (FOF_SILENT|FOF_NOERRORUI):0);
+	sfo.fFlags = 0;
+	if(sdf & SHDELETE_COMPLETEDELETE)
+		sfo.fFlags |= FOF_NOCONFIRMATION;
+	else
+		sfo.fFlags |= FOF_ALLOWUNDO;
+	
+	if(sdf & SHDELETE_NOUI)
+		sfo.fFlags |=  (FOF_SILENT|FOF_NOERRORUI);
 
 	int ret = SHFileOperation(&sfo);
 	return ret==0;

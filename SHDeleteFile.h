@@ -1,2 +1,7 @@
 #pragma once
-BOOL SHDeleteFile(LPCTSTR lpFile, const BOOL bNoUI = FALSE, const BOOL bCompleteDelete = FALSE);
+enum SHDELETEFLAG {
+	SHDELETE_DEFAULT			= 1<<0,
+	SHDELETE_NOUI				= 1<<1,
+	SHDELETE_COMPLETEDELETE		= 1<<2,
+};
+BOOL SHDeleteFile(LPCTSTR lpFile, SHDELETEFLAG shf=SHDELETE_DEFAULT);
