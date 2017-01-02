@@ -91,7 +91,22 @@ namespace stdwin32 {
 
 
 
+	std::string stdExpandEnvironmentStringsA(LPCSTR pStr);
+	std::wstring stdExpandEnvironmentStringsW(LPCWSTR pStr);
+#ifdef UNICODE
+	#define stdExpandEnvironmentStrings stdExpandEnvironmentStringsW
+#else
+	#define stdExpandEnvironmentStrings stdExpandEnvironmentStringsA
+#endif
 
+
+
+	std::wstring stdGetEnvironmentVariableW(LPCWSTR pStr);
+#ifdef UNICODE
+	#define stdGetEnvironmentVariable stdGetEnvironmentVariableW
+#else
+	#define stdGetEnvironmentVariable stdGetEnvironmentVariableA
+#endif
 
 }
 

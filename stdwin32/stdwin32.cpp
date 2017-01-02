@@ -369,4 +369,55 @@ std::wstring stdItoW(int i) {
 
 
 
+std::string stdExpandEnvironmentStringsA(LPCSTR pStr)
+{
+	DWORD dwReq = ExpandEnvironmentStringsA(pStr, NULL, 0);
+	LPSTR pBuff = new char[dwReq];
+	
+	DWORD dwRet = ExpandEnvironmentStringsA(pStr, pBuff, dwReq);
+	if(dwReq != dwRet)
+	{
+		delete[] pBuff;
+		return pStr;
+	}
+	std::string ret(pBuff);
+	delete[] pBuff;
+	return ret;
+}
+std::wstring stdExpandEnvironmentStringsW(LPCWSTR pStr)
+{
+	DWORD dwReq = ExpandEnvironmentStringsW(pStr, NULL, 0);
+	LPWSTR pBuff = new wchar_t[dwReq];
+	
+	DWORD dwRet = ExpandEnvironmentStringsW(pStr, pBuff, dwReq);
+	if(dwReq != dwRet)
+	{
+		delete[] pBuff;
+		return pStr;
+	}
+	std::wstring ret(pBuff);
+	delete[] pBuff;
+	return ret;
+}
+
+
+std::wstring stdGetEnvironmentVariableW(LPCWSTR pStr)
+{
+	DWORD dwReq = GetEnvironmentVariableW(pStr, NULL, 0);
+	if(dwReq==0)
+		return L"";
+	LPWSTR pBuff = new wchar_t[dwReq];
+	DWORD dwRet = GetEnvironmentVariableW(pStr, pBuff, dwReq);
+	if(dwReq < dwRet)
+	{
+		delete[] pBuff;
+		return pStr;
+	}
+	std::wstring ret(pBuff);
+	delete[] pBuff;
+	return ret;
+}
+
+
+
 } // namespace stdwin32

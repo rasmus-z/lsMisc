@@ -30,7 +30,7 @@ static int CALLBACK BrowseCallbackProc(HWND hWnd,		// Window handle to the brows
 	{
 		case BFFM_INITIALIZED:		// sent when the browse dialog box has finished initializing. 
 		{
-			TRACE(_T("hWnd=%X\n"), hWnd);
+			// TRACE(_T("hWnd=%X\n"), hWnd);
 
 			// remove context help button from dialog caption
 			LONG lStyle = ::GetWindowLong(hWnd, GWL_STYLE);
@@ -78,12 +78,12 @@ static int CALLBACK BrowseCallbackProc(HWND hWnd,		// Window handle to the brows
 					SHFILEINFO sfi;
 					::SHGetFileInfo((LPCTSTR)lParam, 0, &sfi, sizeof(sfi), 
 							SHGFI_PIDL | SHGFI_ATTRIBUTES);
-					TRACE(_T("dwAttributes=0x%08X\n"), sfi.dwAttributes);
+					// TRACE(_T("dwAttributes=0x%08X\n"), sfi.dwAttributes);
 
 					// fail if pidl is a link
 					if (sfi.dwAttributes & SFGAO_LINK)
 					{
-						TRACE(_T("SFGAO_LINK\n"),0);
+						// TRACE(_T("SFGAO_LINK\n"),0);
 						bRet = FALSE;
 					}
 				}
@@ -95,7 +95,7 @@ static int CALLBACK BrowseCallbackProc(HWND hWnd,		// Window handle to the brows
 				::EnableWindow(GetDlgItem(hWnd, IDOK), FALSE);
 			}
 
-			TRACE(_T("szDir=%s\n"), szDir);
+			// TRACE(_T("szDir=%s\n"), szDir);
 		}
 		break;
 	}
