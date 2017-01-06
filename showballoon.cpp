@@ -13,6 +13,10 @@ using namespace std;
 
 #pragma comment(lib,"Comctl32.lib")
 
+#ifndef ARRAYSIZE
+#define ARRAYSIZE(t) sizeof(t)/sizeof(t[0])
+#endif
+
 static BOOL NotifyIconize(HWND hWnd, 
 						  UINT uID,
 						  DWORD dwMessage, 
