@@ -231,7 +231,10 @@ unsigned char* urldecode(const char* penc, unsigned int* pSize)
 			c2 = *penc;
 			c = a2i(c1, c2);
 		}
-
+		else if(c=='+')
+		{
+			c=' ';
+		}
 		*p = c;
 	}
 	*p = 0;
