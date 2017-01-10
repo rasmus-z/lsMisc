@@ -3,9 +3,10 @@
 #include <string>
 #include "UTF16toUTF8.h"
 
-BYTE* UTF16toUTF8(LPCWSTR pIN)
+
+BYTE* UTF16toMultiByte(UINT cp, LPCWSTR pIN)
 {
-	int nReqSize = WideCharToMultiByte(CP_UTF8,
+	int nReqSize = WideCharToMultiByte(cp,
 		0,
 		pIN,
 		-1,
@@ -18,7 +19,7 @@ BYTE* UTF16toUTF8(LPCWSTR pIN)
 		return NULL;
 
 	BYTE* pOut = (BYTE*)malloc(nReqSize);
-	int nRet = WideCharToMultiByte(CP_UTF8,
+	int nRet = WideCharToMultiByte(cp,
 		0,
 		pIN,
 		-1,
@@ -28,9 +29,17 @@ BYTE* UTF16toUTF8(LPCWSTR pIN)
 		NULL);
 
 	if ( nRet==0 || nRet != nReqSize )
+	{
+		free(pOut);
 		return NULL;
+	}
 
-	return pOut;;
+	return pOut;
+
+}
+BYTE* UTF16toUTF8(LPCWSTR pIN)
+{
+	return UTF16toMultiByte(CP_UTF8, pIN);
 }
 
 LPWSTR UTF16_convertEndian(LPCWSTR pIN)
@@ -52,11 +61,13 @@ LPWSTR UTF16_convertEndian(LPCWSTR pIN)
 	return pRet;
 }
 
-LPWSTR UTF8toUTF16(const LPBYTE pIN)
+
+
+
+LPWSTR MultiBytetoUTF16(UINT cp, const LPBYTE pIN)
 {
-	
 	int nReqSize = MultiByteToWideChar(
-		CP_UTF8,
+		cp,
 		0,
 		(const char*)pIN,
 		-1,
@@ -67,7 +78,7 @@ LPWSTR UTF8toUTF16(const LPBYTE pIN)
 		return NULL;
 
 	LPWSTR pOut = (LPWSTR)malloc(nReqSize*sizeof(WCHAR));
-	int nRet = MultiByteToWideChar(CP_UTF8,
+	int nRet = MultiByteToWideChar(cp,
 		0,
 		(const char*)pIN,
 		-1,
@@ -75,19 +86,17 @@ LPWSTR UTF8toUTF16(const LPBYTE pIN)
 		nReqSize);
 
 	if ( nRet==0 || nRet != nReqSize )
-		return NULL;
-
-/**
-	if ( bUrlEncode )
 	{
-		int nEncodeSize = nRet*3;
-		BYTE* pOut2 = NULL;
-		UrlEncode2(pOut, lstrlenA((char*)pOut), (char**)&pOut2, 1);
 		free(pOut);
-		return pOut2;
+		return NULL;
 	}
-**/
-	return pOut;;
+
+	return pOut;
+}
+
+LPWSTR UTF8toUTF16(const LPBYTE pIN)
+{
+	return MultiBytetoUTF16(CP_UTF8, pIN);
 }
 
 bool UTF8toUTF16(const LPBYTE pIN, std::wstring& w)
