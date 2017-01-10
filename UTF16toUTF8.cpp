@@ -4,7 +4,7 @@
 #include "UTF16toUTF8.h"
 
 
-BYTE* UTF16toMultiByte(UINT cp, LPCWSTR pIN)
+BYTE* UTF16toMultiByte(UINT cp, LPCWSTR pIN, size_t* pLenOut)
 {
 	int nReqSize = WideCharToMultiByte(cp,
 		0,
@@ -34,6 +34,8 @@ BYTE* UTF16toMultiByte(UINT cp, LPCWSTR pIN)
 		return NULL;
 	}
 
+	if(pLenOut)
+		*pLenOut = nRet;
 	return pOut;
 
 }
