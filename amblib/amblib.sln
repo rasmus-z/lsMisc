@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual C# Express 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "amblib", "amblib\amblib.csproj", "{459EB893-322D-4097-A950-1A593DACB024}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "amblibTest", "amblibTest\amblibTest.csproj", "{9508DF7F-2009-4E43-A6DB-935E2F6E7B32}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{459EB893-322D-4097-A950-1A593DACB024}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{459EB893-322D-4097-A950-1A593DACB024}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{459EB893-322D-4097-A950-1A593DACB024}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{459EB893-322D-4097-A950-1A593DACB024}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9508DF7F-2009-4E43-A6DB-935E2F6E7B32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9508DF7F-2009-4E43-A6DB-935E2F6E7B32}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9508DF7F-2009-4E43-A6DB-935E2F6E7B32}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9508DF7F-2009-4E43-A6DB-935E2F6E7B32}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
