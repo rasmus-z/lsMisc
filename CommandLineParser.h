@@ -16,20 +16,57 @@ namespace Ambiesoft {
 //};
 
 
-struct CAvailableCommandLineInfo
+class COption
 {
-	int nID_;
-	LPCTSTR pOption_;
+
+	tstring option_;
 //	ArgType argtype_;
 	unsigned long argcountflag_;
+	vector<tstring> values_;
+	bool hadOption_;
+	void AddValue(const tstring& value)
+	{
+		values_.push_back(value);
+	}
+	void setHadOption() {
+		hadOption_=true;
+	}
+public:
+	COption(tstring option, unsigned long acf) : hadOption_(false)
+	{
+		option_ = option;
+		argcountflag_=acf;
+	}
+	COption(tstring option) : hadOption_(false)
+	{
+		option_ = option;
+		argcountflag_=0;
+	}
+	friend class CCommandLineParser;
+	
+	bool hadOption() const {
+		return hadOption_;
+	}
+	bool hadValue() const {
+		return !values_.empty();
+	}
+	tstring getValueStrings() const {
+		tstring ret;
+		for(vector<tstring>::const_iterator it=values_.begin() ; it != values_.end() ; ++it)
+		{
+			ret += *it;
+			ret += L" ";
+		}
+		return ret;
+	}
+	tstring getFirstValue() const {
+		tstring ret;
+		if(values_.empty())
+			return ret;
+		return values_[0];
+	}
 };
 
-struct CInputCommandLineInfo
-{
-	int nID_;
-	tstring option_;
-	tstring value_;
-};
 
 class CCommandLineParser
 {
@@ -74,113 +111,139 @@ class CCommandLineParser
 		return ret;
 	}
 			
-	CAvailableCommandLineInfo* pCLI_;
-	size_t clicount_;
+	typedef std::vector<COption*> POPTIONARRAY;
+	typedef std::vector<COption> OPTIONARRAY;
+	POPTIONARRAY availables_;
+	OPTIONARRAY unknowns_;
+	bool empty_;
 
-	CAvailableCommandLineInfo* FindAvailableCL(LPCTSTR pOption)
+	COption* FindAvailableCL(const tstring& option)
 	{
-		for(size_t i=0 ; i < clicount_ ; ++i)
+		for(POPTIONARRAY::iterator it=availables_.begin() ; it != availables_.end() ; ++it)
 		{
-			CAvailableCommandLineInfo* pCLI = pCLI_;
-			pCLI += i;
-			if(_tcscmp(pCLI->pOption_, pOption)==0)
+			//COption* pCLI = pCLI_;
+			//pCLI += i;
+			// if(_tcscmp(pCLI->pOption_, pOption)==0)
+			if( (*it)->option_ == option)
 			{
-				return pCLI;
+				return *it;
 			}
 		}
 		return NULL;
 	}
 
-	std::vector<CInputCommandLineInfo> inputs_;
-	std::vector<CInputCommandLineInfo>::iterator current_;
-	std::vector<CInputCommandLineInfo>::iterator* pcurrent_;
+//	std::vector<CInputCommandLineInfo> inputs_;
+//	std::vector<CInputCommandLineInfo>::iterator current_;
+//	std::vector<CInputCommandLineInfo>::iterator* pcurrent_;
+//public:
+//	CInputCommandLineInfo* GetNext()
+//	{
+//		if(!pcurrent_)
+//		{
+//			pcurrent_ = &current_;
+//			*pcurrent_ = inputs_.begin();
+//		}
+//		else
+//			++(*pcurrent_);
+//
+//		if(*pcurrent_ == inputs_.end())
+//		{
+//			pcurrent_=NULL;
+//			return NULL;
+//		}
+//
+//		return &**pcurrent_;
+//	}
+
 public:
-	CInputCommandLineInfo* GetNext()
+	CCommandLineParser()
 	{
-		if(!pcurrent_)
-		{
-			pcurrent_ = &current_;
-			*pcurrent_ = inputs_.begin();
-		}
-		else
-			++(*pcurrent_);
-
-		if(*pcurrent_ == inputs_.end())
-		{
-			pcurrent_=NULL;
-			return NULL;
-		}
-
-		return &**pcurrent_;
+		empty_ = true;
 	}
-
-	CCommandLineParser(int argc, LPTSTR* targv,CAvailableCommandLineInfo* pCLI, size_t count)
+	bool isEmpty() const {
+		return empty_;
+	}
+	tstring getUnknowOptionStrings() const {
+		tstring ret;
+		for(OPTIONARRAY::const_iterator it=unknowns_.begin() ; it != unknowns_.end() ; ++it)
+		{
+			ret += it->option_;
+			if(!it->hadValue())
+			{
+				ret += L" ";
+				ret += it->getValueStrings();
+			}
+		}
+		return ret;
+	}
+	bool hadUnknownOption() const {
+		return !unknowns_.empty();
+	}
+	void AddOption(COption* cli) {
+		availables_.push_back(cli);
+	}
+	void Parse(int argc, LPTSTR* targv)
 	{
-		pcurrent_ = NULL;
+//		pcurrent_ = NULL;
 
 		argc_ = argc;
 		targv_ = targv;
-		pCLI_ = pCLI;
-		clicount_ = count;
-
+		
 		for(int i=1 ; i < argc ; ++i)
 		{
 			LPCTSTR pArgv = targv[i];
 			if(!pArgv || !pArgv[0])
 				continue;
 
+			empty_ = false;
+
 			if(pArgv[0]==_T('-') || pArgv[0]==_T('/'))
 			{
-				CAvailableCommandLineInfo* pCLI = FindAvailableCL(pArgv);	
-				if(!pCLI)
+				COption* pA = FindAvailableCL(pArgv);	
+				if(!pA)
 				{
-					CInputCommandLineInfo icli;
-					icli.nID_ = -1;
-					icli.option_ = pArgv;
-					inputs_.push_back(icli);
+					//CInputCommandLineInfo icli;
+					//icli.nID_ = -1;
+					//icli.option_ = pArgv;
+					unknowns_.push_back(COption(pArgv));
 					continue;
 				}
 
-				if(pCLI->argcountflag_ & 0x1)
+				pA->setHadOption();
+
+				if(pA->argcountflag_ & 0x1)
 				{
 					++i;
 					if( i >= argc )
 					{
-						CInputCommandLineInfo icli;
-						icli.nID_ = pCLI->nID_;
-						icli.option_ = pArgv;
-						inputs_.push_back(icli);
 						break;
 					}
 					
 					LPCTSTR pArgv2 = targv[i];
-					CInputCommandLineInfo icli;
-					icli.nID_ = pCLI->nID_;
-					icli.option_ = pArgv;
-					icli.value_ = pArgv2;
-					inputs_.push_back(icli);
+					// pA->option_ = pArgv;
+					pA->AddValue(pArgv2);
 					continue;
 				}
 			}
 			else
 			{
-				CAvailableCommandLineInfo* pCLI = FindAvailableCL(_T(""));	
-				if(!pCLI)
+				COption* pA = FindAvailableCL(_T(""));	
+				if(!pA)
 				{
-					CInputCommandLineInfo icli;
-					icli.nID_ = -2;
-					icli.option_ = _T("");
-					icli.value_ = pArgv;
-					inputs_.push_back(icli);
+					//CInputCommandLineInfo icli;
+					//icli.nID_ = -2;
+					//icli.option_ = _T("");
+					//icli.value_ = pArgv;
+					unknowns_.push_back(COption(pArgv));
 					continue;
 				}
 				else
 				{
-					CInputCommandLineInfo icli;
-					icli.nID_ = pCLI->nID_;
-					icli.option_ = _T("");
-					icli.value_ = pArgv;
-					inputs_.push_back(icli);
+					//CInputCommandLineInfo icli;
+					//icli.nID_ = pA->nID_;
+					//icli.option_ = _T("");
+					pA->AddValue(pArgv);
+					// pA.push_back(icli);
 					continue;
 
 				}
