@@ -1,4 +1,5 @@
 #include <vector>
+#include <tchar.h>
 #include "tstring.h"
 
 #define OFNBUFFERSIZE 1024
