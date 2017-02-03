@@ -1,4 +1,4 @@
-
+#include "tchar.h"
 #include "GetVersionString.h"
 
 #pragma comment(lib, "Version.lib")
@@ -28,9 +28,9 @@ TCHAR *GetVersionString(TCHAR *szFileName, TCHAR *szValue, TCHAR *szBuffer, ULON
 
 	if(GetFileVersionInfo(szFileName, 0, len, ver))
 	{
-		if(VerQueryValue(ver, "\\VarFileInfo\\Translation", (LPVOID*)&codepage, (PUINT)&len))
+		if(VerQueryValue(ver, _T("\\VarFileInfo\\Translation"), (LPVOID*)&codepage, (PUINT)&len))
 		{
-			wsprintf(fmt, "\\StringFileInfo\\%04x%04x\\%s", (*codepage) & 0xFFFF, 
+			wsprintf(fmt, _T("\\StringFileInfo\\%04x%04x\\%s"), (*codepage) & 0xFFFF, 
 					(*codepage) >> 16, szValue);
 			
 			if(VerQueryValue(ver, fmt, &ptr, (PUINT)&len))

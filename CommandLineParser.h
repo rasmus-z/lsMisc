@@ -3,8 +3,20 @@
 #include <windows.h>
 #include <tchar.h>
 #include <vector>
+#include <string>
 
-#include "tstring.h"
+#ifdef UNICODE
+	typedef std::wstring tstring;
+#else
+	typedef std::string tstring;
+#endif
+
+#ifdef __linux__ 
+#elif _WIN32
+	#include <Shellapi.h>
+#else
+#endif
+
 
 namespace Ambiesoft {
 
@@ -22,7 +34,7 @@ class COption
 	tstring option_;
 //	ArgType argtype_;
 	unsigned long argcountflag_;
-	vector<tstring> values_;
+	std::vector<tstring> values_;
 	bool hadOption_;
 	void AddValue(const tstring& value)
 	{
@@ -52,7 +64,7 @@ public:
 	}
 	tstring getValueStrings() const {
 		tstring ret;
-		for(vector<tstring>::const_iterator it=values_.begin() ; it != values_.end() ; ++it)
+		for(std::vector<tstring>::const_iterator it=values_.begin() ; it != values_.end() ; ++it)
 		{
 			ret += *it;
 			ret += L" ";
@@ -70,8 +82,8 @@ public:
 
 class CCommandLineParser
 {
-	int argc_;
-	LPTSTR* targv_;
+	//int argc_;
+	//LPTSTR* targv_;
 
 	static tstring GetToken(LPCTSTR p)
 	{
@@ -132,28 +144,6 @@ class CCommandLineParser
 		return NULL;
 	}
 
-//	std::vector<CInputCommandLineInfo> inputs_;
-//	std::vector<CInputCommandLineInfo>::iterator current_;
-//	std::vector<CInputCommandLineInfo>::iterator* pcurrent_;
-//public:
-//	CInputCommandLineInfo* GetNext()
-//	{
-//		if(!pcurrent_)
-//		{
-//			pcurrent_ = &current_;
-//			*pcurrent_ = inputs_.begin();
-//		}
-//		else
-//			++(*pcurrent_);
-//
-//		if(*pcurrent_ == inputs_.end())
-//		{
-//			pcurrent_=NULL;
-//			return NULL;
-//		}
-//
-//		return &**pcurrent_;
-//	}
 
 public:
 	CCommandLineParser()
@@ -182,12 +172,25 @@ public:
 	void AddOption(COption* cli) {
 		availables_.push_back(cli);
 	}
+#ifdef _WIN32
+	void Parse()
+	{
+		LPWSTR *szArglist;
+		int nArgs;
+
+		szArglist = CommandLineToArgvW(GetCommandLineW(), &nArgs);
+		if( NULL == szArglist )
+		{
+			return;
+		}
+		Parse(nArgs, szArglist);
+		LocalFree(szArglist);
+	}
+#endif
 	void Parse(int argc, LPTSTR* targv)
 	{
-//		pcurrent_ = NULL;
-
-		argc_ = argc;
-		targv_ = targv;
+		//argc_ = argc;
+		//targv_ = targv;
 		
 		for(int i=1 ; i < argc ; ++i)
 		{
