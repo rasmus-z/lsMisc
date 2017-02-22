@@ -1,8 +1,12 @@
+#include "stdafx.h"
+
 #include <windows.h>
 #include <tchar.h>
 #include <Shlobj.h>
 #include <assert.h>
 #include <shlwapi.h>
+
+#pragma comment(lib, "shlwapi.lib")
 
 #include "GetDesktopDir.h"
 
