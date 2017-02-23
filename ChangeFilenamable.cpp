@@ -11,7 +11,12 @@
 
 using namespace std;
 
-tstring ChangeFilenamable(LPCTSTR pch)
+static tstring convertChar(TCHAR t1, bool bToSjisZen)
+{
+
+}
+
+tstring ChangeFilenamable(LPCTSTR pch, bool bToSjisZen)
 {
 	tstring ret;
 	while( *pch != '\0' )
@@ -19,39 +24,39 @@ tstring ChangeFilenamable(LPCTSTR pch)
 		switch(*pch)
 		{
 		case _T('\\'):
-			ret += _T("Åè");
+			ret += bToSjisZen ? _T("Åè") : _T("_");
 			break;
 
 		case _T(':'):
-			ret += _T("ÅF");
+			ret += bToSjisZen ? _T("ÅF") : _T("_");
 			break;
 			
 		case _T('*'):
-			ret += _T("Åñ");
+			ret += bToSjisZen ? _T("Åñ") : _T("_");
 			break;
 			
 		case _T('?'):
-			ret += _T("ÅH");
+			ret += bToSjisZen ? _T("ÅH") : _T("_");
 			break;
 			
 		case _T('\"'):
-			ret += _T("Åg");
+			ret += bToSjisZen ? _T("Åg") : _T("_");
 			break;
 			
 		case _T('<'):
-			ret += _T("ÅÉ");
+			ret += bToSjisZen ? _T("ÅÉ") : _T("_");
 			break;
 
 		case _T('>'):
-			ret += _T("ÅÑ");
+			ret += bToSjisZen ? _T("ÅÑ") : _T("_");
 			break;
 
 		case _T('|'):
-			ret += _T("Åb");
+			ret += bToSjisZen ? _T("Åb") : _T("_");
 			break;
 
 		case _T('/'):
-			ret += _T("Å^");
+			ret += bToSjisZen ? _T("Å^") : _T("_");
 			break;
 
 		default:
