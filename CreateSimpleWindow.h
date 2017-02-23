@@ -4,3 +4,4 @@ HWND CreateSimpleWindow(HINSTANCE hInst = NULL,
 						LPCTSTR pWinName = NULL,
 						WNDPROC WndProc = NULL,
 						void* param=NULL);
+int WaitSimpleWindowClose(HWND hWnd);

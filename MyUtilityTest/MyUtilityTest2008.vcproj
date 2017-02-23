@@ -204,7 +204,15 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
+				RelativePath="..\CenterWindow.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\ChangeFilenamable.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\CreateSimpleWindow.cpp"
 				>
 			</File>
 			<File
@@ -249,7 +257,15 @@
 			Filter="h;hpp;hxx;hm;inl"
 			>
 			<File
+				RelativePath="..\CenterWindow.h"
+				>
+			</File>
+			<File
 				RelativePath="..\ChangeFilenamable.h"
+				>
+			</File>
+			<File
+				RelativePath="..\CreateSimpleWindow.h"
 				>
 			</File>
 			<File

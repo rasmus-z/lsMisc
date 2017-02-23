@@ -90,21 +90,21 @@ bool MoveWindowCommon(HWND hWnd, MOVEWINDOWTYPE type)
 	case MOVEWINDOW_TOPRIGHT:
 		// targetPos.X = screenRect.Right - curSize.Width;
 		// targetPos.Y = screenRect.Location.Y;
-		targetPos.x = workingarea.right - rWin.right - rWin.left;
+		targetPos.x = workingarea.right - (rWin.right - rWin.left);
 		targetPos.y = workingarea.top;
 		break;
 	case MOVEWINDOW_BOTTOMLEFT:
 		// targetPos.X = screenRect.Location.X;
 		// targetPos.Y = screenRect.Bottom - curSize.Height;
 		targetPos.x = workingarea.left;
-		targetPos.y = workingarea.bottom - rWin.bottom - rWin.top;
+		targetPos.y = workingarea.bottom - (rWin.bottom - rWin.top);
 
 		break;
 	case MOVEWINDOW_BOTTOMRIGHT:
 		// targetPos.X = screenRect.Right - curSize.Width;
 		// targetPos.Y = screenRect.Bottom - curSize.Height;
-		targetPos.x = workingarea.right - rWin.right - rWin.left;
-		targetPos.y = workingarea.bottom - rWin.bottom - rWin.top;
+		targetPos.x = workingarea.right - (rWin.right - rWin.left);
+		targetPos.y = workingarea.bottom - (rWin.bottom - rWin.top);
 		break;
 
 	default:

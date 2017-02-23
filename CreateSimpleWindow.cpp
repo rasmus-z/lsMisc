@@ -47,3 +47,25 @@ HWND CreateSimpleWindow(HINSTANCE hInst,
 		hInst,
 		param);
 }
+
+int WaitSimpleWindowClose(HWND hWnd)
+{
+	BOOL bRet;
+	MSG msg;
+
+    while( (bRet = GetMessage( &msg, NULL, 0, 0 )) != 0)
+    { 
+        if (bRet == -1)
+        {
+            return -1;
+        }
+        else
+        {
+            TranslateMessage(&msg); 
+            DispatchMessage(&msg); 
+        }
+    } 
+ 
+    // Return the exit code to the system. 
+     return msg.wParam;
+}
