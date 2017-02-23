@@ -239,6 +239,10 @@
 				RelativePath=".\testHira2Kata.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\testMoveWindowCommon.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
