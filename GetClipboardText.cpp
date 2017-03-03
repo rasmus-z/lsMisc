@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include <windows.h>
 #include "tstring.h"
+
+#include "UTF16toUTF8.h"
+
 #include "GetClipboardText.h"
 
 using namespace std;
