@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include <assert.h>
 #include <vcclr.h>
+#include <string>
+
+#include "getStdString.net.h"
 
 namespace Ambiesoft {
 
