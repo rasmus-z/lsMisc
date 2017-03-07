@@ -39,10 +39,13 @@ HOME : http://www.geocities.co.jp/SilkRoad/4511/
 #include <string.h>
 #include <ctype.h>
 
+#include <string>
 
 #include "UrlEncode.h"
 
-void UrlEncode(const unsigned char	*csource,
+using namespace std;
+
+void UrlEncode_SJIS_Obsolete(const unsigned char	*csource,
 						size_t	nSize,
 						char** pOut,
 						int bUseMalloc)
@@ -124,42 +127,25 @@ void UrlEncode(const unsigned char	*csource,
 
 // http://www.emoticode.net/c/urlencode-in-plain-c.html
 static char i2a(char code) {
-	static char hex[] = "0123456789abcdef";
+	static char hex[] = "0123456789ABCDEF";
 	return hex[code & 15];
 }
 
-char *urlencodenew(char *pstr)
+
+char *UrlEncode(const unsigned char *pstr, size_t size)
 {
 	char
 		*buf,
 		*pbuf;
 
-	pbuf = buf = (char *)malloc(strlen(pstr) * 3 + 1);
+	if (pstr == NULL)
+		return NULL;
 
-	while (*pstr) {
-		if ((*pstr >0 && isalnum(*pstr)) || *pstr == '-' || *pstr == '_' || *pstr == '.' || *pstr == '~') {
-			*pbuf++ = *pstr;
-		}
-		else if (*pstr == ' ') {
-			*pbuf++ = '+';
-		}
-		else {
-			*pbuf++ = '%';
-			*pbuf++ = i2a(*pstr >> 4);
-			*pbuf++ = i2a(*pstr & 15);
-		}
-		pstr++;
-	}
-	*pbuf = '\0';
+	if (size == -1)
+		size = strlen((const char*)pstr);
 
-	return buf;
-}
-
-char *urlencodenew2(char *pstr, size_t size)
-{
-	char
-		*buf,
-		*pbuf;
+	if (size == 0)
+		return "";
 
 	pbuf = buf = (char *)malloc(size * 3 + 1);
 
@@ -181,6 +167,10 @@ char *urlencodenew2(char *pstr, size_t size)
 
 	return buf;
 }
+
+
+
+
 
 
 static char a2ibyte(char c)
@@ -209,7 +199,7 @@ static char a2i(char c1, char c2)
 {
 	return (a2ibyte(c1) << 4) | (a2ibyte(c2));
 }
-unsigned char* urldecode(const char* penc, unsigned int* pSize)
+unsigned char* UrlDecode(const char* penc, unsigned int* pSize)
 {
 	unsigned int size = 0;
 	unsigned char* pOrig = (unsigned char*)malloc(strlen(penc) + 1);
@@ -238,6 +228,10 @@ unsigned char* urldecode(const char* penc, unsigned int* pSize)
 		*p = c;
 	}
 	*p = 0;
-	*pSize = size;
+	if(pSize)
+		*pSize = size;
 	return pOrig;
 }
+
+
+
