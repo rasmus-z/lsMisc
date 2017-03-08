@@ -283,6 +283,7 @@ BOOL sqlWritePrivateProfileString(
   LPCTSTR lpString,
   LPCTSTR lpFileName )
 {
+	
 	if(!IsFileExistsW(lpFileName))
 	{
 		if(!createDB(lpFileName, lpAppName))
@@ -296,6 +297,8 @@ BOOL sqlWritePrivateProfileString(
 	if(SQLITE_OK != sqlite3_open16(lpFileName, &pDB))
 		return FALSE;
 	stlsoft::scoped_handle<sqlite3*> ma(pDB, sqlite3_close);
+
+	// sqlite3_busy_timeout(pDB, 3000);
 
 	int sqRet=0;
 	{
@@ -326,6 +329,8 @@ BOOL sqlWritePrivateProfileString(
 			return FALSE;
 
 		sqRet = sqlite3_step(pStmtInsert);
+
+		assert(sqRet == SQLITE_DONE);
 	}
 
 /*
