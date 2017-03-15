@@ -24,11 +24,13 @@
 
 
 
-// using namespace std;
+
 #include "stdwin32.h"
 
 
 namespace stdwin32 {
+	
+using namespace std;
 
 static const wchar_t* Nil=L"";
 
