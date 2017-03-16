@@ -370,6 +370,13 @@ std::wstring stdItoW(int i) {
 }
 
 
+std::string stdItoA64(__int64 i) {
+	return string_formatA("%I64d", i);
+}
+std::wstring stdItoW64(__int64 i) {
+	return string_formatW(L"%I64d", i);
+}
+
 
 std::string stdExpandEnvironmentStringsA(LPCSTR pStr)
 {

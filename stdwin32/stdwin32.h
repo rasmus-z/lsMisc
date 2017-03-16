@@ -91,6 +91,15 @@ namespace stdwin32 {
 
 
 
+	std::string stdItoA64(__int64 i);
+	std::wstring stdItoW64(__int64 i);
+#ifdef UNICODE
+	#define stdItoT64 stdItoW64
+#else
+	#define stdItoT64 stdItoA
+#endif
+
+
 	std::string stdExpandEnvironmentStringsA(LPCSTR pStr);
 	std::wstring stdExpandEnvironmentStringsW(LPCWSTR pStr);
 #ifdef UNICODE
