@@ -1,7 +1,13 @@
 #include "stdafx.h"
+#include <Shellapi.h>
 #include "OpenCommon.h"
 
-BOOL OpenCommon(HWND hWnd, LPCTSTR pApp, LPCTSTR pCommand, LPCTSTR pDirectory, HANDLE* pPHandle)
+BOOL OpenCommon(HWND hWnd, 
+				LPCTSTR pApp, 
+				LPCTSTR pCommand, 
+				LPCTSTR pDirectory, 
+				HANDLE* pPHandle,
+				LPCTSTR pVerb)
 {
 	SHELLEXECUTEINFO sei = {0};
 	sei.cbSize = sizeof(sei);
@@ -19,6 +25,7 @@ BOOL OpenCommon(HWND hWnd, LPCTSTR pApp, LPCTSTR pCommand, LPCTSTR pDirectory, H
 	sei.lpParameters = pCommand;
 	sei.lpDirectory = pDirectory;
 	sei.nShow = SW_SHOW;
+	sei.lpVerb = pVerb;
 
 	BOOL ret = ShellExecuteEx(&sei);
 	if (ret && pPHandle)
