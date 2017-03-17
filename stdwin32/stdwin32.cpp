@@ -476,4 +476,39 @@ bool stdGetUnittedSizeW(LPCWSTR pStr, int& nSign, __int64& lResult, int* pUnit)
 	return true;
 }
 
+
+wstring stdSplitCommandLineW(int argc, int startargc, LPCWSTR* argv)
+{
+	wstring ret;
+	if (argc < 1)
+		return ret;
+
+	for (int i = startargc; i < argc; ++i)
+	{
+		LPCWSTR p = argv[i];
+		if (!p || !p[0])
+			return L"";
+
+		if (p[0] == L'"')
+		{
+			ret += p;
+		}
+		else if (wcschr(p, L' ') || wcschr(p, L'\t'))
+		{
+			ret += L"\"";
+			ret += p;
+			ret += L"\"";
+		}
+		else
+		{
+			ret += p;
+		}
+		ret += L" ";
+	}
+
+	ret = trim(ret);
+	return ret;
+}
+
+
 } // namespace stdwin32

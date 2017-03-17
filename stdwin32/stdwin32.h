@@ -126,5 +126,14 @@ namespace stdwin32 {
 	#define stdGetUnittedSize stdGetUnittedSizeA
 #endif
 
+
+
+	std::wstring stdSplitCommandLineW(int argc, int startargc, LPCWSTR* argv);
+#ifdef UNICODE
+#define stdSplitCommandLine stdSplitCommandLineW
+#else
+#define stdSplitCommandLine stdSplitCommandLineA
+#endif
+
 }
 
