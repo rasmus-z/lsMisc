@@ -1,3 +1,3 @@
 BOOL CreateProcessCommon(LPCTSTR pApp, 
-						 LPTSTR pArg=NULL,
+						 LPCTSTR pArg=NULL,
 						 BOOL bHide=FALSE);

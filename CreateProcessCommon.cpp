@@ -3,8 +3,60 @@
 #include <tchar.h>
 #include "CreateProcessCommon.h"
 
+static LPTSTR copystring(LPCTSTR p)
+{
+	if (p == NULL)
+		return NULL;
+
+	int len = (lstrlen(p) + 1) * sizeof(TCHAR);
+	LPTSTR q = (LPTSTR)LocalAlloc(LMEM_FIXED, len);
+	if (q == NULL)
+		return NULL;
+	lstrcpy(q, p);
+	return q;
+}
+static void freestring(LPCTSTR q)
+{
+	LocalFree((HLOCAL)q);
+}
+
+static LPTSTR createcommandline(LPCTSTR a, LPCTSTR b)
+{
+	if (a == NULL && b == NULL)
+		return NULL;
+
+	if (a == NULL)
+		a = L"";
+	if (b == NULL)
+		b = L"";
+
+	int lenA = (lstrlen(a)) * sizeof(TCHAR);
+	int lenB = (lstrlen(b)) * sizeof(TCHAR);
+
+
+	int len = 0;
+	if (lenA)
+		len += lenA + sizeof(TCHAR);
+	if(lenB)
+		len += lenB + sizeof(TCHAR);
+
+	LPTSTR q = (LPTSTR)LocalAlloc(LMEM_FIXED, len);
+	if (q == NULL)
+		return NULL;
+	*q = 0;
+	if (*a)
+	{
+		lstrcat(q, a);
+		if(*b)
+			lstrcat(q, L" ");
+	}
+	lstrcat(q, b);
+
+	return q;
+}
+
 BOOL CreateProcessCommon(LPCTSTR pApp, 
-						 LPTSTR pArg, // =NULL,
+						 LPCTSTR pArg, // =NULL,
 						 BOOL bHide //=FALSE);
 						 )
 {
@@ -64,16 +116,17 @@ BOOL CreateProcessCommon(LPCTSTR pApp,
 	PROCESS_INFORMATION pi = {0};
 
 
+	LPTSTR cl = createcommandline(pApp, pArg);
 
 	BOOL bRet = CreateProcess(
 		 //LPCTSTR lpApplicationName, 
 		 // 実行可能モジュールの名前、NULLでもいい
-		pApp,
+		NULL,
 
 		// LPTSTR lpCommandLine,
 		// コマンドラインの文字列、NULLでもいい
 		// コンストじゃだめ
-		pArg,
+		cl,
 
 		// LPSECURITY_ATTRIBUTES lpProcessAttributes,
 		// セキュリティ記述子
@@ -115,6 +168,8 @@ BOOL CreateProcessCommon(LPCTSTR pApp,
 		// プロセス情報
 		&pi
 	);
+
+	freestring(cl);
 
 	if(!bRet)
 	{
