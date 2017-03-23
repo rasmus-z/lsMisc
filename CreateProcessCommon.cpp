@@ -92,7 +92,7 @@ BOOL CreateProcessCommon(LPCTSTR pApp,
 		//STARTF_PREVENTPINNING				|| // タスクバーにピンさせない、STARTF_TITLEISAPPIDと共に使う
 		//STARTF_RUNFULLSCREEN				|| // フルスクリーン、x86コンソールでのみ有効
 		//STARTF_TITLEISAPPID				|| // lpTitleはAppUserModeIDを設定、タスクバーの同一性情報
-		//STARTF_USESHOWWINDOW				|| // SW_HIDEとかを指定
+		STARTF_USESHOWWINDOW				|| // SW_HIDEとかを指定
 		//STARTF_USESTDHANDLES				|| // ハンドル継承関係
 		0;
 	if(bHide)
@@ -107,6 +107,10 @@ BOOL CreateProcessCommon(LPCTSTR pApp,
 	if(bHide)
 	{
 		si.wShowWindow = SW_HIDE;
+	}
+	else
+	{
+		si.wShowWindow = SW_SHOWNORMAL;
 	}
 
 
