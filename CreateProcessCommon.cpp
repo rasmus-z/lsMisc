@@ -87,13 +87,13 @@ BOOL CreateProcessCommon(LPCTSTR pApp,
 
 	// フラグ（一部）
 	si.dwFlags =
-		//STARTF_FORCEONFEEDBACK			|| // 普通の待機マウスカーソル
-		//STARTF_FORCEOFFFEEDBACK			|| // 待機マウスカーソルなし
-		//STARTF_PREVENTPINNING				|| // タスクバーにピンさせない、STARTF_TITLEISAPPIDと共に使う
-		//STARTF_RUNFULLSCREEN				|| // フルスクリーン、x86コンソールでのみ有効
-		//STARTF_TITLEISAPPID				|| // lpTitleはAppUserModeIDを設定、タスクバーの同一性情報
-		STARTF_USESHOWWINDOW				|| // SW_HIDEとかを指定
-		//STARTF_USESTDHANDLES				|| // ハンドル継承関係
+		//STARTF_FORCEONFEEDBACK			| // 普通の待機マウスカーソル
+		//STARTF_FORCEOFFFEEDBACK			| // 待機マウスカーソルなし
+		//STARTF_PREVENTPINNING				| // タスクバーにピンさせない、STARTF_TITLEISAPPIDと共に使う
+		//STARTF_RUNFULLSCREEN				| // フルスクリーン、x86コンソールでのみ有効
+		//STARTF_TITLEISAPPID				| // lpTitleはAppUserModeIDを設定、タスクバーの同一性情報
+		STARTF_USESHOWWINDOW				| // SW_HIDEとかを指定
+		//STARTF_USESTDHANDLES				| // ハンドル継承関係
 		0;
 	if(bHide)
 	{
@@ -147,10 +147,10 @@ BOOL CreateProcessCommon(LPCTSTR pApp,
 
 		// DWORD dwCreationFlags, 
 		// 作成のフラグ（一部）
-		//CREATE_DEFAULT_ERROR_MODE		|| // エラーモードを継承しない
-		//CREATE_NO_WINDOW				|| // コンソールウインドウを表示しない
-		//CREATE_SUSPENDED				|| // 起動させないでサスペンドする
-		//IDLE_PRIORITY_CLASS			|| // プロセスの優先順位
+		//CREATE_DEFAULT_ERROR_MODE		| // エラーモードを継承しない
+		//CREATE_NO_WINDOW				| // コンソールウインドウを表示しない
+		//CREATE_SUSPENDED				| // 起動させないでサスペンドする
+		//IDLE_PRIORITY_CLASS			| // プロセスの優先順位
 		0,
 
 		// LPVOID lpEnvironment,
