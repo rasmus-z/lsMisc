@@ -64,10 +64,15 @@ public:
 	}
 	tstring getValueStrings() const {
 		tstring ret;
+		bool looped=false;
 		for(std::vector<tstring>::const_iterator it=values_.begin() ; it != values_.end() ; ++it)
 		{
+			if(looped)
+			{
+				ret += L" ";
+			}
+			looped = true;
 			ret += *it;
-			ret += L" ";
 		}
 		return ret;
 	}
