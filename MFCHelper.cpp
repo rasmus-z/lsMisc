@@ -2,6 +2,8 @@
 #include <intshcut.h> 
 #include <atlconv.h>
 #include <afxtempl.h>
+#include <stdlib.h>
+#include <Mshtml.h>
 
 #include "MFCHelper.h"
 
@@ -80,53 +82,6 @@ ERROR_END:
 }
 
 
-BOOL ChangeFilenamable( CString& strTitle )
-{
-	TCHAR* pch = _tcsdup(strTitle);
-	TCHAR* pTemp = pch;
-	try
-	{
-		while( *pch != _T('\0') )
-		{
-			TCHAR* pOrgch = pch;
-			if( *pch==_T('\\')
-			||  *pch==_T(':')
-			||  *pch==_T('*')
-			||  *pch==_T('?')
-			||  *pch==_T('\"')
-			||  *pch==_T('<')
-			||  *pch==_T('>')
-			||  *pch==_T('|') )
-			{
-				do
-				{
-					*pOrgch = *(pOrgch+1);
-					++pOrgch;
-				}
-				while( *pOrgch );
-			}
-			else
-				pch = (TCHAR*)_mbsinc((unsigned char*)pch);
-		}
-		
-		pch = pTemp;
-		while( *pch != _T('\0') )
-		{
-			if( *pch == _T('/') )
-				*pch = _T('-');
-
-			pch = (TCHAR*)_mbsinc((unsigned char*)pch);
-		}
-	}
-	catch(...)
-	{
-		return FALSE;
-	}
-	strTitle = pTemp;
-	delete pTemp;
-	return TRUE;
-}
-
 
 HRESULT CreateInterShortcut (LPCTSTR pszURL, 
 							 LPCTSTR pszURLfilename,
@@ -198,30 +153,7 @@ HRESULT CreateInterShortcut (LPCTSTR pszURL,
 	return hres;
 } 
 
-BOOL CreateInterShortcutHelper (LPCTSTR pURL, 
-								LPCTSTR pDir, 
-								LPCTSTR pTitle)
-{
-	if ( pURL==NULL || pDir==NULL || pTitle==NULL )
-		return FALSE;
 
-	if ( pURL[0] == _T('\0') || pDir[0] == _T('\0') || pTitle[0] == _T('\0') )
-		return FALSE;
-
-	DWORD dwTempAttr = ::GetFileAttributes(pDir);
-	if( dwTempAttr == 0xFFFFFFFF || !(dwTempAttr & FILE_ATTRIBUTE_DIRECTORY) )
-		return FALSE;
-
-	CString strNewTitle = pTitle;
-	VERIFY(ChangeFilenamable(strNewTitle));
-
-	CString strFileName = pDir;
-	strFileName += _T('\\');
-	strFileName += strNewTitle;
-	strFileName += _T(".url");
-
-	return SUCCEEDED(CreateInterShortcut(pURL, strFileName, NULL));
-}
 
 BOOL IsBrowserReady(IWebBrowser2* pBrowser)
 {
@@ -366,3 +298,95 @@ BOOL CreateCompleteDir(LPCTSTR lpszDir, LPSECURITY_ATTRIBUTES lpSecurityAttribut
 }
 
 **/
+
+
+
+CString dqIfSpace(const CString& s)
+{
+	if(s.IsEmpty())
+		return s;
+
+	if(s[0]==_T('"'))
+		return s;
+
+	if(s.Find(_T(" ")) == -1)
+		return s;
+
+	return _T("\"") + s + _T("\"");
+}
+
+
+
+
+//
+//BOOL ChangeFilenamable( CString& strTitle )
+//{
+//	TCHAR* pch = _tcsdup(strTitle);
+//	TCHAR* pTemp = pch;
+//	try
+//	{
+//		while( *pch != _T('\0') )
+//		{
+//			TCHAR* pOrgch = pch;
+//			if( *pch==_T('\\')
+//			||  *pch==_T(':')
+//			||  *pch==_T('*')
+//			||  *pch==_T('?')
+//			||  *pch==_T('\"')
+//			||  *pch==_T('<')
+//			||  *pch==_T('>')
+//			||  *pch==_T('|') )
+//			{
+//				do
+//				{
+//					*pOrgch = *(pOrgch+1);
+//					++pOrgch;
+//				}
+//				while( *pOrgch );
+//			}
+//			else
+//				pch = (TCHAR*)_mbsinc((unsigned char*)pch);
+//		}
+//		
+//		pch = pTemp;
+//		while( *pch != _T('\0') )
+//		{
+//			if( *pch == _T('/') )
+//				*pch = _T('-');
+//
+//			pch = (TCHAR*)_mbsinc((unsigned char*)pch);
+//		}
+//	}
+//	catch(...)
+//	{
+//		return FALSE;
+//	}
+//	strTitle = pTemp;
+//	delete pTemp;
+//	return TRUE;
+//}
+
+//BOOL CreateInterShortcutHelper (LPCTSTR pURL, 
+//								LPCTSTR pDir, 
+//								LPCTSTR pTitle)
+//{
+//	if ( pURL==NULL || pDir==NULL || pTitle==NULL )
+//		return FALSE;
+//
+//	if ( pURL[0] == _T('\0') || pDir[0] == _T('\0') || pTitle[0] == _T('\0') )
+//		return FALSE;
+//
+//	DWORD dwTempAttr = ::GetFileAttributes(pDir);
+//	if( dwTempAttr == 0xFFFFFFFF || !(dwTempAttr & FILE_ATTRIBUTE_DIRECTORY) )
+//		return FALSE;
+//
+//	CString strNewTitle = pTitle;
+//	VERIFY(ChangeFilenamable(strNewTitle));
+//
+//	CString strFileName = pDir;
+//	strFileName += _T('\\');
+//	strFileName += strNewTitle;
+//	strFileName += _T(".url");
+//
+//	return SUCCEEDED(CreateInterShortcut(pURL, strFileName, NULL));
+//}

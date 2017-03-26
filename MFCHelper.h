@@ -1,14 +1,15 @@
 CString GetFavoritesFolder();
-BOOL CreateInterShortcutHelper (LPCTSTR pURL, 
-								LPCTSTR pDir, 
-								LPCTSTR pTitle);
+//BOOL CreateInterShortcutHelper (LPCTSTR pURL, 
+//								LPCTSTR pDir, 
+//								LPCTSTR pTitle);
+//
+//HRESULT CreateInterShortcut (LPCTSTR pszURL, 
+//							 LPCTSTR pszURLfilename,
+//							 LPCTSTR szDescription,
+//							 LPCTSTR szIconFile = NULL,
+//							 int nIndex = -1);
 
-HRESULT CreateInterShortcut (LPCTSTR pszURL, 
-							 LPCTSTR pszURLfilename,
-							 LPCTSTR szDescription,
-							 LPCTSTR szIconFile = NULL,
-							 int nIndex = -1);
-
+struct IHTMLDocument2;
 typedef BOOL (*WALKIEDOCFUNC)(IHTMLDocument2* pDoc, void* pVoid);
 int WalkIEDocument(WALKIEDOCFUNC f, void* pVoid);
 // BOOL CreateCompleteDir(LPCTSTR lpszDir, LPSECURITY_ATTRIBUTES lpSecurityAttributes = NULL);
@@ -34,3 +35,6 @@ public:
 		return m_strMessage.IsEmpty() == FALSE;
 	}
 };
+
+
+CString dqIfSpace(const CString& s);
