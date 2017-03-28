@@ -304,19 +304,24 @@ BOOL sqlWritePrivateProfileString(
 	{
 		stTransactionScope stts(pDB);
 
-		sqlite3_stmt* pStmtInsert = NULL;
-		LPCWSTR pKata = L"INSERT OR REPLACE INTO [%s] VALUES (?, ?);";
-		LPWSTR p = (LPWSTR)malloc(wcslen(pKata)*2 + wcslen(lpAppName)*2 + 2);
-		stlsoft::scoped_handle<void*> mahh( (void*)p, free);
-		wsprintf(p, pKata, lpAppName);
-		int ret = sqlite3_prepare16_v2(pDB,
-			p,
-			-1,
-			&pStmtInsert,
-			0);
-		if(SQLITE_OK != ret)
-			return FALSE;
-		stlsoft::scoped_handle<sqlite3_stmt*> mastml( pStmtInsert, sqlite3_finalize);
+		static sqlite3_stmt* pStmtInsert = NULL;
+		if (pStmtInsert == NULL) 
+		{
+			LPCWSTR pKata = L"INSERT OR REPLACE INTO [%s] VALUES (?, ?);";
+			LPWSTR p = (LPWSTR)malloc(wcslen(pKata) * 2 + wcslen(lpAppName) * 2 + 2);
+			stlsoft::scoped_handle<void*> mahh((void*)p, free);
+			wsprintf(p, pKata, lpAppName);
+			int ret = sqlite3_prepare16_v2(pDB,
+				p,
+				-1,
+				&pStmtInsert,
+				0);
+			if (SQLITE_OK != ret)
+				return FALSE;
+
+			static stlsoft::scoped_handle<sqlite3_stmt*> mastml(pStmtInsert, sqlite3_finalize);
+		}
+		
 
 
 		if(SQLITE_OK != sqlite3_reset(pStmtInsert))
