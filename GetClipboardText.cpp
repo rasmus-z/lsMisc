@@ -73,7 +73,7 @@ static BOOL getHtmlPosition(LPCSTR pStr, LPCSTR pKey, int& val)
 
 BOOL GetClipboardHtmlA(HWND hWnd, string& strData)
 {
-	static int cf = RegisterClipboardFormat(L"HTML Format");
+	static int cf = RegisterClipboardFormatA("HTML Format");
 
 	string strT;
 	if(!getClipboardTextDataA(hWnd, cf, strT))
