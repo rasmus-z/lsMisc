@@ -385,20 +385,24 @@ BOOL sqlGetPrivateProfileString(
 
 	stTransactionScope stts(pDB);
 
-	sqlite3_stmt* pStmtSelect = NULL;
-	LPCWSTR pKata = L"SELECT c2 FROM [%s] WHERE c1 = ?;";
-	LPWSTR p = (LPWSTR)malloc(wcslen(pKata)*2 + wcslen(lpAppName)*2 + 2);
-	stlsoft::scoped_handle<void*> mahh( (void*)p, free);
-	wsprintf(p, pKata, lpAppName);
-	int ret = sqlite3_prepare16_v2(pDB,
-		p,
-		-1,
-		&pStmtSelect,
-		0);
+	static sqlite3_stmt* pStmtSelect = NULL;
+	if(!pStmtSelect)
+	{
+		LPCWSTR pKata = L"SELECT c2 FROM [%s] WHERE c1 = ?;";
+		LPWSTR p = (LPWSTR)malloc(wcslen(pKata)*2 + wcslen(lpAppName)*2 + 2);
+		stlsoft::scoped_handle<void*> mahh( (void*)p, free);
+		wsprintf(p, pKata, lpAppName);
+		int ret = sqlite3_prepare16_v2(pDB,
+			p,
+			-1,
+			&pStmtSelect,
+			0);
 
-	if(ret != SQLITE_OK)
-		return FALSE;
-	stlsoft::scoped_handle<sqlite3_stmt*> mastml(pStmtSelect, sqlite3_finalize);
+		if(ret != SQLITE_OK)
+			return FALSE;
+	
+		static stlsoft::scoped_handle<sqlite3_stmt*> mastml(pStmtSelect, sqlite3_finalize);
+	}
 	
 
 	if(SQLITE_OK != sqlite3_reset(pStmtSelect))
