@@ -1,4 +1,4 @@
-﻿#include "stdafx.h"
+#include "stdafx.h"
 #include <windows.h>
 #include <tchar.h>
 #include "CreateProcessCommon.h"
@@ -57,7 +57,8 @@ static LPTSTR createcommandline(LPCTSTR a, LPCTSTR b)
 
 BOOL CreateProcessCommon(LPCTSTR pApp, 
 						 LPCTSTR pArg, // =NULL,
-						 BOOL bHide //=FALSE);
+						 BOOL bHide, //=FALSE
+						 DWORD* pdwLastError
 						 )
 {
 	STARTUPINFO si = {0};
@@ -173,11 +174,13 @@ BOOL CreateProcessCommon(LPCTSTR pApp,
 		&pi
 	);
 
+	if(pdwLastError)
+		*pdwLastError = GetLastError();
+
 	freestring(cl);
 
 	if(!bRet)
 	{
-		DWORD dwLE = GetLastError();
 		return FALSE;
 	}
 

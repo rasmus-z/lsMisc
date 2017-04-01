@@ -30,6 +30,9 @@ bool Is64BitWindows()
 #endif
 }
 
+#ifndef PROCESSOR_ARCHITECTURE_AMD64
+#define PROCESSOR_ARCHITECTURE_AMD64 9
+#endif
 
 typedef void(WINAPI *LPFN_GetNativeSystemInfo)(LPSYSTEM_INFO);
 LPCWSTR GetPlatformW()
