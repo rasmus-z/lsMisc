@@ -130,6 +130,7 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\browseFolder.cpp" />
     <ClCompile Include="..\ChangeFilenamable.cpp" />
     <ClCompile Include="..\GetVersionString.cpp" />
     <ClCompile Include="..\IsFileExists.cpp" />
@@ -138,6 +139,7 @@
     <ClCompile Include="testStlsoft.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\browseFolder.h" />
     <ClInclude Include="..\ChangeFilenamable.h" />
     <ClInclude Include="..\GetVersionString.h" />
     <ClInclude Include="..\IsFileExists.h" />
