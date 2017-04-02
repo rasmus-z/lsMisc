@@ -13,13 +13,36 @@
 
 //#define TRACE(t1,t2) (void)0
 
-
+#pragma comment(lib,"Shell32.lib")
 
 
 _COM_SMARTPTR_TYPEDEF(IFileOpenDialog, __uuidof(IFileOpenDialog));
 _COM_SMARTPTR_TYPEDEF(IShellItem, __uuidof(IShellItem));
 _COM_SMARTPTR_TYPEDEF(IFileDialog, __uuidof(IFileDialog));
 
+static IShellItemPtr getShellItemFromPath(LPWSTR pPath)
+{
+	typedef HRESULT (*fnSHCreateItemFromParsingName)(
+		PCWSTR   pszPath,
+		IBindCtx *pbc,
+		REFIID   riid,
+		void     **ppv
+		);
+	IShellItemPtr pRet;
+	HMODULE h = LoadLibrary(L"shell32.dll");
+	if(h)
+	{
+		fnSHCreateItemFromParsingName fn = (fnSHCreateItemFromParsingName)
+			GetProcAddress(h, "SHCreateItemFromParsingName");
+		if(fn)
+		{
+			fn(pPath, NULL, IID_IShellItem, (void**)&pRet);
+		}
+		FreeLibrary(h);
+	}
+
+	return pRet;
+}
 static bool bfVista(HWND hWnd, LPCTSTR lpszTitle, LPTSTR pFolder, bool& handled)
 {
 	handled = false;
@@ -43,12 +66,29 @@ static bool bfVista(HWND hWnd, LPCTSTR lpszTitle, LPTSTR pFolder, bool& handled)
 	if (FAILED(spFileDialog->GetOptions(&dwOptions)))
 		return false;
 
-	
+
 	if (FAILED(spFileDialog->SetOptions(dwOptions | FOS_PICKFOLDERS)))
 		return false;
 
 	if (FAILED(spFileDialog->SetTitle(lpszTitle)))
 		return false;
+
+
+	IShellItemPtr pDefault;
+	if(pFolder[0])
+	{
+		DWORD dwAttr = GetFileAttributes(pFolder);
+		if(dwAttr != 0xFFFFFFFF && (dwAttr & FILE_ATTRIBUTE_DIRECTORY))
+		{
+			pDefault = getShellItemFromPath(pFolder);
+		}
+	}
+
+
+	if(pDefault != NULL)
+	{
+		spFileDialog->SetDefaultFolder(pDefault);
+	}
 
 	bool ret;
 	hr = spFileDialog->Show(hWnd);
@@ -66,7 +106,7 @@ static bool bfVista(HWND hWnd, LPCTSTR lpszTitle, LPTSTR pFolder, bool& handled)
 		return false;
 	}
 
-	
+
 
 
 	IShellItemPtr psi;
@@ -76,7 +116,7 @@ static bool bfVista(HWND hWnd, LPCTSTR lpszTitle, LPTSTR pFolder, bool& handled)
 	LPWSTR szFileName = NULL;
 	if (FAILED(psi->GetDisplayName(SIGDN_DESKTOPABSOLUTEPARSING, &szFileName)))
 		return false;
-					
+
 	lstrcpy(pFolder, szFileName);
 	CoTaskMemFree(szFileName);
 
@@ -93,84 +133,84 @@ struct FOLDER_PROPS
 };
 
 static int CALLBACK BrowseCallbackProc(HWND hWnd,		// Window handle to the browse dialog box
-	UINT uMsg,		// Value identifying the event
-	LPARAM lParam,	// Value dependent upon the message 
-	LPARAM lpData)	// Application-defined value that was 
-					// specified in the lParam member of the 
-					// BROWSEINFO structure
+									   UINT uMsg,		// Value identifying the event
+									   LPARAM lParam,	// Value dependent upon the message 
+									   LPARAM lpData)	// Application-defined value that was 
+									   // specified in the lParam member of the 
+									   // BROWSEINFO structure
 {
 	switch (uMsg)
 	{
 	case BFFM_INITIALIZED:		// sent when the browse dialog box has finished initializing. 
-	{
-		// TRACE(_T("hWnd=%X\n"), hWnd);
-
-		// remove context help button from dialog caption
-		LONG lStyle = ::GetWindowLong(hWnd, GWL_STYLE);
-		lStyle &= ~DS_CONTEXTHELP;
-		::SetWindowLong(hWnd, GWL_STYLE, lStyle);
-		lStyle = ::GetWindowLong(hWnd, GWL_EXSTYLE);
-		lStyle &= ~WS_EX_CONTEXTHELP;
-		::SetWindowLong(hWnd, GWL_EXSTYLE, lStyle);
-
-		FOLDER_PROPS *fp = (FOLDER_PROPS *)lpData;
-		if (fp)
 		{
-			if (fp->lpszInitialFolder && (fp->lpszInitialFolder[0] != _T('\0')))
+			// TRACE(_T("hWnd=%X\n"), hWnd);
+
+			// remove context help button from dialog caption
+			LONG lStyle = ::GetWindowLong(hWnd, GWL_STYLE);
+			lStyle &= ~DS_CONTEXTHELP;
+			::SetWindowLong(hWnd, GWL_STYLE, lStyle);
+			lStyle = ::GetWindowLong(hWnd, GWL_EXSTYLE);
+			lStyle &= ~WS_EX_CONTEXTHELP;
+			::SetWindowLong(hWnd, GWL_EXSTYLE, lStyle);
+
+			FOLDER_PROPS *fp = (FOLDER_PROPS *)lpData;
+			if (fp)
 			{
-				// set initial directory
-				::SendMessage(hWnd, BFFM_SETSELECTION, TRUE, (LPARAM)fp->lpszInitialFolder);
-			}
-
-			if (fp->lpszTitle && (fp->lpszTitle[0] != _T('\0')))
-			{
-				// set window caption
-				::SetWindowText(hWnd, fp->lpszTitle);
-			}
-		}
-
-		// SizeBrowseDialog(hWnd, fp);
-	}
-	break;
-
-	case BFFM_SELCHANGED:		// sent when the selection has changed
-	{
-		TCHAR szDir[MAX_PATH * 2] = { 0 };
-
-		// fail if non-filesystem
-		BOOL bRet = SHGetPathFromIDList((LPITEMIDLIST)lParam, szDir);
-		if (bRet)
-		{
-			// fail if folder not accessible
-			if (_taccess(szDir, 00) != 0)
-			{
-				bRet = FALSE;
-			}
-			else
-			{
-				SHFILEINFO sfi;
-				::SHGetFileInfo((LPCTSTR)lParam, 0, &sfi, sizeof(sfi),
-					SHGFI_PIDL | SHGFI_ATTRIBUTES);
-				// TRACE(_T("dwAttributes=0x%08X\n"), sfi.dwAttributes);
-
-				// fail if pidl is a link
-				if (sfi.dwAttributes & SFGAO_LINK)
+				if (fp->lpszInitialFolder && (fp->lpszInitialFolder[0] != _T('\0')))
 				{
-					// TRACE(_T("SFGAO_LINK\n"),0);
-					bRet = FALSE;
+					// set initial directory
+					::SendMessage(hWnd, BFFM_SETSELECTION, TRUE, (LPARAM)fp->lpszInitialFolder);
+				}
+
+				if (fp->lpszTitle && (fp->lpszTitle[0] != _T('\0')))
+				{
+					// set window caption
+					::SetWindowText(hWnd, fp->lpszTitle);
 				}
 			}
-		}
 
-		// if invalid selection, disable the OK button
-		if (!bRet)
+			// SizeBrowseDialog(hWnd, fp);
+		}
+		break;
+
+	case BFFM_SELCHANGED:		// sent when the selection has changed
 		{
-			::EnableWindow(GetDlgItem(hWnd, IDOK), FALSE);
-		}
+			TCHAR szDir[MAX_PATH * 2] = { 0 };
 
-		// TRACE(_T("szDir=%s\n"), szDir);
-	}
-	break;
+			// fail if non-filesystem
+			BOOL bRet = SHGetPathFromIDList((LPITEMIDLIST)lParam, szDir);
+			if (bRet)
+			{
+				// fail if folder not accessible
+				if (_taccess(szDir, 00) != 0)
+				{
+					bRet = FALSE;
+				}
+				else
+				{
+					SHFILEINFO sfi;
+					::SHGetFileInfo((LPCTSTR)lParam, 0, &sfi, sizeof(sfi),
+						SHGFI_PIDL | SHGFI_ATTRIBUTES);
+					// TRACE(_T("dwAttributes=0x%08X\n"), sfi.dwAttributes);
+
+					// fail if pidl is a link
+					if (sfi.dwAttributes & SFGAO_LINK)
+					{
+						// TRACE(_T("SFGAO_LINK\n"),0);
+						bRet = FALSE;
+					}
+				}
+			}
+
+			// if invalid selection, disable the OK button
+			if (!bRet)
+			{
+				::EnableWindow(GetDlgItem(hWnd, IDOK), FALSE);
+			}
+
+			// TRACE(_T("szDir=%s\n"), szDir);
+		}
+		break;
 	}
 
 	return 0;
