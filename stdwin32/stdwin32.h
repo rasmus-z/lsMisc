@@ -135,5 +135,7 @@ namespace stdwin32 {
 #define stdSplitCommandLine stdSplitCommandLineA
 #endif
 
+
+	std::wstring stdAddBackSlash(const std::wstring& d);
 }
 
