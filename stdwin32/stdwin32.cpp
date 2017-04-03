@@ -508,7 +508,7 @@ namespace stdwin32 {
 			ret += L" ";
 		}
 
-		ret = trim(ret);
+		ret = trimW(ret);
 		return ret;
 	}
 
