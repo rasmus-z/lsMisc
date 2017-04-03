@@ -6,25 +6,27 @@
 #include <string>
 
 #include "../../../../MyUtility/ReplaceFileHelper.h"
+#include "../../../../MyUtility/tstring.h"
+
 
 int main()
 {
-	std::string file("file.txt");
+	tstring file(_T("file.txt"));
 
-	std::ifstream ifs(file.c_str());
-	std::string str;
+	tifstream ifs(file.c_str());
+	tstring str;
 	ifs >> str;
-	std::cout << str << std::endl;
+	tcout << str << std::endl;
 	ifs.close();
 
 
-	str += "X";
+	str += _T("X");
 
 
-	std::string tmp = file + (".tmp");
-	std::string back = file + (".back");
+	tstring tmp = file + (_T(".tmp"));
+	tstring back = file + (_T(".back"));
 
-	std::ofstream ofs;
+	tofstream ofs;
 	ofs.open(tmp.c_str());
 	ofs << str << std::endl;
 	ofs.close();
