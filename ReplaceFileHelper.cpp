@@ -57,7 +57,8 @@ BOOL ReplaceFileHelper(
 
 	if(bReplacedExists && lpBackupFileName && *lpBackupFileName)
 	{
-		if(!MoveFileEx(lpReplacedFileName, lpBackupFileName, MOVEFILE_REPLACE_EXISTING))
+		DeleteFile(lpBackupFileName);
+		if(!MoveFile(lpReplacedFileName, lpBackupFileName))
 		{
 			if(pdwLastError)
 				*pdwLastError = GetLastError();
@@ -65,7 +66,7 @@ BOOL ReplaceFileHelper(
 		}
 	}
 
-	if(!MoveFileEx(lpReplacementFileName, lpReplacedFileName, 0))
+	if(!MoveFile(lpReplacementFileName, lpReplacedFileName))
 	{
 		if(pdwLastError)
 			*pdwLastError = GetLastError();
