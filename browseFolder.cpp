@@ -262,5 +262,36 @@ BOOL browseFolder(HWND hParent, LPCTSTR lpszTitle, LPTSTR pFolder)
 	bool ret = bfVista(hParent, lpszTitle, pFolder, handled);
 	if (handled)
 		return ret;
+
 	return bfXp(hParent, lpszTitle, pFolder);
+
 }
+
+#ifdef __cplusplus_cli
+#include <vcclr.h>
+BOOL browseFolder(System::Windows::Forms::IWin32Window^ win, System::String^ title, System::String^% folder)
+{
+	pin_ptr<const wchar_t> pTitle = PtrToStringChars(title);
+	pin_ptr<const wchar_t> pFolder = PtrToStringChars(folder);
+	TCHAR szFolder[MAX_PATH];
+	if(pFolder)
+		lstrcpyW(szFolder, pFolder);
+	else
+		szFolder[0]=0;
+	bool handled = false;
+	bool ret = bfVista(win ? (HWND)win->Handle.ToPointer():NULL, pTitle, szFolder, handled);
+	if (handled)
+	{
+		folder = gcnew System::String(szFolder);
+		return ret;
+	}
+	System::Windows::Forms::FolderBrowserDialog fbd;
+	if(!System::String::IsNullOrEmpty(folder))
+		fbd.SelectedPath = folder;
+	if(System::Windows::Forms::DialogResult::OK != fbd.ShowDialog(win))
+		return false;
+
+	folder = fbd.SelectedPath;
+	return true;
+}
+#endif
