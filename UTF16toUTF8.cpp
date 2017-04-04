@@ -44,6 +44,7 @@ BYTE* UTF16toUTF8(LPCWSTR pIN)
 	return UTF16toMultiByte(CP_UTF8, pIN);
 }
 
+
 LPWSTR UTF16_convertEndian(LPCWSTR pIN)
 {
 	if (pIN == NULL)
@@ -111,3 +112,13 @@ bool UTF8toUTF16(const LPBYTE pIN, std::wstring& w)
 	free((void*)pOut);
 	return true;
 }
+
+
+#ifdef __cplusplus_cli  
+#include <vcclr.h>
+BYTE* UTF16toUTF8(System::String^ s)
+{
+	pin_ptr<const wchar_t> p = PtrToStringChars(s);
+	return UTF16toUTF8(p);
+}
+#endif //__cplusplus_cli  

@@ -1,5 +1,6 @@
 #pragma once
 
+
 #include <string>
 #include <iostream>
 
@@ -7,12 +8,12 @@
 	typedef std::wstring tstring;
 	typedef std::wifstream tifstream;
 	typedef std::wofstream tofstream;
-	std::wostream& tcoutfunc() { return std::wcout; }
+	inline std::wostream& tcoutfunc() { return std::wcout; }
 	#define tcout tcoutfunc()
 #else
 	typedef std::string tstring;
 	typedef std::ifstream tifstream;
 	typedef std::ofstream tofstream;
-	std::ostream& tcoutfunc() { return std::cout; }
+	inline std::ostream& tcoutfunc() { return std::cout; }
 	#define tcout tcoutfunc()
 #endif
