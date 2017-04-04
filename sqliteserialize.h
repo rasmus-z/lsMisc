@@ -1,27 +1,27 @@
 static BOOL createDB(LPCWSTR pDBPath, LPCSTR pTableName);
 
 BOOL sqlWritePrivateProfileString(
-  LPCTSTR lpAppName,
-  LPCTSTR lpKeyName,
-  LPCTSTR lpString,
-  LPCTSTR lpFileName );
+  LPCWSTR lpAppName,
+  LPCWSTR lpKeyName,
+	LPCWSTR lpString,
+	LPCWSTR lpFileName );
 BOOL sqlWritePrivateProfileInt(
-  LPCTSTR lpAppName,
-  LPCTSTR lpKeyName,
+	LPCWSTR lpAppName,
+	LPCWSTR lpKeyName,
   int nData,
-  LPCTSTR lpFileName );
+	LPCWSTR lpFileName );
 
 BOOL sqlGetPrivateProfileString(
-    LPCTSTR lpAppName,
-    LPCTSTR lpKeyName,
-    LPCTSTR lpDefault,
-    LPTSTR lpReturnedString,
+	LPCWSTR lpAppName,
+	LPCWSTR lpKeyName,
+	LPCWSTR lpDefault,
+	LPWSTR lpReturnedString,
     DWORD nSize,
-    LPCWSTR lpFileName);
+	LPCWSTR lpFileName);
 
 UINT sqlGetPrivateProfileInt(
-    LPCWSTR lpAppName,
-    LPCWSTR lpKeyName,
+	LPCWSTR lpAppName,
+	LPCWSTR lpKeyName,
     INT nDefault,
-    LPCWSTR lpFileName
+	LPCWSTR lpFileName
     );

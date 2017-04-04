@@ -282,7 +282,8 @@ BOOL browseFolder(System::Windows::Forms::IWin32Window^ win, System::String^ tit
 	bool ret = bfVista(win ? (HWND)win->Handle.ToPointer():NULL, pTitle, szFolder, handled);
 	if (handled)
 	{
-		folder = gcnew System::String(szFolder);
+		if(ret)
+			folder = gcnew System::String(szFolder);
 		return ret;
 	}
 	System::Windows::Forms::FolderBrowserDialog fbd;
