@@ -38,6 +38,7 @@ class COption
 	bool hadOption_;
 	void AddValue(const tstring& value)
 	{
+		setHadOption();
 		values_.push_back(value);
 	}
 	void setHadOption() {
@@ -81,6 +82,9 @@ public:
 		if(values_.empty())
 			return ret;
 		return values_[0];
+	}
+	size_t getValueCount() const {
+		return values_.size();
 	}
 };
 
