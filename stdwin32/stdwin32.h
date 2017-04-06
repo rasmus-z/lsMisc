@@ -33,7 +33,7 @@ namespace stdwin32 {
 	
 
 
-
+#ifndef __cplusplus_cli
 	std::string string_formatA(const std::string fmt, ...);
 	std::wstring string_formatW(const std::wstring fmt, ...);
 #ifdef UNICODE
@@ -41,7 +41,7 @@ namespace stdwin32 {
 #else
 	#define string_format string_formatA
 #endif
-
+#endif // __cplusplus_cli
 
 
 	std::string trimA(const std::string& str,

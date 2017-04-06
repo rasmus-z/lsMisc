@@ -214,7 +214,7 @@ namespace stdwin32 {
 		return ret;
 	}
 
-
+#ifndef __cplusplus_cli
 	std::string string_formatA(const std::string fmt, ...)
 	{
 		int size = ((int)fmt.size()) * 2 + 50;   // Use a rubric appropriate for your code
@@ -267,7 +267,7 @@ namespace stdwin32 {
 		}
 		return str;
 	}
-
+#endif __cplusplus_cli
 
 
 
@@ -365,18 +365,26 @@ namespace stdwin32 {
 
 
 	std::string stdItoA(int i) {
-		return string_formatA("%d", i);
+		// return string_formatA("%d", i);
+		char szT[64]; szT[0]=0;
+		return _itoa(i, szT, 10);
 	}
 	std::wstring stdItoW(int i) {
-		return string_formatW(L"%d", i);
+		// return string_formatW(L"%d", i);
+		wchar_t szT[64]; szT[0]=0;
+		return _itow(i, szT, 10);
 	}
 
 
 	std::string stdItoA64(__int64 i) {
-		return string_formatA("%I64d", i);
+		// return string_formatA("%I64d", i);
+		char szT[64]; szT[0]=0;
+		return _i64toa(i, szT, 10);
 	}
 	std::wstring stdItoW64(__int64 i) {
-		return string_formatW(L"%I64d", i);
+		// return string_formatW(L"%I64d", i);
+		wchar_t szT[64]; szT[0]=0;
+		return _i64tow(i, szT, 10);
 	}
 
 
