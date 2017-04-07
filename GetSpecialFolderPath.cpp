@@ -1,7 +1,16 @@
+#include "StdAfx.h"
+
 #include <windows.h>
 #include <tchar.h>
 #include <shlobj.h>
+
+#include "tstring.h"
 #include "GetSpecialFolderPath.h"
+
+
+// CSIDL_LOCAL_APPDATA
+// CSIDL_APPDATA
+
 
 BOOL GetSpecialFolderPath( HWND hWnd, int nFolder, TCHAR *Path )
 {
@@ -24,3 +33,13 @@ BOOL GetSpecialFolderPath( HWND hWnd, int nFolder, TCHAR *Path )
 	}
 	return FALSE;
 }//GetSpecialFolder
+
+BOOL GetSpecialFolderPath(HWND hWnd, int nFolder, tstring& tmpS)
+{
+	TCHAR szT[MAX_PATH]; szT[0] = 0;
+	if (!GetSpecialFolderPath(hWnd, nFolder, szT))
+		return FALSE;
+
+	tmpS = szT;
+	return TRUE;
+}

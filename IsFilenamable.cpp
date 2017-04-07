@@ -90,7 +90,7 @@ BOOL IsFullPathNamble(LPCTSTR p)
 	if(!p || !*p)
 		return FALSE;
 
-	return wcspbrk(p, GetRelativePathInamableChars().c_str())==NULL;
+	return wcspbrk(p, GetFullPathInamableChars().c_str())==NULL;
 }
 
 
