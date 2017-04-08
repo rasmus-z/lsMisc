@@ -76,7 +76,7 @@ bool GetFolderIniDir(HINSTANCE hInst, LPTSTR szFolder, DWORD nfSize,
 	return false;
 }
 
-void CreateFolderIniPath(HINSTANCE hInst,
+void CreateFolderIniPath_obsoletes(HINSTANCE hInst,
 	LPCTSTR pIniFileName, 
 	LPTSTR pOut, 
 	LPCTSTR pCreator,
