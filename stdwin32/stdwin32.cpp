@@ -22,7 +22,9 @@
 
 
 
-
+#ifdef __cplusplus_cli
+#include <vcclr.h>
+#endif // __cplusplus_cli
 
 
 #include "stdwin32.h"
@@ -535,7 +537,37 @@ namespace stdwin32 {
 
 
 
+#ifdef __cplusplus_cli
+	std::wstring getStdWString(System::String^ s)
+	{
+		pin_ptr<const wchar_t> p = PtrToStringChars(s);
+		return p;
+	}
+	std::string getStdString(System::String^ s)
+	{
+		std::string ret;
+		if (s == nullptr)
+			return ret;
 
+		pin_ptr<const wchar_t> p = PtrToStringChars(s);
+		size_t len = (s->Length + 1) * sizeof(wchar_t);
+		char* pT = (char*)malloc(len);
+		size_t retutrnvalue;
+
+		if (0 != wcstombs_s(&retutrnvalue,
+			pT,
+			len,
+			p,
+			len))
+		{
+			free(pT);
+			return ret;
+		}
+		ret = pT;
+		free(pT);
+		return ret;
+	}
+#endif // __cplusplus_cli
 
 
 

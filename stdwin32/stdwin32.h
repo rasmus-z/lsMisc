@@ -137,5 +137,16 @@ namespace stdwin32 {
 
 
 	std::wstring stdAddBackSlash(const std::wstring& d);
+
+
+
+
+
+
+
+#ifdef __cplusplus_cli
+	std::wstring getStdWString(System::String^ s);
+	std::string getStdString(System::String^ s);
+#endif // __cplusplus_cli
 }
 
