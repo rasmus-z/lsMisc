@@ -1,0 +1,157 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="UnicodeDebug|Win32">
+      <Configuration>UnicodeDebug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="UnicodeRelease|Win32">
+      <Configuration>UnicodeRelease</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <SccProjectName />
+    <SccLocalPath />
+    <Keyword>MFCProj</Keyword>
+    <ProjectGuid>{B324E6ED-E6A4-459D-AECF-B68F0331CA82}</ProjectGuid>
+    <ProjectName>ResizableLib</ProjectName>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='UnicodeDebug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='UnicodeRelease|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='UnicodeDebug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='UnicodeRelease|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='UnicodeRelease|Win32'">
+    <OutDir>.\UnicodeRelease\</OutDir>
+    <IntDir>.\UnicodeRelease\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='UnicodeDebug|Win32'">
+    <OutDir>.\UnicodeDebug\</OutDir>
+    <IntDir>.\UnicodeDebug\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='UnicodeRelease|Win32'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <StringPooling>true</StringPooling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <Optimization>MaxSpeed</Optimization>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;UNICODE;_WIN32_WINNT=0x0501;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AssemblerListingLocation>.\UnicodeRelease\</AssemblerListingLocation>
+      <PrecompiledHeaderOutputFile>.\UnicodeRelease\ResizableLib.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <ObjectFileName>.\UnicodeRelease\</ObjectFileName>
+      <ProgramDataBaseFileName>.\UnicodeRelease\</ProgramDataBaseFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <Culture>0x0410</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>.\UnicodeRelease\ResizableLib.bsc</OutputFile>
+    </Bscmake>
+    <Lib>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>.\UnicodeRelease\ResizableLib.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='UnicodeDebug|Win32'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <Optimization>Disabled</Optimization>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level4</WarningLevel>
+      <MinimalRebuild>true</MinimalRebuild>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;UNICODE;_WIN32_WINNT=0x0501;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AssemblerListingLocation>.\UnicodeDebug\</AssemblerListingLocation>
+      <PrecompiledHeaderOutputFile>.\UnicodeDebug\ResizableLib.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <ObjectFileName>.\UnicodeDebug\</ObjectFileName>
+      <ProgramDataBaseFileName>.\UnicodeDebug\</ProgramDataBaseFileName>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+    </ClCompile>
+    <ResourceCompile>
+      <Culture>0x0410</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>.\UnicodeDebug\ResizableLib.bsc</OutputFile>
+    </Bscmake>
+    <Lib>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>.\UnicodeDebug\ResizableLib.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="ResizableDialog.cpp" />
+    <ClCompile Include="ResizableFormView.cpp" />
+    <ClCompile Include="ResizableGrip.cpp" />
+    <ClCompile Include="ResizableLayout.cpp" />
+    <ClCompile Include="ResizableMinMax.cpp" />
+    <ClCompile Include="ResizablePage.cpp" />
+    <ClCompile Include="ResizablePageEx.cpp" />
+    <ClCompile Include="ResizableSheet.cpp" />
+    <ClCompile Include="ResizableSheetEx.cpp" />
+    <ClCompile Include="ResizableState.cpp" />
+    <ClCompile Include="StdAfx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='UnicodeRelease|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='UnicodeRelease|Win32'">stdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='UnicodeDebug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='UnicodeDebug|Win32'">stdafx.h</PrecompiledHeaderFile>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ResizableDialog.h" />
+    <ClInclude Include="ResizableFormView.h" />
+    <ClInclude Include="ResizableGrip.h" />
+    <ClInclude Include="ResizableLayout.h" />
+    <ClInclude Include="ResizableMinMax.h" />
+    <ClInclude Include="ResizablePage.h" />
+    <ClInclude Include="ResizablePageEx.h" />
+    <ClInclude Include="ResizableSheet.h" />
+    <ClInclude Include="ResizableSheetEx.h" />
+    <ClInclude Include="ResizableState.h" />
+    <ClInclude Include="StdAfx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="Artistic-License.txt" />
+    <CustomBuild Include="Docs\DoDoxygen.bat" />
+    <CustomBuild Include="Docs\doxyfile.txt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
