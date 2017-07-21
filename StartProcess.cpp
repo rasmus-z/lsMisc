@@ -10,7 +10,7 @@ BOOL StartProcess(LPCTSTR lpFile, BOOL bUseCreateProcess)
     STARTUPINFO         tStartupInfo = { 0 };
     PROCESS_INFORMATION tProcessInfomation = { 0 };
 
-	LPWSTR pW = wcsdup(lpFile);
+	LPWSTR pW = _wcsdup(lpFile);
     BOOL bResult = CreateProcess(
               NULL
             , pW
