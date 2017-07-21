@@ -3,13 +3,13 @@
 // HOW TO USE
 // 1. Include I18N.h and I18N.cpp to your project.
 // 2. Call i18nInitLangmap() at startup, or i18nInitLangmap(L"jpn") for specifying language.
-// 3. Create a Folder named "lang" under the exe-residing-folder, and place a lang file in it 
+// 3. Create a Folder named "lang" in the same folder your executable resides, and place a lang file in it 
 //    and name it like "myapp.jpn.txt" where myapp is name of the application.
-// 4. jpn.txt format is like follows:
+// 4. "myapp.jpn.txt" format is like follows:
 //    "Hello"="‚±‚ñ‚É‚¿‚Í"
 //    "Goodby"="‚³‚æ‚¤‚È‚ç"
 // 5. Call I18N(L"Hello") in your code. It returns const "‚±‚ñ‚É‚¿‚Í".
-// 6. Call i18Nxxxx() for translating windows texts. Show the source for more informations.
+// 6. Call i18NChangexxxx() for translating windows or dialog texts. Show the source for more informations.
 // 7. Look the debugger output when the program exists. Untranslated words will be printed.
 
 namespace Ambiesoft {

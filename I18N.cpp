@@ -212,13 +212,13 @@ LPCWSTR i18nInitLangmap(HINSTANCE hInst, LPCWSTR pLang, LPCWSTR pAppName)
 		i18map.clear();
 	}
 	
-	WCHAR szAppName[MAX_PATH]; szAppName[0]=0;
-	if(pAppName == NULL)
-	{
-		GetModuleFileNameW(hInst, szAppName, countof(szAppName));
-		*_tcsrchr(szAppName, L'.')=0;
-		pAppName = _tcsrchr(szAppName, L'\\')+1;
-	}
+	//WCHAR szAppName[MAX_PATH]; szAppName[0]=0;
+	//if(pAppName == NULL)
+	//{
+	//	GetModuleFileNameW(hInst, szAppName, countof(szAppName));
+	//	*_tcsrchr(szAppName, L'.')=0;
+	//	pAppName = _tcsrchr(szAppName, L'\\')+1;
+	//}
 
 	if(!langinit)
 	{
@@ -237,13 +237,28 @@ LPCWSTR i18nInitLangmap(HINSTANCE hInst, LPCWSTR pLang, LPCWSTR pAppName)
 						*(_tcsrchr(szT, L'\\'))=0;
 
 						TCHAR szTry[MAX_PATH];
-						wsprintfW(szTry, _T("%s\\lang\\%s%s.txt"),szT, pAppName, szLang);
+						if(pAppName && pAppName[0])
+							wsprintfW(szTry, _T("%s\\lang\\%s.%s.txt"),szT, pAppName, szLang);
+						else
+							wsprintfW(szTry, _T("%s\\lang\\%s.txt"), szT, szLang);
 
 						
 						FILE* f=_tfopen(szTry, _T("rb"));
-						if(!f)
+						if (!f)
+						{
+#ifdef _DEBUG
+							OutputDebugString(L"Lang file not found: ");
+							OutputDebugString(szTry);
+							OutputDebugString(L"\r\n");
+#endif
 							break;
+						}
 
+#ifdef _DEBUG
+						OutputDebugString(L"Lang file opened: ");
+						OutputDebugString(szTry);
+						OutputDebugString(L"\r\n");
+#endif
 						FileFreer ffreer(f);
 
 						BYTE* pB=NULL;
