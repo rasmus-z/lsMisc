@@ -14,5 +14,5 @@ void testMoveWindowCommon()
 	ShowWindow(h, SW_SHOW);
 	MoveWindow(h,0,0,300,300,TRUE);
 	MoveWindowCommon(h, MOVEWINDOW_BOTTOMRIGHT);
-	WaitSimpleWindowClose(h);
+	// WaitSimpleWindowClose(h);
 }
