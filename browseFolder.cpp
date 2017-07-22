@@ -16,6 +16,36 @@
 #pragma comment(lib,"Shell32.lib")
 
 
+#if 1 // check WINVER,_WIN32_*.
+#define STRING2(x) #x
+#define STRING(x) STRING2(x)
+#pragma message("WINVER        : " STRING(WINVER))
+#pragma message("_WIN32_WINNT  : " STRING(_WIN32_WINNT))
+//  #pragma message("_WIN32_WINDOWS: " STRING(_WIN32_WINDOWS)) // Windows9x only
+#pragma message("_WIN32_IE     : " STRING(_WIN32_IE))
+
+#ifdef UNICODE
+#pragma message("UNICODE defined")
+#else
+#pragma message("UNICODE not defined")
+#endif
+
+#endif // 1
+
+
+
+
+
+
+#ifdef UNICODE
+#if _WIN32_WINNT >= 0x0600
+#define ISOVERVISTA
+#endif // _WIN32_WINNT >= 0x0600
+#endif // UNICODE
+
+
+#ifdef ISOVERVISTA
+
 _COM_SMARTPTR_TYPEDEF(IFileOpenDialog, __uuidof(IFileOpenDialog));
 _COM_SMARTPTR_TYPEDEF(IShellItem, __uuidof(IShellItem));
 _COM_SMARTPTR_TYPEDEF(IFileDialog, __uuidof(IFileDialog));
@@ -29,7 +59,7 @@ static IShellItemPtr getShellItemFromPath(LPWSTR pPath)
 		void     **ppv
 		);
 	IShellItemPtr pRet;
-	HMODULE h = LoadLibrary(L"shell32.dll");
+	HMODULE h = LoadLibrary(_T("shell32.dll"));
 	if(h)
 	{
 		fnSHCreateItemFromParsingName fn = (fnSHCreateItemFromParsingName)
@@ -123,7 +153,7 @@ static bool bfVista(HWND hWnd, LPCTSTR lpszTitle, LPTSTR pFolder, bool& handled)
 	handled = true;
 	return ret;
 }
-
+#endif // #if ISOVERVISTA
 
 struct FOLDER_PROPS
 {
@@ -216,7 +246,7 @@ static int CALLBACK BrowseCallbackProc(HWND hWnd,		// Window handle to the brows
 	return 0;
 }
 
-BOOL bfXp(HWND hParent, LPCTSTR lpszTitle, LPTSTR pFolder)
+static BOOL bfXp(HWND hParent, LPCTSTR lpszTitle, LPTSTR pFolder)
 {
 	BOOL bRet = FALSE;
 
@@ -258,13 +288,13 @@ BOOL bfXp(HWND hParent, LPCTSTR lpszTitle, LPTSTR pFolder)
 
 BOOL browseFolder(HWND hParent, LPCTSTR lpszTitle, LPTSTR pFolder)
 {
+#ifdef ISOVERVISTA
 	bool handled = false;
 	bool ret = bfVista(hParent, lpszTitle, pFolder, handled);
 	if (handled)
 		return ret;
-
+#endif
 	return bfXp(hParent, lpszTitle, pFolder);
-
 }
 
 #ifdef __cplusplus_cli
@@ -278,6 +308,7 @@ BOOL browseFolder(System::Windows::Forms::IWin32Window^ win, System::String^ tit
 		lstrcpyW(szFolder, pFolder);
 	else
 		szFolder[0]=0;
+
 	bool handled = false;
 	bool ret = bfVista(win ? (HWND)win->Handle.ToPointer():NULL, pTitle, szFolder, handled);
 	if (handled)
@@ -295,4 +326,4 @@ BOOL browseFolder(System::Windows::Forms::IWin32Window^ win, System::String^ tit
 	folder = fbd.SelectedPath;
 	return true;
 }
-#endif
+#endif  // __cplusplus_cli

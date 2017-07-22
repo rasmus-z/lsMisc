@@ -1,13 +1,26 @@
 #include "stdafx.h"
-#include <cassert>
+#include <windows.h>
 
 #include "../stdwin32.h"
 
 using namespace std;
 using namespace stdwin32;
 
+#if 1 // check WINVER,_WIN32_*.
+  #define STRING2(x) #x
+  #define STRING(x) STRING2(x)
+  #pragma message("WINVER        : " STRING(WINVER))
+  #pragma message("_WIN32_WINNT  : " STRING(_WIN32_WINNT))
+//  #pragma message("_WIN32_WINDOWS: " STRING(_WIN32_WINDOWS)) // Windows9x only
+  #pragma message("_WIN32_IE     : " STRING(_WIN32_IE))
+#endif
+
 int main(int argc, char* argv[])
 {
+	cout << "_WIN32_WINNT=" << "0x" << std::hex << _WIN32_WINNT << endl;
+	cout << "WINVER=" << "0x" << std::hex << WINVER << endl;
+	cout << "_WIN32_IE=" << "0x" << std::hex << _WIN32_IE << endl;
+
 	std::string s=	stdwin32::string_format("%d-%s", 100, "aaa");
 	wstring ws;
 

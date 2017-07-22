@@ -70,7 +70,7 @@ public:
 		{
 			if(looped)
 			{
-				ret += L" ";
+				ret += _T(" ");
 			}
 			looped = true;
 			ret += *it;
@@ -169,7 +169,7 @@ public:
 			ret += it->option_;
 			if(!it->hadValue())
 			{
-				ret += L" ";
+				ret += _T(" ");
 				ret += it->getValueStrings();
 			}
 		}
@@ -182,6 +182,7 @@ public:
 		availables_.push_back(cli);
 	}
 #ifdef _WIN32
+#ifdef UNICODE
 	void Parse()
 	{
 		LPWSTR *szArglist;
@@ -195,6 +196,7 @@ public:
 		Parse(nArgs, szArglist);
 		LocalFree(szArglist);
 	}
+#endif
 #endif
 	void Parse(int argc, LPTSTR* targv)
 	{

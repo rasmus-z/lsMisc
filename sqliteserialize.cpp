@@ -10,8 +10,8 @@
 
 
 
-
-
+using std::wstring;
+using std::vector;
 
 
 
@@ -500,4 +500,88 @@ UINT sqlGetPrivateProfileInt(
 	}
 
 	return _wtoi(szT);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+static wstring tostring(size_t i)
+{
+	WCHAR szT[8];
+	wsprintf(szT, L"%d", i);
+	return szT;
+}
+
+#if (_MSC_VER <= 1400)
+typedef WCHAR* RPC_WSTR;
+#endif
+
+static wstring getuuidstring()
+{
+	UUID uuid;
+	UuidCreate(&uuid);
+	WCHAR* pS;
+	UuidToStringW(&uuid, (RPC_WSTR*)&pS);
+	wstring ret((WCHAR*)pS);
+	RpcStringFreeW((RPC_WSTR*)&pS);
+	return ret;
+}
+#pragma comment(lib,"Rpcrt4.lib")
+
+BOOL sqlGetPrivateProfileStringArray(LPCWSTR pApp, LPCWSTR pKey, vector<wstring>& ss, LPCWSTR pIni)
+{
+	if (pApp == NULL || pApp[0] == 0)
+		return FALSE;
+
+	if (pKey == NULL || pKey[0] == 0)
+		return FALSE;
+
+	const int buffcharsize = 4096;
+	TCHAR* pBuff = (TCHAR*)malloc(buffcharsize * sizeof(TCHAR));
+	for (size_t i = 0; ; ++i)
+	{
+		wstring key(pKey);
+		if (i != 0)
+			key += tostring(i);
+
+		wstring us = getuuidstring();
+		DWORD ret = sqlGetPrivateProfileString(
+			pApp,
+			key.c_str(),
+			us.c_str(),
+			pBuff,
+			buffcharsize,
+			pIni);
+
+		if (us == pBuff)
+			break;
+
+		ss.push_back(pBuff);
+	}
+	free(pBuff);
+	return TRUE;
+}
+BOOL sqlWritePrivateProfileStringArray(LPCWSTR pApp, LPCWSTR pKey, vector<wstring>& ss, LPCWSTR pIni)
+{
+	BOOL bFailed = FALSE;
+	const size_t count = ss.size();
+	for (size_t i = 0; i < count; ++i)
+	{
+		wstring key(pKey);
+		if (i != 0)
+		{
+			key += tostring(i);
+		}
+
+		bFailed |= !sqlWritePrivateProfileString(pApp, key.c_str(), ss[i].c_str(), pIni);
+	}
+	return !bFailed;
 }
