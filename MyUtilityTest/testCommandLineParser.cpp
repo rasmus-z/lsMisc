@@ -4,5 +4,5 @@
 void testCommandLine()
 {
 	Ambiesoft::CCommandLineParser clp;
-	clp.Parse();
+	clp.Parse(__argc, __targv);
 }
