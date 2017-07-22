@@ -21,7 +21,9 @@ int main(int argc, char* argv[])
 	s = stdItoA64(4444555522233444L);
 	assert(s=="4444555522233444");
 
-
+	ws = stdItoW64(-1010);
+	assert(ws==L"-1010");
+	
 	ws = stdItoW(5);
 	assert(ws==L"5");
 
