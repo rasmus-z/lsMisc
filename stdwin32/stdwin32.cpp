@@ -69,24 +69,33 @@ namespace stdwin32 {
 		return ret;
 	}
 
-	BOOL stdIsFullPath(LPCWSTR pD)
+	bool stdIsFullPath(LPCWSTR pD, bool allownetwork)
 	{
 		if (!pD || pD[0] == 0)
-			return FALSE;
+			return false;
 
 		if (pD[0] == L'/')
-			return TRUE;
+			return true;
 
 		if (!((L'a' <= pD[0] && pD[0] < +L'z') ||
 			(L'A' <= pD[0] && pD[0] < +L'Z')))
 		{
-			return FALSE;
+			if(!allownetwork)
+				return FALSE;
+
+			if (pD[1] == 0)
+				return false;
+
+			if (!(pD[0] == L'\\' && pD[1] == L'\\'))
+				return false;
+
+			return pD[2] != 0;
 		}
 
 		if (pD[1] == L':')
-			return TRUE;
+			return true;
 
-		return FALSE;
+		return false;
 	}
 
 	std::wstring stdCombinePath(const std::wstring& d1, const std::wstring& d2)

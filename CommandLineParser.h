@@ -1,9 +1,5 @@
 #pragma once
 
-#include <windows.h>
-#include <tchar.h>
-#include <vector>
-#include <string>
 
 #ifdef UNICODE
 	typedef std::wstring tstring;
@@ -11,89 +7,38 @@
 	typedef std::string tstring;
 #endif
 
-#ifdef __linux__ 
-#elif _WIN32
-	#include <Shellapi.h>
-#else
-#endif
-
 
 namespace Ambiesoft {
-
-//enum ArgType {
-//	ArgType_Int,
-//	ArgType_Uint,
-//	ArgType_String,
-//	ArgType_UrlEncodedUtf8String,
-//};
 
 
 class COption
 {
+	std::vector<tstring> options_;
 
-	tstring option_;
-//	ArgType argtype_;
 	unsigned long argcountflag_;
 	std::vector<tstring> values_;
 	bool hadOption_;
-	void AddValue(const tstring& value)
-	{
-		setHadOption();
-		values_.push_back(value);
-	}
-	void setHadOption() {
-		hadOption_=true;
-	}
+	void AddValue(const tstring& value);
+	void setHadOption();
+	bool isMatchOption(const tstring& option) const;
+	tstring getFirstOption() const;
 public:
-	COption(tstring option, unsigned long acf) : hadOption_(false)
-	{
-		option_ = option;
-		argcountflag_=acf;
-	}
-	COption(tstring option) : hadOption_(false)
-	{
-		option_ = option;
-		argcountflag_=0;
-	}
+	COption(tstring option, unsigned long acf);
+	COption(tstring option);
+
 	friend class CCommandLineParser;
 	
-	bool hadOption() const {
-		return hadOption_;
-	}
-	bool hadValue() const {
-		return !values_.empty();
-	}
-	tstring getValueStrings() const {
-		tstring ret;
-		bool looped=false;
-		for(std::vector<tstring>::const_iterator it=values_.begin() ; it != values_.end() ; ++it)
-		{
-			if(looped)
-			{
-				ret += _T(" ");
-			}
-			looped = true;
-			ret += *it;
-		}
-		return ret;
-	}
-	tstring getFirstValue() const {
-		tstring ret;
-		if(values_.empty())
-			return ret;
-		return values_[0];
-	}
-	size_t getValueCount() const {
-		return values_.size();
-	}
+	bool hadOption() const;
+	bool hadValue() const;
+
+	tstring getValueStrings() const;
+	tstring getFirstValue() const;
+	size_t getValueCount() const;
 };
 
 
 class CCommandLineParser
 {
-	//int argc_;
-	//LPTSTR* targv_;
-
 	static tstring GetToken(LPCTSTR p)
 	{
 		tstring ret;
@@ -142,10 +87,7 @@ class CCommandLineParser
 	{
 		for(POPTIONARRAY::iterator it=availables_.begin() ; it != availables_.end() ; ++it)
 		{
-			//COption* pCLI = pCLI_;
-			//pCLI += i;
-			// if(_tcscmp(pCLI->pOption_, pOption)==0)
-			if( (*it)->option_ == option)
+			if( (*it)->isMatchOption(option) )
 			{
 				return *it;
 			}
@@ -166,7 +108,7 @@ public:
 		tstring ret;
 		for(OPTIONARRAY::const_iterator it=unknowns_.begin() ; it != unknowns_.end() ; ++it)
 		{
-			ret += it->option_;
+			ret += it->getFirstOption();
 			if(!it->hadValue())
 			{
 				ret += _T(" ");

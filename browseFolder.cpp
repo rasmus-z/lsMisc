@@ -9,6 +9,7 @@
 
 #include <io.h>
 
+#include "tstring.h"
 #include "browseFolder.h"
 
 //#define TRACE(t1,t2) (void)0
@@ -96,8 +97,7 @@ static bool bfVista(HWND hWnd, LPCTSTR lpszTitle, LPTSTR pFolder, bool& handled)
 	if (FAILED(spFileDialog->GetOptions(&dwOptions)))
 		return false;
 
-
-	if (FAILED(spFileDialog->SetOptions(dwOptions | FOS_PICKFOLDERS)))
+	if (FAILED(spFileDialog->SetOptions(dwOptions | FOS_PICKFOLDERS | FOS_FORCEFILESYSTEM )))
 		return false;
 
 	if (FAILED(spFileDialog->SetTitle(lpszTitle)))
@@ -295,6 +295,10 @@ BOOL browseFolder(HWND hParent, LPCTSTR lpszTitle, LPTSTR pFolder)
 		return ret;
 #endif
 	return bfXp(hParent, lpszTitle, pFolder);
+}
+BOOL browseFolder(HWND hParent, LPCTSTR lpszTitle, tstring folder)
+{
+	return FALSE;
 }
 
 #ifdef __cplusplus_cli

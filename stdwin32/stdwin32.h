@@ -19,7 +19,7 @@ namespace stdwin32 {
 
 
 
-	BOOL stdIsFullPath(LPCWSTR pD);
+	bool stdIsFullPath(LPCWSTR pD, bool allownetwork = true);
 	std::wstring stdCombinePath(LPCWSTR pD1, LPCWSTR pD2);
 	std::wstring stdCombinePath(const std::wstring& d1, const std::wstring& d2);
 	
