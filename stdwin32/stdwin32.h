@@ -140,7 +140,8 @@ namespace stdwin32 {
 
 
 
-
+	std::wstring stdEncodeUrl(const std::wstring& d);
+	std::wstring stdEncodeUrl(LPCWSTR pData);
 
 
 

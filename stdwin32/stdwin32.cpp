@@ -604,5 +604,38 @@ namespace stdwin32 {
 
 
 
+	// http://www.emoticode.net/c/urlencode-in-plain-c.html
+	static char i2a(char code) 
+	{
+		static char hex[] = "0123456789ABCDEF";
+		return hex[code & 15];
+	}
+
+	std::wstring stdEncodeUrl(const std::wstring& d)
+	{
+		return stdEncodeUrl(d.c_str());
+	}
+	std::wstring stdEncodeUrl(LPCWSTR pstr)
+	{
+		wstring ret;
+		for( ; *pstr ;++pstr)
+		{
+			if ((*pstr >0 && iswalnum(*pstr)) || *pstr == L'-' || *pstr == L'_' || *pstr == L'.' || *pstr == L'~') 
+			{
+				ret += *pstr;
+			}
+			else if (*pstr == L' ') 
+			{
+				ret += L'+';
+			}
+			else 
+			{
+				ret+= '%';
+				ret+= i2a(*pstr >> 4);
+				ret+= i2a(*pstr & 15);
+			}
+		}
+		return ret;
+	}
 
 } // namespace stdwin32
