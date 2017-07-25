@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 
 #ifdef UNICODE
 	typedef std::wstring tstring;
@@ -26,6 +27,7 @@ public:
 	COption(tstring option, unsigned long acf);
 	COption(tstring option1, tstring option2, unsigned long acf);
 	COption(tstring option);
+	COption(tstring option1, tstring option2);
 
 	friend class CCommandLineParser;
 	

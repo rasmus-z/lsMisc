@@ -4,6 +4,7 @@
 #include <tchar.h>
 #include <vector>
 #include <string>
+#include <algorithm>
 
 #include "CommandLineParser.h"
 
@@ -34,6 +35,12 @@ namespace Ambiesoft {
 		options_.push_back(option);
 		argcountflag_ = 0;
 	}
+	COption::COption(tstring option1, tstring option2) : hadOption_(false)
+	{
+		options_.push_back(option1);
+		options_.push_back(option2);
+	}
+
 
 	tstring COption::getFirstOption() const
 	{
