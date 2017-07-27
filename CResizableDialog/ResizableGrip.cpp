@@ -90,8 +90,8 @@ BOOL CResizableGrip::InitGrip()
 
 		// subclass control
 		::SetProp(m_wndGrip, RSZ_GRIP_OBJ,
-			(HANDLE)::GetWindowLong(m_wndGrip, GWL_WNDPROC));
-		::SetWindowLong(m_wndGrip, GWL_WNDPROC, (LONG)GripWindowProc);
+			(HANDLE)::GetWindowLongPtr(m_wndGrip, GWLP_WNDPROC));
+		::SetWindowLongPtr(m_wndGrip, GWLP_WNDPROC, (LONG_PTR)GripWindowProc);
 
 		// update pos
 		UpdateGripPos();
@@ -119,7 +119,7 @@ LRESULT CResizableGrip::GripWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARA
 		
 		// unsubclass
 		::RemoveProp(hwnd, RSZ_GRIP_OBJ);
-		::SetWindowLong(hwnd, GWL_WNDPROC, (LONG)oldWndProc);
+		::SetWindowLongPtr(hwnd, GWLP_WNDPROC, (LONG_PTR)oldWndProc);
 
 		break;
 	}
