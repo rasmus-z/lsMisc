@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <Mshtml.h>
 
+#include "PathUtil.h"
 #include "MFCHelper.h"
 
 CString GetFavoritesFolder()
@@ -390,3 +391,63 @@ CString dqIfSpace(const CString& s)
 //
 //	return SUCCEEDED(CreateInterShortcut(pURL, strFileName, NULL));
 //}
+
+
+bool HasDupPaths(LPCTSTR pLeft, const CStringArray& saPaths, int startindex, int& hitindex,CString& common)
+{
+	for (int i = startindex; i < saPaths.GetSize(); ++i)
+	{
+		CString tmp;
+		wstring dupParent;
+		if (myPathIsChildIncluded(pLeft, saPaths[i], &dupParent))
+		{
+			common = dupParent.c_str();
+			hitindex = i;
+			return true;
+		}
+	}
+	return false;
+}
+
+bool checkDupPaths(const CStringArray& saPaths, CString&left, CString& right, CString&common)
+{
+	for (int i = 0; i < saPaths.GetSize(); ++i)
+	{
+		CString tmpleft = saPaths[i];
+		int hitindex = 0;
+		if (HasDupPaths(tmpleft, saPaths, i + 1, hitindex,common))
+		{
+			left = tmpleft;
+			right=saPaths[hitindex];
+			return false;
+		}
+	}
+	return true;
+}
+
+void getLinesFromEdit(CEdit& edit, CStringArray& ar, bool bRaw)
+{
+	int lc = edit.GetLineCount();
+	for (int i = 0; i < lc; ++i)
+	{
+		CString t;
+		int len = edit.LineLength(edit.LineIndex(i));
+		edit.GetLine(i, t.GetBuffer(len), len);
+		t.ReleaseBuffer();
+		if (t.IsEmpty())
+			continue;
+
+
+
+		if (!bRaw)
+		{
+			t.TrimLeft();
+			t.TrimRight();
+			if (t.IsEmpty())
+				continue;
+			if (t[0] != _T('"') && t.Find(_T(' ')) >= 0)
+				t = _T('"') + t + _T('"');
+		}
+		ar.Add(t);
+	}
+}
