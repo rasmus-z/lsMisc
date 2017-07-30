@@ -1,4 +1,6 @@
 #pragma once
+#include "tstring.h"
+
 BOOL browseFolder(HWND hParent, LPCTSTR lpszTitle, LPTSTR pFolder);
 BOOL browseFolder(HWND hParent, LPCTSTR lpszTitle, tstring folder);
 
