@@ -89,10 +89,15 @@ static BOOL createDB(LPCWSTR pDBPath, LPCWSTR pTableNameW)
 			"[c2] TEXT,"
 			"PRIMARY KEY([c1]));";
 
-		char* pT = (char*)malloc(strlen(p) + strlen(pTableName) + sizeof(char));
+		size_t malsize = strlen(p) + strlen(pTableName) + sizeof(char);
+		char* pT = (char*)malloc(malsize);
 		stlsoft::scoped_handle<char*> ma(pT, cfree);	
 
+#if _MSC_VER < 1900
 		sprintf(pT, p, pTableName);
+#else
+		sprintf_s(pT, malsize, p, pTableName);
+#endif
 
 		if ( SQLITE_OK != sqlite3_exec(pDB, 
 			pT,
