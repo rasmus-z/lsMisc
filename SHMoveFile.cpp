@@ -6,7 +6,7 @@
 
 #include "SHMoveFile.h"
 
-BOOL SHMoveFile(LPCTSTR lpFileTo, LPCTSTR lpFileFrom)
+BOOL SHMoveFile(LPCTSTR lpFileTo, LPCTSTR lpFileFrom, int* pnRet)
 {
 	assert(lpFileTo && lpFileFrom);
 
@@ -29,7 +29,8 @@ BOOL SHMoveFile(LPCTSTR lpFileTo, LPCTSTR lpFileFrom)
 	sfo.fFlags = FOF_ALLOWUNDO|FOF_FILESONLY|FOF_NOERRORUI;
 
 	int nRet = SHFileOperation(&sfo) ;//&& !sfo.fAnyOperationsAborted;
-
+	if (pnRet)
+		*pnRet = nRet;
 	// it seems SHFileOperation returns 113 when same path specified.
 	return nRet==0 || nRet==113;
 }
