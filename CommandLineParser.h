@@ -100,6 +100,10 @@ namespace Ambiesoft {
 				return ret;
 			return values_[0];
 		}
+		myStringType getValue(int index)
+		{
+			return values_[index];
+		}
 		size_t getValueCount() const
 		{
 			return values_.size();
