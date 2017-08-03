@@ -73,7 +73,7 @@ LPWSTR MultiBytetoUTF16(UINT cp, const LPBYTE pIN, size_t cbLen)
 		cp,
 		0,
 		(const char*)pIN,
-		cbLen,
+		(int)cbLen,
 		NULL,
 		0);
 
@@ -84,7 +84,7 @@ LPWSTR MultiBytetoUTF16(UINT cp, const LPBYTE pIN, size_t cbLen)
 	int nRet = MultiByteToWideChar(cp,
 		0,
 		(const char*)pIN,
-		cbLen,
+		(int)cbLen,
 		pOut,
 		nReqSize);
 

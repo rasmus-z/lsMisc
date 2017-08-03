@@ -62,14 +62,14 @@ void UrlEncode_SJIS_Obsolete(const unsigned char	*csource,
 
 	const unsigned char* cbuffer = (const unsigned char*)*pOut;
 
-	unsigned long lbuffersize = nSize*3 + 2;
+	unsigned long lbuffersize = ((unsigned long)nSize)*3 + 2;
 	unsigned long	llength;										/* csource のサイズを格納 */
 	unsigned long	lcount = 0;										/* csource の読み込み位置カウンタ */
 	unsigned char	cbyte;											/* 抜き出された 1 バイト分のデータを格納 */
 	unsigned char	ctemp[4];										/* 変換結果(1 文字分)一時格納バッファ */
 	unsigned long	lresultcount = 0;								/* cbuffer の書き込み位置カウンタ */
 
-	llength = nSize;						/* csource の文字サイズを得る */
+	llength = (unsigned long)nSize;						/* csource の文字サイズを得る */
 	if(!llength) { return ; }							/* csource が 0 文字の場合、関数を抜ける */
 	if(lbuffersize < (llength * 3 + 1)) { return ; }	/* バッファサイズが足りない場合、関数を抜ける */
 

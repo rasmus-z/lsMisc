@@ -124,7 +124,8 @@ void CResizableLayout::ArrangeLayout()
 	GetTotalClientRect(&rectParent);
 
 	// init some vars
-	int i, count = m_arrLayout.GetSize();
+	int i;
+	int count = (int)m_arrLayout.GetSize();
 	HDWP hdwp = BeginDeferWindowPos(count);
 
 	for (i=0; i<count; ++i)

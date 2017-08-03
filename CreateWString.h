@@ -30,9 +30,9 @@ inline static void ConvertToW(LPCSTR pIN, size_t inlen, LPWSTR* ppOut, size_t ou
 		CP_ACP,
 		0,
 		pIN,
-		inlen,
+		(int)inlen,
 		*ppOut,
-		outlen
+		(int)outlen
 		);
 }
 
