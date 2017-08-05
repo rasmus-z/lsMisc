@@ -17,14 +17,14 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v120</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v120</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <UseDebugLibraries>false</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
@@ -122,6 +122,8 @@
     <ClCompile Include="..\LCMapCommon.cpp" />
     <ClCompile Include="..\PathUtil.cpp" />
     <ClCompile Include="..\ProcessList.cpp" />
+    <ClCompile Include="..\UrlEncode.cpp" />
+    <ClCompile Include="..\UTF16toUTF8.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="testCommandLineParser.cpp" />
     <ClCompile Include="testGetVersionString.cpp" />
@@ -129,6 +131,7 @@
     <ClCompile Include="testMoveWindowCommon.cpp" />
     <ClCompile Include="testPathUtil.cpp" />
     <ClCompile Include="testStlsoft.cpp" />
+    <ClCompile Include="testUrlEncode.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\browseFolder.h" />
@@ -140,6 +143,8 @@
     <ClInclude Include="..\LCMapCommon.h" />
     <ClInclude Include="..\PathUtil.h" />
     <ClInclude Include="..\ProcessList.h" />
+    <ClInclude Include="..\UrlEncode.h" />
+    <ClInclude Include="..\UTF16toUTF8.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

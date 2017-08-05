@@ -1,9 +1,21 @@
 #pragma once
 
-void UrlEncode_SJIS_Obsolete(const unsigned char	*csource,
-						size_t	nSize,
-						char** pOut,
-						int bUseMalloc = 0);
+//void UrlEncode_SJIS_Obsolete(const unsigned char	*csource,
+//						size_t	nSize,
+//						char** pOut,
+//						int bUseMalloc = 0);
 
-char *UrlEncode(const unsigned char *pstr, size_t size=-1);
-unsigned char* UrlDecode(const char* penc, unsigned int* pSize=NULL);
+char *UrlEncode(const unsigned char *pstr, size_t size = -1);
+std::wstring UrlEncodeW(const wchar_t *pstr);
+
+
+
+
+
+
+// utf8 retuns
+unsigned char* UrlDecode(const char* penc);
+
+
+std::wstring UrlDecodeW(const char* penc);
+std::wstring UrlDecodeW(const std::wstring& wenc);

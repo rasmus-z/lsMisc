@@ -1,7 +1,20 @@
 #pragma once
-BOOL OpenCommon(HWND hWnd, 
-				LPCTSTR pApp, 
-				LPCTSTR pCommand=NULL, 
-				LPCTSTR pDirectory=NULL, 
-				HANDLE* pPHandle=NULL,
-				LPCTSTR pVerb=NULL);
+
+BOOL OpenCommonW(HWND hWnd,
+	LPCWSTR pApp,
+	LPCWSTR pCommand = NULL,
+	LPCWSTR pDirectory = NULL,
+	HANDLE* pPHandle = NULL,
+	LPCWSTR pVerb = NULL);
+BOOL OpenCommonA(HWND hWnd,
+	LPCSTR pApp,
+	LPCSTR pCommand = NULL,
+	LPCSTR pDirectory = NULL,
+	HANDLE* pPHandle = NULL,
+	LPCSTR pVerb = NULL);
+
+#ifdef UNICODE
+#define OpenCommon OpenCommonW
+#else
+#define OpenCommon OpenCommonA
+#endif

@@ -1,34 +1,5 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 
-/*
------ UrlEncode ŠÖ” for C Œ¾Œê Version 1.02 Beta -----
-(C)2002 ‚¯‚é‚×
-MAIL : kelbe@geocities.co.jp
-HOME : http://www.geocities.co.jp/SilkRoad/4511/
-
-ˆø”‚Æ‚µ‚Ä—^‚¦‚ç‚ê‚½•¶š—ñ‚ğ URL ƒGƒ“ƒR[ƒh‚µ‚½•¶š—ñ‚ğ•Ô‚µ‚Ü‚·B
-‚È‚¨AŒ»ƒo[ƒWƒ‡ƒ“‚Å‚Í ANSI/S-JIS ‚Ì‚İ‘Î‰‚Å‚·B
-
-ˆø” *csource
-	URL ƒGƒ“ƒR[ƒh‚µ‚½‚¢•¶š—ñ‚Ö‚Ìƒ|ƒCƒ“ƒ^‚ğw’è‚µ‚Ü‚·B
-
-ˆø” *cbuffer
-	URL ƒGƒ“ƒR[ƒh‚³‚ê‚½•¶š—ñ‚ªŠi”[‚³‚ê‚éƒoƒbƒtƒ@‚Ö‚Ìƒ|ƒCƒ“ƒ^‚ğw’è‚µ‚Ü‚·B
-	‚È‚¨Aˆø” *csource ‚Éw’è‚µ‚½•¶š—ñƒTƒCƒY‚Ì 3 ”{ + 1 ˆÈã‚ÌƒTƒCƒY‚ª
-	•K—v‚Æ‚È‚è‚Ü‚·B
-
-ˆø” lbuffersize
-	cbuffer ‚Ìƒoƒbƒtƒ@ƒTƒCƒY‚ğw’è‚µ‚Ü‚·B
-
-–ß‚è’l
-	ŠÖ”‚ª¬Œ÷‚·‚é‚ÆAcbuffer ‚É URL ƒGƒ“ƒR[ƒh‚³‚ê‚½•¶š—ñ‚ªŠi”[‚³‚êA
-	cbuffer ƒoƒbƒtƒ@‚É‘‚«‚Ü‚ê‚½•¶š”(I’[‚Ì NULL •¶š‚ğœ‚­)‚ª
-	•Ô‚è‚Ü‚·B¸”s‚µ‚½ê‡‚Í 0 ‚ª•Ô‚è‚Ü‚·B
-
-‚±‚Ì URL ƒGƒ“ƒR[ƒhŠÖ”‚ÍÙì‚Ì VB —p UrlEncode ŠÖ”‚ğA‹­ˆø‚É C Œ¾Œê—p‚É
-‘‚«Š·‚¦‚½‚à‚Ì‚Å‚·B„‚Í C Œ¾Œê‚É‚Â‚¢‚Ä‚Í‘S‚­‚Ì‰SÒ‚Å‚·‚Ì‚ÅA
-ƒ\[ƒX‚à‚¢‚¢‚©‚°‚ñ‚Å‚·B³‚µ‚­’¼‚µ‚Äg‚Á‚Ä‰º‚³‚¢(^^;
-*/
 
 #ifndef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
@@ -41,93 +12,67 @@ HOME : http://www.geocities.co.jp/SilkRoad/4511/
 
 #include <string>
 
+#include <stlsoft/smartptr/scoped_handle.hpp>
+
+#include "UTF16toUTF8.h"
 #include "UrlEncode.h"
 
 using namespace std;
 
-void UrlEncode_SJIS_Obsolete(const unsigned char	*csource,
-						size_t	nSize,
-						char** pOut,
-						int bUseMalloc)
+
+
+static bool myiswalnum(wchar_t c)
 {
-	if ( csource==NULL || csource==0 || csource==NULL)
-		return;
-
-	if ( bUseMalloc )
-		*pOut = (char*)malloc(nSize*3 + 2);
-	else
-		*pOut = new char[nSize*3 + 2];
-	if( *pOut==NULL )
-		return;
-
-	const unsigned char* cbuffer = (const unsigned char*)*pOut;
-
-	unsigned long lbuffersize = ((unsigned long)nSize)*3 + 2;
-	unsigned long	llength;										/* csource ‚ÌƒTƒCƒY‚ğŠi”[ */
-	unsigned long	lcount = 0;										/* csource ‚Ì“Ç‚İ‚İˆÊ’uƒJƒEƒ“ƒ^ */
-	unsigned char	cbyte;											/* ”²‚«o‚³‚ê‚½ 1 ƒoƒCƒg•ª‚Ìƒf[ƒ^‚ğŠi”[ */
-	unsigned char	ctemp[4];										/* •ÏŠ·Œ‹‰Ê(1 •¶š•ª)ˆêŠi”[ƒoƒbƒtƒ@ */
-	unsigned long	lresultcount = 0;								/* cbuffer ‚Ì‘‚«‚İˆÊ’uƒJƒEƒ“ƒ^ */
-
-	llength = (unsigned long)nSize;						/* csource ‚Ì•¶šƒTƒCƒY‚ğ“¾‚é */
-	if(!llength) { return ; }							/* csource ‚ª 0 •¶š‚Ìê‡AŠÖ”‚ğ”²‚¯‚é */
-	if(lbuffersize < (llength * 3 + 1)) { return ; }	/* ƒoƒbƒtƒ@ƒTƒCƒY‚ª‘«‚è‚È‚¢ê‡AŠÖ”‚ğ”²‚¯‚é */
-
-	for(;;) {
-		cbyte = *(csource + lcount);								/* 1 ƒoƒCƒg‚ğ”²‚«o‚· */
-		if( ((cbyte >= 0x81) && (cbyte <= 0x9F)) ||
-			((cbyte >= 0xE0) && (cbyte <= 0xEF)) ) {				/* Shift-JIS 2 ƒoƒCƒg•¶š‚¾‚Á‚½ê‡ */
-			sprintf((char*)ctemp, "%%%02X", cbyte);						/* URL ƒGƒ“ƒR[ƒh(ãˆÊƒoƒCƒg) */
-			strncpy((char*)cbuffer + lresultcount, (char*)ctemp, 4);				/* cbuffer ‚ÉƒRƒs[ */
-			lcount++;												/* “Ç‚İ‚İƒJƒEƒ“ƒ^‚ğƒCƒ“ƒNƒŠƒƒ“ƒg */
-			lresultcount += 3;										/* ‘‚«‚İƒJƒEƒ“ƒ^‚ğ 3 ‘‚â‚· */
-			if(lcount == llength) { break; }						/* •¶š—ñ‚ÌI’[‚É’B‚µ‚½ê‡Aƒ‹[ƒv‚ğ”²‚¯‚é */
-			sprintf((char*)ctemp, "%%%02X", *(csource + lcount));			/* URL ƒGƒ“ƒR[ƒh(‰ºˆÊƒoƒCƒg) */
-			strncpy((char*)cbuffer + lresultcount, (char*)ctemp, 4);				/* cbuffer ‚ÉƒRƒs[ */
-			lcount++;												/* “Ç‚İ‚İƒJƒEƒ“ƒ^‚ğƒCƒ“ƒNƒŠƒƒ“ƒg */
-			lresultcount += 3;										/* ‘‚«‚İƒJƒEƒ“ƒ^‚ğ 3 ‘‚â‚· */
-		} else if(cbyte == 0x20) {									/* 1 ƒoƒCƒg”¼ŠpƒXƒy[ƒX(" ")‚¾‚Á‚½ê‡ */
-			strncpy((char*)cbuffer + lresultcount, "+", 2);				/* "+" ‚ğ cbuffer ‚ÉƒRƒs[ */
-			lcount++;												/* “Ç‚İ‚İƒJƒEƒ“ƒ^‚ğƒCƒ“ƒNƒŠƒƒ“ƒg */
-			lresultcount++;											/* ‘‚«‚İƒJƒEƒ“ƒ^‚ğƒCƒ“ƒNƒŠƒƒ“ƒg */
-		} else if( ((cbyte >= 0x40) && (cbyte <= 0x5A)) ||			/* @A-Z */
-				   ((cbyte >= 0x61) && (cbyte <= 0x7A)) ||			/* a-z */
-				   ((cbyte >= 0x30) && (cbyte <= 0x39)) ||			/* 0-9 */
-				   (cbyte == 0x2A) ||								/* "*" */
-				   (cbyte == 0x2D) ||								/* "-" */
-				   (cbyte == 0x2E) ||								/* "." */
-				   (cbyte == 0x5F) ) {								/* "_" */ /* –³•ÏŠ·•¶š‚¾‚Á‚½ê‡ */
-			strncpy((char*)cbuffer + lresultcount, (char*)csource + lcount, 2);	/* ‚»‚Ì‚Ü‚Ü cbuffer ‚ÉƒRƒs[ */
-			lcount++;												/* “Ç‚İ‚İƒJƒEƒ“ƒ^‚ğƒCƒ“ƒNƒŠƒƒ“ƒg */
-			lresultcount++;											/* ‘‚«‚İƒJƒEƒ“ƒ^‚ğƒCƒ“ƒNƒŠƒƒ“ƒg */
-		} else {													/* ‚»‚Ì‘¼‚Ì•¶š‚Ìê‡ */
-			sprintf((char*)ctemp, "%%%02X", cbyte);						/* URL ƒGƒ“ƒR[ƒh */
-			strncpy((char*)cbuffer + lresultcount, (char*)ctemp, 4);				/* cbuffer ‚ÉƒRƒs[ */
-			lcount++;												/* “Ç‚İ‚İƒJƒEƒ“ƒ^‚ğƒCƒ“ƒNƒŠƒƒ“ƒg */
-			lresultcount += 3;										/* ‘‚«‚İƒJƒEƒ“ƒ^‚ğ 3 ‘‚â‚· */
-		}
-		if(lcount == llength) { break; }							/* •¶š—ñ‚ÌI’[‚É’B‚µ‚½ê‡Aƒ‹[ƒv‚ğ”²‚¯‚é */
+	switch (c) {
+	case L'0': return true;
+	case L'1': return true;
+	case L'2': return true;
+	case L'3': return true;
+	case L'4': return true;
+	case L'5': return true;
+	case L'6': return true;
+	case L'7': return true;
+	case L'8': return true;
+	case L'9': return true;
+	case L'a':case L'A': return true;
+	case L'b':case L'B': return true;
+	case L'c':case L'C': return true;
+	case L'd':case L'D': return true;
+	case L'e':case L'E': return true;
+	case L'f':case L'F': return true;
+	case L'g':case L'G': return true;
+	case L'h':case L'H': return true;
+	case L'i':case L'I': return true;
+	case L'j':case L'J': return true;
+	case L'k':case L'K': return true;
+	case L'l':case L'L': return true;
+	case L'm':case L'M': return true;
+	case L'n':case L'N': return true;
+	case L'o':case L'O': return true;
+	case L'p':case L'P': return true;
+	case L'q':case L'Q': return true;
+	case L'r':case L'R': return true;
+	case L's':case L'S': return true;
+	case L't':case L'T': return true;
+	case L'u':case L'U': return true;
+	case L'v':case L'V': return true;
+	case L'w':case L'W': return true;
+	case L'x':case L'X': return true;
+	case L'y':case L'Y': return true;
+	case L'z':case L'Z': return true;
 	}
-	return ;
+	return false;
 }
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 // http://www.emoticode.net/c/urlencode-in-plain-c.html
-static char i2a(char code) {
+static char i2aA(char code) {
 	static char hex[] = "0123456789ABCDEF";
+	return hex[code & 15];
+}
+static wchar_t i2aW(wchar_t code) {
+	static wchar_t hex[] = L"0123456789ABCDEF";
 	return hex[code & 15];
 }
 
@@ -145,7 +90,9 @@ char *UrlEncode(const unsigned char *pstr, size_t size)
 		size = strlen((const char*)pstr);
 
 	if (size == 0)
-		return "";
+	{
+		return (char*)calloc(1, 1);
+	}
 
 	pbuf = buf = (char *)malloc(size * 3 + 1);
 
@@ -158,8 +105,8 @@ char *UrlEncode(const unsigned char *pstr, size_t size)
 		}
 		else {
 			*pbuf++ = '%';
-			*pbuf++ = i2a(*pstr >> 4);
-			*pbuf++ = i2a(*pstr & 15);
+			*pbuf++ = i2aA( (*pstr & 0xFF) >> 4);
+			*pbuf++ = i2aA(*pstr & 0xF);
 		}
 		pstr++;
 	}
@@ -167,8 +114,21 @@ char *UrlEncode(const unsigned char *pstr, size_t size)
 
 	return buf;
 }
+std::wstring UrlEncodeW(const wchar_t *pstr)
+{
+	std::wstring ret;
+	if (pstr == NULL || pstr[0] == 0)
+		return ret;
 
+	BYTE* p8 = UTF16toUTF8(pstr);
+	stlsoft::scoped_handle<void*> ma(p8, free);
 
+	char* pRet8 = UrlEncode(p8);
+	stlsoft::scoped_handle<void*> ma2(pRet8, free);
+
+	UTF8toUTF16((BYTE*)pRet8, ret);
+	return ret;
+}
 
 
 
@@ -195,11 +155,30 @@ static char a2ibyte(char c)
 	}
 	return 0;
 }
-static char a2i(char c1, char c2)
-{
-	return (a2ibyte(c1) << 4) | (a2ibyte(c2));
-}
-unsigned char* UrlDecode(const char* penc, unsigned int* pSize)
+//static char a2iA(char c1, char c2)
+//{
+//	return (a2ibyte(c1) << 4) | (a2ibyte(c2));
+//}
+//static WCHAR a2iW(WCHAR c1, WCHAR c2)
+//{
+//	return (a2ibyte(c1) << 4) | (a2ibyte(c2));
+//}
+
+//static bool IsPropertyEncodedPercent(LPCSTR p)
+//{
+//	if (!p || p[0] == 0)
+//		return false;
+//
+//	char c1 = *p;
+//	++p;
+//	if (!p || p[0] == 0)
+//		return false;
+//
+//	char c2 = *p;
+//
+//	if ('0')
+//}
+unsigned char* UrlDecode(const char* penc)
 {
 	unsigned int size = 0;
 	unsigned char* pOrig = (unsigned char*)malloc(strlen(penc) + 1);
@@ -209,29 +188,74 @@ unsigned char* UrlDecode(const char* penc, unsigned int* pSize)
 		char c = *penc;
 		if (c == '%')
 		{
+			const char* pSave = penc;
 			penc++;
 			if (!*penc)
+			{
 				break;
+			}
 			char c1, c2;
 			c1 = *penc;
 			penc++;
 			if (!*penc)
+			{
+				*p = c1;
 				break;
-
+			}
 			c2 = *penc;
-			c = a2i(c1, c2);
+
+			char c1con = a2ibyte(c1);
+			char c2con = a2ibyte(c2);
+			if (c1con == 0 || c2con == 0)
+			{
+				//failed conversion
+				penc = pSave;
+				*p = *penc;
+				continue;
+			}
+
+			c = ((c1con << 4) | c2con);
+			//c = a2i(c1, c2);
 		}
-		else if(c=='+')
+		else if (c == '+')
 		{
-			c=' ';
+			c = ' ';
 		}
 		*p = c;
 	}
 	*p = 0;
-	if(pSize)
-		*pSize = size;
 	return pOrig;
 }
 
+#ifdef _DEBUG
+static void checkmoji()
+{
+	assert('1' == L'1');
+	assert('1' != L'2');
+	assert('a' == L'a');
+}
+#endif
 
+
+std::wstring UrlDecodeW(const char* penc)
+{
+	std::wstring ret;
+	BYTE* p8 = UrlDecode(penc);
+	stlsoft::scoped_handle<void*> ma(p8, free);
+	UTF8toUTF16(p8, ret);
+	return ret;
+}
+
+std::wstring UrlDecodeW(const std::wstring& wenc)
+{
+	BYTE* p8 = UTF16toUTF8(wenc.c_str());
+	stlsoft::scoped_handle<void*> ma(p8, free);
+
+	BYTE* p8dec = UrlDecode((LPCSTR)p8);
+	stlsoft::scoped_handle<void*> map8dec(p8dec, free);
+
+	std::wstring ret;
+	UTF8toUTF16(p8dec, ret);
+	return ret;
+}
 
