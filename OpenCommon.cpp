@@ -1,5 +1,8 @@
 #include "stdafx.h"
 #include <Shellapi.h>
+
+#include <string>
+
 #include "OpenCommon.h"
 
 BOOL OpenCommonW(HWND hWnd,
@@ -66,3 +69,27 @@ BOOL OpenCommonA(HWND hWnd,
 	return ret;
 }
 
+void OpenFolderA(HWND h, LPCSTR pFolder)
+{
+	std::string arg = "/select,\"";
+	arg += pFolder;
+	arg += "\",/n";
+	ShellExecuteA(h,
+		NULL,
+		"explorer.exe",
+		arg.c_str(),
+		NULL,
+		SW_SHOW);
+}
+void OpenFolderW(HWND h, LPCWSTR pFolder)
+{
+	std::wstring arg = L"/select,\"";
+	arg += pFolder;
+	arg += L"\",/n";
+	ShellExecuteW(h,
+		NULL,
+		L"explorer.exe",
+		arg.c_str(),
+		NULL,
+		SW_SHOW);
+}

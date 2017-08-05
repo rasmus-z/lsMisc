@@ -18,3 +18,12 @@ BOOL OpenCommonA(HWND hWnd,
 #else
 #define OpenCommon OpenCommonA
 #endif
+
+void OpenFolderW(HWND h, LPCWSTR pFolder);
+void OpenFolderA(HWND h, LPCSTR pFolder);
+
+#ifdef UNICODE
+#define OpenFolder OpenFolderW
+#else
+#define OpenFolder OpenFolderA
+#endif

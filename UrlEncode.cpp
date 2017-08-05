@@ -12,6 +12,10 @@
 
 #include <string>
 
+#ifdef _DEBUG
+#include <cassert>
+#endif
+
 #include <stlsoft/smartptr/scoped_handle.hpp>
 
 #include "UTF16toUTF8.h"
