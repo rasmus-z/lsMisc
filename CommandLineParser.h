@@ -13,13 +13,27 @@
 
 namespace Ambiesoft {
 
+	enum ArgCount
+	{
+		ArgCount_Zero = 0,
+		ArgCount_One = 1,
+		ArgCount_Two = 2,
+		ArgCount_OneORTwo = 3,
+		ArgCount_Three = 4,
+		ArgCount_OneORThree = 5,
+		ArgCount_TwoORThree = 6,
+		ArgCount_OneORTwoORThree = 7,
+		ArgCount_Four = 8,
+
+		ArgCount_Infinite = 0xffffffff,
+	};
 	template <class myStringType> class BasicCommandLineParser;
 	
 	template<class myStringType> class BasicOption
 	{
 		std::vector<myStringType> options_;
 
-		unsigned long argcountflag_;
+		ArgCount argcountflag_;
 		std::vector<myStringType> values_;
 		bool hadOption_;
 		void AddValue(const myStringType& value)
@@ -41,24 +55,36 @@ namespace Ambiesoft {
 		{
 			return options_[0];
 		}
+
 	public:
-
-
-		BasicOption(myStringType option, unsigned long acf)
+		BasicOption(myStringType option, ArgCount acf)
 		{
 			options_.push_back(option);
 			argcountflag_ = acf;
 		}
-		BasicOption(myStringType option1, myStringType option2, unsigned long acf)
-		{		
+		BasicOption(myStringType option1, myStringType option2, ArgCount acf)
+		{
 			options_.push_back(option1);
 			options_.push_back(option2);
 			argcountflag_ = acf;
 		}
+		BasicOption(myStringType option1, myStringType option2, int exactcount)
+		{
+			options_.push_back(option1);
+			options_.push_back(option2);
+
+			if (exactcount <= 0)
+				argcountflag_ = ArgCount_Zero;
+			else
+			{
+				--exactcount;
+				argcountflag_ = (ArgCount)(1 << exactcount);
+			}
+		}
 		BasicOption(myStringType option)
 		{
 			options_.push_back(option);
-			argcountflag_ = 0;
+			argcountflag_ = ArgCount_Zero;
 
 		}
 		BasicOption(myStringType option1, myStringType option2)
