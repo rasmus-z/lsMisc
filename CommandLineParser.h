@@ -56,23 +56,8 @@ namespace Ambiesoft {
 			return options_[0];
 		}
 
-	public:
-		BasicOption(myStringType option, ArgCount acf)
+		void setArgFlag(int exactcount)
 		{
-			options_.push_back(option);
-			argcountflag_ = acf;
-		}
-		BasicOption(myStringType option1, myStringType option2, ArgCount acf)
-		{
-			options_.push_back(option1);
-			options_.push_back(option2);
-			argcountflag_ = acf;
-		}
-		BasicOption(myStringType option1, myStringType option2, int exactcount)
-		{
-			options_.push_back(option1);
-			options_.push_back(option2);
-
 			if (exactcount <= 0)
 				argcountflag_ = ArgCount_Zero;
 			else
@@ -80,6 +65,30 @@ namespace Ambiesoft {
 				--exactcount;
 				argcountflag_ = (ArgCount)(1 << exactcount);
 			}
+		}
+	public:
+		BasicOption(myStringType option, ArgCount acf)
+		{
+			options_.push_back(option);
+			argcountflag_ = acf;
+		}
+		BasicOption(myStringType option, const int exactcount)
+		{
+			options_.push_back(option);
+			setArgFlag(exactcount);
+		}
+		BasicOption(myStringType option1, myStringType option2, ArgCount acf)
+		{
+			options_.push_back(option1);
+			options_.push_back(option2);
+			argcountflag_ = acf;
+		}
+		BasicOption(myStringType option1, myStringType option2, const int exactcount)
+		{
+			options_.push_back(option1);
+			options_.push_back(option2);
+
+			setArgFlag(exactcount);
 		}
 		BasicOption(myStringType option)
 		{

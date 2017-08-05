@@ -117,6 +117,7 @@
     <ClCompile Include="..\CenterWindow.cpp" />
     <ClCompile Include="..\ChangeFilenamable.cpp" />
     <ClCompile Include="..\CreateSimpleWindow.cpp" />
+    <ClCompile Include="..\FormatSizeof.cpp" />
     <ClCompile Include="..\GetVersionString.cpp" />
     <ClCompile Include="..\IsFileExists.cpp" />
     <ClCompile Include="..\LCMapCommon.cpp" />
@@ -126,6 +127,7 @@
     <ClCompile Include="..\UTF16toUTF8.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="testCommandLineParser.cpp" />
+    <ClCompile Include="testFormatSizeof.cpp" />
     <ClCompile Include="testGetVersionString.cpp" />
     <ClCompile Include="testHira2Kata.cpp" />
     <ClCompile Include="testMoveWindowCommon.cpp" />
@@ -138,6 +140,7 @@
     <ClInclude Include="..\CenterWindow.h" />
     <ClInclude Include="..\ChangeFilenamable.h" />
     <ClInclude Include="..\CreateSimpleWindow.h" />
+    <ClInclude Include="..\FormatSizeof.h" />
     <ClInclude Include="..\GetVersionString.h" />
     <ClInclude Include="..\IsFileExists.h" />
     <ClInclude Include="..\LCMapCommon.h" />
