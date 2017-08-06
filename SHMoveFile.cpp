@@ -29,7 +29,8 @@ static BOOL SHMoveFile(LPCTSTR lpFileTo, LPCTSTR lpFileFrom, int* pnRet)
 	LPTSTR pTo = (LPTSTR)LocalAlloc(LMEM_ZEROINIT, destByteAlloc);
 	stlsoft::scoped_handle<void*> ha(pTo, LocalFree);
 
-	wcscpy_s(pTo, destByteAlloc, lpFileTo);
+	// wcscpy_s(pTo, destByteAlloc, lpFileTo);
+	memcpy_s(pTo, destByteAlloc, lpFileTo, destCharCount * sizeof(TCHAR));
 
 	SHFILEOPSTRUCT sfo = { 0 };
 	sfo.hwnd = NULL;
