@@ -1,7 +1,9 @@
 #include "stdafx.h"
 #include <Shellapi.h>
-
+#include <Shlwapi.h>
 #include <string>
+
+#pragma comment(lib,"shlwapi.lib")
 
 #include "OpenCommon.h"
 
@@ -69,10 +71,13 @@ BOOL OpenCommonA(HWND hWnd,
 	return ret;
 }
 
-void OpenFolderA(HWND h, LPCSTR pFolder)
+BOOL OpenFolderA(HWND h, LPCSTR pFileOrFolder)
 {
+	if (!PathFileExistsA(pFileOrFolder) && !PathIsDirectoryA(pFileOrFolder))
+		return FALSE;
+
 	std::string arg = "/select,\"";
-	arg += pFolder;
+	arg += pFileOrFolder;
 	arg += "\",/n";
 	ShellExecuteA(h,
 		NULL,
@@ -80,11 +85,16 @@ void OpenFolderA(HWND h, LPCSTR pFolder)
 		arg.c_str(),
 		NULL,
 		SW_SHOW);
+
+	return TRUE;
 }
-void OpenFolderW(HWND h, LPCWSTR pFolder)
+BOOL OpenFolderW(HWND h, LPCWSTR pFileOrFolder)
 {
+	if (!PathFileExistsW(pFileOrFolder) && !PathIsDirectoryW(pFileOrFolder))
+		return FALSE;
+
 	std::wstring arg = L"/select,\"";
-	arg += pFolder;
+	arg += pFileOrFolder;
 	arg += L"\",/n";
 	ShellExecuteW(h,
 		NULL,
@@ -92,4 +102,6 @@ void OpenFolderW(HWND h, LPCWSTR pFolder)
 		arg.c_str(),
 		NULL,
 		SW_SHOW);
+
+	return TRUE;
 }

@@ -19,8 +19,8 @@ BOOL OpenCommonA(HWND hWnd,
 #define OpenCommon OpenCommonA
 #endif
 
-void OpenFolderW(HWND h, LPCWSTR pFolder);
-void OpenFolderA(HWND h, LPCSTR pFolder);
+BOOL OpenFolderW(HWND h, LPCWSTR pFileOrFolder);
+BOOL OpenFolderA(HWND h, LPCSTR pFileOrFolder);
 
 #ifdef UNICODE
 #define OpenFolder OpenFolderW
