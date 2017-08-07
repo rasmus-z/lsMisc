@@ -14,7 +14,7 @@ std::wstring UrlEncodeW(const wchar_t *pstr);
 
 
 // utf8 retuns
-unsigned char* UrlDecode(const char* penc);
+unsigned char* UrlDecode(const char* penc, size_t* psize=NULL);
 
 
 std::wstring UrlDecodeW(const char* penc);

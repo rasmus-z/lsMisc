@@ -157,7 +157,7 @@ static char a2ibyte(char c)
 	case 'e':case 'E': return 0xe;
 	case 'f':case 'F': return 0xf;
 	}
-	return 0;
+	return 0x10;
 }
 //static char a2iA(char c1, char c2)
 //{
@@ -182,7 +182,7 @@ static char a2ibyte(char c)
 //
 //	if ('0')
 //}
-unsigned char* UrlDecode(const char* penc)
+unsigned char* UrlDecode(const char* penc, size_t* psize)
 {
 	unsigned int size = 0;
 	unsigned char* pOrig = (unsigned char*)malloc(strlen(penc) + 1);
@@ -210,7 +210,7 @@ unsigned char* UrlDecode(const char* penc)
 
 			char c1con = a2ibyte(c1);
 			char c2con = a2ibyte(c2);
-			if (c1con == 0 || c2con == 0)
+			if (c1con == 0x10 || c2con == 0x10)
 			{
 				//failed conversion
 				penc = pSave;
@@ -228,6 +228,8 @@ unsigned char* UrlDecode(const char* penc)
 		*p = c;
 	}
 	*p = 0;
+	if (psize)
+		*psize = size;
 	return pOrig;
 }
 
