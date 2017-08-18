@@ -145,6 +145,13 @@ namespace stdwin32 {
 
 
 
+
+	std::wstring stdGetFullPathName(LPCWSTR pPath);
+
+
+
+
+
 #ifdef __cplusplus_cli
 	std::wstring getStdWString(System::String^ s);
 	std::string getStdString(System::String^ s);
