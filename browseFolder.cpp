@@ -17,21 +17,7 @@
 #pragma comment(lib,"Shell32.lib")
 
 
-#if 1 // check WINVER,_WIN32_*.
-#define STRING2(x) #x
-#define STRING(x) STRING2(x)
-#pragma message("WINVER        : " STRING(WINVER))
-#pragma message("_WIN32_WINNT  : " STRING(_WIN32_WINNT))
-//  #pragma message("_WIN32_WINDOWS: " STRING(_WIN32_WINDOWS)) // Windows9x only
-#pragma message("_WIN32_IE     : " STRING(_WIN32_IE))
 
-#ifdef UNICODE
-#pragma message("UNICODE defined")
-#else
-#pragma message("UNICODE not defined")
-#endif
-
-#endif // 1
 
 
 
