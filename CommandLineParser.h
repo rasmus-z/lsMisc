@@ -267,6 +267,14 @@ namespace Ambiesoft {
 		}
 #endif
 #endif
+		void Parse(LPCTSTR pArg)
+		{
+			for(LPCTSTR p = pArg; *p ; p=_tcsinc(p))
+			{
+			
+			}
+		}
+
 		void Parse(int argc, LPTSTR* targv)
 		{
 			for (int i = 1; i < argc; ++i)
