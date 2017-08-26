@@ -122,6 +122,7 @@
     <ClCompile Include="..\IsFileExists.cpp" />
     <ClCompile Include="..\LCMapCommon.cpp" />
     <ClCompile Include="..\OpenCommon.cpp" />
+    <ClCompile Include="..\OpenedFiles.cpp" />
     <ClCompile Include="..\PathUtil.cpp" />
     <ClCompile Include="..\ProcessList.cpp" />
     <ClCompile Include="..\SHMoveFile.cpp" />
@@ -134,6 +135,7 @@
     <ClCompile Include="testHira2Kata.cpp" />
     <ClCompile Include="testMoveWindowCommon.cpp" />
     <ClCompile Include="testOpenCommon.cpp" />
+    <ClCompile Include="testOpenedFiles.cpp" />
     <ClCompile Include="testPathUtil.cpp" />
     <ClCompile Include="testSHMoveFile.cpp" />
     <ClCompile Include="testStlsoft.cpp" />
@@ -149,6 +151,7 @@
     <ClInclude Include="..\IsFileExists.h" />
     <ClInclude Include="..\LCMapCommon.h" />
     <ClInclude Include="..\OpenCommon.h" />
+    <ClInclude Include="..\OpenedFiles.h" />
     <ClInclude Include="..\PathUtil.h" />
     <ClInclude Include="..\ProcessList.h" />
     <ClInclude Include="..\SHMoveFile.h" />

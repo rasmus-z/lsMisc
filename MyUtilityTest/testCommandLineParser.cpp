@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include <tchar.h>
+
 #include "../CommandLineParser.h"
 
 void testCommandLine()

@@ -1,0 +1,142 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="..\browseFolder.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CenterWindow.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ChangeFilenamable.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CreateSimpleWindow.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FormatSizeof.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GetVersionString.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\IsFileExists.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LCMapCommon.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\OpenCommon.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\PathUtil.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ProcessList.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SHMoveFile.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UrlEncode.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UTF16toUTF8.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="testCommandLineParser.cpp">
+      <Filter>Test Files</Filter>
+    </ClCompile>
+    <ClCompile Include="testFormatSizeof.cpp">
+      <Filter>Test Files</Filter>
+    </ClCompile>
+    <ClCompile Include="testGetVersionString.cpp">
+      <Filter>Test Files</Filter>
+    </ClCompile>
+    <ClCompile Include="testHira2Kata.cpp">
+      <Filter>Test Files</Filter>
+    </ClCompile>
+    <ClCompile Include="testMoveWindowCommon.cpp">
+      <Filter>Test Files</Filter>
+    </ClCompile>
+    <ClCompile Include="testOpenCommon.cpp">
+      <Filter>Test Files</Filter>
+    </ClCompile>
+    <ClCompile Include="testPathUtil.cpp">
+      <Filter>Test Files</Filter>
+    </ClCompile>
+    <ClCompile Include="testSHMoveFile.cpp">
+      <Filter>Test Files</Filter>
+    </ClCompile>
+    <ClCompile Include="testStlsoft.cpp">
+      <Filter>Test Files</Filter>
+    </ClCompile>
+    <ClCompile Include="testUrlEncode.cpp">
+      <Filter>Test Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\OpenedFiles.cpp" />
+    <ClCompile Include="testOpenedFiles.cpp">
+      <Filter>Test Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="..\browseFolder.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CenterWindow.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ChangeFilenamable.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CreateSimpleWindow.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FormatSizeof.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GetVersionString.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IsFileExists.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LCMapCommon.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenCommon.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UTF16toUTF8.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UrlEncode.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\SHMoveFile.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ProcessList.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\PathUtil.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenedFiles.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="MyUtility">
+      <UniqueIdentifier>{084a73a9-8735-4bc7-9edb-1c324b405313}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MyUtility\1 Header">
+      <UniqueIdentifier>{bc199108-6792-45c1-a9f7-e86ddf8c90af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MyUtility\2 Source">
+      <UniqueIdentifier>{5186c18b-00bd-4c8b-bf12-a388afaa042c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Test Files">
+      <UniqueIdentifier>{43430429-1536-450c-82b8-85ab66f69f39}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
