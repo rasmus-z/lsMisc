@@ -14,6 +14,13 @@ struct OF_INFO_t
 	HANDLE hFile;
 };
 
+struct OPENEDFILEINFO
+{
+	DWORD dwPID;
+	TCHAR filename[MAX_PATH];
+	HANDLE hFile;
+};
+
 typedef void (CALLBACK* OF_CALLBACK)(OF_INFO_t* pOpenedFileInf0, UINT_PTR uUserContext);
 
 
@@ -22,3 +29,6 @@ void GetOpenedFiles(LPCWSTR lpPath,
 	OF_TYPE Filter,
 	OF_CALLBACK CallBackProc,
 	UINT_PTR pUserContext);
+
+std::wstring GetPathFromProcessID(const DWORD dwID);
+void GetOpenedFilesSimple(LPCTSTR pFilter, std::vector<OPENEDFILEINFO>& v);

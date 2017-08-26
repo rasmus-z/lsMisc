@@ -1,4 +1,6 @@
-#include "StdAfx.h"
+// #include "StdAfx.h"
+#include <windows.h>
+#include <tchar.h>
 #include <Tlhelp32.h>
 #include <Psapi.h>
 #include <Shlwapi.h>
@@ -6,10 +8,12 @@
 #include <string>
 #include <algorithm>
 #include <sstream>
+#include <vector>
 
 #include "OpenedFiles.h"
 
 #pragma comment(lib,"shlwapi.lib")
+#pragma comment(lib,"Psapi.lib")
 
 using namespace std;
 
@@ -44,11 +48,12 @@ typedef DWORD(WINAPI* GetFinalPathNameByHandleDef)(
 	DWORD cchFilePath,
 	DWORD dwFlags);
 
-typedef NTSTATUS(WINAPI *PNtQuerySystemInformation)
-(IN	SYSTEM_INFORMATION_CLASS SystemInformationClass,
-OUT	PVOID					 SystemInformation,
-IN	ULONG					 SystemInformationLength,
-OUT	PULONG					 ReturnLength OPTIONAL);
+typedef NTSTATUS (WINAPI *PNtQuerySystemInformation)(
+	IN	SYSTEM_INFORMATION_CLASS SystemInformationClass,
+	OUT	PVOID					 SystemInformation,
+	IN	ULONG					 SystemInformationLength,
+	OUT	PULONG					 ReturnLength OPTIONAL
+	);
 
 void EnumerateLoadedModules(
 	wstring& csPath,
@@ -174,6 +179,7 @@ static BOOL GetDrive(LPCTSTR pszDosName, wstring& csDrive, bool bDriveLetterOnly
 	return FALSE;
 }
 
+
 void GetOpenedFiles(LPCWSTR lpPath, OF_TYPE Filter, OF_CALLBACK CallBackProc,
 	UINT_PTR pUserContext)
 {
@@ -277,7 +283,7 @@ void EnumerateOpenedFiles(wstring& csPath, OF_CALLBACK CallBackProc, UINT_PTR pU
 
 	bool bShortPath = false;
 	LPCTSTR lpShortPath = csShortName;
-	if (csPath != csShortName && csShortName[0]!=0)
+	if (csPath != csShortName && csShortName[0] != 0)
 	{
 		bShortPath = true;
 	}
@@ -396,13 +402,13 @@ void EnumerateOpenedFiles(wstring& csPath, OF_CALLBACK CallBackProc, UINT_PTR pU
 			stAddress.pAddress = sh.pAddress;
 			DWORD dwReturn = 0;
 			BOOL bSuccess = DeviceIoControl(
-				hDriver, 
+				hDriver,
 				IOCTL_LISTDRV_BUFFERED_IO,
-				&stAddress, 
+				&stAddress,
 				sizeof(ADDRESS_INFO),
 				&stHandle,
-				sizeof(HANDLE_INFO), 
-				&dwReturn, 
+				sizeof(HANDLE_INFO),
+				&dwReturn,
 				NULL);
 
 
@@ -583,4 +589,119 @@ void EnumerateLoadedModules(wstring& csPath, OF_CALLBACK CallBackProc, UINT_PTR 
 		}
 	}
 	delete pDwId;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+struct CallbackData
+{
+private:
+	LPTSTR pFilter_;
+	vector<OPENEDFILEINFO>* pv_;
+	bool removePV_;
+
+public:
+	CallbackData() :pFilter_(NULL), pv_(NULL), removePV_(false) {}
+	CallbackData(vector<OPENEDFILEINFO>* pv) : pFilter_(NULL), pv_(pv), removePV_(false) {}
+	~CallbackData()
+	{
+		free(pFilter_);
+
+		if (removePV_)
+			delete pv_;
+	}
+
+	LPCTSTR getFilter() const {
+		return pFilter_;
+	}
+	void setFilter(LPCTSTR pFilter)
+	{
+		pFilter_ = _tcsdup(pFilter);
+		_tcslwr_s(pFilter_, lstrlen(pFilter) + 1);
+	}
+
+	void AddOpendFileInfo(OPENEDFILEINFO& info)
+	{
+		if (!pv_)
+		{
+			pv_ = new vector<OPENEDFILEINFO>;
+			removePV_ = true;
+		}
+
+		pv_->push_back(info);
+	}
+};
+
+
+
+void CALLBACK mycallback(OF_INFO_t* pOpenedFileInfo, UINT_PTR uUserContext)
+{
+	CallbackData* cd = (CallbackData*)uUserContext;
+
+	TCHAR szT1[MAX_PATH];
+	lstrcpy(szT1, pOpenedFileInfo->lpFile);
+	_tcslwr_s(szT1);
+
+	if (!_tcsstr(szT1, cd->getFilter()))
+		return;
+
+	OPENEDFILEINFO t;
+	t.dwPID = pOpenedFileInfo->dwPID;
+	lstrcpy(t.filename, pOpenedFileInfo->lpFile);
+	t.hFile = pOpenedFileInfo->hFile;
+	cd->AddOpendFileInfo(t);
+}
+
+
+wstring GetPathFromProcessID(const DWORD dwID)
+{
+	HANDLE processHandle = NULL;
+	TCHAR filename[MAX_PATH];
+
+	wstring ret;
+
+	processHandle = OpenProcess(
+		PROCESS_QUERY_INFORMATION | PROCESS_VM_READ,
+		FALSE,
+		dwID);
+	if (processHandle != NULL)
+	{
+		if (GetModuleFileNameEx(processHandle, NULL, filename, MAX_PATH) == 0)
+		{
+			return ret;
+		}
+		else
+		{
+			ret = filename;
+		}
+		CloseHandle(processHandle);
+	}
+	return ret;
+}
+
+void GetOpenedFilesSimple(LPCTSTR pFilter, vector<OPENEDFILEINFO>& v)
+{
+	CallbackData cd(&v);
+	// cd.setFilter(L"C:\\Users\\Bokkurin\\Desktop\\vvvvvvvvvvvvvvvvvvvvvvvvv.txt");
+	cd.setFilter(pFilter);
+
+	GetOpenedFiles(
+		L"",
+		ALL_TYPES,
+		mycallback,
+		(UINT_PTR)&cd);
+
+
 }
