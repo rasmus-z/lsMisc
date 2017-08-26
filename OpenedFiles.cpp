@@ -296,6 +296,17 @@ void EnumerateOpenedFiles(wstring& csPath, OF_CALLBACK CallBackProc, UINT_PTR pU
 		return;
 	}
 
+
+	//{
+	//	ULONG needed=0;
+	//	NTSTATUS status = NtQuerySystemInformation(SystemHandleInformation, NULL, 0, &needed);
+	//	PSYSTEM_HANDLE_INFORMATION p = (PSYSTEM_HANDLE_INFORMATION)new BYTE[80000];
+
+	//	status = NtQuerySystemInformation(SystemHandleInformation, p, needed, NULL);
+	//	if(!NT_SUCCESS(status))
+	//		return;
+	//}
+
 	// Get the list of all handles in the system
 	PSYSTEM_HANDLE_INFORMATION pSysHandleInformation = new SYSTEM_HANDLE_INFORMATION;
 	DWORD size = sizeof(SYSTEM_HANDLE_INFORMATION);
