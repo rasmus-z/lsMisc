@@ -67,6 +67,11 @@ namespace Ambiesoft {
 			}
 		}
 	public:
+		BasicOption()
+		{
+			options_.push_back(_T(""));
+			argcountflag_ = ArgCount_Infinite;
+		}
 		BasicOption(myStringType option, ArgCount acf)
 		{
 			options_.push_back(option);
