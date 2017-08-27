@@ -33,7 +33,7 @@ BOOL SHDeleteFile(LPCTSTR lpFile, SHDELETEFLAG sdf)
 	LPTSTR p = (LPTSTR)_alloca( (len+2)*sizeof(TCHAR) );
 	if(!p)
 		return FALSE;
-	_tcscpy(p, lpFile);
+	lstrcpy(p, lpFile);
 	p[len+1]=0;
 
 	SHFILEOPSTRUCT sfo = {0};
