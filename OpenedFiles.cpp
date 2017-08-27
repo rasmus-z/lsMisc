@@ -248,7 +248,23 @@ DWORD WINAPI ThreadProc(LPVOID lParam)
 			}
 			CloseHandle(hProcess);
 		}
-		DWORD dwRet = pGetFinalPathNameByHandle(hDup, pThreadParam->lpPath, MAX_PATH, 0);
+		DWORD dwRet = 0;
+		if(pGetFinalPathNameByHandle)
+			dwRet = pGetFinalPathNameByHandle(hDup, pThreadParam->lpPath, MAX_PATH, 0);
+		else
+		{
+			wstring s = GetPathFromProcessID(sh.dwProcessId);
+			if(s.empty())
+			{
+				dwRet=0;
+			}
+			else
+			{
+				lstrcpyn(pThreadParam->lpPath, s.c_str(), MAX_PATH);
+				dwRet=1;
+			}
+		}
+
 		if (hDup && (hDup != (HANDLE)sh.wValue))
 		{
 			CloseHandle(hDup);
@@ -331,7 +347,7 @@ void EnumerateOpenedFiles(wstring& csPath, OF_CALLBACK CallBackProc, UINT_PTR pU
 		}
 	}
 
-	if (pGetFinalPathNameByHandle)// there is no driver, we have do it ugly way
+	if (true)//pGetFinalPathNameByHandle)// there is no driver, we have do it ugly way
 	{
 		g_CurrentIndex = 0;
 		TCHAR tcFileName[MAX_PATH + 1];
@@ -369,12 +385,15 @@ void EnumerateOpenedFiles(wstring& csPath, OF_CALLBACK CallBackProc, UINT_PTR pU
 			{
 				continue;
 			}
-			int nCmpStart = 4;
+			int nCmpStart = pGetFinalPathNameByHandle ? 4 : 0;
 			wstring csFileName(&ThreadParams.lpPath[nCmpStart]);
 			MakeLower(csFileName);
-			if (0 != _tcsncmp(lpPath, csFileName.c_str(), csPath.length()))
+			if(!csPath.empty())
 			{
-				continue;
+				if (0 != _tcsncmp(lpPath, csFileName.c_str(), csPath.length()))
+				{
+					continue;
+				}
 			}
 			OF_INFO_t stOFInfo;
 			stOFInfo.dwPID = pSysHandleInformation->Handles[g_CurrentIndex - 1].dwProcessId;
@@ -675,6 +694,64 @@ void CALLBACK mycallback(OF_INFO_t* pOpenedFileInfo, UINT_PTR uUserContext)
 	cd->AddOpendFileInfo(t);
 }
 
+static bool starts_with(const wstring& path, LPCTSTR pStart)
+{
+	if(!pStart || !pStart[0])
+		return true;
+
+	size_t startlen=lstrlen(pStart);
+	if(path.length() < startlen)
+		return false;
+
+	for(size_t i=0; i<startlen; ++i)
+	{
+		if(towlower(path[i]) != towlower(pStart[i]))
+			return false;
+	}
+	return true;
+}
+
+static std::wstring NtPathToWin32Path( std::wstring ntPath )
+{
+	static TCHAR szWindowsPath[MAX_PATH];
+	if(szWindowsPath[0]==0)
+	{
+		GetWindowsDirectory(szWindowsPath,MAX_PATH);
+		PathAddBackslash(szWindowsPath);
+	}
+
+    if (starts_with(ntPath, L"\\systemroot\\"))
+    {
+        ntPath.replace(ntPath.begin(), ntPath.begin() + 12, szWindowsPath);
+        return ntPath;
+    }
+    if (starts_with(ntPath, L"\\\\?\\"))
+    {
+        ntPath.erase(ntPath.begin(), ntPath.begin() + 4);
+        return ntPath;
+    }
+    if (starts_with(ntPath, L"\\??\\"))
+    {
+        ntPath.erase(ntPath.begin(), ntPath.begin() + 4);
+    }
+    if (starts_with(ntPath, L"\\"))
+    {
+        ntPath.erase(ntPath.begin(), ntPath.begin() + 1);
+    }
+    if (starts_with(ntPath, L"globalroot\\"))
+    {
+        ntPath.erase(ntPath.begin(), ntPath.begin() + 11);
+    }
+    if (starts_with(ntPath, L"systemroot"))
+    {
+        ntPath.replace(ntPath.begin(), ntPath.begin() + 10, szWindowsPath);
+    }
+    if (starts_with(ntPath, L"windows"))
+    {
+        ntPath.replace(ntPath.begin(), ntPath.begin() + 7, szWindowsPath);
+    }
+    return ntPath;
+}
 
 wstring GetPathFromProcessID(const DWORD dwID)
 {
@@ -699,7 +776,7 @@ wstring GetPathFromProcessID(const DWORD dwID)
 		}
 		CloseHandle(processHandle);
 	}
-	return ret;
+	return NtPathToWin32Path(ret);
 }
 
 void GetOpenedFilesSimple(LPCTSTR pFilter, vector<OPENEDFILEINFO>& v)
