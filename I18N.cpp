@@ -5,9 +5,6 @@
 #error UNICODE required
 #endif
 
-#ifndef _CRT_SECURE_NO_WARNINGS
-	#define _CRT_SECURE_NO_WARNINGS
-#endif
 
 #include <windows.h>
 #include <tchar.h>
@@ -154,9 +151,9 @@ void shownai()
 
 	if (!message.empty())
 	{
-		OutputDebugStringW( (L"---------------------NOTI18N-------" + strModule + L">>>>>>>>>>>>\r\n").c_str());
+		message = L"---------------------NOTI18N-------" + strModule + L">>>>>>>>>>>>\r\n" + message;
+		message += L"---------------------NOTI18N-------" + strModule + L"<<<<<<<<<<<<\r\n";
 		OutputDebugStringW(message.c_str());
-		OutputDebugStringW( (L"---------------------NOTI18N-------" + strModule + L"<<<<<<<<<<<<\r\n").c_str());
 	}
 
 
@@ -172,9 +169,9 @@ void shownai()
 
 	if(!message.empty())
 	{
-		OutputDebugStringW( (L"---------------------DUPLICATEI18N-------" + strModule + L">>>>>>>>>>>>\r\n").c_str());
+		message = L"---------------------DUPLICATEI18N-------" + strModule + L">>>>>>>>>>>>\r\n" + message;
+		message += L"---------------------DUPLICATEI18N-------" + strModule + L"<<<<<<<<<<<<\r\n";
 		OutputDebugStringW(message.c_str());
-		OutputDebugStringW( (L"---------------------DUPLICATEI18N-------" + strModule + L"<<<<<<<<<<<<\r\n").c_str());
 	}
 }
 #endif  // _DEBUG
@@ -247,17 +244,23 @@ LPCWSTR i18nInitLangmap(HINSTANCE hInst, LPCWSTR pLang, LPCWSTR pAppName)
 						if (!f)
 						{
 #ifdef _DEBUG
-							OutputDebugString(L"Lang file not found: ");
-							OutputDebugString(szTry);
-							OutputDebugString(L"\r\n");
+							wstring message;
+							message.append(L"Lang file not found: ");
+							message.append(szTry);
+							message.append(L"\r\n");
+							OutputDebugString(message.c_str());
 #endif
 							break;
 						}
 
 #ifdef _DEBUG
-						OutputDebugString(L"Lang file opened: ");
-						OutputDebugString(szTry);
-						OutputDebugString(L"\r\n");
+						{
+							wstring message;
+							message.append(L"Lang file opened: ");
+							message.append(szTry);
+							message.append(L"\r\n");
+							OutputDebugString(message.c_str());
+						}
 #endif
 						FileFreer ffreer(f);
 

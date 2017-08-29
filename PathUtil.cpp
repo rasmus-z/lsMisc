@@ -1,13 +1,37 @@
 #include "stdafx.h"
+
+
+#ifndef _WINDOWS_
+#pragma message("including windows.h")
 #include <windows.h>
+#endif
+
+#ifndef _INC_TCHAR
+#pragma message("including tchar.h")
 #include <tchar.h>
+#endif
+
+#ifndef _INC_SHLWAPI
+#pragma message("including shlwlapi")
 #include <Shlwapi.h>
+#pragma comment(lib,"shlwapi.lib")
+#endif
 
+
+#ifndef _STRING_
+#pragma message("including string")
 #include <string>
+#endif
+
+#ifndef _ALGORITHM_
+#pragma message("including algorithm")
 #include <algorithm>
+#endif
 
-
+#ifndef STLSOFT_INCL_STLSOFT_SMARTPTR_HPP_SCOPED_HANDLE
+#pragma message("including scoped_handel.hpp")
 #include <stlsoft/smartptr/scoped_handle.hpp>
+#endif
 
 #include "PathUtil.h"
 

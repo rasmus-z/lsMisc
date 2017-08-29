@@ -1,9 +1,21 @@
 
 #include "stdafx.h"
 
+#ifndef _SHLOBJ_H_
+#pragma comment("including shlobj.h")
 #include <Shlobj.h>
+#endif
+
+#ifndef _STRING_
+#pragma message("including string")
 #include <string>
+#endif
+
+#ifndef _VECTOR_
+#pragma comment("including vector")
 #include <vector>
+#endif
+
 #include "SetCSIDLtoEnv.h"
 
 using namespace std;

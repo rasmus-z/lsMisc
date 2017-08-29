@@ -1,6 +1,12 @@
 #include "stdafx.h"
+
+#ifndef _WINDOWS_
+#pragma message("including windows.h")
 #include <windows.h>
+#endif
+
 #include "tstring.h"
+
 #include <malloc.h>
 #include <shlwapi.h>
 #include <tchar.h>

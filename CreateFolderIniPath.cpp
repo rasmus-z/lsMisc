@@ -1,8 +1,22 @@
 #include "stdafx.h"
+
+#ifndef _WINDOWS_
+#pragma message("including windows.h")
 #include <windows.h>
+#endif
+
+#ifndef _INC_TCHAR
+#pragma message("including tchar.h")
 #include <tchar.h>
-#include <shlwapi.h>
-//#include <string>
+#endif
+
+#ifndef _INC_SHLWAPI
+#pragma message("including shlwlapi")
+#include <Shlwapi.h>
+#pragma comment(lib,"shlwapi.lib")
+#endif
+
+
 
 #include "GetSpecialFolderPath.h"
 #include "CreateFolderIniPath.h"

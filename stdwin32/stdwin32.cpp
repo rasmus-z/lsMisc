@@ -4,26 +4,73 @@
 
 
 
+#ifndef _WINDOWS_
+#pragma message("including windows.h")
 #include <windows.h>
+#endif
 
-#include <algorithm> 
+#ifndef _ALGORITHM_
+#pragma message("including algorithm")
+#include <algorithm>
+#endif
+
+
 #include <cassert>
-#include <cctype>
-#include <cstdarg>
-#include <cstdio>
-#include <functional> 
-#include <locale>
-#include <string>
-#include <vector>
-#include <memory.h>
 
-#include <shlwapi.h>
+#ifndef _CCTYPE_
+#pragma message("including cctype")
+#include <cctype>
+#endif
+
+#ifndef _CSTDARG_
+#pragma message("including cstdarg")
+#include <cstdarg>
+#endif
+
+#ifndef _CSTDIO_
+#pragma message("including cstdio")
+#include <cstdio>
+#endif
+
+#ifndef _FUNCTIONAL_
+#pragma message("including functional")
+#include <functional> 
+#endif
+
+#ifndef _LOCALE_
+#pragma message("including locale")
+#include <locale>
+#endif
+
+
+#ifndef _STRING_
+#pragma message("including string")
+#include <string>
+#endif
+
+#ifndef _VECTOR_
+#pragma message("including vector")
+#include <vector>
+#endif
+
+#ifndef _INC_MEMORY
+#pragma message("including memory.h")
+#include <memory.h>
+#endif
+
+#ifndef _INC_SHLWAPI
+#pragma message("including shlwlapi.h and lib")
+#include <Shlwapi.h>
 #pragma comment(lib,"shlwapi.lib")
+#endif
 
 
 
 #ifdef __cplusplus_cli
+#ifndef _INC_VCCLR
+#pragma message("including vcclr.h")
 #include <vcclr.h>
+#endif
 #endif // __cplusplus_cli
 
 
