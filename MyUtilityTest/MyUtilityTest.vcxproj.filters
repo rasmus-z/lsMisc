@@ -74,8 +74,16 @@
     <ClCompile Include="testUrlEncode.cpp">
       <Filter>Test Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\OpenedFiles.cpp" />
     <ClCompile Include="testOpenedFiles.cpp">
+      <Filter>Test Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\I18N.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\OpenedFiles.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="testI18N.cpp">
       <Filter>Test Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -123,7 +131,12 @@
     <ClInclude Include="..\PathUtil.h">
       <Filter>MyUtility\1 Header</Filter>
     </ClInclude>
-    <ClInclude Include="..\OpenedFiles.h" />
+    <ClInclude Include="..\I18N.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenedFiles.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="MyUtility">
@@ -138,5 +151,13 @@
     <Filter Include="Test Files">
       <UniqueIdentifier>{43430429-1536-450c-82b8-85ab66f69f39}</UniqueIdentifier>
     </Filter>
+    <Filter Include="4 lang">
+      <UniqueIdentifier>{2ff9e5c6-e3e5-4de2-9ae2-7c7d6dedcee5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="lang\jpn.txt">
+      <Filter>4 lang</Filter>
+    </Text>
   </ItemGroup>
 </Project>

@@ -228,7 +228,7 @@ LPCWSTR i18nInitLangmap(HINSTANCE hInst, LPCWSTR pLang, LPCWSTR pAppName)
 					TCHAR szLang[4];
 					lstrcpy(szLang, stLang);
 					{
-						_tcslwr(szLang);
+						_tcslwr_s(szLang);
 						TCHAR szT[MAX_PATH]={0};
 						GetModuleFileNameW(hInst,szT,(sizeof(szT)/sizeof(szT[0]))-1);
 						*(_tcsrchr(szT, L'\\'))=0;
@@ -240,12 +240,17 @@ LPCWSTR i18nInitLangmap(HINSTANCE hInst, LPCWSTR pLang, LPCWSTR pAppName)
 							wsprintfW(szTry, _T("%s\\lang\\%s.txt"), szT, szLang);
 
 						
-						FILE* f=_tfopen(szTry, _T("rb"));
-						if (!f)
+						FILE* f = NULL;
+						errno_t  err = _tfopen_s(&f, szTry, _T("rb"));
+						if (err || !f)
 						{
 #ifdef _DEBUG
+							wchar_t szT[1024]; szT[0] = 0;
+							_wcserror_s(szT, err);
 							wstring message;
-							message.append(L"Lang file not found: ");
+							message.append(L"Failed to open lang-file: ");
+							message.append(szT);
+							message.append(L": ");
 							message.append(szTry);
 							message.append(L"\r\n");
 							OutputDebugString(message.c_str());
@@ -333,7 +338,8 @@ LPCWSTR i18nInitLangmap(HINSTANCE hInst, LPCWSTR pLang, LPCWSTR pAppName)
 						free(pB);
 						CFreer pAFreer(pA);
 
-						LPCWSTR pTok = wcstok(pA, L"\n");
+						wchar_t *context = NULL;
+						LPCWSTR pTok = wcstok_s(pA, L"\n", &context);
 						while(pTok)
 						{
 							wstring left;
@@ -455,7 +461,7 @@ LPCWSTR i18nInitLangmap(HINSTANCE hInst, LPCWSTR pLang, LPCWSTR pAppName)
 								i18map[left] = right;
 							}
 
-							pTok = wcstok(NULL, L"\n");
+							pTok = wcstok_s(NULL, L"\n", &context);
 						}
 
 					}

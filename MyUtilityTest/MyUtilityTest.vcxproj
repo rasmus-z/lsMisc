@@ -119,6 +119,7 @@
     <ClCompile Include="..\CreateSimpleWindow.cpp" />
     <ClCompile Include="..\FormatSizeof.cpp" />
     <ClCompile Include="..\GetVersionString.cpp" />
+    <ClCompile Include="..\I18N.cpp" />
     <ClCompile Include="..\IsFileExists.cpp" />
     <ClCompile Include="..\LCMapCommon.cpp" />
     <ClCompile Include="..\OpenCommon.cpp" />
@@ -136,6 +137,7 @@
     <ClCompile Include="testMoveWindowCommon.cpp" />
     <ClCompile Include="testOpenCommon.cpp" />
     <ClCompile Include="testOpenedFiles.cpp" />
+    <ClCompile Include="testI18N.cpp" />
     <ClCompile Include="testPathUtil.cpp" />
     <ClCompile Include="testSHMoveFile.cpp" />
     <ClCompile Include="testStlsoft.cpp" />
@@ -148,6 +150,7 @@
     <ClInclude Include="..\CreateSimpleWindow.h" />
     <ClInclude Include="..\FormatSizeof.h" />
     <ClInclude Include="..\GetVersionString.h" />
+    <ClInclude Include="..\I18N.h" />
     <ClInclude Include="..\IsFileExists.h" />
     <ClInclude Include="..\LCMapCommon.h" />
     <ClInclude Include="..\OpenCommon.h" />
@@ -158,6 +161,9 @@
     <ClInclude Include="..\UrlEncode.h" />
     <ClInclude Include="..\UTF16toUTF8.h" />
     <ClInclude Include="stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="lang\jpn.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
