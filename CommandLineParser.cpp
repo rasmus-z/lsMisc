@@ -11,6 +11,7 @@
 #ifdef __linux__ 
 #elif _WIN32
 #include <Shellapi.h>
+#pragma comment(lib,"Shell32.lib")
 #else
 #endif
 

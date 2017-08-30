@@ -2,6 +2,7 @@
 #ifdef _WIN32
 #ifdef UNICODE
 #include <windows.h>
+#include <tchar.h>
 #include <shellapi.h>
 #endif
 #endif
@@ -9,6 +10,7 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+
 
 
 namespace Ambiesoft {
@@ -139,6 +141,21 @@ namespace Ambiesoft {
 			if (values_.empty())
 				return ret;
 			return values_[0];
+		}
+		unsigned int getFirstValueAsUInt() const
+		{
+			return _ttoi(getFirstValue().c_str());
+		}
+		unsigned long long getFirstValueAsUInt64() const
+		{
+			return _ttoi64(getFirstValue().c_str());
+		}
+		void* getFirstValueAsPointer() const
+		{
+			if (sizeof(void*) == sizeof(unsigned int))
+				return (void*)getFirstValueAsUInt();
+			else
+				return (void*)getFirstValueAsUInt64();
 		}
 		myStringType getValue(int index)
 		{
