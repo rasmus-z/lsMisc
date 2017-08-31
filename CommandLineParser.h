@@ -119,41 +119,40 @@ namespace Ambiesoft {
 			}
 		}
 	public:
-		BasicOption()
+		BasicOption() : hadOption_(false)
 		{
 			options_.push_back(myStringType());
 			argcountflag_ = ArgCount_Infinite;
 		}
-		BasicOption(myStringType option, ArgCount acf)
+		BasicOption(myStringType option, ArgCount acf) : hadOption_(false)
 		{
 			options_.push_back(option);
 			argcountflag_ = acf;
 		}
-		BasicOption(myStringType option, const int exactcount)
+		BasicOption(myStringType option, const int exactcount) : hadOption_(false)
 		{
 			options_.push_back(option);
 			setArgFlag(exactcount);
 		}
-		BasicOption(myStringType option1, myStringType option2, ArgCount acf)
+		BasicOption(myStringType option1, myStringType option2, ArgCount acf) : hadOption_(false)
 		{
 			options_.push_back(option1);
 			options_.push_back(option2);
 			argcountflag_ = acf;
 		}
-		BasicOption(myStringType option1, myStringType option2, const int exactcount)
+		BasicOption(myStringType option1, myStringType option2, const int exactcount) : hadOption_(false)
 		{
 			options_.push_back(option1);
 			options_.push_back(option2);
 
 			setArgFlag(exactcount);
 		}
-		BasicOption(myStringType option)
+		BasicOption(myStringType option) : hadOption_(false)
 		{
 			options_.push_back(option);
 			argcountflag_ = ArgCount_Zero;
-
 		}
-		BasicOption(myStringType option1, myStringType option2)
+		BasicOption(myStringType option1, myStringType option2) : hadOption_(false)
 		{
 			options_.push_back(option1);
 			options_.push_back(option2);
