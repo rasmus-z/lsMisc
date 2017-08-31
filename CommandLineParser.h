@@ -350,6 +350,14 @@ typedef BasicOption<std::string> COptionA;
 			}
 		}
 
+		myStringType stdstringToMyString(const std::wstring& ws)
+		{
+			return ws;
+		}
+		myStringType stdstringToMyString(const std::string& ws)
+		{
+			return WStringToString(ws);
+		}
 		void Parse(int argc, LPWSTR* targv)
 		{
 			for (int i = 1; i < argc; ++i)
@@ -362,13 +370,13 @@ typedef BasicOption<std::string> COptionA;
 
 				if (pArgv[0] == L'-' || pArgv[0] == L'/')
 				{
-					myOptionType* pA = FindAvailableCL(WStringToString(pArgv));
+					myOptionType* pA = FindAvailableCL(stdstringToMyString(pArgv));
 					if (!pA)
 					{
 						//CInputCommandLineInfo icli;
 						//icli.nID_ = -1;
 						//icli.option_ = pArgv;
-						unknowns_.push_back(myOptionType(WStringToString(pArgv)));
+						unknowns_.push_back(myOptionType(stdstringToMyString(pArgv)));
 						continue;
 					}
 
@@ -384,20 +392,20 @@ typedef BasicOption<std::string> COptionA;
 
 						LPCTSTR pArgv2 = targv[i];
 						// pA->option_ = pArgv;
-						pA->AddValue(WStringToString(pArgv2));
+						pA->AddValue(stdstringToMyString(pArgv2));
 						continue;
 					}
 				}
 				else
 				{
-					myOptionType* pA = FindAvailableCL(WStringToString(L""));
+					myOptionType* pA = FindAvailableCL(stdstringToMyString(L""));
 					if (!pA)
 					{
 						//CInputCommandLineInfo icli;
 						//icli.nID_ = -2;
 						//icli.option_ = _T("");
 						//icli.value_ = pArgv;
-						unknowns_.push_back(myOptionType(WStringToString(pArgv)));
+						unknowns_.push_back(myOptionType(stdstringToMyString(pArgv)));
 						continue;
 					}
 					else
@@ -405,7 +413,7 @@ typedef BasicOption<std::string> COptionA;
 						//CInputCommandLineInfo icli;
 						//icli.nID_ = pA->nID_;
 						//icli.option_ = _T("");
-						pA->AddValue(WStringToString( pArgv));
+						pA->AddValue(stdstringToMyString(pArgv));
 						// pA.push_back(icli);
 						continue;
 
