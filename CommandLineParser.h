@@ -15,6 +15,56 @@
 
 namespace Ambiesoft {
 
+	inline static unsigned int AtoI(const std::string& s)
+	{
+		return atoi(s.c_str());
+	}
+	inline static unsigned int AtoI(const std::wstring& s)
+	{
+		return _wtoi(s.c_str());
+	}
+
+	inline static unsigned long long AtoI64(const std::string& s)
+	{
+		return _atoi64(s.c_str());
+	}
+	inline static unsigned long long AtoI64(const std::wstring& s)
+	{
+		return _wtoi64(s.c_str());
+	}
+
+	inline std::string StoSTD(LPCSTR p)
+	{
+		return p;
+	}
+	inline std::wstring StoSTD(LPCWSTR p)
+	{
+		return p;
+	}
+
+	inline std::string WStringToString(const std::wstring& w)
+	{
+		std::string ret;
+		if (w.empty())
+			return ret;
+
+		size_t len = (w.length() + 1) * sizeof(wchar_t);
+		char* pT = (char*)malloc(len);
+		size_t retutrnvalue;
+
+		if (0 != wcstombs_s(&retutrnvalue,
+			pT,
+			len,
+			w.c_str(),
+			len))
+		{
+			free(pT);
+			return ret;
+		}
+		ret = pT;
+		free(pT);
+		return ret;
+	}
 	enum ArgCount
 	{
 		ArgCount_Zero = 0,
@@ -29,7 +79,7 @@ namespace Ambiesoft {
 
 		ArgCount_Infinite = 0xffffffff,
 	};
-	template <class myStringType> class BasicCommandLineParser;
+	template <class myStringType, class myOptionType> class BasicCommandLineParser;
 	
 	template<class myStringType> class BasicOption
 	{
@@ -71,7 +121,7 @@ namespace Ambiesoft {
 	public:
 		BasicOption()
 		{
-			options_.push_back(_T(""));
+			options_.push_back(myStringType());
 			argcountflag_ = ArgCount_Infinite;
 		}
 		BasicOption(myStringType option, ArgCount acf)
@@ -109,7 +159,7 @@ namespace Ambiesoft {
 			options_.push_back(option2);
 		}
 
-		friend class BasicCommandLineParser<myStringType>;
+		friend class BasicCommandLineParser<myStringType, BasicOption<myStringType> >;
 
 		bool hadOption() const
 		{
@@ -144,11 +194,11 @@ namespace Ambiesoft {
 		}
 		unsigned int getFirstValueAsUInt() const
 		{
-			return _ttoi(getFirstValue().c_str());
+			return AtoI(getFirstValue());
 		}
 		unsigned long long getFirstValueAsUInt64() const
 		{
-			return _ttoi64(getFirstValue().c_str());
+			return AtoI64(getFirstValue());
 		}
 		void* getFirstValueAsPointer() const
 		{
@@ -168,10 +218,13 @@ namespace Ambiesoft {
 	};
 
 
+typedef BasicOption<std::wstring> COptionW;
+typedef BasicOption<std::string> COptionA;
+
 #ifdef UNICODE
-	typedef BasicOption<std::wstring> COption;
+	typedef COptionW COption;
 #else
-	typedef BasicOption<std::string> COption;
+	typedef COptionA COption
 #endif
 
 
@@ -179,8 +232,9 @@ namespace Ambiesoft {
 
 
 
-	template <class myStringType> class BasicCommandLineParser
+	template <class myStringType, class myOptionType> class BasicCommandLineParser
 	{
+		typedef typename myStringType::traits_type::char_type Elem;
 		static myStringType GetToken(LPCWSTR p)
 		{
 			myStringType ret;
@@ -268,7 +322,7 @@ namespace Ambiesoft {
 		{
 			return !unknowns_.empty();
 		}
-		void AddOption(COption* cli)
+		void AddOption(myOptionType* cli)
 		{
 			availables_.push_back(cli);
 		}
@@ -297,25 +351,25 @@ namespace Ambiesoft {
 			}
 		}
 
-		void Parse(int argc, LPTSTR* targv)
+		void Parse(int argc, LPWSTR* targv)
 		{
 			for (int i = 1; i < argc; ++i)
 			{
-				LPCTSTR pArgv = targv[i];
+				LPCWSTR pArgv = targv[i];
 				if (!pArgv || !pArgv[0])
 					continue;
 
 				empty_ = false;
 
-				if (pArgv[0] == _T('-') || pArgv[0] == _T('/'))
+				if (pArgv[0] == L'-' || pArgv[0] == L'/')
 				{
-					COption* pA = FindAvailableCL(pArgv);
+					myOptionType* pA = FindAvailableCL(WStringToString(pArgv));
 					if (!pA)
 					{
 						//CInputCommandLineInfo icli;
 						//icli.nID_ = -1;
 						//icli.option_ = pArgv;
-						unknowns_.push_back(COption(pArgv));
+						unknowns_.push_back(myOptionType(WStringToString(pArgv)));
 						continue;
 					}
 
@@ -331,20 +385,20 @@ namespace Ambiesoft {
 
 						LPCTSTR pArgv2 = targv[i];
 						// pA->option_ = pArgv;
-						pA->AddValue(pArgv2);
+						pA->AddValue(WStringToString(pArgv2));
 						continue;
 					}
 				}
 				else
 				{
-					COption* pA = FindAvailableCL(_T(""));
+					myOptionType* pA = FindAvailableCL(WStringToString(L""));
 					if (!pA)
 					{
 						//CInputCommandLineInfo icli;
 						//icli.nID_ = -2;
 						//icli.option_ = _T("");
 						//icli.value_ = pArgv;
-						unknowns_.push_back(COption(pArgv));
+						unknowns_.push_back(myOptionType(WStringToString(pArgv)));
 						continue;
 					}
 					else
@@ -352,7 +406,7 @@ namespace Ambiesoft {
 						//CInputCommandLineInfo icli;
 						//icli.nID_ = pA->nID_;
 						//icli.option_ = _T("");
-						pA->AddValue(pArgv);
+						pA->AddValue(WStringToString( pArgv));
 						// pA.push_back(icli);
 						continue;
 
@@ -364,10 +418,13 @@ namespace Ambiesoft {
 
 			
 
+typedef BasicCommandLineParser<std::wstring, COptionW> CCommandLineParserW;
+typedef BasicCommandLineParser<std::string, COptionA> CCommandLineParserA;
+
 #ifdef UNICODE
-	typedef BasicCommandLineParser<std::wstring> CCommandLineParser;
+typedef CCommandLineParserW CCommandLineParser;
 #else
-	typedef BasicCommandLineParser<std::string> CCommandLineParser;
+typedef CCommandLineParserA CCommandLineParser;
 #endif
 
 	
