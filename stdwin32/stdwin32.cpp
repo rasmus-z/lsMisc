@@ -678,7 +678,7 @@ namespace stdwin32 {
 			else 
 			{
 				ret+= '%';
-				ret+= i2a(*pstr >> 4);
+				ret+= i2a((char)(*pstr >> 4));
 				ret+= i2a(*pstr & 15);
 			}
 		}

@@ -4,8 +4,8 @@
 #include <windows.h>
 #include <tchar.h>
 #include <shellapi.h>
-#endif
-#endif
+#endif // UNICODE
+#endif // _WIN32
 
 #include <vector>
 #include <string>
@@ -79,20 +79,24 @@ namespace Ambiesoft {
 
 		ArgCount_Infinite = 0xffffffff,
 	};
-	template <class myStringType, class myOptionType> class BasicCommandLineParser;
 	
-	template<class myStringType> class BasicOption
+	template <class myStringType, class myOptionType> 
+	class BasicCommandLineParser;
+	
+	template<class myStringType> 
+	class BasicOption
 	{
 		std::vector<myStringType> options_;
 
 		ArgCount argcountflag_;
 		std::vector<myStringType> values_;
 		bool hadOption_;
+		bool parsed_;
+
 		void AddValue(const myStringType& value)
 		{
 			setHadOption();
 			values_.push_back(value);
-
 		}
 		void setHadOption()
 		{
@@ -118,41 +122,55 @@ namespace Ambiesoft {
 				argcountflag_ = (ArgCount)(1 << exactcount);
 			}
 		}
+
+		void setParsed()
+		{
+			parsed_ = true;
+		}
+
+
 	public:
-		BasicOption() : hadOption_(false)
+		BasicOption() : 
+			hadOption_(false), parsed_(false)
 		{
 			options_.push_back(myStringType());
 			argcountflag_ = ArgCount_Infinite;
 		}
-		BasicOption(myStringType option, ArgCount acf) : hadOption_(false)
+		BasicOption(myStringType option, ArgCount acf) : 
+			hadOption_(false), parsed_(false)
 		{
 			options_.push_back(option);
 			argcountflag_ = acf;
 		}
-		BasicOption(myStringType option, const int exactcount) : hadOption_(false)
+		BasicOption(myStringType option, const int exactcount) :
+			hadOption_(false), parsed_(false)
 		{
 			options_.push_back(option);
 			setArgFlag(exactcount);
 		}
-		BasicOption(myStringType option1, myStringType option2, ArgCount acf) : hadOption_(false)
+		BasicOption(myStringType option1, myStringType option2, ArgCount acf) : 
+			hadOption_(false), parsed_(false)
 		{
 			options_.push_back(option1);
 			options_.push_back(option2);
 			argcountflag_ = acf;
 		}
-		BasicOption(myStringType option1, myStringType option2, const int exactcount) : hadOption_(false)
+		BasicOption(myStringType option1, myStringType option2, const int exactcount) : 
+			hadOption_(false), parsed_(false)
 		{
 			options_.push_back(option1);
 			options_.push_back(option2);
 
 			setArgFlag(exactcount);
 		}
-		BasicOption(myStringType option) : hadOption_(false)
+		BasicOption(myStringType option) : 
+			hadOption_(false), parsed_(false)
 		{
 			options_.push_back(option);
 			argcountflag_ = ArgCount_Zero;
 		}
-		BasicOption(myStringType option1, myStringType option2) : hadOption_(false)
+		BasicOption(myStringType option1, myStringType option2) :
+			hadOption_(false), parsed_(false)
 		{
 			options_.push_back(option1);
 			options_.push_back(option2);
@@ -160,17 +178,26 @@ namespace Ambiesoft {
 
 		friend class BasicCommandLineParser<myStringType, BasicOption<myStringType> >;
 
+
+		// Command line had the option
 		bool hadOption() const
 		{
+			assert(parsed_);
 			return hadOption_;
 		}
+
+		// Command line had value of the option
 		bool hadValue() const
 		{
+			assert(parsed_);
 			return !values_.empty();
 		}
 
+		// Get all values of the option
 		myStringType getValueStrings() const
 		{
+			assert(parsed_);
+
 			myStringType ret;
 			bool looped = false;
 			for (std::vector<myStringType>::const_iterator it = values_.begin(); it != values_.end(); ++it)
@@ -184,23 +211,32 @@ namespace Ambiesoft {
 			}
 			return ret;
 		}
+
+		// Get first value of the option
 		myStringType getFirstValue() const
 		{
+			assert(parsed_);
+
 			myStringType ret;
 			if (values_.empty())
 				return ret;
 			return values_[0];
 		}
+
+
 		unsigned int getFirstValueAsUInt() const
 		{
+			assert(parsed_);
 			return AtoI(getFirstValue());
 		}
 		unsigned long long getFirstValueAsUInt64() const
 		{
+			assert(parsed_);
 			return AtoI64(getFirstValue());
 		}
 		void* getFirstValueAsPointer() const
 		{
+			assert(parsed_);
 			if (sizeof(void*) == sizeof(unsigned int))
 				return (void*)getFirstValueAsUInt();
 			else
@@ -208,10 +244,12 @@ namespace Ambiesoft {
 		}
 		myStringType getValue(int index)
 		{
+			assert(parsed_);
 			return values_[index];
 		}
 		size_t getValueCount() const
 		{
+			assert(parsed_);
 			return values_.size();
 		}
 	};
@@ -272,7 +310,15 @@ typedef BasicOption<std::string> COptionA;
 			return ret;
 		}
 
-		
+		myStringType stdstringToMyString(const std::wstring& ws)
+		{
+			return ws;
+		}
+		myStringType stdstringToMyString(const std::string& ws)
+		{
+			return WStringToString(ws);
+		}
+
 		typedef std::vector<BasicOption<myStringType>*> POPTIONARRAY;
 		typedef std::vector<BasicOption<myStringType> > OPTIONARRAY;
 
@@ -280,8 +326,9 @@ typedef BasicOption<std::string> COptionA;
 		POPTIONARRAY availables_;
 		OPTIONARRAY unknowns_;
 		bool empty_;
+		bool parsed_;
 
-		myOptionType* FindAvailableCL(const myStringType& option)
+		myOptionType* FindOption(const myStringType& option)
 		{
 			for (POPTIONARRAY::iterator it = availables_.begin(); it != availables_.end(); ++it)
 			{
@@ -295,9 +342,9 @@ typedef BasicOption<std::string> COptionA;
 
 
 	public:
-		BasicCommandLineParser()
+		BasicCommandLineParser() :
+			empty_(true), parsed_(false)
 		{
-			empty_ = true;
 		}
 		bool isEmpty() const
 		{
@@ -305,6 +352,8 @@ typedef BasicOption<std::string> COptionA;
 		}
 		myStringType getUnknowOptionStrings() const
 		{
+			assert(parsed_);
+
 			myStringType ret;
 			for (OPTIONARRAY::const_iterator it = unknowns_.begin(); it != unknowns_.end(); ++it)
 			{
@@ -319,10 +368,21 @@ typedef BasicOption<std::string> COptionA;
 		}
 		bool hadUnknownOption() const
 		{
+			assert(parsed_);
 			return !unknowns_.empty();
 		}
 		void AddOption(myOptionType* cli)
 		{
+			assert(!parsed_);
+#ifdef _DEBUG
+			for (POPTIONARRAY::const_iterator it = availables_.begin();
+				it != availables_.end();
+				++it)
+			{
+				// check whether same option is added.
+				assert((*it) != cli);
+			}
+#endif
 			availables_.push_back(cli);
 		}
 #ifdef _WIN32
@@ -339,27 +399,25 @@ typedef BasicOption<std::string> COptionA;
 			}
 			Parse(nArgs, szArglist);
 			LocalFree(szArglist);
-		}
-#endif
-#endif
-		void Parse(LPCTSTR pArg)
-		{
-			for(LPCTSTR p = pArg; *p ; p=_tcsinc(p))
-			{
-			
-			}
-		}
 
-		myStringType stdstringToMyString(const std::wstring& ws)
-		{
-			return ws;
+
 		}
-		myStringType stdstringToMyString(const std::string& ws)
-		{
-			return WStringToString(ws);
-		}
+#endif
+#endif
+		//void Parse(LPCWSTR pArg)
+		//{
+		//	for(LPCTSTR p = pArg; *p ; p=_tcsinc(p))
+		//	{
+		//	
+		//	}
+		//}
+
+	
 		void Parse(int argc, LPWSTR* targv)
 		{
+			assert(!parsed_);  // already parsed
+			parsed_ = true;
+
 			for (int i = 1; i < argc; ++i)
 			{
 				LPCWSTR pArgv = targv[i];
@@ -370,7 +428,7 @@ typedef BasicOption<std::string> COptionA;
 
 				if (pArgv[0] == L'-' || pArgv[0] == L'/')
 				{
-					myOptionType* pA = FindAvailableCL(stdstringToMyString(pArgv));
+					myOptionType* pA = FindOption(stdstringToMyString(pArgv));
 					if (!pA)
 					{
 						//CInputCommandLineInfo icli;
@@ -398,7 +456,7 @@ typedef BasicOption<std::string> COptionA;
 				}
 				else
 				{
-					myOptionType* pA = FindAvailableCL(stdstringToMyString(L""));
+					myOptionType* pA = FindOption(stdstringToMyString(L""));
 					if (!pA)
 					{
 						//CInputCommandLineInfo icli;
@@ -419,6 +477,17 @@ typedef BasicOption<std::string> COptionA;
 
 					}
 				}
+			}
+
+
+			// mark all options as parsed.
+			// when user call some functions which is not added to parser or before parse(),
+			// assert() fails.
+			for (POPTIONARRAY::const_iterator it = availables_.begin();
+				it != availables_.end();
+				++it)
+			{
+				(*it)->setParsed();
 			}
 		}
 	};
