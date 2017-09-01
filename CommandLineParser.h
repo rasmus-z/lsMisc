@@ -269,7 +269,8 @@ typedef BasicOption<std::string> COptionA;
 
 
 
-	template <class myStringType, class myOptionType> class BasicCommandLineParser
+	template <class myStringType, class myOptionType> 
+	class BasicCommandLineParser
 	{
 		typedef typename myStringType::traits_type::char_type Elem;
 		static myStringType GetToken(LPCWSTR p)
@@ -310,11 +311,12 @@ typedef BasicOption<std::string> COptionA;
 			return ret;
 		}
 
-		myStringType stdstringToMyString(const std::wstring& ws)
+		myStringType stdstringToMyString(const std::string& ws)
 		{
 			return ws;
 		}
-		myStringType stdstringToMyString(const std::string& ws)
+
+		myStringType stdstringToMyString(const std::wstring& ws)
 		{
 			return WStringToString(ws);
 		}
