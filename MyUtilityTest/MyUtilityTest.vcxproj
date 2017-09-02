@@ -96,6 +96,11 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <AdditionalIncludeDirectories>.;../stlsoft/include</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)2013\</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)2013\</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)2013\vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
+      <BrowseInformationFile>$(IntDir)2013\</BrowseInformationFile>
+      <XMLDocumentationFileName>$(IntDir)2013\</XMLDocumentationFileName>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -127,6 +132,7 @@
     <ClCompile Include="..\PathUtil.cpp" />
     <ClCompile Include="..\ProcessList.cpp" />
     <ClCompile Include="..\SHMoveFile.cpp" />
+    <ClCompile Include="..\stdwin32\stdwin32.cpp" />
     <ClCompile Include="..\UrlEncode.cpp" />
     <ClCompile Include="..\UTF16toUTF8.cpp" />
     <ClCompile Include="main.cpp" />
@@ -158,6 +164,7 @@
     <ClInclude Include="..\PathUtil.h" />
     <ClInclude Include="..\ProcessList.h" />
     <ClInclude Include="..\SHMoveFile.h" />
+    <ClInclude Include="..\stdwin32\stdwin32.h" />
     <ClInclude Include="..\UrlEncode.h" />
     <ClInclude Include="..\UTF16toUTF8.h" />
     <ClInclude Include="stdafx.h" />

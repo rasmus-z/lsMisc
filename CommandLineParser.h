@@ -1,4 +1,4 @@
-//#pragma once
+﻿//#pragma once
 #ifdef _WIN32
 #ifdef UNICODE
 #include <windows.h>
@@ -7,6 +7,7 @@
 #endif // UNICODE
 #endif // _WIN32
 
+#include <cassert>
 #include <vector>
 #include <string>
 #include <algorithm>
@@ -33,38 +34,96 @@ namespace Ambiesoft {
 		return _wtoi64(s.c_str());
 	}
 
-	inline std::string StoSTD(LPCSTR p)
-	{
-		return p;
-	}
-	inline std::wstring StoSTD(LPCWSTR p)
-	{
-		return p;
-	}
 
-	inline std::string WStringToString(const std::wstring& w)
-	{
-		std::string ret;
-		if (w.empty())
-			return ret;
 
-		size_t len = (w.length() + 1) * sizeof(wchar_t);
-		char* pT = (char*)malloc(len);
-		size_t retutrnvalue;
 
-		if (0 != wcstombs_s(&retutrnvalue,
-			pT,
-			len,
-			w.c_str(),
-			len))
-		{
-			free(pT);
-			return ret;
-		}
-		ret = pT;
-		free(pT);
-		return ret;
-	}
+
+
+	//// explicit_specialization.cpp  
+	//template<class T> void f(T t)
+	//{
+	//};
+
+	//// Explicit specialization of f with 'char' with the  
+	//// template argument explicitly specified:  
+	////  
+	//template<> void f<char>(char c)
+	//{
+	//}
+
+	//// Explicit specialization of f with 'double' with the  
+	//// template argument deduced:  
+	////  
+	//template<> void f(double d)
+	//{
+	//}
+
+
+
+
+	//inline std::string StoSTD(LPCSTR p)
+	//{
+	//	return p;
+	//}
+	//inline std::wstring StoSTD(LPCWSTR p)
+	//{
+	//	return p;
+	//}
+
+	//inline std::string WStringToString(const std::wstring& w)
+	//{
+	//	std::string ret;
+	//	if (w.empty())
+	//		return ret;
+
+	//	size_t len = (w.length() + 1) * sizeof(wchar_t);
+	//	char* pT = (char*)malloc(len);
+	//	size_t retutrnvalue;
+
+	//	if (0 != wcstombs_s(&retutrnvalue,
+	//		pT,
+	//		len,
+	//		w.c_str(),
+	//		len))
+	//	{
+	//		free(pT);
+	//		return ret;
+	//	}
+	//	ret = pT;
+	//	free(pT);
+	//	return ret;
+	//}
+	//inline std::wstring StringToWString(const std::string& s)
+	//{
+	//	int nReqSize = MultiByteToWideChar(
+	//		CP_UTF8,
+	//		0,
+	//		(const char*)s.c_str(),
+	//		(int)-1,
+	//		NULL,
+	//		0);
+
+	//	if ( nReqSize == 0 )
+	//		return NULL;
+
+	//	LPWSTR pOut = (LPWSTR)malloc(nReqSize*sizeof(WCHAR));
+	//	int nRet = MultiByteToWideChar(
+	//		CP_UTF8,
+	//		0,
+	//		(const char*)s.c_str(),
+	//		(int)-1,
+	//		pOut,
+	//		nReqSize);
+
+	//	if ( nRet==0 || nRet != nReqSize )
+	//	{
+	//		free(pOut);
+	//		return NULL;
+	//	}
+
+	//	return pOut;
+	//}
+
 	enum ArgCount
 	{
 		ArgCount_Zero = 0,
@@ -86,6 +145,8 @@ namespace Ambiesoft {
 	template<class myStringType> 
 	class BasicOption
 	{
+		typedef myStringType MyS_;
+
 		std::vector<myStringType> options_;
 
 		ArgCount argcountflag_;
@@ -273,6 +334,8 @@ typedef BasicOption<std::string> COptionA;
 	class BasicCommandLineParser
 	{
 		typedef typename myStringType::traits_type::char_type Elem;
+		typedef typename myOptionType::MyS_ MyOS_;
+
 		static myStringType GetToken(LPCWSTR p)
 		{
 			myStringType ret;
@@ -311,15 +374,7 @@ typedef BasicOption<std::string> COptionA;
 			return ret;
 		}
 
-		myStringType stdstringToMyString(const std::string& ws)
-		{
-			return ws;
-		}
 
-		myStringType stdstringToMyString(const std::wstring& ws)
-		{
-			return WStringToString(ws);
-		}
 
 		typedef std::vector<BasicOption<myStringType>*> POPTIONARRAY;
 		typedef std::vector<BasicOption<myStringType> > OPTIONARRAY;
@@ -401,8 +456,6 @@ typedef BasicOption<std::string> COptionA;
 			}
 			Parse(nArgs, szArglist);
 			LocalFree(szArglist);
-
-
 		}
 #endif
 #endif
@@ -430,13 +483,13 @@ typedef BasicOption<std::string> COptionA;
 
 				if (pArgv[0] == L'-' || pArgv[0] == L'/')
 				{
-					myOptionType* pA = FindOption(stdstringToMyString(pArgv));
+					myOptionType* pA = FindOption(pArgv);
 					if (!pA)
 					{
 						//CInputCommandLineInfo icli;
 						//icli.nID_ = -1;
 						//icli.option_ = pArgv;
-						unknowns_.push_back(myOptionType(stdstringToMyString(pArgv)));
+						unknowns_.push_back(myOptionType(pArgv));
 						continue;
 					}
 
@@ -452,20 +505,20 @@ typedef BasicOption<std::string> COptionA;
 
 						LPCTSTR pArgv2 = targv[i];
 						// pA->option_ = pArgv;
-						pA->AddValue(stdstringToMyString(pArgv2));
+						pA->AddValue((pArgv2));
 						continue;
 					}
 				}
 				else
 				{
-					myOptionType* pA = FindOption(stdstringToMyString(L""));
+					myOptionType* pA = FindOption((L""));
 					if (!pA)
 					{
 						//CInputCommandLineInfo icli;
 						//icli.nID_ = -2;
 						//icli.option_ = _T("");
 						//icli.value_ = pArgv;
-						unknowns_.push_back(myOptionType(stdstringToMyString(pArgv)));
+						unknowns_.push_back(myOptionType((pArgv)));
 						continue;
 					}
 					else
@@ -473,7 +526,7 @@ typedef BasicOption<std::string> COptionA;
 						//CInputCommandLineInfo icli;
 						//icli.nID_ = pA->nID_;
 						//icli.option_ = _T("");
-						pA->AddValue(stdstringToMyString(pArgv));
+						pA->AddValue((pArgv));
 						// pA.push_back(icli);
 						continue;
 

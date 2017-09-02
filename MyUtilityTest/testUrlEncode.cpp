@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <string>
-
+#include <cassert>
 #include <stlsoft/smartptr/scoped_handle.hpp>
 
 #include "../UrlEncode.h"

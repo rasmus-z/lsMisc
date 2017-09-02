@@ -3,8 +3,18 @@
 
 #include "../CommandLineParser.h"
 
+using namespace Ambiesoft;
+
 void testCommandLine()
 {
-	Ambiesoft::CCommandLineParser clp;
+	CCommandLineParser clp;
+
+	COption opA(L"-a");
+	clp.AddOption(&opA);
+
 	clp.Parse(__argc, __targv);
+
+	if(opA.hadOption())
+	{
+	}
 }

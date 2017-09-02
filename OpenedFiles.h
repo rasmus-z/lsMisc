@@ -1,5 +1,9 @@
 #pragma once
 
+#ifndef _VECTOR_
+#pragma message(" Please include vector")
+#endif
+
 enum OF_TYPE
 {
 	FILES_ONLY = 1,

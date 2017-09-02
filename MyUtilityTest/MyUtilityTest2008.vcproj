@@ -23,7 +23,7 @@
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="2"
+			CharacterSet="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -46,15 +46,12 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories=""
+				AdditionalIncludeDirectories="..\stlsoft\include;."
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
 				PrecompiledHeaderFile=".\Release/MyUtilityTest.pch"
-				AssemblerListingLocation=".\Release/"
-				ObjectFile=".\Release/"
-				ProgramDataBaseFileName=".\Release/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 			/>
@@ -139,9 +136,6 @@
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS"
 				RuntimeLibrary="3"
 				PrecompiledHeaderFile=".\Debug/MyUtilityTest.pch"
-				AssemblerListingLocation=".\Debug/"
-				ObjectFile=".\Debug/"
-				ProgramDataBaseFileName=".\Debug/"
 				BrowseInformation="1"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
@@ -220,6 +214,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\I18N.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\IsFileExists.cpp"
 				>
 			</File>
@@ -232,11 +230,31 @@
 				>
 			</File>
 			<File
+				RelativePath="..\OpenCommon.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\OpenedFiles.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\PathUtil.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\ProcessList.cpp"
 				>
 			</File>
 			<File
+				RelativePath="..\SHMoveFile.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\testCommandLineParser.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\testFormatSizeof.cpp"
 				>
 			</File>
 			<File
@@ -248,7 +266,43 @@
 				>
 			</File>
 			<File
+				RelativePath=".\testI18N.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\testMoveWindowCommon.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\testOpenCommon.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\testOpenedFiles.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\testPathUtil.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\testSHMoveFile.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\testStlsoft.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\testUrlEncode.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\UrlEncode.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\UTF16toUTF8.cpp"
 				>
 			</File>
 		</Filter>
@@ -269,7 +323,19 @@
 				>
 			</File>
 			<File
+				RelativePath="..\FormatSizeof.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\FormatSizeof.h"
+				>
+			</File>
+			<File
 				RelativePath="..\GetVersionString.h"
+				>
+			</File>
+			<File
+				RelativePath="..\I18N.h"
 				>
 			</File>
 			<File
@@ -277,11 +343,35 @@
 				>
 			</File>
 			<File
+				RelativePath="..\OpenCommon.h"
+				>
+			</File>
+			<File
+				RelativePath="..\OpenedFiles.h"
+				>
+			</File>
+			<File
+				RelativePath="..\PathUtil.h"
+				>
+			</File>
+			<File
 				RelativePath="..\ProcessList.h"
 				>
 			</File>
 			<File
+				RelativePath="..\SHMoveFile.h"
+				>
+			</File>
+			<File
 				RelativePath=".\stdafx.h"
+				>
+			</File>
+			<File
+				RelativePath="..\UrlEncode.h"
+				>
+			</File>
+			<File
+				RelativePath="..\UTF16toUTF8.h"
 				>
 			</File>
 		</Filter>

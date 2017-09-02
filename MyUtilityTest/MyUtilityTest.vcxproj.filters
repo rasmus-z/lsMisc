@@ -86,6 +86,7 @@
     <ClCompile Include="testI18N.cpp">
       <Filter>Test Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\stdwin32\stdwin32.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -137,6 +138,7 @@
     <ClInclude Include="..\OpenedFiles.h">
       <Filter>MyUtility\1 Header</Filter>
     </ClInclude>
+    <ClInclude Include="..\stdwin32\stdwin32.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="MyUtility">

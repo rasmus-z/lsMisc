@@ -2,6 +2,7 @@
 #include <Windows.h>
 #include <tchar.h>
 
+#include <cassert>
 #include <string.h>
 #include <string>
 
