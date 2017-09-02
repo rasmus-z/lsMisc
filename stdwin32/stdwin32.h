@@ -156,5 +156,9 @@ namespace stdwin32 {
 	std::wstring getStdWString(System::String^ s);
 	std::string getStdString(System::String^ s);
 #endif // __cplusplus_cli
+
+
+	std::string stdToString(const wchar_t * pIN);
+	std::string stdToString(const std::wstring& ws);
 }
 

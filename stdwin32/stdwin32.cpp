@@ -708,4 +708,44 @@ namespace stdwin32 {
 
 		return ret;
 	}
+
+
+	std::string stdToString(const wchar_t * pIN)
+	{
+		int nReqSize = WideCharToMultiByte(CP_ACP,
+			0,
+			pIN,
+			-1,
+			NULL,
+			0,
+			NULL,
+			NULL);
+
+		if (nReqSize == 0)
+			return NULL;
+
+		char* pOut = (char*)malloc(nReqSize);
+		int nRet = WideCharToMultiByte(CP_ACP,
+			0,
+			pIN,
+			-1,
+			pOut,
+			nReqSize,
+			NULL,
+			NULL);
+
+		if (nRet == 0 || nRet != nReqSize)
+		{
+			free(pOut);
+			return NULL;
+		}
+
+		std::string ret(pOut);
+		free(pOut);
+		return ret;
+	}
+	std::string stdToString(const std::wstring& ws)
+	{
+		return stdToString(ws.c_str());
+	}
 } // namespace stdwin32
