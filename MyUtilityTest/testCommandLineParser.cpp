@@ -7,14 +7,16 @@ using namespace Ambiesoft;
 
 void testCommandLine()
 {
+	bool isHelp = false;
 	CCommandLineParser clp;
+	clp.AddOption(L"-h", 0, &isHelp);
+	
+	wchar_t* argv[] = {
+		L"exe.exe",
+		L"-h",
+		NULL
+	};
+	clp.Parse(2, argv);
 
-	COption opA(L"-a");
-	clp.AddOption(&opA);
-
-	clp.Parse(__argc, __targv);
-
-	if(opA.hadOption())
-	{
-	}
+	assert(isHelp);
 }

@@ -145,7 +145,33 @@ namespace Ambiesoft {
 	template<class myStringType> 
 	class BasicOption
 	{
+		typedef BasicOption<myStringType> MyT_;
 		typedef myStringType MyS_;
+
+		class UserTarget
+		{
+			bool* pBool_;
+			int* pInt_;
+
+			void init()
+			{
+				pBool_ = NULL;
+				pInt_ = NULL;
+			}
+			UserTarget(bool* p)
+			{
+				init();
+				pBool_ = p;
+			}
+			void setTrue()
+			{
+				if (pBool_)
+					*pBool_ = true;
+				if (pInt_)
+					*pInt_ = 1;
+			}
+			friend MyT_;
+		};
 
 		std::vector<myStringType> options_;
 
@@ -154,6 +180,12 @@ namespace Ambiesoft {
 		bool hadOption_;
 		bool parsed_;
 
+		UserTarget *pTarget_;
+		void setTarget(bool* pT)
+		{
+			assert(pTarget_ == NULL);
+			pTarget_ = new UserTarget(pT);
+		}
 		void AddValue(const myStringType& value)
 		{
 			setHadOption();
@@ -161,6 +193,13 @@ namespace Ambiesoft {
 		}
 		void setHadOption()
 		{
+			if(argcountflag_== ArgCount_Zero)
+			{
+				if (pTarget_)
+				{
+					pTarget_->setTrue();
+				}
+			}
 			hadOption_ = true;
 		}
 		bool isMatchOption(const myStringType& option) const
@@ -189,50 +228,55 @@ namespace Ambiesoft {
 			parsed_ = true;
 		}
 
-
-	public:
-		BasicOption() : 
-			hadOption_(false), parsed_(false)
+		void init()
 		{
+			hadOption_ = false;
+			parsed_ = false;
+			pTarget_ = NULL;
+		}
+	public:
+		BasicOption()
+		{
+			init();
 			options_.push_back(myStringType());
 			argcountflag_ = ArgCount_Infinite;
 		}
-		BasicOption(myStringType option, ArgCount acf) : 
-			hadOption_(false), parsed_(false)
+		BasicOption(myStringType option, ArgCount acf) 
 		{
+			init();
 			options_.push_back(option);
 			argcountflag_ = acf;
 		}
-		BasicOption(myStringType option, const int exactcount) :
-			hadOption_(false), parsed_(false)
+		BasicOption(myStringType option, const int exactcount) 
 		{
+			init();
 			options_.push_back(option);
 			setArgFlag(exactcount);
 		}
-		BasicOption(myStringType option1, myStringType option2, ArgCount acf) : 
-			hadOption_(false), parsed_(false)
+		BasicOption(myStringType option1, myStringType option2, ArgCount acf) 
 		{
+			init();
 			options_.push_back(option1);
 			options_.push_back(option2);
 			argcountflag_ = acf;
 		}
-		BasicOption(myStringType option1, myStringType option2, const int exactcount) : 
-			hadOption_(false), parsed_(false)
+		BasicOption(myStringType option1, myStringType option2, const int exactcount) 
 		{
+			init();
 			options_.push_back(option1);
 			options_.push_back(option2);
 
 			setArgFlag(exactcount);
 		}
-		BasicOption(myStringType option) : 
-			hadOption_(false), parsed_(false)
+		BasicOption(myStringType option) 
 		{
+			init();
 			options_.push_back(option);
 			argcountflag_ = ArgCount_Zero;
 		}
-		BasicOption(myStringType option1, myStringType option2) :
-			hadOption_(false), parsed_(false)
+		BasicOption(myStringType option1, myStringType option2)
 		{
+			init();
 			options_.push_back(option1);
 			options_.push_back(option2);
 		}
@@ -380,18 +424,30 @@ typedef BasicOption<std::string> COptionA;
 		typedef std::vector<BasicOption<myStringType> > OPTIONARRAY;
 
 		typedef BasicOption<myStringType> myOptionType;
-		POPTIONARRAY availables_;
+		POPTIONARRAY useroptions_;
+		OPTIONARRAY inneroptions_;
 		OPTIONARRAY unknowns_;
 		bool empty_;
 		bool parsed_;
 
 		myOptionType* FindOption(const myStringType& option)
 		{
-			for (POPTIONARRAY::iterator it = availables_.begin(); it != availables_.end(); ++it)
+			for (POPTIONARRAY::iterator it = useroptions_.begin(); it != useroptions_.end(); ++it)
 			{
 				if ((*it)->isMatchOption(option))
 				{
 					return *it;
+				}
+			}
+
+			for (OPTIONARRAY::iterator it = inneroptions_.begin();
+				it != inneroptions_.end();
+				++it)
+			{
+				if (it->isMatchOption(option))
+				{
+					// operator * returns a reference
+					return &(*it);
 				}
 			}
 			return NULL;
@@ -440,7 +496,17 @@ typedef BasicOption<std::string> COptionA;
 				assert((*it) != cli);
 			}
 #endif
-			availables_.push_back(cli);
+			useroptions_.push_back(cli);
+		}
+		void AddOption(
+			const myStringType& optionString1,
+			int exactCount,
+			bool* pTarget)
+		{
+			myOptionType option(optionString1, exactCount);
+			*pTarget = false;
+			option.setTarget(pTarget);
+			inneroptions_.push_back(option);
 		}
 #ifdef _WIN32
 #ifdef UNICODE
@@ -538,8 +604,8 @@ typedef BasicOption<std::string> COptionA;
 			// mark all options as parsed.
 			// when user call some functions which is not added to parser or before parse(),
 			// assert() fails.
-			for (POPTIONARRAY::const_iterator it = availables_.begin();
-				it != availables_.end();
+			for (POPTIONARRAY::const_iterator it = useroptions_.begin();
+				it != useroptions_.end();
 				++it)
 			{
 				(*it)->setParsed();
