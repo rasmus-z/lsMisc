@@ -1,5 +1,8 @@
 #pragma once
 
+namespace Ambiesoft {
+
+
 BYTE* UTF16toMultiByte(UINT cp, LPCWSTR pIN, size_t* pLenOut=NULL);
 BYTE* UTF16toUTF8(LPCWSTR pIN);
 LPWSTR UTF16_convertEndian(LPCWSTR pIN);
@@ -9,3 +12,6 @@ bool UTF8toUTF16(const LPBYTE pIN, std::wstring& w);
 #ifdef __cplusplus_cli  
 BYTE* UTF16toUTF8(System::String^ s);
 #endif //__cplusplus_cli  
+
+
+} // namespace

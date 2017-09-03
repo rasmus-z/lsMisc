@@ -3,6 +3,7 @@
 #include <string>
 #include "UTF16toUTF8.h"
 
+namespace Ambiesoft {
 
 BYTE* UTF16toMultiByte(UINT cp, LPCWSTR pIN, size_t* pLenOut)
 {
@@ -122,3 +123,6 @@ BYTE* UTF16toUTF8(System::String^ s)
 	return UTF16toUTF8(p);
 }
 #endif //__cplusplus_cli  
+
+
+} // namespace
