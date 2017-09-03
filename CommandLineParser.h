@@ -488,8 +488,8 @@ typedef BasicOption<std::string> COptionA;
 		{
 			assert(!parsed_);
 #ifdef _DEBUG
-			for (POPTIONARRAY::const_iterator it = availables_.begin();
-				it != availables_.end();
+			for (POPTIONARRAY::const_iterator it = useroptions_.begin();
+				it != useroptions_.end();
 				++it)
 			{
 				// check whether same option is added.
