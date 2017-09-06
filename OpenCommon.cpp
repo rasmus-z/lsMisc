@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#include <Windows.h>
+
 #ifndef _INC_SHELLAPI
 #pragma message("including shllapi")
 #include <Shellapi.h>
