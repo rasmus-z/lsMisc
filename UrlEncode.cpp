@@ -24,6 +24,7 @@
 using namespace std;
 
 
+namespace Ambiesoft {
 
 static bool myiswalnum(wchar_t c)
 {
@@ -265,3 +266,4 @@ std::wstring UrlDecodeW(const std::wstring& wenc)
 	return ret;
 }
 
+} // namespace
