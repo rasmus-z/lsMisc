@@ -17,11 +17,13 @@
 #pragma comment(lib,"Shell32.lib")
 
 
+#ifdef __cplusplus_cli
+#include <vcclr.h>
+#endif
 
 
 
-
-
+namespace Ambiesoft {
 
 
 #ifdef UNICODE
@@ -288,7 +290,6 @@ BOOL browseFolder(HWND hParent, LPCTSTR lpszTitle, tstring folder)
 }
 
 #ifdef __cplusplus_cli
-#include <vcclr.h>
 BOOL browseFolder(System::Windows::Forms::IWin32Window^ win, System::String^ title, System::String^% folder)
 {
 	pin_ptr<const wchar_t> pTitle = PtrToStringChars(title);
@@ -317,3 +318,5 @@ BOOL browseFolder(System::Windows::Forms::IWin32Window^ win, System::String^ tit
 	return true;
 }
 #endif  // __cplusplus_cli
+
+} // namespace

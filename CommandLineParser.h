@@ -35,7 +35,13 @@ namespace Ambiesoft {
 	}
 
 
-
+	inline static bool StringCompare(const std::wstring& left, const std::wstring& right, bool ignoreCase)
+	{
+		if (ignoreCase)
+			return _wcsicmp(left.c_str(), right.c_str()) == 0;
+		else
+			return wcscmp(left.c_str(), right.c_str()) == 0;
+	}
 
 
 
@@ -138,7 +144,13 @@ namespace Ambiesoft {
 
 		ArgCount_Infinite = 0xffffffff,
 	};
-	
+	enum CaseFlags
+	{
+		CaseFlag_CaseDefault,
+		CaseFlag_CaseSensitive,
+		CaseFlag_CaseInsensitive,
+	};
+
 	template <class myStringType, class myOptionType> 
 	class BasicCommandLineParser;
 	
@@ -179,6 +191,7 @@ namespace Ambiesoft {
 		std::vector<myStringType> values_;
 		bool hadOption_;
 		bool parsed_;
+		CaseFlags case_;
 
 		UserTarget *pTarget_;
 		void setTarget(bool* pT)
@@ -202,11 +215,28 @@ namespace Ambiesoft {
 			}
 			hadOption_ = true;
 		}
+		bool isMatchOption(const myStringType& option, bool ignoreCase) const
+		{
+			if (!ignoreCase)
+			{
+				std::vector< myStringType >::const_iterator cIter = find(options_.begin(), options_.end(), option);
+				return cIter != options_.end();
+			}
+			
+			for (std::vector< myStringType >::const_iterator cIter = options_.begin();
+				cIter != options_.end();
+				++cIter)
+			{
+				if (StringCompare(*cIter, option,true))
+					return true;
+			}
+			return false;
+		}
 		bool isMatchOption(const myStringType& option) const
 		{
-			std::vector< myStringType >::const_iterator cIter = find(options_.begin(), options_.end(), option);
-			return cIter != options_.end();
+			return isMatchOption(option, case_==CaseFlag_CaseInsensitive);
 		}
+
 		myStringType getFirstOption() const
 		{
 			return options_[0];
@@ -232,6 +262,7 @@ namespace Ambiesoft {
 		{
 			hadOption_ = false;
 			parsed_ = false;
+			case_=CaseFlag_CaseDefault;
 			pTarget_ = NULL;
 		}
 	public:
@@ -429,6 +460,7 @@ typedef BasicOption<std::string> COptionA;
 		OPTIONARRAY unknowns_;
 		bool empty_;
 		bool parsed_;
+		CaseFlags case_;
 
 		myOptionType* FindOption(const myStringType& option)
 		{
@@ -453,11 +485,21 @@ typedef BasicOption<std::string> COptionA;
 			return NULL;
 		}
 
-
-	public:
-		BasicCommandLineParser() :
-			empty_(true), parsed_(false)
+		void init()
 		{
+			empty_=true;
+			parsed_=false;
+			case_=CaseFlag_CaseDefault;
+		}
+	public:
+		BasicCommandLineParser()
+		{
+			init();
+		}
+		BasicCommandLineParser(CaseFlags kase)
+		{
+			init();
+			case_=kase;
 		}
 		bool isEmpty() const
 		{
@@ -486,6 +528,9 @@ typedef BasicOption<std::string> COptionA;
 		}
 		void AddOption(myOptionType* cli)
 		{
+			if(cli->case_==CaseFlag_CaseDefault)
+				cli->case_=case_;
+
 			assert(!parsed_);
 #ifdef _DEBUG
 			for (POPTIONARRAY::const_iterator it = useroptions_.begin();
@@ -494,6 +539,14 @@ typedef BasicOption<std::string> COptionA;
 			{
 				// check whether same option is added.
 				assert((*it) != cli);
+
+				// check same option string is added
+				for(std::vector< myStringType >::const_iterator cIter=cli->options_.begin();
+					cIter != cli->options_.end();
+					++cIter)
+				{
+					assert(!( (*it)->isMatchOption(cIter->c_str(), cli->case_ == CaseFlag_CaseInsensitive)) );
+				}
 			}
 #endif
 			useroptions_.push_back(cli);
