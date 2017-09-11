@@ -27,6 +27,8 @@
 
 namespace Ambiesoft {
 
+	typedef pin_ptr<const wchar_t> PinString;
+
 	System::String^ toCLR(const std::wstring& s);
 	std::wstring toWstring(System::String^ s);
 

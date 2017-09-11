@@ -55,6 +55,8 @@ namespace Ambiesoft {
 			startInfo.CreateNoWindow = true;
 			startInfo.UseShellExecute = false;
 
+			// startInfo.WorkingDirectory = System::Environment::CurrentDirectory;
+
 			startInfo.StandardOutputEncoding = encoding;
 			startInfo.RedirectStandardOutput = true;
 
@@ -97,7 +99,21 @@ namespace Ambiesoft {
 	System::Windows::Forms::DialogResult Alert(System::Exception^ ex);
 
 
-}
+	ref struct TemporalCurrentDir
+	{
+		System::String^ save_;
+		TemporalCurrentDir(System::String^ dir)
+		{
+			save_ = System::Environment::CurrentDirectory;
+			System::Environment::CurrentDirectory = dir;
+		}
+		~TemporalCurrentDir()
+		{
+			System::Environment::CurrentDirectory = save_;
+		}
+	};
+
+} // namespace
 
 
 #endif
