@@ -21,6 +21,7 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 #include "stdafx.h"
+#include <Windows.h>
 
 #include "clrHelper.h"
 
@@ -47,6 +48,17 @@ namespace Ambiesoft {
 	}
 
 
+	String^ getShortPah(String^ file)
+	{
+		TCHAR szShort[MAX_PATH]; szShort[0] = 0;
+
+		pin_ptr<const wchar_t> ps = PtrToStringChars(file);
+		DWORD dwRet = GetShortPathName(ps, szShort, _countof(szShort));
+		if (dwRet == 0 || dwRet > _countof(szShort))
+			return file;
+
+		return gcnew String(szShort);
+	}
 }
 
 #endif  // __cplusplus_cli

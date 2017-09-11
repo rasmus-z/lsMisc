@@ -7,6 +7,9 @@
 #include <ShlGuid.h>
 #include <comdef.h>
 #include <shlwapi.h>
+#pragma comment(lib, "shlwapi.lib")
+
+namespace Ambiesoft {
 
 static BOOL CheckShortcutFile(LPCTSTR pszShortcutFile, 
 							   LPCTSTR pszTargetFile,
@@ -15,6 +18,10 @@ static BOOL CheckShortcutFile(LPCTSTR pszShortcutFile,
 						       int iIconLocation)
 {
 	BOOL bFailed = TRUE;
+	if (!pszArg)
+		pszArg = L"";
+	if (!pszCurDir)
+		pszCurDir = L"";
 	HRESULT hr;
 	IShellLinkWPtr pShellLink = NULL;
 	CoInitialize(NULL);
@@ -102,8 +109,11 @@ BOOL CreateShortcutFile(LPCTSTR pszShortcutFile,
 						bFailed |= FAILED(pShellLink->SetIconLocation(pszTargetFile, iIconLocation));
 					}
 
-					bFailed |= FAILED(pShellLink->SetArguments(pszArg));
-					bFailed |= FAILED(pShellLink->SetWorkingDirectory(pszCurDir));
+					if(pszArg)
+						bFailed |= FAILED(pShellLink->SetArguments(pszArg));
+
+					if (pszCurDir)
+						bFailed |= FAILED(pShellLink->SetWorkingDirectory(pszCurDir));
 
 					
 					if(0==GetTempFileName(szTempDir, L"cbs", 0, szTempFile))
@@ -134,3 +144,4 @@ BOOL CreateShortcutFile(LPCTSTR pszShortcutFile,
 	return TRUE;
 }
 
+} // namespace

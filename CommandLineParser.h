@@ -58,7 +58,7 @@ namespace Ambiesoft {
 	}
 
 
-	inline static bool StringCompare(const std::wstring& left, const std::wstring& right, bool ignoreCase)
+	inline static bool StringCompare(const std::wstring& left, const std::wstring& right, bool ignoreCase=false)
 	{
 		if (ignoreCase)
 			return _wcsicmp(left.c_str(), right.c_str()) == 0;
@@ -67,6 +67,7 @@ namespace Ambiesoft {
 	}
 
 
+	std::wstring Utf8UrlDecode(const std::wstring& ws);
 
 	//// explicit_specialization.cpp  
 	//template<class T> void f(T t)
@@ -173,6 +174,11 @@ namespace Ambiesoft {
 		CaseFlag_CaseSensitive,
 		CaseFlag_CaseInsensitive,
 	};
+	enum ArgEncodingFlags
+	{
+		ArgEncoding_Default,
+		ArgEncoding_UTF8UrlEncode,
+	};
 
 	template <class myStringType, class myOptionType> 
 	class BasicCommandLineParser;
@@ -187,23 +193,59 @@ namespace Ambiesoft {
 		{
 			bool* pBool_;
 			int* pInt_;
+			MyS_* pMys_;
 
 			void init()
 			{
 				pBool_ = NULL;
 				pInt_ = NULL;
+				pMys_ = NULL;
 			}
-			UserTarget(bool* p)
+			UserTarget()
 			{
 				init();
-				pBool_ = p;
 			}
+			
+			void setBoolTarget(bool* pb)
+			{
+				assert(pBool_==NULL);
+				pBool_=pb;
+			}
+			void setMysTarget(MyS_* pM)
+			{
+				assert(pMys_==NULL);
+				pMys_=pM;
+			}
+
 			void setTrue()
 			{
 				if (pBool_)
 					*pBool_ = true;
 				if (pInt_)
 					*pInt_ = 1;
+
+			}
+			void setMys(const MyS_& mys)
+			{
+				if(pBool_)
+				{
+					if(
+						StringCompare(mys, L"0") ||
+						StringCompare(mys,L"off",true) ||
+						StringCompare(mys,L"false",true)
+						)
+					{
+						*pBool_=false;
+					}
+					else
+					{
+						*pBool_=true;
+					}
+				}
+				if(pInt_)
+					*pInt_=AtoI(mys);
+				if(pMys_)
+					*pMys_=mys;
 			}
 			friend MyT_;
 		};
@@ -215,16 +257,28 @@ namespace Ambiesoft {
 		bool hadOption_;
 		bool parsed_;
 		CaseFlags case_;
-
+		ArgEncodingFlags encoding_;
 		UserTarget *pTarget_;
 		void setTarget(bool* pT)
 		{
-			assert(pTarget_ == NULL);
-			pTarget_ = new UserTarget(pT);
+			if(pTarget_ == NULL)
+				pTarget_ = new UserTarget();
+			pTarget_->setBoolTarget(pT);
 		}
+		void setTarget(MyS_* pT)
+		{
+			if(pTarget_ == NULL)
+				pTarget_ = new UserTarget();
+			pTarget_->setMysTarget(pT);
+		}			
+
 		void AddValue(const myStringType& value)
 		{
 			setHadOption();
+			if(pTarget_)
+			{
+				pTarget_->setMys(encoding_==ArgEncoding_UTF8UrlEncode? Utf8UrlDecode(value):value);
+			}
 			values_.push_back(value);
 		}
 		void setHadOption()
@@ -287,6 +341,7 @@ namespace Ambiesoft {
 			parsed_ = false;
 			case_=CaseFlag_CaseDefault;
 			pTarget_ = NULL;
+			encoding_=ArgEncoding_Default;
 		}
 	public:
 		BasicOption()
@@ -431,6 +486,7 @@ typedef BasicOption<std::string> COptionA;
 	template <class myStringType, class myOptionType> 
 	class BasicCommandLineParser
 	{
+		typedef typename myStringType MyS_;
 		typedef typename myStringType::traits_type::char_type Elem;
 		typedef typename myOptionType::MyS_ MyOS_;
 
@@ -477,7 +533,7 @@ typedef BasicOption<std::string> COptionA;
 		typedef std::vector<BasicOption<myStringType>*> POPTIONARRAY;
 		typedef std::vector<BasicOption<myStringType> > OPTIONARRAY;
 
-		typedef BasicOption<myStringType> myOptionType;
+		typedef BasicOption<myStringType> MyO_;
 		POPTIONARRAY useroptions_;
 		OPTIONARRAY inneroptions_;
 		OPTIONARRAY unknowns_;
@@ -485,7 +541,7 @@ typedef BasicOption<std::string> COptionA;
 		bool parsed_;
 		CaseFlags case_;
 
-		myOptionType* FindOption(const myStringType& option)
+		MyO_* FindOption(const myStringType& option)
 		{
 			for (POPTIONARRAY::iterator it = useroptions_.begin(); it != useroptions_.end(); ++it)
 			{
@@ -549,13 +605,21 @@ typedef BasicOption<std::string> COptionA;
 			assert(parsed_);
 			return !unknowns_.empty();
 		}
-		void AddOption(myOptionType* cli)
+		void AddOption(MyO_* cli)
 		{
 			if(cli->case_==CaseFlag_CaseDefault)
 				cli->case_=case_;
 
 			assert(!parsed_);
+
+			check(cli);
+
+			useroptions_.push_back(cli);
+		}
+
 #ifdef _DEBUG
+		void check(MyO_* cli)
+		{
 			for (POPTIONARRAY::const_iterator it = useroptions_.begin();
 				it != useroptions_.end();
 				++it)
@@ -568,22 +632,71 @@ typedef BasicOption<std::string> COptionA;
 					cIter != cli->options_.end();
 					++cIter)
 				{
-					assert(!( (*it)->isMatchOption(cIter->c_str(), cli->case_ == CaseFlag_CaseInsensitive)) );
+					assert(!( (*it)->isMatchOption(cIter->c_str(), 
+						(*it)->case_==CaseFlag_CaseInsensitive || cli->case_==CaseFlag_CaseInsensitive)) );
 				}
 			}
-#endif
-			useroptions_.push_back(cli);
+
+			for(OPTIONARRAY::const_iterator it = inneroptions_.begin();
+				it != inneroptions_.end();
+				++it)
+			{
+				for(std::vector< myStringType >::const_iterator cIter=cli->options_.begin();
+					cIter != cli->options_.end();
+					++cIter)
+				{
+					assert(!( it->isMatchOption(cIter->c_str(), 
+						it->case_==CaseFlag_CaseInsensitive || cli->case_ == CaseFlag_CaseInsensitive)) );
+				}
+			}
 		}
+#else
+		void check(MyO_* cli){}
+#endif
+		// bool target
 		void AddOption(
-			const myStringType& optionString1,
+			const MyS_& optionString1,
 			int exactCount,
 			bool* pTarget)
 		{
-			myOptionType option(optionString1, exactCount);
+			MyO_ option(optionString1, exactCount);
+			option.case_=case_;
+			check(&option);
+
 			*pTarget = false;
 			option.setTarget(pTarget);
 			inneroptions_.push_back(option);
 		}
+		void AddOption(
+			const MyS_& optionString1,
+			const MyS_& optionString2,
+			int exactCount,
+			bool* pTarget)
+		{
+			MyO_ option(optionString1, optionString2, exactCount);
+			option.case_=case_;
+			check(&option);
+			*pTarget = false;
+			option.setTarget(pTarget);
+			inneroptions_.push_back(option);
+		}
+
+		// wstring target
+		void AddOption(
+			const MyS_& optionString1,
+			int exactCount,
+			MyS_* pTarget,
+			ArgEncodingFlags arf=ArgEncoding_Default)
+		{
+			MyO_ option(optionString1, exactCount);
+			option.case_=case_;
+			option.encoding_=arf;
+			check(&option);
+			*pTarget = L"";
+			option.setTarget(pTarget);
+			inneroptions_.push_back(option);
+		}
+
 #ifdef _WIN32
 #ifdef UNICODE
 		void Parse()

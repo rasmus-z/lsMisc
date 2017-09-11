@@ -113,6 +113,7 @@ namespace Ambiesoft {
 		}
 	};
 
+	System::String^ getShortPah(System::String^ file);
 } // namespace
 
 

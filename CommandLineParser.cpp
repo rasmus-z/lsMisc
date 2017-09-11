@@ -38,15 +38,21 @@
 #else
 #endif
 
+#include "UrlEncode.h"
+
 using std::vector;
 using std::find;
-
+using std::wstring;
 namespace Ambiesoft {
 
 
 
 
-	
+	wstring Utf8UrlDecode(const wstring& ws)
+	{
+		return UrlDecodeW(ws);
+	}
+
 
 
 
