@@ -4,7 +4,7 @@
 //#include <Shlwapi.h>
 //
 //#include <tchar.h>
-//#include <cassert>
+#include <cassert>
 #include <string>
 //#include <algorithm>
 //#include <vector>
