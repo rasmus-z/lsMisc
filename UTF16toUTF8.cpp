@@ -1,5 +1,10 @@
 #include "stdafx.h"
 #include <windows.h>
+
+#ifdef __cplusplus_cli  
+#include <vcclr.h>
+#endif
+
 #include <string>
 #include "UTF16toUTF8.h"
 
@@ -116,7 +121,6 @@ bool UTF8toUTF16(const LPBYTE pIN, std::wstring& w)
 
 
 #ifdef __cplusplus_cli  
-#include <vcclr.h>
 BYTE* UTF16toUTF8(System::String^ s)
 {
 	pin_ptr<const wchar_t> p = PtrToStringChars(s);

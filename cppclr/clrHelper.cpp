@@ -22,7 +22,7 @@
 //SUCH DAMAGE.
 #include "stdafx.h"
 #include <Windows.h>
-
+#include <vcclr.h>
 #include "clrHelper.h"
 
 #ifdef __cplusplus_cli
