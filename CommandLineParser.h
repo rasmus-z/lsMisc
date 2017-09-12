@@ -154,20 +154,30 @@ namespace Ambiesoft {
 	//	return pOut;
 	//}
 
+
+	// 000000001(1) = only zero
+	// 000000010(2) = only one
+	// 000000011(3) = zero or one
+	// 000000100(4) = only two
+	// 000000101(5) = zero or two
+	// 000000110(6) = one or two
+	// 000000111(7) = zero, one or two
+	// 000001000(8) = only tree
 	enum ArgCount
 	{
-		ArgCount_Zero = 0,
-		ArgCount_One = 1,
-		ArgCount_Two = 2,
-		ArgCount_OneORTwo = 3,
-		ArgCount_Three = 4,
-		ArgCount_OneORThree = 5,
-		ArgCount_TwoORThree = 6,
-		ArgCount_OneORTwoORThree = 7,
-		ArgCount_Four = 8,
+		ArgCount_Uninitialized = 0,
+		ArgCount_Zero = 1,
+		ArgCount_One = 2,
+		ArgCount_ZeroOrOne = 3,
+		ArgCount_Two = 4,
+		ArgCount_ZeroOrTwo = 5,
+		ArgCount_OneOrTwo = 6,
+		ArgCount_ZeroOrOneOrTwo = 7,
+		ArgCount_Three = 8,
 
 		ArgCount_Infinite = 0xffffffff,
 	};
+
 	enum CaseFlags
 	{
 		CaseFlag_CaseDefault,
@@ -187,6 +197,7 @@ namespace Ambiesoft {
 	class BasicOption
 	{
 		typedef BasicOption<myStringType> MyT_;
+		typedef typename myStringType::traits_type::char_type Elem;
 		typedef myStringType MyS_;
 
 		class UserTarget
@@ -321,13 +332,7 @@ namespace Ambiesoft {
 
 		void setArgFlag(int exactcount)
 		{
-			if (exactcount <= 0)
-				argcountflag_ = ArgCount_Zero;
-			else
-			{
-				--exactcount;
-				argcountflag_ = (ArgCount)(1 << exactcount);
-			}
+			argcountflag_ = (ArgCount)(1 << exactcount);
 		}
 
 		void setParsed()
@@ -339,6 +344,7 @@ namespace Ambiesoft {
 		{
 			hadOption_ = false;
 			parsed_ = false;
+			argcountflag_ = ArgCount_Uninitialized;
 			case_=CaseFlag_CaseDefault;
 			pTarget_ = NULL;
 			encoding_=ArgEncoding_Default;
@@ -362,14 +368,29 @@ namespace Ambiesoft {
 			options_.push_back(option);
 			setArgFlag(exactcount);
 		}
-		BasicOption(myStringType option1, myStringType option2, ArgCount acf) 
+
+		template<class InputIterator>
+		BasicOption(InputIterator first, InputIterator last, const int exactcount)
+		{
+			init();
+			while (first != last)
+			{
+				options_.push_back(*first);
+				++first;
+			}
+
+			setArgFlag(exactcount);
+		}
+		
+		BasicOption(myStringType option1, myStringType option2, ArgCount acf)
 		{
 			init();
 			options_.push_back(option1);
 			options_.push_back(option2);
 			argcountflag_ = acf;
 		}
-		BasicOption(myStringType option1, myStringType option2, const int exactcount) 
+		template<>
+		BasicOption(myStringType option1, myStringType option2, const int exactcount)
 		{
 			init();
 			options_.push_back(option1);
@@ -377,7 +398,16 @@ namespace Ambiesoft {
 
 			setArgFlag(exactcount);
 		}
-		BasicOption(myStringType option) 
+		BasicOption(const Elem* p1, const Elem* p2, const int exactcount)
+		{
+			init();
+			options_.push_back(p1);
+			options_.push_back(p2);
+
+			setArgFlag(exactcount);
+		}
+
+		BasicOption(myStringType option)
 		{
 			init();
 			options_.push_back(option);
@@ -655,31 +685,64 @@ typedef BasicOption<std::string> COptionA;
 #endif
 		// bool target
 		void AddOption(
-			const MyS_& optionString1,
+			MyS_ optionString1,
 			int exactCount,
 			bool* pTarget)
 		{
-			MyO_ option(optionString1, exactCount);
-			option.case_=case_;
-			check(&option);
+			MyS_* first = &optionString1;
+			MyS_* last = first + 1;
+			AddOption(first, last, exactCount, pTarget);
+			//MyO_ option(optionString1, exactCount);
+			//option.case_=case_;
+			//check(&option);
 
-			*pTarget = false;
-			option.setTarget(pTarget);
-			inneroptions_.push_back(option);
+			//*pTarget = false;
+			//option.setTarget(pTarget);
+			//inneroptions_.push_back(option);
 		}
+
+		template<class InputIterator>
 		void AddOption(
-			const MyS_& optionString1,
-			const MyS_& optionString2,
+			InputIterator first,
+			InputIterator last,
 			int exactCount,
 			bool* pTarget)
 		{
-			MyO_ option(optionString1, optionString2, exactCount);
-			option.case_=case_;
+			MyO_ option(first, last, exactCount);
+			option.case_ = case_;
 			check(&option);
 			*pTarget = false;
 			option.setTarget(pTarget);
 			inneroptions_.push_back(option);
 		}
+		template<>
+		void AddOption(
+			MyS_ optionString1,
+			MyS_ optionString2,
+			int exactCount,
+			bool* pTarget)
+		{
+			const MyS_ ops[] = { optionString1, optionString2 };
+			AddOption(ops, ops + _countof(ops), exactCount, pTarget);
+			//MyO_ option(ops, ops + _countof(ops), exactCount);
+			//option.case_ = case_;
+			//check(&option);
+			//*pTarget = false;
+			//option.setTarget(pTarget);
+			//inneroptions_.push_back(option);
+		}
+
+		void AddOption(
+			const Elem* p1,
+			const Elem* p2,
+			int exactCount,
+			bool* pTarget)
+		{
+			const Elem* ops[] = { p1, p2 };
+			AddOption(ops, ops + _countof(ops), exactCount, pTarget);
+		}
+
+
 
 		// wstring target
 		void AddOption(
@@ -722,11 +785,35 @@ typedef BasicOption<std::string> COptionA;
 		//	}
 		//}
 
-	
+	private:
+		int ParseParam(int i, int argc, LPWSTR* targv, MyO_* pMyO)
+		{
+			if (pMyO->argcountflag_ == ArgCount_Zero)
+				return i;
+
+			if (pMyO->argcountflag_ == ArgCount_One)
+			{
+				++i;
+				if (i >= argc)
+				{
+					return i;
+				}
+
+				LPCTSTR pArgv = targv[i];
+				pMyO->AddValue(pArgv);
+				return i;
+			}
+
+			// not yet
+			assert(false);
+			return 1044410;
+		}
+	public:
 		void Parse(int argc, LPWSTR* targv)
 		{
 			assert(!parsed_);  // already parsed
 			parsed_ = true;
+
 
 			for (int i = 1; i < argc; ++i)
 			{
@@ -737,35 +824,20 @@ typedef BasicOption<std::string> COptionA;
 				empty_ = false;
 
 				if (pArgv[0] == L'-' || pArgv[0] == L'/')
-				{
-					myOptionType* pA = FindOption(pArgv);
+				{ // option argument
+					MyO_* pA = FindOption(pArgv);
 					if (!pA)
 					{
-						//CInputCommandLineInfo icli;
-						//icli.nID_ = -1;
-						//icli.option_ = pArgv;
-						unknowns_.push_back(myOptionType(pArgv));
+						unknowns_.push_back(MyO_(pArgv));
 						continue;
 					}
 
 					pA->setHadOption();
 
-					if (pA->argcountflag_ & 0x1)
-					{
-						++i;
-						if (i >= argc)
-						{
-							break;
-						}
-
-						LPCTSTR pArgv2 = targv[i];
-						// pA->option_ = pArgv;
-						pA->AddValue((pArgv2));
-						continue;
-					}
+					i = ParseParam(i, argc, targv, pA);
 				}
-				else
-				{
+				else 
+				{ // value argument
 					myOptionType* pA = FindOption((L""));
 					if (!pA)
 					{
@@ -778,11 +850,7 @@ typedef BasicOption<std::string> COptionA;
 					}
 					else
 					{
-						//CInputCommandLineInfo icli;
-						//icli.nID_ = pA->nID_;
-						//icli.option_ = _T("");
 						pA->AddValue((pArgv));
-						// pA.push_back(icli);
 						continue;
 
 					}

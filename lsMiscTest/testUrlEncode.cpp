@@ -9,7 +9,7 @@
 #include "../UTF16toUTF8.h"
 
 using namespace std;
-
+using namespace Ambiesoft;
 void testUrlEncode()
 {
 	// ignore leak

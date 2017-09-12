@@ -87,6 +87,7 @@
       <Filter>Test Files</Filter>
     </ClCompile>
     <ClCompile Include="..\stdwin32\stdwin32.cpp" />
+    <ClCompile Include="..\CommandLineParser.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -139,6 +140,7 @@
       <Filter>MyUtility\1 Header</Filter>
     </ClInclude>
     <ClInclude Include="..\stdwin32\stdwin32.h" />
+    <ClInclude Include="..\CommandLineParser.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="MyUtility">

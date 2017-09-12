@@ -782,7 +782,6 @@ wstring GetPathFromProcessID(const DWORD dwID)
 void GetOpenedFilesSimple(LPCTSTR pFilter, vector<OPENEDFILEINFO>& v)
 {
 	CallbackData cd(&v);
-	// cd.setFilter(L"C:\\Users\\Bokkurin\\Desktop\\vvvvvvvvvvvvvvvvvvvvvvvvv.txt");
 	cd.setFilter(pFilter);
 
 	GetOpenedFiles(

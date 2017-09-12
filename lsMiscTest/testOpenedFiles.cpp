@@ -11,7 +11,7 @@ void testOpenedFiles()
 {
 	wstring message;
 	vector<OPENEDFILEINFO> v;
-	GetOpenedFilesSimple(L"C:\\Users\\Bokkurin\\Desktop\\aaa", v);
+	GetOpenedFilesSimple(L"C:\\T\\aaa\\aaa.txt", v);
 	for each(const OPENEDFILEINFO& t in v)
 	{
 		message.append(t.filename);

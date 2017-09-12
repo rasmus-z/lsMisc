@@ -6,6 +6,7 @@
 #include "../SHMoveFile.h"
 
 using namespace std;
+using namespace Ambiesoft;
 
 void testSHMoveFile()
 {

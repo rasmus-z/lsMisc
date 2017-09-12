@@ -121,6 +121,7 @@
     <ClCompile Include="..\browseFolder.cpp" />
     <ClCompile Include="..\CenterWindow.cpp" />
     <ClCompile Include="..\ChangeFilenamable.cpp" />
+    <ClCompile Include="..\CommandLineParser.cpp" />
     <ClCompile Include="..\CreateSimpleWindow.cpp" />
     <ClCompile Include="..\FormatSizeof.cpp" />
     <ClCompile Include="..\GetVersionString.cpp" />
@@ -153,6 +154,7 @@
     <ClInclude Include="..\browseFolder.h" />
     <ClInclude Include="..\CenterWindow.h" />
     <ClInclude Include="..\ChangeFilenamable.h" />
+    <ClInclude Include="..\CommandLineParser.h" />
     <ClInclude Include="..\CreateSimpleWindow.h" />
     <ClInclude Include="..\FormatSizeof.h" />
     <ClInclude Include="..\GetVersionString.h" />
