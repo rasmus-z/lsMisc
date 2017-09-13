@@ -20,19 +20,30 @@
 //LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
+#include "stdafx.h"
 
-#pragma once
-#include "tstring.h"
+#ifdef _DEBUG
+#include "../../GetLastErrorString.h"
 
-namespace Ambiesoft {
-	std::string GetLastErrorStringA(DWORD dwErrorNo, BOOL* pSeikou = NULL);
-	std::wstring GetLastErrorStringW(DWORD dwErrorNo, BOOL* pSeikou = NULL);
+using namespace std;
+using namespace System;
 
-
-#ifdef UNICODE
-#define GetLastErrorString GetLastErrorStringW
-#else
-#define GetLastErrorString GetLastErrorStringA
-#endif
-
+void DTRACE_LASTERROR(DWORD dwLE)
+{
+	wstring ws = GetLastErrorString(dwLE);
+	DTRACE(gcnew String(ws.c_str()));
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+#endif // _DEBUG

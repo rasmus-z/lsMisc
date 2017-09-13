@@ -26,6 +26,7 @@
 #if defined(_DEBUG)
 	#define DASSERT(s) System::Diagnostics::Debug::Assert(!!(s))
 	inline void DTRACE(System::Object^ o) { System::Diagnostics::Debug::Print(o ? o->ToString() : L"<NULL>"); } 
+	void DTRACE_LASTERROR(DWORD dwLE);
 	#define DTRACE_NUMBER(start) do { static int num = start; DTRACE(num.ToString()); ++num; } while(0);
 	#define DTRACE_NUMBERTEXT(start,text) do { static int num = start; DTRACE(num.ToString() + ":" + text); ++num; } while(0);
 	#define DVERIFY DASSERT
@@ -56,6 +57,7 @@
 #else
 	#define DASSERT(s) ((void)0)
 	#define DTRACE(s) ((void)0)
+	#define DTRACE_LASTERROR(s) ((void)0)
 	#define DTRACE_NUMBER(start) ((void)0)
 	#define DTRACE_NUMBERTEXT(start,text) ((void)0)
 	#define DVERIFY(a) (a)
