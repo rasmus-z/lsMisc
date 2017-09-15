@@ -26,48 +26,48 @@ using namespace std;
 
 namespace Ambiesoft {
 
-static bool myiswalnum(wchar_t c)
-{
-	switch (c) {
-	case L'0': return true;
-	case L'1': return true;
-	case L'2': return true;
-	case L'3': return true;
-	case L'4': return true;
-	case L'5': return true;
-	case L'6': return true;
-	case L'7': return true;
-	case L'8': return true;
-	case L'9': return true;
-	case L'a':case L'A': return true;
-	case L'b':case L'B': return true;
-	case L'c':case L'C': return true;
-	case L'd':case L'D': return true;
-	case L'e':case L'E': return true;
-	case L'f':case L'F': return true;
-	case L'g':case L'G': return true;
-	case L'h':case L'H': return true;
-	case L'i':case L'I': return true;
-	case L'j':case L'J': return true;
-	case L'k':case L'K': return true;
-	case L'l':case L'L': return true;
-	case L'm':case L'M': return true;
-	case L'n':case L'N': return true;
-	case L'o':case L'O': return true;
-	case L'p':case L'P': return true;
-	case L'q':case L'Q': return true;
-	case L'r':case L'R': return true;
-	case L's':case L'S': return true;
-	case L't':case L'T': return true;
-	case L'u':case L'U': return true;
-	case L'v':case L'V': return true;
-	case L'w':case L'W': return true;
-	case L'x':case L'X': return true;
-	case L'y':case L'Y': return true;
-	case L'z':case L'Z': return true;
-	}
-	return false;
-}
+//static bool myiswalnum(wchar_t c)
+//{
+//	switch (c) {
+//	case L'0': return true;
+//	case L'1': return true;
+//	case L'2': return true;
+//	case L'3': return true;
+//	case L'4': return true;
+//	case L'5': return true;
+//	case L'6': return true;
+//	case L'7': return true;
+//	case L'8': return true;
+//	case L'9': return true;
+//	case L'a':case L'A': return true;
+//	case L'b':case L'B': return true;
+//	case L'c':case L'C': return true;
+//	case L'd':case L'D': return true;
+//	case L'e':case L'E': return true;
+//	case L'f':case L'F': return true;
+//	case L'g':case L'G': return true;
+//	case L'h':case L'H': return true;
+//	case L'i':case L'I': return true;
+//	case L'j':case L'J': return true;
+//	case L'k':case L'K': return true;
+//	case L'l':case L'L': return true;
+//	case L'm':case L'M': return true;
+//	case L'n':case L'N': return true;
+//	case L'o':case L'O': return true;
+//	case L'p':case L'P': return true;
+//	case L'q':case L'Q': return true;
+//	case L'r':case L'R': return true;
+//	case L's':case L'S': return true;
+//	case L't':case L'T': return true;
+//	case L'u':case L'U': return true;
+//	case L'v':case L'V': return true;
+//	case L'w':case L'W': return true;
+//	case L'x':case L'X': return true;
+//	case L'y':case L'Y': return true;
+//	case L'z':case L'Z': return true;
+//	}
+//	return false;
+//}
 
 
 
@@ -76,10 +76,10 @@ static char i2aA(char code) {
 	static char hex[] = "0123456789ABCDEF";
 	return hex[code & 15];
 }
-static wchar_t i2aW(wchar_t code) {
-	static wchar_t hex[] = L"0123456789ABCDEF";
-	return hex[code & 15];
-}
+//static wchar_t i2aW(wchar_t code) {
+//	static wchar_t hex[] = L"0123456789ABCDEF";
+//	return hex[code & 15];
+//}
 
 
 char *UrlEncode(const unsigned char *pstr, size_t size)

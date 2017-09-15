@@ -31,13 +31,25 @@ namespace Ambiesoft {
 	enum CopyORMove {
 		CopyORMove_Copy,
 		CopyORMove_Move,
+		CopyORMove_Delete,
 	};
 
+	static UINT GetwFunc(CopyORMove cm)
+	{
+		switch (cm)
+		{
+		case CopyORMove_Copy:return FO_COPY;
+		case CopyORMove_Move:return FO_MOVE;
+		case CopyORMove_Delete:return FO_DELETE;
+		}
+		assert(false);
+		return 0;
+	}
 	static BOOL SHCopyOrMoveFileImpl(CopyORMove copyormove, bool ismultidest, LPCTSTR lpzzFileTo, LPCTSTR lpzzFileFrom, int* pnRet=NULL)
 	{
 		SHFILEOPSTRUCT sfo = { 0 };
 		sfo.hwnd = NULL;
-		sfo.wFunc = copyormove == CopyORMove_Copy ? FO_COPY : FO_MOVE;
+		sfo.wFunc = GetwFunc(copyormove);
 		sfo.pFrom = lpzzFileFrom;
 		sfo.pTo = lpzzFileTo;
 		sfo.fFlags =
@@ -94,14 +106,28 @@ namespace Ambiesoft {
 	
 	static BOOL SHCopyOrMoveFile(CopyORMove cm, LPCTSTR lpFileTo, LPCTSTR lpFileFrom, int* pnRet)
 	{
-		assert(lpFileTo && lpFileFrom);
-		if (!(lpFileTo && lpFileFrom))
-			return FALSE;
+		if (cm != CopyORMove_Delete)
+		{
+			assert(lpFileTo && lpFileFrom);
+			if (!(lpFileTo && lpFileFrom))
+				return FALSE;
+		}
+		else if (cm == CopyORMove_Delete)
+		{
+			assert(lpFileFrom);
+			assert(!lpFileTo);
+			if (!lpFileFrom)
+				return FALSE;
+		}
 
 		LPTSTR pFrom = CreateDNString(lpFileFrom, pnRet);
 		stlsoft::scoped_handle<void*> ha(pFrom, myFree);
-		
-		LPTSTR pTo = CreateDNString(lpFileTo, pnRet);
+
+		LPTSTR pTo = NULL;
+		if (cm != CopyORMove_Delete)
+		{
+			pTo = CreateDNString(lpFileTo, pnRet);
+		}
 		stlsoft::scoped_handle<void*> hi(pTo, myFree);
 
 		return SHCopyOrMoveFileImpl(cm, false, pTo, pFrom, pnRet);
@@ -114,7 +140,10 @@ namespace Ambiesoft {
 	{
 		return SHCopyOrMoveFile(CopyORMove_Copy, lpFileTo, lpFileFrom, pnRet);
 	}
-
+	BOOL SHDeleteFile(LPCTSTR lpFile, int* pnRet)
+	{
+		return SHCopyOrMoveFile(CopyORMove_Delete, NULL, lpFile, pnRet);
+	}
 
 
 
@@ -124,7 +153,11 @@ namespace Ambiesoft {
 		LPTSTR pFroms = CreateDNString(sourcefiles, pnRet);
 		stlsoft::scoped_handle<void*> ha(pFroms, myFree);
 
-		LPTSTR pTo = CreateDNString(lpFileTo, pnRet);
+		LPTSTR pTo = NULL;
+		if (cm != CopyORMove_Delete)
+		{
+			pTo = CreateDNString(lpFileTo, pnRet);
+		}
 		stlsoft::scoped_handle<void*> hi(pTo, myFree);
 
 		return SHCopyOrMoveFileImpl(cm, false, pTo, pFroms, pnRet);
@@ -138,7 +171,10 @@ namespace Ambiesoft {
 	{
 		return SHCopyOrMoveFile(CopyORMove_Copy, lpFileTo, sourcefiles, pnRet);
 	}
-
+	BOOL SHDeleteFile(const std::vector<std::wstring>& files, int* pnRet)
+	{
+		return SHCopyOrMoveFile(CopyORMove_Delete, NULL, files, pnRet);
+	}
 
 	// move multiple files to multiple files
 	BOOL SHCopyOrMoveFile(CopyORMove cm, const vector<wstring>& destfiles, const vector<wstring>& sourcefiles, int* pnRet)
