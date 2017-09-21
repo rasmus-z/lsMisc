@@ -3,6 +3,8 @@
 
 #include "../FormatSizeof.h"
 
+#include "debug.h"
+
 void testFormatSizeof()
 {
 	long long ll;

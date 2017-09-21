@@ -22,6 +22,7 @@
 //SUCH DAMAGE.
 
 #pragma once
+#include <Windows.h>
 
 namespace Ambiesoft {
 

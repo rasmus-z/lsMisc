@@ -22,6 +22,7 @@
 //SUCH DAMAGE.
 
 #pragma once
+#include <Windows.h>
 #include "tstring.h"
 
 namespace Ambiesoft {

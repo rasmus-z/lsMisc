@@ -5,6 +5,8 @@
 
 #include "../SHMoveFile.h"
 
+#include "debug.h"
+
 using namespace std;
 using namespace Ambiesoft;
 

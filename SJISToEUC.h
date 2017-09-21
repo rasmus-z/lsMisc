@@ -1,1 +1,0 @@
-void SJISToEUC( LPCTSTR pData, BYTE** ppTarget);

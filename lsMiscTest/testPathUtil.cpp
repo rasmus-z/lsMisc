@@ -8,6 +8,10 @@
 
 #include "../PathUtil.h"
 
+#include "debug.h"
+
+using namespace Ambiesoft;
+
 void testPathUtil()
 {
 	LPCTSTR p1, p2;

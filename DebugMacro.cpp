@@ -26,6 +26,8 @@
 #include "../../GetLastErrorString.h"
 
 using namespace std;
+
+#ifdef __cplusplus_cli
 using namespace System;
 
 void DTRACE_LASTERROR(DWORD dwLE)
@@ -33,7 +35,7 @@ void DTRACE_LASTERROR(DWORD dwLE)
 	wstring ws = GetLastErrorString(dwLE);
 	DTRACE(gcnew String(ws.c_str()));
 }
-
+#endif // __cplusplus_cli
 
 
 

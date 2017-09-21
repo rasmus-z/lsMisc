@@ -18,7 +18,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <PlatformToolset>v120</PlatformToolset>
-    <UseOfMfc>false</UseOfMfc>
+    <UseOfMfc>Dynamic</UseOfMfc>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -90,7 +90,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <BrowseInformation>true</BrowseInformation>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -118,24 +118,99 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\addBaseElement.cpp" />
+    <ClCompile Include="..\addCharset.cpp" />
     <ClCompile Include="..\browseFolder.cpp" />
     <ClCompile Include="..\CenterWindow.cpp" />
+    <ClCompile Include="..\ChangeDirPos.cpp" />
     <ClCompile Include="..\ChangeFilenamable.cpp" />
+    <ClCompile Include="..\CLogger.cpp" />
     <ClCompile Include="..\CommandLineParser.cpp" />
+    <ClCompile Include="..\CommandLineUtil.cpp" />
+    <ClCompile Include="..\ConfirmErrorRetry.cpp" />
+    <ClCompile Include="..\CreateCompleteDirectory.cpp" />
+    <ClCompile Include="..\CreateFolderIniPath.cpp" />
+    <ClCompile Include="..\CreateProcessCommon.cpp" />
+    <ClCompile Include="..\CreateShortcutFile.cpp" />
     <ClCompile Include="..\CreateSimpleWindow.cpp" />
+    <ClCompile Include="..\DebugMacro.cpp" />
+    <ClCompile Include="..\DeleteIECache.cpp" />
+    <ClCompile Include="..\EnableDebugPriv.cpp" />
     <ClCompile Include="..\FormatSizeof.cpp" />
+    <ClCompile Include="..\GetChildWindowBy.cpp" />
+    <ClCompile Include="..\GetClipboardText.cpp" />
+    <ClCompile Include="..\GetDesktopDir.cpp" />
+    <ClCompile Include="..\GetDirFromPath.cpp" />
+    <ClCompile Include="..\GetFilableUserName.cpp" />
+    <ClCompile Include="..\GetFileNameFromHwnd.cpp" />
+    <ClCompile Include="..\GetFilesInfo.cpp" />
+    <ClCompile Include="..\GetFormattedTime.cpp" />
+    <ClCompile Include="..\getFromHtmlLikeDataW.cpp" />
+    <ClCompile Include="..\GetHotkeyString.cpp" />
+    <ClCompile Include="..\GetLastErrorString.cpp" />
+    <ClCompile Include="..\GetModuleDirectory.cpp" />
+    <ClCompile Include="..\GetOpenFile.cpp" />
+    <ClCompile Include="..\GetSelItems.cpp" />
+    <ClCompile Include="..\GetSpecialFolderPath.cpp" />
+    <ClCompile Include="..\getStdString.net.cpp" />
+    <ClCompile Include="..\GetTopParent.cpp" />
+    <ClCompile Include="..\GetUnexistingFile.cpp" />
+    <ClCompile Include="..\GetURLFromClipboard.cpp" />
     <ClCompile Include="..\GetVersionString.cpp" />
+    <ClCompile Include="..\getWindowTstring.cpp" />
+    <ClCompile Include="..\GetWorkingArea.cpp" />
+    <ClCompile Include="..\HandleUtility.cpp" />
+    <ClCompile Include="..\HtmlClipboard.cpp" />
     <ClCompile Include="..\I18N.cpp" />
+    <ClCompile Include="..\Ini.cpp" />
+    <ClCompile Include="..\Is64.cpp" />
+    <ClCompile Include="..\IsAllDigit.cpp" />
     <ClCompile Include="..\IsFileExists.cpp" />
+    <ClCompile Include="..\IsFilenamable.cpp" />
+    <ClCompile Include="..\IsFileOpen.cpp" />
+    <ClCompile Include="..\IsHasExtension.cpp" />
+    <ClCompile Include="..\IsInDesktop.cpp" />
+    <ClCompile Include="..\IsRegKeyExists.cpp" />
+    <ClCompile Include="..\IsSamePath.cpp" />
+    <ClCompile Include="..\IsTextFileExtension.cpp" />
+    <ClCompile Include="..\IsValidString.cpp" />
+    <ClCompile Include="..\IsWindowsNT.cpp" />
     <ClCompile Include="..\LCMapCommon.cpp" />
+    <ClCompile Include="..\md5.cpp" />
+    <ClCompile Include="..\MFCHelper.cpp" />
+    <ClCompile Include="..\myStrStrI.cpp" />
     <ClCompile Include="..\OpenCommon.cpp" />
     <ClCompile Include="..\OpenedFiles.cpp" />
     <ClCompile Include="..\PathUtil.cpp" />
+    <ClCompile Include="..\pragmashowversions.cpp" />
     <ClCompile Include="..\ProcessList.cpp" />
+    <ClCompile Include="..\Registory.cpp" />
+    <ClCompile Include="..\RemoveLastInValidURLChar.cpp" />
+    <ClCompile Include="..\ReplaceFileHelper.cpp" />
+    <ClCompile Include="..\ResolveLink.cpp" />
+    <ClCompile Include="..\SetClipboardText.cpp" />
+    <ClCompile Include="..\SetCSIDLtoEnv.cpp" />
+    <ClCompile Include="..\SetFileOntoClipboard.cpp" />
+    <ClCompile Include="..\SHDeleteFile.cpp" />
     <ClCompile Include="..\SHMoveFile.cpp" />
+    <ClCompile Include="..\showballoon.cpp" />
+    <ClCompile Include="..\SkipSpace.cpp" />
+    <ClCompile Include="..\sqlite3.c" />
+    <ClCompile Include="..\sqliteserialize.cpp" />
+    <ClCompile Include="..\StartProcess.cpp" />
+    <ClCompile Include="..\StdStringReplace.cpp" />
     <ClCompile Include="..\stdwin32\stdwin32.cpp" />
+    <ClCompile Include="..\stringEndwith.cpp" />
+    <ClCompile Include="..\UnHtmlEntity.cpp" />
     <ClCompile Include="..\UrlEncode.cpp" />
     <ClCompile Include="..\UTF16toUTF8.cpp" />
+    <ClCompile Include="..\vbregexp.cpp" />
+    <ClCompile Include="..\WaitCursor.cpp" />
+    <ClCompile Include="..\WaitWindowClose.cpp" />
+    <ClCompile Include="..\WritePrivateProfileInt.cpp" />
+    <ClCompile Include="..\WritePrivateProfileWString.cpp" />
+    <ClCompile Include="..\XBrowseForFolder.cpp" />
+    <ClCompile Include="debug.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="testCommandLineParser.cpp" />
     <ClCompile Include="testFormatSizeof.cpp" />
@@ -151,24 +226,115 @@
     <ClCompile Include="testUrlEncode.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\addBaseElement.h" />
+    <ClInclude Include="..\addCharset.h" />
+    <ClInclude Include="..\AnyCloser.h" />
+    <ClInclude Include="..\BasicScopeOutHandler.h" />
     <ClInclude Include="..\browseFolder.h" />
+    <ClInclude Include="..\CBool.h" />
     <ClInclude Include="..\CenterWindow.h" />
+    <ClInclude Include="..\ChangeDirPos.h" />
     <ClInclude Include="..\ChangeFilenamable.h" />
+    <ClInclude Include="..\CInt.h" />
+    <ClInclude Include="..\CLogger.h" />
     <ClInclude Include="..\CommandLineParser.h" />
+    <ClInclude Include="..\CommandLineUtil.h" />
+    <ClInclude Include="..\ConfirmErrorRetry.h" />
+    <ClInclude Include="..\CreateCompleteDirectory.h" />
+    <ClInclude Include="..\CreateFolderIniPath.h" />
+    <ClInclude Include="..\CreateProcessCommon.h" />
+    <ClInclude Include="..\CreateShortcutFile.h" />
     <ClInclude Include="..\CreateSimpleWindow.h" />
+    <ClInclude Include="..\CreateWString.h" />
+    <ClInclude Include="..\DebugMacro.h" />
+    <ClInclude Include="..\DebugMacroOperatorNew.h" />
+    <ClInclude Include="..\DeleteIECache.h" />
+    <ClInclude Include="..\EnableDebugPriv.h" />
+    <ClInclude Include="..\EveryCloser.h" />
     <ClInclude Include="..\FormatSizeof.h" />
+    <ClInclude Include="..\GetChildWindowBy.h" />
+    <ClInclude Include="..\GetClipboardText.h" />
+    <ClInclude Include="..\GetDesktopDir.h" />
+    <ClInclude Include="..\GetDirFromPath.h" />
+    <ClInclude Include="..\GetFilableUserName.h" />
+    <ClInclude Include="..\GetFileNameFromHwnd.h" />
+    <ClInclude Include="..\GetFilesInfo.h" />
+    <ClInclude Include="..\GetFormattedTime.h" />
+    <ClInclude Include="..\getFromHtmlLikeDataW.h" />
+    <ClInclude Include="..\GetHotkeyString.h" />
+    <ClInclude Include="..\GetIETempFile.h" />
+    <ClInclude Include="..\GetLastErrorString.h" />
+    <ClInclude Include="..\GetModuleDirectory.h" />
+    <ClInclude Include="..\GetOpenFile.h" />
+    <ClInclude Include="..\GetSelItems.h" />
+    <ClInclude Include="..\GetSpecialFolderPath.h" />
+    <ClInclude Include="..\getStdString.net.h" />
+    <ClInclude Include="..\GetTopParent.h" />
+    <ClInclude Include="..\GetUnexistingFile.h" />
+    <ClInclude Include="..\GetURLFromClipboard.h" />
     <ClInclude Include="..\GetVersionString.h" />
+    <ClInclude Include="..\getWindowTstring.h" />
+    <ClInclude Include="..\GetWorkingArea.h" />
+    <ClInclude Include="..\HandleUtility.h" />
+    <ClInclude Include="..\HelpDefines.h" />
+    <ClInclude Include="..\HtmlClipboard.h" />
     <ClInclude Include="..\I18N.h" />
+    <ClInclude Include="..\Ini.h" />
+    <ClInclude Include="..\Is64.h" />
+    <ClInclude Include="..\IsAllDigit.h" />
+    <ClInclude Include="..\IsDirectory.h" />
     <ClInclude Include="..\IsFileExists.h" />
+    <ClInclude Include="..\IsFilenamable.h" />
+    <ClInclude Include="..\IsFileOpen.h" />
+    <ClInclude Include="..\IsHasExtension.h" />
+    <ClInclude Include="..\IsInDesktop.h" />
+    <ClInclude Include="..\IsRegKeyExists.h" />
+    <ClInclude Include="..\IsSamePath.h" />
+    <ClInclude Include="..\IsTextFileExtension.h" />
+    <ClInclude Include="..\IsValidString.h" />
+    <ClInclude Include="..\IsWindowsNT.h" />
     <ClInclude Include="..\LCMapCommon.h" />
+    <ClInclude Include="..\Lock.h" />
+    <ClInclude Include="..\md5.h" />
+    <ClInclude Include="..\MFCHelper.h" />
+    <ClInclude Include="..\myStrStrI.h" />
     <ClInclude Include="..\OpenCommon.h" />
     <ClInclude Include="..\OpenedFiles.h" />
     <ClInclude Include="..\PathUtil.h" />
+    <ClInclude Include="..\pragmashowversions.h" />
     <ClInclude Include="..\ProcessList.h" />
+    <ClInclude Include="..\Registory.h" />
+    <ClInclude Include="..\RemoveLastInValidURLChar.h" />
+    <ClInclude Include="..\ReplaceFileHelper.h" />
+    <ClInclude Include="..\ResolveLink.h" />
+    <ClInclude Include="..\SetClipboardText.h" />
+    <ClInclude Include="..\SetCSIDLtoEnv.h" />
+    <ClInclude Include="..\SetFileOntoClipboard.h" />
+    <ClInclude Include="..\SHDeleteFile.h" />
     <ClInclude Include="..\SHMoveFile.h" />
+    <ClInclude Include="..\showballoon.h" />
+    <ClInclude Include="..\SkipSpace.h" />
+    <ClInclude Include="..\sqlite3.h" />
+    <ClInclude Include="..\sqliteserialize.h" />
+    <ClInclude Include="..\StartProcess.h" />
+    <ClInclude Include="..\StdStringReplace.h" />
     <ClInclude Include="..\stdwin32\stdwin32.h" />
+    <ClInclude Include="..\stlScopedClear.h" />
+    <ClInclude Include="..\stringEndwith.h" />
+    <ClInclude Include="..\tlsMap.h" />
+    <ClInclude Include="..\tstring.h" />
+    <ClInclude Include="..\TypeHelp.h" />
+    <ClInclude Include="..\UnHtmlEntity.h" />
     <ClInclude Include="..\UrlEncode.h" />
     <ClInclude Include="..\UTF16toUTF8.h" />
+    <ClInclude Include="..\vbregexp.h" />
+    <ClInclude Include="..\verify.h" />
+    <ClInclude Include="..\WaitCursor.h" />
+    <ClInclude Include="..\WaitWindowClose.h" />
+    <ClInclude Include="..\WritePrivateProfileInt.h" />
+    <ClInclude Include="..\WritePrivateProfileWString.h" />
+    <ClInclude Include="..\XBrowseForFolder.h" />
+    <ClInclude Include="debug.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>

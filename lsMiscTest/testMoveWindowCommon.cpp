@@ -7,6 +7,7 @@
 #include "../CreateSimpleWindow.h"
 
 using namespace std;
+using namespace Ambiesoft;
 
 void testMoveWindowCommon()
 {

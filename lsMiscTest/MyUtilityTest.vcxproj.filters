@@ -90,6 +90,229 @@
     <ClCompile Include="..\CommandLineParser.cpp">
       <Filter>MyUtility\2 Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\sqlite3.c">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addBaseElement.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addCharset.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ChangeDirPos.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CLogger.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CommandLineUtil.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ConfirmErrorRetry.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CreateCompleteDirectory.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CreateFolderIniPath.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CreateProcessCommon.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CreateShortcutFile.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\DebugMacro.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\DeleteIECache.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\EnableDebugPriv.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GetChildWindowBy.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GetClipboardText.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GetDesktopDir.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GetDirFromPath.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GetFilableUserName.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GetFileNameFromHwnd.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GetFilesInfo.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GetFormattedTime.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\getFromHtmlLikeDataW.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GetHotkeyString.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GetLastErrorString.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GetModuleDirectory.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GetOpenFile.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GetSelItems.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GetSpecialFolderPath.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\getStdString.net.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GetTopParent.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GetUnexistingFile.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GetURLFromClipboard.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\getWindowTstring.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GetWorkingArea.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\HandleUtility.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\HtmlClipboard.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Ini.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Is64.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\IsAllDigit.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\IsFilenamable.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\IsFileOpen.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\IsHasExtension.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\IsInDesktop.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\IsRegKeyExists.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\IsSamePath.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\IsTextFileExtension.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\IsValidString.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\IsWindowsNT.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\md5.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\MFCHelper.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\myStrStrI.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pragmashowversions.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Registory.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RemoveLastInValidURLChar.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ReplaceFileHelper.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ResolveLink.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SetClipboardText.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SetCSIDLtoEnv.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SetFileOntoClipboard.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SHDeleteFile.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\showballoon.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SkipSpace.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sqliteserialize.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\StartProcess.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\StdStringReplace.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\stringEndwith.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UnHtmlEntity.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\vbregexp.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\WaitCursor.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\WaitWindowClose.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\WritePrivateProfileInt.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\WritePrivateProfileWString.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\XBrowseForFolder.cpp">
+      <Filter>MyUtility\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="debug.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -145,6 +368,277 @@
     <ClInclude Include="..\CommandLineParser.h">
       <Filter>MyUtility\1 Header</Filter>
     </ClInclude>
+    <ClInclude Include="..\addBaseElement.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addCharset.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\AnyCloser.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\BasicScopeOutHandler.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CBool.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ChangeDirPos.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CInt.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CLogger.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CommandLineUtil.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ConfirmErrorRetry.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CreateCompleteDirectory.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CreateFolderIniPath.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CreateProcessCommon.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CreateShortcutFile.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CreateWString.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DebugMacro.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DebugMacroOperatorNew.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DeleteIECache.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\EnableDebugPriv.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\EveryCloser.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GetChildWindowBy.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GetClipboardText.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GetDesktopDir.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GetDirFromPath.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GetFilableUserName.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GetFileNameFromHwnd.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GetFilesInfo.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GetFormattedTime.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\getFromHtmlLikeDataW.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GetHotkeyString.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GetIETempFile.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GetLastErrorString.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GetModuleDirectory.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GetOpenFile.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GetSelItems.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GetSpecialFolderPath.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\getStdString.net.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GetTopParent.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GetUnexistingFile.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GetURLFromClipboard.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\getWindowTstring.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GetWorkingArea.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\HandleUtility.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\HelpDefines.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\HtmlClipboard.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Ini.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Is64.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IsAllDigit.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IsDirectory.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IsFilenamable.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IsFileOpen.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IsHasExtension.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IsInDesktop.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IsRegKeyExists.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IsSamePath.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IsTextFileExtension.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IsValidString.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IsWindowsNT.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Lock.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\md5.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\MFCHelper.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\myStrStrI.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\pragmashowversions.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Registory.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RemoveLastInValidURLChar.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ReplaceFileHelper.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ResolveLink.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\SetClipboardText.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\SetCSIDLtoEnv.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\SetFileOntoClipboard.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\SHDeleteFile.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\showballoon.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\SkipSpace.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sqlite3.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sqliteserialize.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\StartProcess.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\StdStringReplace.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\stlScopedClear.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\stringEndwith.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\tlsMap.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\tstring.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\TypeHelp.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UnHtmlEntity.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\vbregexp.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\verify.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WaitCursor.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WaitWindowClose.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WritePrivateProfileInt.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WritePrivateProfileWString.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\XBrowseForFolder.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="debug.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="MyUtility">
