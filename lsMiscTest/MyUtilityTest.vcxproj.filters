@@ -313,6 +313,9 @@
       <Filter>MyUtility\2 Source</Filter>
     </ClCompile>
     <ClCompile Include="debug.cpp" />
+    <ClCompile Include="testCommnadLineString.cpp">
+      <Filter>Test Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -639,6 +642,9 @@
       <Filter>MyUtility\1 Header</Filter>
     </ClInclude>
     <ClInclude Include="debug.h" />
+    <ClInclude Include="..\CommandLineString.h">
+      <Filter>MyUtility\1 Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="MyUtility">

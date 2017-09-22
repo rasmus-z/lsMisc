@@ -213,6 +213,7 @@
     <ClCompile Include="debug.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="testCommandLineParser.cpp" />
+    <ClCompile Include="testCommnadLineString.cpp" />
     <ClCompile Include="testFormatSizeof.cpp" />
     <ClCompile Include="testGetVersionString.cpp" />
     <ClCompile Include="testHira2Kata.cpp" />
@@ -238,6 +239,7 @@
     <ClInclude Include="..\CInt.h" />
     <ClInclude Include="..\CLogger.h" />
     <ClInclude Include="..\CommandLineParser.h" />
+    <ClInclude Include="..\CommandLineString.h" />
     <ClInclude Include="..\CommandLineUtil.h" />
     <ClInclude Include="..\ConfirmErrorRetry.h" />
     <ClInclude Include="..\CreateCompleteDirectory.h" />
