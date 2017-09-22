@@ -222,6 +222,11 @@ namespace Ambiesoft {
 				assert(pBool_==NULL);
 				pBool_=pb;
 			}
+			void setIntTarget(int* pi)
+			{
+				assert(pInt_ == NULL);
+				pInt_ = pi;
+			}
 			void setMysTarget(MyS_* pM)
 			{
 				assert(pMys_==NULL);
@@ -272,9 +277,15 @@ namespace Ambiesoft {
 		UserTarget *pTarget_;
 		void setTarget(bool* pT)
 		{
-			if(pTarget_ == NULL)
+			if (pTarget_ == NULL)
 				pTarget_ = new UserTarget();
 			pTarget_->setBoolTarget(pT);
+		}
+		void setTarget(int* pT)
+		{
+			if (pTarget_ == NULL)
+				pTarget_ = new UserTarget();
+			pTarget_->setIntTarget(pT);
 		}
 		void setTarget(MyS_* pT)
 		{
@@ -692,13 +703,6 @@ typedef BasicOption<std::string> COptionA;
 			MyS_* first = &optionString1;
 			MyS_* last = first + 1;
 			AddOption(first, last, exactCount, pTarget);
-			//MyO_ option(optionString1, exactCount);
-			//option.case_=case_;
-			//check(&option);
-
-			//*pTarget = false;
-			//option.setTarget(pTarget);
-			//inneroptions_.push_back(option);
 		}
 
 		template<class InputIterator>
@@ -724,12 +728,6 @@ typedef BasicOption<std::string> COptionA;
 		{
 			const MyS_ ops[] = { optionString1, optionString2 };
 			AddOption(ops, ops + _countof(ops), exactCount, pTarget);
-			//MyO_ option(ops, ops + _countof(ops), exactCount);
-			//option.case_ = case_;
-			//check(&option);
-			//*pTarget = false;
-			//option.setTarget(pTarget);
-			//inneroptions_.push_back(option);
 		}
 
 		void AddOption(
@@ -742,6 +740,51 @@ typedef BasicOption<std::string> COptionA;
 			AddOption(ops, ops + _countof(ops), exactCount, pTarget);
 		}
 
+
+		// int target
+		void AddOption(
+			MyS_ optionString1,
+			int exactCount,
+			int* pTarget)
+		{
+			MyS_* first = &optionString1;
+			MyS_* last = first + 1;
+			AddOption(first, last, exactCount, pTarget);
+		}
+		template<class InputIterator>
+		void AddOption(
+			InputIterator first,
+			InputIterator last,
+			int exactCount,
+			int* pTarget)
+		{
+			MyO_ option(first, last, exactCount);
+			option.case_ = case_;
+			check(&option);
+			*pTarget = false;
+			option.setTarget(pTarget);
+			inneroptions_.push_back(option);
+		}
+		template<>
+		void AddOption(
+			MyS_ optionString1,
+			MyS_ optionString2,
+			int exactCount,
+			int* pTarget)
+		{
+			const MyS_ ops[] = { optionString1, optionString2 };
+			AddOption(ops, ops + _countof(ops), exactCount, pTarget);
+		}
+
+		void AddOption(
+			const Elem* p1,
+			const Elem* p2,
+			int exactCount,
+			int* pTarget)
+		{
+			const Elem* ops[] = { p1, p2 };
+			AddOption(ops, ops + _countof(ops), exactCount, pTarget);
+		}
 
 
 		// wstring target
@@ -845,7 +888,7 @@ typedef BasicOption<std::string> COptionA;
 						//icli.nID_ = -2;
 						//icli.option_ = _T("");
 						//icli.value_ = pArgv;
-						unknowns_.push_back(myOptionType((pArgv)));
+						unknowns_.push_back(MyO_((pArgv)));
 						continue;
 					}
 					else
@@ -866,6 +909,13 @@ typedef BasicOption<std::string> COptionA;
 				++it)
 			{
 				(*it)->setParsed();
+			}
+
+			for (OPTIONARRAY::iterator it = unknowns_.begin();
+				it != unknowns_.end();
+				++it)
+			{
+				it->setParsed();
 			}
 		}
 	};
