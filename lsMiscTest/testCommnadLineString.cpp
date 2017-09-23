@@ -54,7 +54,7 @@ void testCommandLineString()
 	//isSameResult(pC1);
 
 	pC1 = L"aaa.exe \"\"\"aaa bbb ccc\"\"\"";
-	// isSameResult(pC1); // not same but i am right.
+	isSameResult(pC1); // not same but i am right.
 
 	pC1 = L"aaa.exe \"aaa bbb\" aa fff feee aaa\"bbb\" ";
 	CCommandLineString cls(pC1);

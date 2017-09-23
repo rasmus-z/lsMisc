@@ -23,6 +23,7 @@
 
 #include <vector>
 #include <string>
+#include <cassert>
 
 namespace Ambiesoft {
 	template<class E>
