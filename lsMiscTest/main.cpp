@@ -22,7 +22,7 @@
 #include <stlsoft/smartptr/scoped_handle.hpp>
 
 
-
+// あああ 日本語
 
 void testMoveWindowCommon();
 void testCommandLine();
@@ -50,19 +50,21 @@ int main()
 	testCommandLineString();
 	testSHMoveFile();
 	testOpenedFiles();
-	//testCommandLine();
-	//testI18N();
-	//
-	//testOpenCommon();
+	
+	
+	testCommandLine();
+	testI18N();
+	
+	testOpenCommon();
 
-	//testFormatSizeof();
-	//testUrlEncode();
-	//testPathUtil();
+	testFormatSizeof();
+	testUrlEncode();
+	testPathUtil();
 
-	//testMoveWindowCommon();
-	//
-	//testHira2Kata();
-	//testGetVersionString();
+	testMoveWindowCommon();
+	
+	testHira2Kata();
+	testGetVersionString();
 
 
 

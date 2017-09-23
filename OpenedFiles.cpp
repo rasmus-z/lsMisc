@@ -16,11 +16,6 @@
 
 #include "DebugNew.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
-
-
 #pragma comment(lib,"shlwapi.lib")
 #pragma comment(lib,"Psapi.lib")
 
@@ -354,6 +349,7 @@ void EnumerateOpenedFiles(wstring& csPath, OF_CALLBACK CallBackProc, UINT_PTR pU
 			delete pSysHandleInformation;
 			return;
 		}
+
 	}
 
 	if (true)//pGetFinalPathNameByHandle)// there is no driver, we have do it ugly way
@@ -420,6 +416,8 @@ void EnumerateOpenedFiles(wstring& csPath, OF_CALLBACK CallBackProc, UINT_PTR pU
 		}
 		CloseHandle(ThreadParams.hStartEvent);
 		CloseHandle(ThreadParams.hFinishedEvent);
+
+		delete pSysHandleInformation;
 		return;
 	}
 

@@ -274,43 +274,38 @@ namespace Ambiesoft {
 		bool parsed_;
 		CaseFlags case_;
 		ArgEncodingFlags encoding_;
-		UserTarget *pTarget_;
+		UserTarget userTarget_;
 		void setTarget(bool* pT)
 		{
-			if (pTarget_ == NULL)
-				pTarget_ = new UserTarget();
-			pTarget_->setBoolTarget(pT);
+			//if (pTarget_ == NULL)
+			//	pTarget_ = new UserTarget();
+			userTarget_.setBoolTarget(pT);
 		}
 		void setTarget(int* pT)
 		{
-			if (pTarget_ == NULL)
-				pTarget_ = new UserTarget();
-			pTarget_->setIntTarget(pT);
+			//if (pTarget_ == NULL)
+			//	pTarget_ = new UserTarget();
+			userTarget_.setIntTarget(pT);
 		}
 		void setTarget(MyS_* pT)
 		{
-			if(pTarget_ == NULL)
-				pTarget_ = new UserTarget();
-			pTarget_->setMysTarget(pT);
+			//if(pTarget_ == NULL)
+			//	pTarget_ = new UserTarget();
+			userTarget_.setMysTarget(pT);
 		}			
 
 		void AddValue(const myStringType& value)
 		{
 			setHadOption();
-			if(pTarget_)
-			{
-				pTarget_->setMys(encoding_==ArgEncoding_UTF8UrlEncode? Utf8UrlDecode(value):value);
-			}
+			userTarget_.setMys(encoding_ == ArgEncoding_UTF8UrlEncode ? Utf8UrlDecode(value) : value);
+
 			values_.push_back(value);
 		}
 		void setHadOption()
 		{
 			if(argcountflag_== ArgCount_Zero)
 			{
-				if (pTarget_)
-				{
-					pTarget_->setTrue();
-				}
+				userTarget_.setTrue();
 			}
 			hadOption_ = true;
 		}
@@ -357,7 +352,7 @@ namespace Ambiesoft {
 			parsed_ = false;
 			argcountflag_ = ArgCount_Uninitialized;
 			case_=CaseFlag_CaseDefault;
-			pTarget_ = NULL;
+			// pTarget_ = NULL;
 			encoding_=ArgEncoding_Default;
 		}
 	public:
@@ -430,7 +425,10 @@ namespace Ambiesoft {
 			options_.push_back(option1);
 			options_.push_back(option2);
 		}
-
+		~BasicOption()
+		{
+			
+		}
 		friend class BasicCommandLineParser<myStringType, BasicOption<myStringType> >;
 
 

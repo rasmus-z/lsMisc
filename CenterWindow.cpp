@@ -25,6 +25,8 @@
 #include <windows.h>
 #include "CenterWindow.h"
 
+#include "../DebugNew.h"
+
 namespace Ambiesoft {
 	BOOL CenterWindow(HWND hwndChild, HWND hwndParent)
 	{

@@ -54,6 +54,8 @@
 	#include <ShObjIdl.h>
 #endif
 
+#include "DebugNew.h"
+
 namespace Ambiesoft {
 
 

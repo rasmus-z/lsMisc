@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectName>MyUtilityTest</ProjectName>
+    <ProjectName>lsMiscTest</ProjectName>
     <ProjectGuid>{086AB526-37F9-465E-96DF-8229F05B4DBA}</ProjectGuid>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -52,7 +52,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Midl>
-      <TypeLibraryName>.\Release/MyUtilityTest.tlb</TypeLibraryName>
+      <TypeLibraryName>.\Release/lsMiscTest.tlb</TypeLibraryName>
       <HeaderFileName />
     </Midl>
     <ClCompile>
@@ -82,7 +82,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Midl>
-      <TypeLibraryName>.\Debug/MyUtilityTest.tlb</TypeLibraryName>
+      <TypeLibraryName>.\Debug/lsMiscTest.tlb</TypeLibraryName>
       <HeaderFileName />
     </Midl>
     <ClCompile>
@@ -191,7 +191,6 @@
     <ClCompile Include="..\SetClipboardText.cpp" />
     <ClCompile Include="..\SetCSIDLtoEnv.cpp" />
     <ClCompile Include="..\SetFileOntoClipboard.cpp" />
-    <ClCompile Include="..\SHDeleteFile.cpp" />
     <ClCompile Include="..\SHMoveFile.cpp" />
     <ClCompile Include="..\showballoon.cpp" />
     <ClCompile Include="..\SkipSpace.cpp" />
@@ -312,7 +311,6 @@
     <ClInclude Include="..\SetClipboardText.h" />
     <ClInclude Include="..\SetCSIDLtoEnv.h" />
     <ClInclude Include="..\SetFileOntoClipboard.h" />
-    <ClInclude Include="..\SHDeleteFile.h" />
     <ClInclude Include="..\SHMoveFile.h" />
     <ClInclude Include="..\showballoon.h" />
     <ClInclude Include="..\SkipSpace.h" />

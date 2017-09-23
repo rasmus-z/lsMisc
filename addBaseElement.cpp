@@ -26,6 +26,8 @@
 
 #include "addBaseElement.h"
 
+#include "DebugNew.h"
+
 namespace Ambiesoft {
 	bool addBaseElement(_bstr_t& bstrHtml, LPCWSTR pSourceURL)
 	{

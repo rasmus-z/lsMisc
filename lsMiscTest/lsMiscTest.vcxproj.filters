@@ -270,9 +270,6 @@
     <ClCompile Include="..\SetFileOntoClipboard.cpp">
       <Filter>MyUtility\2 Source</Filter>
     </ClCompile>
-    <ClCompile Include="..\SHDeleteFile.cpp">
-      <Filter>MyUtility\2 Source</Filter>
-    </ClCompile>
     <ClCompile Include="..\showballoon.cpp">
       <Filter>MyUtility\2 Source</Filter>
     </ClCompile>
@@ -579,9 +576,6 @@
       <Filter>MyUtility\1 Header</Filter>
     </ClInclude>
     <ClInclude Include="..\SetFileOntoClipboard.h">
-      <Filter>MyUtility\1 Header</Filter>
-    </ClInclude>
-    <ClInclude Include="..\SHDeleteFile.h">
       <Filter>MyUtility\1 Header</Filter>
     </ClInclude>
     <ClInclude Include="..\showballoon.h">

@@ -30,6 +30,8 @@ using namespace std;
 
 #include "verify.h"
 
+#include "../DebugNew.h"
+
 static BOOL ChangeDirPosStuff( HWND hWndList, int nSelItem, ChangePosType nType )
 {
 //	int nSelItem = FindSelectedItem(hWndList);

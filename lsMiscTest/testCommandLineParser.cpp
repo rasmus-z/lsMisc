@@ -4,6 +4,8 @@
 
 #include "../CommandLineParser.h"
 
+
+
 using namespace Ambiesoft;
 using namespace std;
 
@@ -18,7 +20,7 @@ bool outvalue(InputIterator first, InputIterator last)
 }
 
 #define ACTULAPATH L"c:\\aaa\ttt bbb\aa"
-void testCommandLine()
+static void testCommandLine1()
 {
 	vector<wstring> vs ;
 	vs.push_back( L"-a");
@@ -56,4 +58,9 @@ void testCommandLine()
 	assert(isHelp);
 	assert(isABC);
 	assert(path == ACTULAPATH);
+}
+
+void testCommandLine()
+{
+	testCommandLine1();
 }
