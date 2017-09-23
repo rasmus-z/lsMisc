@@ -25,6 +25,8 @@
 #include <string>
 #include <cassert>
 
+#include "os_traits.h"
+
 #ifndef _countof
 #define _countof(t) (sizeof(t)/sizeof(t[0]))
 #endif
@@ -86,8 +88,9 @@ namespace Ambiesoft {
 	{
 		const E* p_;
 		std::vector<size_t> offsets_;
-		typedef std::vector<std::basic_string<E> > myVS;
-		typedef char_traits<E> myTr;
+		typedef std::basic_string<E> myS;
+		typedef typename std::vector<std::basic_string<E> > myVS;
+		typedef typename std::char_traits<E> myTr;
 
 		std::vector<std::basic_string<E> > args_;
 
@@ -250,9 +253,9 @@ namespace Ambiesoft {
 		{
 			if (!*pCommandLine)
 			{
-				E e[MAX_PATH];
-				GetModuleFileNameA(NULL, e, _countof(e));
-				init(e);
+				// E e[MAX_PATH];
+				myS s = mGetModuleFileName(); //NULL, e, _countof(e));
+				init(s.c_str());
 			}
 			else
 			{

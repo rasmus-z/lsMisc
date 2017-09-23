@@ -1,6 +1,7 @@
 *.ncb
 *.opt
 *.plg
+*.suo
 
 lsMiscTest/Debug/
 lsMiscTest/lsMiscTest.sdf

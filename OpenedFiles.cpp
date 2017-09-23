@@ -1,6 +1,6 @@
 
 
-// #include "StdAfx.h"
+#include "StdAfx.h"
 #include <windows.h>
 #include <tchar.h>
 #include <Tlhelp32.h>
@@ -13,6 +13,13 @@
 #include <vector>
 
 #include "OpenedFiles.h"
+
+#include "DebugNew.h"
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 
 #pragma comment(lib,"shlwapi.lib")
 #pragma comment(lib,"Psapi.lib")

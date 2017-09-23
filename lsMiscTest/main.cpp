@@ -41,25 +41,28 @@ void testCommandLineString();
 int main()
 {
 #ifdef _DEBUG
-	_CrtSetDbgFlag(_CRTDBG_LEAK_CHECK_DF | _CRTDBG_CHECK_ALWAYS_DF |
+	_CrtSetDbgFlag(
+		_CRTDBG_ALLOC_MEM_DF		|
+		_CRTDBG_LEAK_CHECK_DF		| 
+		_CRTDBG_CHECK_ALWAYS_DF		|
 		_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG));
 #endif
 	testCommandLineString();
 	testSHMoveFile();
 	testOpenedFiles();
-	testCommandLine();
-	testI18N();
-	
-	testOpenCommon();
+	//testCommandLine();
+	//testI18N();
+	//
+	//testOpenCommon();
 
-	testFormatSizeof();
-	testUrlEncode();
-	testPathUtil();
+	//testFormatSizeof();
+	//testUrlEncode();
+	//testPathUtil();
 
-	testMoveWindowCommon();
-	
-	testHira2Kata();
-	testGetVersionString();
+	//testMoveWindowCommon();
+	//
+	//testHira2Kata();
+	//testGetVersionString();
 
 
 

@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="MyUtilityTest"
+	Name="lsMiscTest"
 	ProjectGUID="{086AB526-37F9-465E-96DF-8229F05B4DBA}"
-	RootNamespace="MyUtilityTest"
+	RootNamespace="lsMiscTest"
 	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
@@ -39,7 +39,7 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\Release/MyUtilityTest.tlb"
+				TypeLibraryName=".\Release/lsMiscTest.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -51,7 +51,7 @@
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
-				PrecompiledHeaderFile=".\Release/MyUtilityTest.pch"
+				PrecompiledHeaderFile=".\Release/lsMiscTest.pch"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 			/>
@@ -72,7 +72,7 @@
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
-				ProgramDatabaseFile=".\Release/MyUtilityTest.pdb"
+				ProgramDatabaseFile=".\Release/lsMiscTest.pdb"
 				SubSystem="1"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
@@ -90,7 +90,7 @@
 			<Tool
 				Name="VCBscMakeTool"
 				SuppressStartupBanner="true"
-				OutputFile=".\Release/MyUtilityTest.bsc"
+				OutputFile=".\Release/lsMiscTest.bsc"
 			/>
 			<Tool
 				Name="VCFxCopTool"
@@ -126,7 +126,7 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\Debug/MyUtilityTest.tlb"
+				TypeLibraryName=".\Debug/lsMiscTest.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -135,7 +135,7 @@
 				AdditionalIncludeDirectories="..\stlsoft\include;."
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS"
 				RuntimeLibrary="3"
-				PrecompiledHeaderFile=".\Debug/MyUtilityTest.pch"
+				PrecompiledHeaderFile=".\Debug/lsMiscTest.pch"
 				BrowseInformation="1"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
@@ -159,7 +159,7 @@
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\Debug/MyUtilityTest.pdb"
+				ProgramDatabaseFile=".\Debug/lsMiscTest.pdb"
 				SubSystem="1"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
@@ -177,7 +177,7 @@
 			<Tool
 				Name="VCBscMakeTool"
 				SuppressStartupBanner="true"
-				OutputFile=".\Debug/MyUtilityTest.bsc"
+				OutputFile=".\Debug/lsMiscTest.bsc"
 			/>
 			<Tool
 				Name="VCFxCopTool"
@@ -206,7 +206,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\CommandLineParser.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\CreateSimpleWindow.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\debug.cpp"
 				>
 			</File>
 			<File
@@ -250,7 +258,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\stdwin32\stdwin32.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\testCommandLineParser.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\testCommnadLineString.cpp"
 				>
 			</File>
 			<File
@@ -319,7 +335,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\CommandLineParser.h"
+				>
+			</File>
+			<File
 				RelativePath="..\CreateSimpleWindow.h"
+				>
+			</File>
+			<File
+				RelativePath=".\debug.h"
 				>
 			</File>
 			<File
@@ -351,6 +375,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\os_traits.h"
+				>
+			</File>
+			<File
 				RelativePath="..\PathUtil.h"
 				>
 			</File>
@@ -364,6 +392,10 @@
 			</File>
 			<File
 				RelativePath=".\stdafx.h"
+				>
+			</File>
+			<File
+				RelativePath="..\stdwin32\stdwin32.h"
 				>
 			</File>
 			<File

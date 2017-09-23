@@ -2,6 +2,8 @@
 #include <tchar.h>
 #include <vector>
 #include <string>
+#include <iostream>
+#include <fstream>
 
 #include "../SHMoveFile.h"
 
@@ -10,9 +12,28 @@
 using namespace std;
 using namespace Ambiesoft;
 
+#pragma comment(lib,"Rpcrt4.lib")
+
+static wstring uuidgen()
+{
+	UUID uuid;
+	UuidCreate(&uuid);
+	RPC_WSTR p;
+	UuidToStringW(&uuid,&p);
+	wstring ret((wchar_t*)p);
+	RpcStringFree(&p);
+	return ret;
+}
+
 void testSHMoveFile()
 {
-	LPCWSTR p1 = L"C:\\T\\Old.txt";
+	wstring s1 = L"C:\\T\\";
+	s1+=uuidgen();
+	wofstream myfile;
+	myfile.open(s1.c_str());
+	myfile << L"aaa";
+	myfile.close();
+	LPCWSTR p1=s1.c_str();
 	LPCWSTR p2 = L"C:\\T\\New.txt";
 	DVERIFY(SHMoveFile(p2, p1));
 	DVERIFY(SHMoveFile(p1, p2));

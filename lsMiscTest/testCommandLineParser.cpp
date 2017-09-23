@@ -20,7 +20,11 @@ bool outvalue(InputIterator first, InputIterator last)
 #define ACTULAPATH L"c:\\aaa\ttt bbb\aa"
 void testCommandLine()
 {
-	vector<wstring> vs = { L"-a", L"-b", L"-c" };
+	vector<wstring> vs ;
+	vs.push_back( L"-a");
+	vs.push_back( L"-b");
+	vs.push_back(  L"-c" );
+
 	outvalue(vs.begin(), vs.end());
 
 	wchar_t* opXYZ[] = {

@@ -24,12 +24,23 @@
 #pragma once
 namespace Ambiesoft {
 
-#ifdef WINDOWS
-#pragma message("os trait is Windows")
-#endif
 
 	struct os_traits_windows_ansi
 	{};
+	struct os_traits_windows_unicode
+	{};
+
+#ifdef _WIN32
+#ifdef UNICODE
+	#pragma message("os trait is Windows unicode")
+	typedef os_traits_windows_unicode current_traits;
+	typedef std::wstring myString;
+#else
+	#pragma message("os trait is Windows ansii")
+	typedef os_traits_windows_ansi current_traits;
+	typedef std::string myString;
+#endif
+#endif
 
 	template<class E, class S>
 	struct os_trais
@@ -48,10 +59,20 @@ namespace Ambiesoft {
 			return "";
 		}
 	};
-
-	std::string mGetModuleFileName()
+	template<>
+	struct os_trais<os_traits_windows_unicode, std::wstring>
 	{
-		std::string s = os_trais<os_traits_windows_ansi, std::string>::osdGetModuleFileName();
+		static std::wstring osdGetModuleFileName()
+		{
+			wchar_t t[MAX_PATH];
+			GetModuleFileNameW(NULL,t,MAX_PATH);
+			return t;
+		}
+	};
+
+	myString mGetModuleFileName()
+	{
+		myString s = os_trais<current_traits, myString>::osdGetModuleFileName();
 		return s;
 	}
 
