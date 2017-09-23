@@ -25,82 +25,132 @@
 #include <string>
 #include <cassert>
 
+#ifndef _countof
+#define _countof(t) (sizeof(t)/sizeof(t[0]))
+#endif
+
 namespace Ambiesoft {
+
+	inline bool myIsSpace(char c)
+	{
+		return isspace(c) != 0;
+	}
+	inline bool myIsSpace(wchar_t c)
+	{
+		return iswspace(c) != 0;
+	}
+
+	inline const char* skipWS(const char* p)
+	{
+			while (*p && isspace(*p))
+				++p;
+			return p;
+	}
+	inline const wchar_t* skipWS(const wchar_t* p) 
+	{
+		while (*p && iswspace(*p))
+			++p;
+		return p;
+	}
+
+	inline void clearS(std::string& s)
+	{
+		s="";
+	}
+	inline void clearS(std::wstring& s)
+	{
+		s=L"";
+	}
+
+	const char* nextP(const char* p)
+	{
+		return CharNextA(p);
+	}
+	const wchar_t* nextP(const wchar_t* p)
+	{
+		++p;
+		return p;
+	}
+
+	inline bool isDQ(char c) 
+	{
+		return c == '"';
+	}
+	inline bool isDQ(wchar_t c) 
+	{
+		return c == L'"';
+	}
+
 	template<class E>
 	class CCommandLineStringBase
 	{
 		const E* p_;
 		std::vector<size_t> offsets_;
 		typedef std::vector<std::basic_string<E> > myVS;
+		typedef char_traits<E> myTr;
+
 		std::vector<std::basic_string<E> > args_;
 
-		bool isDQ(E c) const
-		{
-			return c == L'"';
-		}
-		const E* skipWS(const E* p) const
-		{
-			while (*p && iswspace(*p))
-				++p;
-			return p;
-		}
-		E* getNext(E* p, bool& inQ)
-		{
-			if (!*p)
-			{
-				return p;
-			}
+	
+//		E* getNext(E* p, bool& inQ)
+//		{
+//			if (!*p)
+//			{
+//				return p;
+//			}
+//
+//			if (!inQ)
+//				return skipWS(p);
+//		}
 
-			if (!inQ)
-				return skipWS(p);
-
-		}
-
-		bool loopOUTQ(E*& p)
-		{
-			++p;
-			if (isDQ(*p))
-			{
-				// start DQ
-				return true;
-			}
-
-			// continue outQ
-			return false;
-		}
-		bool loopINQ(E*& p)
-		{
-			if (isDQ(*p))
-			{
-				if (isDQ(*(p + 1)))
-				{
-					// doule DQ
-					p += 2;
-					return false; // continue INQ
-				}
-				else
-				{
-					// quote ends
-					p++;
-					return true;
-				}
-			}
-		}
+//		bool loopOUTQ(E*& p)
+//		{
+//			++p;
+//			if (isDQ(*p))
+//			{
+//				// start DQ
+//				return true;
+//			}
+//
+//			// continue outQ
+//			return false;
+//		}
+//		bool loopINQ(E*& p)
+//		{
+//			if (isDQ(*p))
+//			{
+//				if (isDQ(*(p + 1)))
+//				{
+//					// doule DQ
+//					p += 2;
+//					return false; // continue INQ
+//				}
+//				else
+//				{
+//					// quote ends
+//					p++;
+//					return true;
+//				}
+//			}
+//		}
 	
 		void init(const E* pCommandLine)
 		{
-			p_ = _tcsdup(pCommandLine);
+			
+			size_t clLen = myTr::length(pCommandLine);
+			p_ = new E[clLen+1];
+			myTr::copy((E*)p_, pCommandLine, clLen+1);
 
 			if (!pCommandLine || !*pCommandLine)
 				return;
 
-			const wchar_t* p = skipWS(pCommandLine);
+			const E* p = skipWS(pCommandLine);
 			if (!*p)
 				return;
 
 			bool inDQ = false;
 			E c = 0;
-			const wchar_t* pStart = p;
+			const E* pStart = p;
 			//if ((pStart - p_) != 0)
 			//{
 			//	offsets_.push_back(0);
@@ -111,11 +161,11 @@ namespace Ambiesoft {
 
 			std::basic_string<E> now;
 
-			for (; *p; ++p)
+			for (; *p; p=nextP(p))
 			{
 				if (!inDQ)
 				{
-					if (iswspace(*p))
+					if (myIsSpace(*p))
 					{
 						// separator
 
@@ -124,7 +174,7 @@ namespace Ambiesoft {
 							offsets_.push_back(pStart - pCommandLine);
 							args_.push_back(now);
 						}
-						now.clear();
+						clearS(now);
 
 						pStart = p;// = skipWS(p);
 						continue;
@@ -166,7 +216,7 @@ namespace Ambiesoft {
 								offsets_.push_back(pStart - pCommandLine);
 								args_.push_back(now);
 							}
-							now.clear();
+							clearS(now);
 							inDQ = false;
 							continue;
 						}
@@ -190,6 +240,7 @@ namespace Ambiesoft {
 			//free(p_);
 		}
 		
+
 	public:
 		CCommandLineStringBase()
 		{
@@ -200,7 +251,7 @@ namespace Ambiesoft {
 			if (!*pCommandLine)
 			{
 				E e[MAX_PATH];
-				GetModuleFileName(NULL, e, _countof(e));
+				GetModuleFileNameA(NULL, e, _countof(e));
 				init(e);
 			}
 			else
@@ -210,7 +261,7 @@ namespace Ambiesoft {
 		}
 		~CCommandLineStringBase()
 		{
-			free((void*)p_);
+			delete[] (E*)p_;
 		}
 		int getIndex(const E* p) const
 		{
@@ -234,12 +285,12 @@ namespace Ambiesoft {
 			return ret;
 		}
 
-		static E** getCommandLine(LPCWSTR pCL, int* argc)
+		static E** getCommandLine(const E* pCL, int* argc)
 		{
 			CCommandLineStringBase<E> me(pCL);
 
 			*argc = 0;
-			E** ppRetReturn = (E**)LocalAlloc(0, (me.args_.size() + 1) * sizeof(wchar_t*));
+			E** ppRetReturn = (E**)LocalAlloc(0, (me.args_.size() + 1) * sizeof(E*));
 			E** ppRet = ppRetReturn;
 			int i = 0;
 			for (myVS::iterator it = me.args_.begin();
@@ -249,7 +300,9 @@ namespace Ambiesoft {
 					continue;
 
 				*ppRet = (E*)LocalAlloc(0, (it->size() + 1) * sizeof(E));
-				wcscpy_s(*ppRet, LocalSize(*ppRet)/sizeof(E), it->c_str());
+				// wcscpy_s(*ppRet, LocalSize(*ppRet)/sizeof(E), it->c_str());
+				// _tcscpy(*ppRet, it->c_str());
+				memcpy(*ppRet, it->c_str(), (it->size()+1)*sizeof(E));
 				++ppRet;
 				++i;
 			}

@@ -64,7 +64,7 @@ LINK32=link.exe
 # PROP Intermediate_Dir "Debug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I "../stlsoft/include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "_AFXDLL" /FR /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I "." /I "../stlsoft/include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "_AFXDLL" /FR /YX /FD /GZ /c
 # ADD BASE RSC /l 0x411 /d "_DEBUG"
 # ADD RSC /l 0x411 /d "_DEBUG" /d "_AFXDLL"
 BSC32=bscmake.exe
@@ -246,10 +246,6 @@ SOURCE=..\SHDeleteFile.cpp
 # Begin Source File
 
 SOURCE=..\SHMoveFile.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\SJISToEUC.cpp
 # End Source File
 # Begin Source File
 
@@ -474,10 +470,6 @@ SOURCE=..\SHDeleteFile.h
 # Begin Source File
 
 SOURCE=..\SHMoveFile.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\SJISToEUC.h
 # End Source File
 # Begin Source File
 

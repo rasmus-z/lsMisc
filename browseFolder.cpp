@@ -28,7 +28,7 @@
 #include <tchar.h>
 #include <objbase.h>
 #include <shlobj.h>
-#include <ShObjIdl.h>
+
 
 #include <io.h>
 
@@ -44,16 +44,20 @@
 #include <vcclr.h>
 #endif
 
-
-
-namespace Ambiesoft {
-
-
 #ifdef UNICODE
 #if _WIN32_WINNT >= 0x0600
 #define ISOVERVISTA
 #endif // _WIN32_WINNT >= 0x0600
 #endif // UNICODE
+
+#ifdef ISOVERVISTA
+	#include <ShObjIdl.h>
+#endif
+
+namespace Ambiesoft {
+
+
+
 
 
 #ifdef ISOVERVISTA

@@ -1,3 +1,7 @@
+*.ncb
+*.opt
+*.plg
+
 lsMiscTest/Debug/
 lsMiscTest/lsMiscTest.sdf
 lsMiscTest/lsMiscTest.v12.suo
@@ -5,7 +9,6 @@ lsMiscTest/lang/
 
 
 lsMiscTest/lsMiscTest2008.ncb
-lsMiscTest/lsMiscTest2008.suo
 lsMiscTest/lsMiscTest2008.vcproj.*.user
 lsMiscTest/Release/
 

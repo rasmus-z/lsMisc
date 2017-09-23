@@ -47,6 +47,12 @@
 
 #include "tstring.h"
 
+#ifndef CSIDL_LOCAL_APPDATA
+#define CSIDL_LOCAL_APPDATA 0x001c
+#endif
+
+namespace Ambiesoft {
+
 bool GetFolderIniDir(HINSTANCE hInst, LPTSTR szFolder, DWORD nfSize,
 	LPCTSTR pCreator, LPCTSTR pApp)
 {
@@ -150,3 +156,5 @@ void CreateFolderIniPath_obsoletes(HINSTANCE hInst,
 		wsprintf(pOut, _T("%s\\%s"), szT, pIniFileName);
 	}
 }
+
+} // namespace

@@ -27,6 +27,10 @@
 #include <tchar.h>
 #include <assert.h>
 
+#if _MSC_VER <= 1200
+#pragma warning(disable:4786)
+#endif
+
 #include <vector>
 #include <string>
 
@@ -39,6 +43,8 @@ typedef vector<wstring> STRINGVECTOR;
 #include "SHMoveFile.h"
 
 #pragma comment(lib, "Shell32.lib")
+
+
 
 namespace Ambiesoft {
 
@@ -94,7 +100,8 @@ namespace Ambiesoft {
 	static LPTSTR CreateDNString(const vector<wstring>& files, int* pnRet)
 	{
 		size_t size = 0;
-		for (STRINGVECTOR::const_iterator it = files.begin(); it != files.end(); ++it)
+		STRINGVECTOR::const_iterator it;
+		for ( it = files.begin(); it != files.end(); ++it)
 		{
 			size += (it->size() + 1) * sizeof(WCHAR);
 		}
@@ -102,7 +109,7 @@ namespace Ambiesoft {
 		size += sizeof(WCHAR);
 		BYTE* p = (BYTE*)myAlloc(size);
 		LPTSTR pStart = (LPTSTR)p;
-		for (STRINGVECTOR::const_iterator it = files.begin(); it != files.end(); ++it)
+		for ( it = files.begin(); it != files.end(); ++it)
 		{
 			size_t copysize = (it->size()+1) * sizeof(WCHAR);
 			errno_t err = memcpy_s(p, size, it->c_str(), copysize);

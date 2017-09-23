@@ -22,16 +22,37 @@
 //SUCH DAMAGE.
 
 #pragma once
-
 namespace Ambiesoft {
 
-bool GetFolderIniDir(HINSTANCE hInst, LPTSTR szFolder, DWORD nfSize,
-	LPCTSTR pCreator, LPCTSTR pApp);
-//void CreateFolderIniPath(HINSTANCE hInst,
-//	LPCTSTR pIniFileName,
-//	LPTSTR pOut,
-//	LPCTSTR pApp,
-//	LPCTSTR pCreator,
-//	LPCTSTR pErrorTemplate);
+#ifdef WINDOWS
+#pragma message("os trait is Windows")
+#endif
 
-}
+	struct os_traits_windows_ansi
+	{};
+
+	template<class E, class S>
+	struct os_trais
+	{
+		static S osdGetModuleFileName()
+		{
+			return "";
+		}
+	};
+
+	template<>
+	struct os_trais<os_traits_windows_ansi, std::string>
+	{
+		static std::string osdGetModuleFileName()
+		{
+			return "";
+		}
+	};
+
+	std::string mGetModuleFileName()
+	{
+		std::string s = os_trais<os_traits_windows_ansi, std::string>::osdGetModuleFileName();
+		return s;
+	}
+
+} // namespace
