@@ -175,7 +175,6 @@ namespace stdwin32 {
 
 	std::wstring stdCombinePath(LPCWSTR pD1, LPCWSTR pD2)
 	{
-
 		if (!pD1 || !pD1[0])
 			return pD2;
 

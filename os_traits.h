@@ -22,6 +22,15 @@
 //SUCH DAMAGE.
 
 #pragma once
+
+#ifdef _WIN32
+#include <Windows.h>
+#include <Shlwapi.h>
+#pragma comment(lib, "Shlwapi.lib")
+#endif
+
+#include <string>
+
 namespace Ambiesoft {
 
 
@@ -29,51 +38,200 @@ namespace Ambiesoft {
 	{};
 	struct os_traits_windows_unicode
 	{};
-
+	struct os_traits_gcc
+	{};
 #ifdef _WIN32
 #ifdef UNICODE
 	#pragma message("os trait is Windows unicode")
 	typedef os_traits_windows_unicode current_traits;
-	typedef std::wstring myString;
+	typedef std::wstring myS_;
 #else
 	#pragma message("os trait is Windows ansii")
 	typedef os_traits_windows_ansi current_traits;
 	typedef std::string myString;
 #endif
+
+#elif __linux__
+	#pragma message("__linux__")
+#elif __GNUC__
+	#pragma message("GNUC")
+	typedef os_traits_gcc current_traits;
+	typedef std::string myS_;
+#else
+	#pragma message("NAZO")
 #endif
 
 	template<class E, class S>
 	struct os_trais
 	{
+		typedef typename S::traits_type::char_type myE_;
+		static S osdGetEmptyString()
+		{
+			return S();
+		}
 		static S osdGetModuleFileName()
 		{
 			return "";
+		}
+		static bool osdIsFullPath(const S& s)
+		{
+			return false;
+		}
+		static bool osdIsFullPath(const myE_* p)
+		{
+			return false;
+		}
+		static myE_ osdGetPathSeparator()
+		{
+			return '/';
+		}
+		static S osdCombinePath(const S& left, const S& right)
+		{
+			if (osdIsFullPath(right))
+				return right;
+
+			S ret(left);
+			typename S::iterator it = ret.end();
+			--it;
+			if (*it != osdGetPathSeparator())
+				ret += osdGetPathSeparator();
+
+			return ret + right;
 		}
 	};
 
 	template<>
 	struct os_trais<os_traits_windows_ansi, std::string>
 	{
+		typedef std::string S;
+		typedef std::string::traits_type::char_type myE_;
+		static S osdGetEmptyString()
+		{
+			return S();
+		}
 		static std::string osdGetModuleFileName()
 		{
-			return "";
+			char t[MAX_PATH];
+			GetModuleFileNameA(NULL, t, MAX_PATH);
+			return t;
+		}
+		static bool osdIsFullPath(const S& s)
+		{
+			osdIsFullPath(s.c_str());
+		}
+		static bool osdIsFullPath(const myE_* p)
+		{
+			return !PathIsRelativeA(p);
+		}
+		static myE_ osdGetPathSeparator()
+		{
+			return '\\';
+		}
+		static S osdCombinePath(const S& left, const S& right)
+		{
+			if (osdIsFullPath(right))
+				return right;
+
+			S ret(left);
+			S::iterator it = ret.end();
+			--it;
+			if (*it != osdGetPathSeparator())
+				ret += osdGetPathSeparator();
+
+			return ret + right;
 		}
 	};
+
 	template<>
 	struct os_trais<os_traits_windows_unicode, std::wstring>
 	{
-		static std::wstring osdGetModuleFileName()
+		typedef std::wstring S;
+		typedef S::traits_type::char_type myE_;
+		static S osdGetModuleFileName()
 		{
 			wchar_t t[MAX_PATH];
 			GetModuleFileNameW(NULL,t,MAX_PATH);
 			return t;
 		}
+		static bool osdIsFullPath(const S& s)
+		{
+			return osdIsFullPath(s.c_str());
+		}
+		static bool osdIsFullPath(const myE_* p)
+		{
+			return !PathIsRelative(p);
+		}
+		static myE_ osdGetPathSeparator()
+		{
+			return L'\\';
+		}
+		static S osdCombinePath(const S& left, const S& right)
+		{
+			if (osdIsFullPath(right))
+				return right;
+
+			S ret(left);
+			S::iterator it = ret.end();
+			--it;
+			if (*it != osdGetPathSeparator())
+				ret += osdGetPathSeparator();
+
+			return ret + right;
+		}
 	};
 
-	myString mGetModuleFileName()
+	template<>
+	struct os_trais<os_traits_gcc, std::string>
 	{
-		myString s = os_trais<current_traits, myString>::osdGetModuleFileName();
-		return s;
+		typedef std::wstring S;
+		typedef S::traits_type::char_type myE_;
+		static S osdGetModuleFileName()
+		{
+			return S();
+		}
+		static bool osdIsFullPath(const S& s)
+		{
+			return osdIsFullPath(s.c_str());
+		}
+		static bool osdIsFullPath(const myE_* p)
+		{
+			return !PathIsRelative(p);
+		}
+		static myE_ osdGetPathSeparator()
+		{
+			return L'\\';
+		}
+		static S osdCombinePath(const S& left, const S& right)
+		{
+			if (osdIsFullPath(right))
+				return right;
+
+			S ret(left);
+			S::iterator it = ret.end();
+			--it;
+			if (*it != osdGetPathSeparator())
+				ret += osdGetPathSeparator();
+
+			return ret + right;
+		}
+	};
+
+	template<class OsT_ = current_traits>
+	myS_ mGetModuleFileName()
+	{
+		return os_trais<OsT_, myS_>::osdGetModuleFileName();
+	}
+
+	template<class OsT_ = current_traits>
+	bool mIsFullPath(const myS_& s)
+	{
+		return os_trais<OsT_, myS_>::osdIsFullPath(s);
+	}
+
+	template<class OsT_ = current_traits>
+	myS_ mCombinePath(const myS_& left, const myS_& right)
+	{
+		return os_trais<OsT_, myS_>::osdCombinePath(left, right);
 	}
 
 } // namespace

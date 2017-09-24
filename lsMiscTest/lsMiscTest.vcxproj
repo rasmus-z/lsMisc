@@ -220,6 +220,7 @@
     <ClCompile Include="testOpenCommon.cpp" />
     <ClCompile Include="testOpenedFiles.cpp" />
     <ClCompile Include="testI18N.cpp" />
+    <ClCompile Include="testOSTraits.cpp" />
     <ClCompile Include="testPathUtil.cpp" />
     <ClCompile Include="testSHMoveFile.cpp" />
     <ClCompile Include="testStlsoft.cpp" />
@@ -301,6 +302,7 @@
     <ClInclude Include="..\myStrStrI.h" />
     <ClInclude Include="..\OpenCommon.h" />
     <ClInclude Include="..\OpenedFiles.h" />
+    <ClInclude Include="..\os_traits.h" />
     <ClInclude Include="..\PathUtil.h" />
     <ClInclude Include="..\pragmashowversions.h" />
     <ClInclude Include="..\ProcessList.h" />

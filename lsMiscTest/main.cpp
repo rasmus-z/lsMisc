@@ -37,6 +37,7 @@ void testOpenCommon();
 void testOpenedFiles();
 void testI18N();
 void testCommandLineString();
+void testOSTraits();
 
 int main()
 {
@@ -47,6 +48,7 @@ int main()
 		_CRTDBG_CHECK_ALWAYS_DF		|
 		_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG));
 #endif
+	testOSTraits();
 	testCommandLineString();
 	testSHMoveFile();
 	testOpenedFiles();
