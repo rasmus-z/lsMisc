@@ -74,17 +74,20 @@ namespace Ambiesoft {
 		assert(false);
 		return 0;
 	}
-	static BOOL SHCopyOrMoveFileImpl(CopyORMove copyormove, bool ismultidest, LPCTSTR lpzzFileTo, LPCTSTR lpzzFileFrom, int* pnRet=NULL)
+	static BOOL SHCopyOrMoveFileImpl(
+		CopyORMove copyormove, 
+		bool ismultidest, 
+		LPCTSTR lpzzFileTo, 
+		LPCTSTR lpzzFileFrom, 
+		FILEOP_FLAGS fopFlags=FOF_ALLOWUNDO,
+		int* pnRet=NULL)
 	{
 		SHFILEOPSTRUCT sfo = { 0 };
 		sfo.hwnd = NULL;
 		sfo.wFunc = GetwFunc(copyormove);
 		sfo.pFrom = lpzzFileFrom;
 		sfo.pTo = lpzzFileTo;
-		sfo.fFlags =
-			FOF_ALLOWUNDO |
-			FOF_FILESONLY |
-			FOF_NOERRORUI |
+		sfo.fFlags = fopFlags |
 			(ismultidest ? FOF_MULTIDESTFILES : 0) |
 			0;
 
@@ -134,7 +137,7 @@ namespace Ambiesoft {
 	}
 
 	
-	static BOOL SHCopyOrMoveFile(CopyORMove cm, LPCTSTR lpFileTo, LPCTSTR lpFileFrom, int* pnRet)
+	static BOOL SHCopyOrMoveFile(CopyORMove cm, LPCTSTR lpFileTo, LPCTSTR lpFileFrom, FILEOP_FLAGS fopFlags, int* pnRet)
 	{
 		if (cm != CopyORMove_Delete)
 		{
@@ -160,25 +163,28 @@ namespace Ambiesoft {
 		}
 		stlsoft::scoped_handle<void*> hi(pTo, myFree);
 
-		return SHCopyOrMoveFileImpl(cm, false, pTo, pFrom, pnRet);
+		return SHCopyOrMoveFileImpl(cm, false, pTo, pFrom, fopFlags, pnRet);
 	}
-	BOOL SHMoveFile(LPCTSTR lpFileTo, LPCTSTR lpFileFrom, int* pnRet)
+	BOOL SHMoveFile(LPCTSTR lpFileTo, LPCTSTR lpFileFrom, FILEOP_FLAGS fopFlags, int* pnRet)
 	{
-		return SHCopyOrMoveFile(CopyORMove_Move, lpFileTo, lpFileFrom, pnRet);
+		return SHCopyOrMoveFile(CopyORMove_Move, lpFileTo, lpFileFrom, fopFlags,pnRet);
 	}
-	BOOL SHCopyFile(LPCTSTR lpFileTo, LPCTSTR lpFileFrom, int* pnRet)
+	BOOL SHCopyFile(LPCTSTR lpFileTo, LPCTSTR lpFileFrom, FILEOP_FLAGS fopFlags, int* pnRet)
 	{
-		return SHCopyOrMoveFile(CopyORMove_Copy, lpFileTo, lpFileFrom, pnRet);
+		return SHCopyOrMoveFile(CopyORMove_Copy, lpFileTo, lpFileFrom, fopFlags, pnRet);
 	}
-	BOOL SHDeleteFile(LPCTSTR lpFile, int* pnRet)
+	BOOL SHDeleteFile(LPCTSTR lpFile, FILEOP_FLAGS fopFlags, int* pnRet)
 	{
-		return SHCopyOrMoveFile(CopyORMove_Delete, NULL, lpFile, pnRet);
+		return SHCopyOrMoveFile(CopyORMove_Delete, NULL, lpFile, fopFlags, pnRet);
 	}
 
 
 
 	// Move many file to 1 folder
-	static BOOL SHCopyOrMoveFile(CopyORMove cm, LPCTSTR lpFileTo, const std::vector<std::wstring>& sourcefiles, int* pnRet)
+	static BOOL SHCopyOrMoveFile(CopyORMove cm, 
+		LPCTSTR lpFileTo, const std::vector<std::wstring>& sourcefiles, 
+		FILEOP_FLAGS fopFlags,
+		int* pnRet)
 	{
 		LPTSTR pFroms = CreateDNString(sourcefiles, pnRet);
 		stlsoft::scoped_handle<void*> ha(pFroms, myFree);
@@ -190,24 +196,34 @@ namespace Ambiesoft {
 		}
 		stlsoft::scoped_handle<void*> hi(pTo, myFree);
 
-		return SHCopyOrMoveFileImpl(cm, false, pTo, pFroms, pnRet);
+		return SHCopyOrMoveFileImpl(cm, false, pTo, pFroms, fopFlags, pnRet);
 	}
-	BOOL SHMoveFile(LPCTSTR lpFileTo, const std::vector<std::wstring>& sourcefiles, int* pnRet)
+	BOOL SHMoveFile(LPCTSTR lpFileTo, 
+		const std::vector<std::wstring>& sourcefiles, 
+		FILEOP_FLAGS fopFlags,
+		int* pnRet)
 	{
-		return SHCopyOrMoveFile(CopyORMove_Move, lpFileTo, sourcefiles, pnRet);
+		return SHCopyOrMoveFile(CopyORMove_Move, lpFileTo, sourcefiles, fopFlags, pnRet);
 	}
 	// Copy many files to 1 folder
-	BOOL SHCopyFile(LPCTSTR lpFileTo, const std::vector<std::wstring>& sourcefiles, int* pnRet)
+	BOOL SHCopyFile(LPCTSTR lpFileTo, 
+		const std::vector<std::wstring>& sourcefiles, 
+		FILEOP_FLAGS fopFlags,
+		int* pnRet)
 	{
-		return SHCopyOrMoveFile(CopyORMove_Copy, lpFileTo, sourcefiles, pnRet);
+		return SHCopyOrMoveFile(CopyORMove_Copy, lpFileTo, sourcefiles, fopFlags, pnRet);
 	}
-	BOOL SHDeleteFile(const std::vector<std::wstring>& files, int* pnRet)
+	BOOL SHDeleteFile(const std::vector<std::wstring>& files, FILEOP_FLAGS fopFlags, int* pnRet)
 	{
-		return SHCopyOrMoveFile(CopyORMove_Delete, NULL, files, pnRet);
+		return SHCopyOrMoveFile(CopyORMove_Delete, NULL, files, fopFlags, pnRet);
 	}
 
 	// move multiple files to multiple files
-	BOOL SHCopyOrMoveFile(CopyORMove cm, const vector<wstring>& destfiles, const vector<wstring>& sourcefiles, int* pnRet)
+	BOOL SHCopyOrMoveFile(CopyORMove cm, 
+		const vector<wstring>& destfiles, 
+		const vector<wstring>& sourcefiles, 
+		FILEOP_FLAGS fopFlags,
+		int* pnRet)
 	{
 		LPTSTR pFroms = CreateDNString(sourcefiles, pnRet);
 		stlsoft::scoped_handle<void*> ha(pFroms, myFree);
@@ -215,15 +231,21 @@ namespace Ambiesoft {
 		LPTSTR pTos = CreateDNString(destfiles, pnRet);
 		stlsoft::scoped_handle<void*> hi(pTos, myFree);
 		
-		return SHCopyOrMoveFileImpl(cm, true, pTos, pFroms, pnRet);
+		return SHCopyOrMoveFileImpl(cm, true, pTos, pFroms, fopFlags, pnRet);
 	}
-	BOOL SHMoveFile(const vector<wstring>& destfiles, const vector<wstring>& sourcefiles, int* pnRet)
+	BOOL SHMoveFile(const vector<wstring>& destfiles, 
+		const vector<wstring>& sourcefiles, 
+		FILEOP_FLAGS fopFlags,
+		int* pnRet)
 	{
-		return SHCopyOrMoveFile(CopyORMove_Move, destfiles, sourcefiles, pnRet);
+		return SHCopyOrMoveFile(CopyORMove_Move, destfiles, sourcefiles, fopFlags, pnRet);
 	}
-	BOOL SHCopyFile(const vector<wstring>& destfiles, const vector<wstring>& sourcefiles, int* pnRet)
+	BOOL SHCopyFile(const vector<wstring>& destfiles, 
+		const vector<wstring>& sourcefiles,
+		FILEOP_FLAGS fopFlags,
+		int* pnRet)
 	{
-		return SHCopyOrMoveFile(CopyORMove_Copy, destfiles, sourcefiles, pnRet);
+		return SHCopyOrMoveFile(CopyORMove_Copy, destfiles, sourcefiles, fopFlags, pnRet);
 	}
 
 } // namespace

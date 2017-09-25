@@ -92,8 +92,14 @@ struct FileFreer {
 	}
 };
 
-
-typedef std::map<wstring,wstring> I18NSTRINGMAP;
+struct stringcomparer
+{
+    bool operator()(LPCTSTR x, LPCTSTR y) const
+    {
+         return _tcscmp(x,y)>0;
+    }
+};
+typedef std::map<LPCWSTR,wstring,stringcomparer> I18NSTRINGMAP;
 static I18NSTRINGMAP i18map;
 
 
@@ -208,7 +214,16 @@ LPCWSTR i18nGetCurrentLang()
 	return stLang;
 }
 
-
+void ClearMap()
+{
+	for(I18NSTRINGMAP::iterator it = i18map.begin();
+		it != i18map.end();
+		++it)
+	{
+		free((void*)it->first);
+	}
+	i18map.clear();
+}
 LPCWSTR i18nInitLangmap(HINSTANCE hInst, LPCWSTR pLang, LPCWSTR pAppName)
 {
 	ghInst = hInst;
@@ -229,7 +244,7 @@ LPCWSTR i18nInitLangmap(HINSTANCE hInst, LPCWSTR pLang, LPCWSTR pAppName)
 	{
 		langinit = false;
 		lstrcpyW(stLang, pLang);
-		i18map.clear();
+		ClearMap();
 	}
 	
 	//WCHAR szAppName[MAX_PATH]; szAppName[0]=0;
@@ -476,12 +491,12 @@ LPCWSTR i18nInitLangmap(HINSTANCE hInst, LPCWSTR pLang, LPCWSTR pAppName)
 							if(!left.empty())
 							{
 #ifdef _DEBUG
-								if(!i18map[left].empty())
+								if(!i18map[_wcsdup(left.c_str())].empty())
 								{
 									aru.insert(left);
 								}
 #endif
-								i18map[left] = right;
+								i18map[_wcsdup(left.c_str())] = right;
 							}
 
 							pTok = wcstok_s(NULL, L"\n", &context);
