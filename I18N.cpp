@@ -40,6 +40,10 @@ using namespace std;
 
 #include "I18N.h"
 
+#ifdef _DEBUG
+#include "DebugNew.h"
+#endif
+
 #ifndef countof
 #define countof(a) (sizeof(a)/sizeof(a[0]))
 #endif
@@ -207,6 +211,7 @@ void shownai()
 
 
 static bool langinit=false;
+static bool atexitinit=false;
 static WCHAR stLang[4];
 
 LPCWSTR i18nGetCurrentLang()
@@ -214,7 +219,7 @@ LPCWSTR i18nGetCurrentLang()
 	return stLang;
 }
 
-void ClearMap()
+static void ClearMap()
 {
 	for(I18NSTRINGMAP::iterator it = i18map.begin();
 		it != i18map.end();
@@ -224,6 +229,7 @@ void ClearMap()
 	}
 	i18map.clear();
 }
+
 LPCWSTR i18nInitLangmap(HINSTANCE hInst, LPCWSTR pLang, LPCWSTR pAppName)
 {
 	ghInst = hInst;
@@ -255,6 +261,18 @@ LPCWSTR i18nInitLangmap(HINSTANCE hInst, LPCWSTR pLang, LPCWSTR pAppName)
 	//	pAppName = _tcsrchr(szAppName, L'\\')+1;
 	//}
 
+	if(!atexitinit)
+	{
+		i18nlock lock;
+		if(!atexitinit)
+		{
+			atexitinit = true;
+			atexit(ClearMap);
+#ifdef _DEBUG
+			atexit(shownai);
+#endif
+		}
+	}
 	if(!langinit)
 	{
 		{
@@ -491,7 +509,7 @@ LPCWSTR i18nInitLangmap(HINSTANCE hInst, LPCWSTR pLang, LPCWSTR pAppName)
 							if(!left.empty())
 							{
 #ifdef _DEBUG
-								if(!i18map[_wcsdup(left.c_str())].empty())
+								if(i18map.count(left.c_str()) != 0)
 								{
 									aru.insert(left);
 								}
@@ -507,9 +525,7 @@ LPCWSTR i18nInitLangmap(HINSTANCE hInst, LPCWSTR pLang, LPCWSTR pAppName)
 
 				} while(0);
 				
-#ifdef _DEBUG
-				atexit(shownai);
-#endif
+
 			}
 			langinit=true;
 		}
@@ -527,9 +543,10 @@ LPCWSTR I18NW(LPCWSTR pIN)
 		i18nInitLangmap();
 
 	i18nlock lock;
-	wstring& ret = i18map[pIN];
-	if(!ret.empty())
-		return ret.c_str();
+	if(i18map.find(pIN) != i18map.end())
+	{
+		return i18map[pIN].c_str();
+	}
 
 #ifdef _DEBUG
 	nai.insert(pIN);
