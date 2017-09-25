@@ -27,10 +27,12 @@
 #include <string>
 #include <stlsoft/smartptr/scoped_handle.hpp>
 #include "sqlite3.h"
-#include "sqliteserialize.h"
 #include "IsFileExists.h"
 #include "UTF16toUTF8.h"
 
+#include "sqliteserialize.h"
+
+#include "DebugNew.h"
 
 // #define IFDISABLED_RETURN do { if(smDisabled_){ return; } } while(false)
 #define SAFE_SQLERROR_FREE(s) do { if(s){sqlite3_free(s);     (s)=NULL;} }while(false)

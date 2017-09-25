@@ -28,16 +28,20 @@
 #include <string>
 
 namespace Ambiesoft {
+	enum {
+		default_fopFlags = FOF_ALLOWUNDO,
+	};
+	BOOL SHMoveFile(LPCTSTR lpFileTo, LPCTSTR lpFileFrom, FILEOP_FLAGS fopFlags = default_fopFlags, int* pnRet = NULL);
+	BOOL SHMoveFile(LPCTSTR lpFileTo, LPCTSTR lpFileFrom, int* pnRet = NULL);
+	BOOL SHCopyFile(LPCTSTR lpFileTo, LPCTSTR lpFileFrom, FILEOP_FLAGS fopFlags = default_fopFlags, int* pnRet = NULL);
+	BOOL SHDeleteFile(LPCTSTR lpFile, FILEOP_FLAGS fopFlags = default_fopFlags, int* pnRet = NULL);
 
-	BOOL SHMoveFile(LPCTSTR lpFileTo, LPCTSTR lpzzFileFrom, FILEOP_FLAGS fopFlags=FOF_ALLOWUNDO, int* pnRet = NULL);
-	BOOL SHCopyFile(LPCTSTR lpFileTo, LPCTSTR lpFileFrom, FILEOP_FLAGS fopFlags=FOF_ALLOWUNDO, int* pnRet = NULL);
-	BOOL SHDeleteFile(LPCTSTR lpFile, FILEOP_FLAGS fopFlags=FOF_ALLOWUNDO, int* pnRet = NULL);
+	BOOL SHMoveFile(LPCTSTR lpFileTo, const std::vector<std::wstring>& sourcefiles, FILEOP_FLAGS fopFlags = default_fopFlags, int* pnRet = NULL);
+	BOOL SHMoveFile(LPCTSTR lpFileTo, const std::vector<std::wstring>& sourcefiles, int* pnRet = NULL);
+	BOOL SHCopyFile(LPCTSTR lpFileTo, const std::vector<std::wstring>& sourcefiles, FILEOP_FLAGS fopFlags = default_fopFlags, int* pnRet = NULL);
+	BOOL SHDeleteFile(const std::vector<std::wstring>& files, FILEOP_FLAGS fopFlags = default_fopFlags, int* pnRet = NULL);
 
-	BOOL SHMoveFile(LPCTSTR lpFileTo, const std::vector<std::wstring>& sourcefiles, FILEOP_FLAGS fopFlags=FOF_ALLOWUNDO, int* pnRet = NULL);
-	BOOL SHCopyFile(LPCTSTR lpFileTo, const std::vector<std::wstring>& sourcefiles, FILEOP_FLAGS fopFlags=FOF_ALLOWUNDO, int* pnRet = NULL);
-	BOOL SHDeleteFile(const std::vector<std::wstring>& files, FILEOP_FLAGS fopFlags=FOF_ALLOWUNDO, int* pnRet = NULL);
-
-	BOOL SHMoveFile(const std::vector<std::wstring>& destfiles, const std::vector<std::wstring>& sourcefiles, FILEOP_FLAGS fopFlags=FOF_ALLOWUNDO, int* pnRet = NULL);
-	BOOL SHCopyFile(const std::vector<std::wstring>& destfiles, const std::vector<std::wstring>& sourcefiles, FILEOP_FLAGS fopFlags=FOF_ALLOWUNDO, int* pnRet = NULL);
+	BOOL SHMoveFile(const std::vector<std::wstring>& destfiles, const std::vector<std::wstring>& sourcefiles, FILEOP_FLAGS fopFlags = default_fopFlags, int* pnRet = NULL);
+	BOOL SHCopyFile(const std::vector<std::wstring>& destfiles, const std::vector<std::wstring>& sourcefiles, FILEOP_FLAGS fopFlags = default_fopFlags, int* pnRet = NULL);
 	
 }

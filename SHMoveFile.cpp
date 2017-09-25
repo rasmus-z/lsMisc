@@ -42,6 +42,8 @@ typedef vector<wstring> STRINGVECTOR;
 
 #include "SHMoveFile.h"
 
+#include "DebugNew.h"
+
 #pragma comment(lib, "Shell32.lib")
 
 
@@ -169,6 +171,10 @@ namespace Ambiesoft {
 	{
 		return SHCopyOrMoveFile(CopyORMove_Move, lpFileTo, lpFileFrom, fopFlags,pnRet);
 	}
+	BOOL SHMoveFile(LPCTSTR lpFileTo, LPCTSTR lpFileFrom, int* pnRet)
+	{
+		return SHCopyOrMoveFile(CopyORMove_Move, lpFileTo, lpFileFrom, default_fopFlags, pnRet);
+	}
 	BOOL SHCopyFile(LPCTSTR lpFileTo, LPCTSTR lpFileFrom, FILEOP_FLAGS fopFlags, int* pnRet)
 	{
 		return SHCopyOrMoveFile(CopyORMove_Copy, lpFileTo, lpFileFrom, fopFlags, pnRet);
@@ -204,6 +210,12 @@ namespace Ambiesoft {
 		int* pnRet)
 	{
 		return SHCopyOrMoveFile(CopyORMove_Move, lpFileTo, sourcefiles, fopFlags, pnRet);
+	}
+	BOOL SHMoveFile(LPCTSTR lpFileTo, 
+		const std::vector<std::wstring>& sourcefiles, 
+		int* pnRet)
+	{
+		return SHCopyOrMoveFile(CopyORMove_Move, lpFileTo, sourcefiles, default_fopFlags, pnRet);
 	}
 	// Copy many files to 1 folder
 	BOOL SHCopyFile(LPCTSTR lpFileTo, 
