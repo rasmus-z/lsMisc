@@ -25,7 +25,7 @@
 #include <string>
 #include <cassert>
 
-#include "os_traits.h"
+// #include "os_traits.h"
 
 #ifndef _countof
 #define _countof(t) (sizeof(t)/sizeof(t[0]))
@@ -33,52 +33,52 @@
 
 namespace Ambiesoft {
 
-	inline bool myIsSpace(char c)
+	static inline bool myIsSpace(char c)
 	{
 		return isspace(c) != 0;
 	}
-	inline bool myIsSpace(wchar_t c)
+	static inline bool myIsSpace(wchar_t c)
 	{
 		return iswspace(c) != 0;
 	}
 
-	inline const char* skipWS(const char* p)
+	static inline const char* skipWS(const char* p)
 	{
 			while (*p && isspace(*p))
 				++p;
 			return p;
 	}
-	inline const wchar_t* skipWS(const wchar_t* p) 
+	static inline const wchar_t* skipWS(const wchar_t* p) 
 	{
 		while (*p && iswspace(*p))
 			++p;
 		return p;
 	}
 
-	inline void clearS(std::string& s)
+	static inline void clearS(std::string& s)
 	{
 		s="";
 	}
-	inline void clearS(std::wstring& s)
+	static inline void clearS(std::wstring& s)
 	{
 		s=L"";
 	}
 
-	const char* nextP(const char* p)
+	static const char* nextP(const char* p)
 	{
 		return CharNextA(p);
 	}
-	const wchar_t* nextP(const wchar_t* p)
+	static const wchar_t* nextP(const wchar_t* p)
 	{
 		++p;
 		return p;
 	}
 
-	inline bool isDQ(char c) 
+	static inline bool isDQ(char c) 
 	{
 		return c == '"';
 	}
-	inline bool isDQ(wchar_t c) 
+	static inline bool isDQ(wchar_t c) 
 	{
 		return c == L'"';
 	}
@@ -253,9 +253,9 @@ namespace Ambiesoft {
 		{
 			if (!*pCommandLine)
 			{
-				// E e[MAX_PATH];
-				myS s = mGetModuleFileName(); //NULL, e, _countof(e));
-				init(s.c_str());
+				E e[MAX_PATH];
+				GetModuleFileName(NULL, e, MAX_PATH);
+				init(e);
 			}
 			else
 			{
@@ -279,7 +279,7 @@ namespace Ambiesoft {
 		std::basic_string<E> subString(int index) const
 		{
 			if (offsets_.size() == index)
-				return L"";
+				return std::basic_string<E>();
 
 			int ofs = offsets_[index];
 			std::basic_string<E> ret(&p_[ofs]);
@@ -325,5 +325,7 @@ namespace Ambiesoft {
 
 #ifdef UNICODE
 	typedef CCommandLineStringBase<wchar_t> CCommandLineString;
+#else
+	typedef CCommandLineStringBase<char> CCommandLineString;
 #endif
 }

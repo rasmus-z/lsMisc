@@ -159,7 +159,7 @@ namespace Ambiesoft {
 		}
 		static bool osdIsFullPath(const myE_* p)
 		{
-			return !PathIsRelative(p);
+			return !PathIsRelativeW(p);
 		}
 		static myE_ osdGetPathSeparator()
 		{
@@ -183,7 +183,7 @@ namespace Ambiesoft {
 	template<>
 	struct os_trais<os_traits_gcc, std::string>
 	{
-		typedef std::wstring S;
+		typedef std::string S;
 		typedef S::traits_type::char_type myE_;
 		static S osdGetModuleFileName()
 		{
@@ -195,7 +195,7 @@ namespace Ambiesoft {
 		}
 		static bool osdIsFullPath(const myE_* p)
 		{
-			return !PathIsRelative(p);
+			return !PathIsRelativeA(p);
 		}
 		static myE_ osdGetPathSeparator()
 		{
