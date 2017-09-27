@@ -33,7 +33,7 @@
 #include "tstring.h"
 #include "ChangeFilenamable.h"
 
-#include "../DebugNew.h"
+
 
 using namespace std;
 

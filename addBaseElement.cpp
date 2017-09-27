@@ -21,6 +21,7 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
+#include "stdafx.h"
 #include <comdef.h>
 #include "AnyCloser.h"
 
@@ -34,7 +35,7 @@ namespace Ambiesoft {
 		if (pSourceURL == NULL || pSourceURL[0] == 0)
 			return false;
 
-		WCHAR* pw = wcsdup(bstrHtml);
+		WCHAR* pw = _wcsdup(bstrHtml);
 		if (!pw)
 			return false;
 

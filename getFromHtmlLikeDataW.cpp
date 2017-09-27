@@ -21,6 +21,7 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
+#include "stdafx.h"
 #pragma warning(disable:4786)
 #include <windows.h>
 #include <map>

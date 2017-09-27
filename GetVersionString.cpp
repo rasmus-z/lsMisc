@@ -1,4 +1,4 @@
-
+#include "stdafx.h"
 #include "tchar.h"
 #include "GetVersionString.h"
 

@@ -21,8 +21,6 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
-#pragma once
-
 // HOW TO USE
 // 1. Include I18N.h and I18N.cpp to your project.
 // 2. Call i18nInitLangmap() at startup, or i18nInitLangmap(L"jpn") for specifying language.
@@ -35,6 +33,8 @@
 // 6. Call i18NChangexxxx() for translating windows or dialog texts. Show the source for more informations.
 // 7. Look the debugger output when the program exists. Untranslated words will be printed.
 
+#pragma once
+#include <Windows.h>
 namespace Ambiesoft {
 	LPCWSTR i18nInitLangmap(HINSTANCE hInst=NULL, LPCWSTR pLang = NULL, LPCWSTR pAppName=NULL);
 	LPCWSTR i18nGetCurrentLang();

@@ -21,6 +21,7 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
+#include "stdafx.h"
 #include <windows.h>
 #include <Commctrl.h>
 #include <vector>
@@ -30,7 +31,7 @@ using namespace std;
 
 #include "verify.h"
 
-#include "../DebugNew.h"
+namespace Ambiesoft {
 
 static BOOL ChangeDirPosStuff( HWND hWndList, int nSelItem, ChangePosType nType )
 {
@@ -111,3 +112,5 @@ void ChangeDirPos( HWND hWndList, ChangePosType nType )
 
 
 
+
+}

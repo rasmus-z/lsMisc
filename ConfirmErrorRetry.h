@@ -21,4 +21,7 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
+namespace Ambiesoft {
+
 BOOL ConfirmErrorRetry(BOOL bOK, HWND hWnd, LPCTSTR pMessage, LPCTSTR pTitle);
+}

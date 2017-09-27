@@ -21,17 +21,18 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
+#include "stdafx.h"
 #include <comdef.h>
 #include "AnyCloser.h"
 
 #include "addCharset.h"
 
-#include "../DebugNew.h"
+
 
 namespace Ambiesoft {
 	bool addCharset(_bstr_t& bstrHtml)
 	{
-		WCHAR* pw = wcsdup(bstrHtml);
+		WCHAR* pw = _wcsdup(bstrHtml);
 		if (!pw)
 			return false;
 

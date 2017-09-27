@@ -21,9 +21,12 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
+namespace Ambiesoft {
 enum ChangePosType {
 	POS_TO_UP = 0,
 	POS_TO_DOWN,
 };
 
 void ChangeDirPos( HWND hWndList, ChangePosType nType );
+
+}

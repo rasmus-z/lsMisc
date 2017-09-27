@@ -21,9 +21,12 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
+#include "stdafx.h"
 #include <windows.h>
 
 #include "ConfirmErrorRetry.h"
+
+namespace Ambiesoft {
 
 BOOL ConfirmErrorRetry(BOOL bOK, HWND hWnd, LPCTSTR pMessage, LPCTSTR pTitle)
 {
@@ -31,4 +34,6 @@ BOOL ConfirmErrorRetry(BOOL bOK, HWND hWnd, LPCTSTR pMessage, LPCTSTR pTitle)
 		return TRUE;
 
 	return IDYES == MessageBox(hWnd, pMessage, pTitle, MB_ICONEXCLAMATION|MB_YESNO);
+}
+
 }

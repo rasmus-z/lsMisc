@@ -44,4 +44,5 @@ namespace Ambiesoft {
 	BOOL SHMoveFile(const std::vector<std::wstring>& destfiles, const std::vector<std::wstring>& sourcefiles, FILEOP_FLAGS fopFlags = default_fopFlags, int* pnRet = NULL);
 	BOOL SHCopyFile(const std::vector<std::wstring>& destfiles, const std::vector<std::wstring>& sourcefiles, FILEOP_FLAGS fopFlags = default_fopFlags, int* pnRet = NULL);
 	
+	std::wstring GetSHFileOpErrorString(int nRet);
 }
