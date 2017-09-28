@@ -38,7 +38,7 @@
 
 #include "GetLastErrorString.h"
 #include "SHMoveFile.h"
-
+#include "vc6securecrt.h"
 #include "DebugNew.h"
 
 #pragma comment(lib, "Shell32.lib")

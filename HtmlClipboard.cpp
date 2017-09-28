@@ -29,11 +29,11 @@
 #include "HelpDefines.h"
 #include "AnyCloser.h"
 
-#ifndef _UNICODE
-	#pragma comment(lib, "comsupp.lib")
-#else
-	#pragma comment(lib, "comsuppw.lib")
-#endif
+//#ifndef _UNICODE
+//	#pragma comment(lib, "comsupp.lib")
+//#else
+//	#pragma comment(lib, "comsuppw.lib")
+//#endif
 
 bool CHtmlClipboard::getHtmlFromClipboard(HWND hWnd, _bstr_t* pHtml, _bstr_t* pTitle, _bstr_t* pURL)
 {

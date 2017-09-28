@@ -1,4 +1,4 @@
-﻿#include "stdafx.h"
+#include "stdafx.h"
 #include <stdlib.h>
 #include <string.h>
 #include <string>
@@ -51,7 +51,10 @@ void testUrlEncode()
 		//LPBYTE pdec = UrlDecode(penc);
 		//assert(strcmp(p, (LPCSTR)pdec) == 0);
 
-		LPCWSTR wp = L"あいうえお";
+		// LPCWSTR wp = L"あいうえお";
+		// "あいうえお"
+		// UTF16-LE
+		wchar_t wp[] = {0x3042,0x3044,0x3046,0x3048,0x304A,0x00};
 		std::wstring wenc = UrlEncodeW(wp);
 		std::wstring wdec = UrlDecodeW(wenc.c_str());
 		assert(wcscmp(wp, wdec.c_str()) == 0);

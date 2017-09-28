@@ -7,7 +7,6 @@
 #include <vector>
 
 #pragma comment(lib,"Shell32.lib")
-// #pragma comment(lib,"comsuppw.lib")
 #pragma comment(lib,"Advapi32.lib")
 
 
@@ -22,7 +21,7 @@
 #include <stlsoft/smartptr/scoped_handle.hpp>
 
 
-// あああ 日本語
+
 
 void testMoveWindowCommon();
 void testCommandLine();

@@ -1,24 +1,24 @@
-# Microsoft Developer Studio Project File - Name="MyUtilityTest" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="lsMiscTest" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** 編集しないでください **
 
 # TARGTYPE "Win32 (x86) Console Application" 0x0103
 
-CFG=MyUtilityTest - Win32 Debug
+CFG=lsMiscTest - Win32 Debug
 !MESSAGE これは有効なﾒｲｸﾌｧｲﾙではありません。 このﾌﾟﾛｼﾞｪｸﾄをﾋﾞﾙﾄﾞするためには NMAKE を使用してください。
 !MESSAGE [ﾒｲｸﾌｧｲﾙのｴｸｽﾎﾟｰﾄ] ｺﾏﾝﾄﾞを使用して実行してください
 !MESSAGE 
-!MESSAGE NMAKE /f "MyUtilityTest.mak".
+!MESSAGE NMAKE /f "lsMiscTest.mak".
 !MESSAGE 
 !MESSAGE NMAKE の実行時に構成を指定できます
 !MESSAGE ｺﾏﾝﾄﾞ ﾗｲﾝ上でﾏｸﾛの設定を定義します。例:
 !MESSAGE 
-!MESSAGE NMAKE /f "MyUtilityTest.mak" CFG="MyUtilityTest - Win32 Debug"
+!MESSAGE NMAKE /f "lsMiscTest.mak" CFG="lsMiscTest - Win32 Debug"
 !MESSAGE 
 !MESSAGE 選択可能なﾋﾞﾙﾄﾞ ﾓｰﾄﾞ:
 !MESSAGE 
-!MESSAGE "MyUtilityTest - Win32 Release" ("Win32 (x86) Console Application" 用)
-!MESSAGE "MyUtilityTest - Win32 Debug" ("Win32 (x86) Console Application" 用)
+!MESSAGE "lsMiscTest - Win32 Release" ("Win32 (x86) Console Application" 用)
+!MESSAGE "lsMiscTest - Win32 Debug" ("Win32 (x86) Console Application" 用)
 !MESSAGE 
 
 # Begin Project
@@ -28,7 +28,7 @@ CFG=MyUtilityTest - Win32 Debug
 CPP=cl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "MyUtilityTest - Win32 Release"
+!IF  "$(CFG)" == "lsMiscTest - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -41,7 +41,7 @@ RSC=rc.exe
 # PROP Intermediate_Dir "Release"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /W3 /GX /O2 /I "../stlsoft/include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
+# ADD CPP /nologo /W3 /GX /O2 /I "../stlsoft/include" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "UNICODE" /D "_UNICODE" /YX /FD /c
 # ADD BASE RSC /l 0x411 /d "NDEBUG"
 # ADD RSC /l 0x411 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -51,7 +51,7 @@ LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
 
-!ELSEIF  "$(CFG)" == "MyUtilityTest - Win32 Debug"
+!ELSEIF  "$(CFG)" == "lsMiscTest - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -64,7 +64,7 @@ LINK32=link.exe
 # PROP Intermediate_Dir "Debug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I "." /I "../stlsoft/include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "_AFXDLL" /FR /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I "." /I "../stlsoft/include" /D "_DEBUG" /D "_AFXDLL" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "UNICODE" /D "_UNICODE" /FR /YX /FD /GZ /c
 # ADD BASE RSC /l 0x411 /d "_DEBUG"
 # ADD RSC /l 0x411 /d "_DEBUG" /d "_AFXDLL"
 BSC32=bscmake.exe
@@ -78,8 +78,8 @@ LINK32=link.exe
 
 # Begin Target
 
-# Name "MyUtilityTest - Win32 Release"
-# Name "MyUtilityTest - Win32 Debug"
+# Name "lsMiscTest - Win32 Release"
+# Name "lsMiscTest - Win32 Debug"
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
@@ -241,10 +241,6 @@ SOURCE=..\SetClipboardText.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\SHDeleteFile.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\SHMoveFile.cpp
 # End Source File
 # Begin Source File
@@ -257,11 +253,71 @@ SOURCE=..\StdStringReplace.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\testCommandLineParser.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\testCommnadLineString.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\testFormatSizeof.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\testGetVersionString.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\testHira2Kata.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\testI18N.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\testMoveWindowCommon.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\testOpenCommon.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\testOpenedFiles.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\testOSTraits.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\testPathUtil.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\testSHMoveFile.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\testStlsoft.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\testUrlEncode.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\UnHtmlEntity.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=..\UTF16toUTF8.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\vc6securecrt.cpp
 # End Source File
 # Begin Source File
 
@@ -465,10 +521,6 @@ SOURCE=..\SetClipboardText.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\SHDeleteFile.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\SHMoveFile.h
 # End Source File
 # Begin Source File
@@ -502,6 +554,10 @@ SOURCE=..\UrlEncode2.h
 # Begin Source File
 
 SOURCE=..\UTF16toUTF8.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\vc6securecrt.h
 # End Source File
 # Begin Source File
 
