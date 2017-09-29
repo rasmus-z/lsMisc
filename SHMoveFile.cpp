@@ -286,7 +286,14 @@ namespace Ambiesoft {
 	{
 		return SHCopyOrMoveFile(CopyORMove_Copy, lpFileTo, sourcefiles, fopFlags, pnRet);
 	}
-	BOOL SHDeleteFile(const std::vector<std::wstring>& files, FILEOP_FLAGS fopFlags, int* pnRet)
+	BOOL SHDeleteFile(const std::vector<std::wstring>& files,
+		int* pnRet)
+	{
+		return SHCopyOrMoveFile(CopyORMove_Delete, NULL, files, default_fopFlags, pnRet);
+	}
+	BOOL SHDeleteFile(const std::vector<std::wstring>& files,
+		FILEOP_FLAGS fopFlags,
+		int* pnRet)
 	{
 		return SHCopyOrMoveFile(CopyORMove_Delete, NULL, files, fopFlags, pnRet);
 	}
@@ -306,14 +313,20 @@ namespace Ambiesoft {
 		
 		return SHCopyOrMoveFileImpl(cm, true, pTos, pFroms, fopFlags, pnRet);
 	}
-	BOOL SHMoveFile(const vector<wstring>& destfiles, 
-		const vector<wstring>& sourcefiles, 
+	BOOL SHMoveFile(const vector<wstring>& destfiles,
+		const vector<wstring>& sourcefiles,
+		int* pnRet)
+	{
+		return SHCopyOrMoveFile(CopyORMove_Move, destfiles, sourcefiles, default_fopFlags, pnRet);
+	}
+	BOOL SHMoveFile(const vector<wstring>& destfiles,
+		const vector<wstring>& sourcefiles,
 		FILEOP_FLAGS fopFlags,
 		int* pnRet)
 	{
 		return SHCopyOrMoveFile(CopyORMove_Move, destfiles, sourcefiles, fopFlags, pnRet);
 	}
-	BOOL SHCopyFile(const vector<wstring>& destfiles, 
+	BOOL SHCopyFile(const vector<wstring>& destfiles,
 		const vector<wstring>& sourcefiles,
 		FILEOP_FLAGS fopFlags,
 		int* pnRet)
