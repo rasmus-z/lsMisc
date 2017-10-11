@@ -197,16 +197,16 @@ namespace Ambiesoft {
 		ArgCount_Infinite = 0xffffffff,
 	};
 
-	enum class CaseFlags
+	enum CaseFlags
 	{
-		Default,
-		Sensitive,
-		Insensitive,
+		CaseFlags_Default,
+		CaseFlags_Sensitive,
+		CaseFlags_Insensitive,
 	};
-	enum class ArgEncodingFlags
+	enum ArgEncodingFlags
 	{
-		Default,
-		UTF8UrlEncode,
+		ArgEncodingFlags_Default,
+		ArgEncodingFlags_UTF8UrlEncode,
 	};
 
 	template <class myStringType, class myOptionType> 
@@ -317,7 +317,7 @@ namespace Ambiesoft {
 		void AddValue(const myStringType& value)
 		{
 			setHadOption();
-			userTarget_.setMys(encoding_ == ArgEncodingFlags::UTF8UrlEncode ? Utf8UrlDecode(value) : value);
+			userTarget_.setMys(encoding_ == ArgEncodingFlags_UTF8UrlEncode ? Utf8UrlDecode(value) : value);
 
 			values_.push_back(value);
 		}
@@ -348,7 +348,7 @@ namespace Ambiesoft {
 		}
 		bool isMatchOption(const myStringType& option) const
 		{
-			return isMatchOption(option, case_ == CaseFlags::Insensitive);
+			return isMatchOption(option, case_ == CaseFlags_Insensitive);
 		}
 
 		myStringType getFirstOption() const
@@ -371,9 +371,9 @@ namespace Ambiesoft {
 			hadOption_ = false;
 			parsed_ = false;
 			argcountflag_ = ArgCount_Uninitialized;
-			case_ = CaseFlags::Default;
+			case_ = CaseFlags_Default;
 			// pTarget_ = NULL;
-			encoding_ = ArgEncodingFlags::Default;
+			encoding_ = ArgEncodingFlags_Default;
 		}
 	public:
 		BasicOption()
@@ -628,7 +628,7 @@ typedef BasicOption<std::string> COptionA;
 		{
 			empty_=true;
 			parsed_=false;
-			case_ = CaseFlags::Default;
+			case_ = CaseFlags_Default;
 		}
 	public:
 		BasicCommandLineParser()
@@ -694,7 +694,7 @@ typedef BasicOption<std::string> COptionA;
 		}
 		void AddOption(MyO_* cli)
 		{
-			if(cli->case_==CaseFlags::Default)
+			if(cli->case_==CaseFlags_Default)
 				cli->case_=case_;
 
 			assert(!parsed_);
@@ -720,7 +720,7 @@ typedef BasicOption<std::string> COptionA;
 					++cIter)
 				{
 					assert(!( (*it)->isMatchOption(cIter->c_str(), 
-						(*it)->case_ == CaseFlags::Insensitive || cli->case_ == CaseFlags::Insensitive)));
+						(*it)->case_ == CaseFlags_Insensitive || cli->case_ == CaseFlags_Insensitive)));
 				}
 			}
 
@@ -733,7 +733,7 @@ typedef BasicOption<std::string> COptionA;
 					++cIter)
 				{
 					assert(!( it->isMatchOption(cIter->c_str(), 
-						it->case_ == CaseFlags::Insensitive || cli->case_ == CaseFlags::Insensitive)));
+						it->case_ == CaseFlags_Insensitive || cli->case_ == CaseFlags_Insensitive)));
 				}
 			}
 		}
@@ -747,7 +747,7 @@ typedef BasicOption<std::string> COptionA;
 			InputIterator last,
 			int exactCount,
 			bool* pTarget,
-			ArgEncodingFlags arf = ArgEncodingFlags::Default,
+			ArgEncodingFlags arf = ArgEncodingFlags_Default,
 			const MyS_& helpstring = MyS_())
 		{
 			MyO_ option(first, last, exactCount);
@@ -861,7 +861,7 @@ typedef BasicOption<std::string> COptionA;
 			const MyS_& optionString1,
 			int exactCount,
 			MyS_* pTarget,
-			ArgEncodingFlags arf = ArgEncodingFlags::Default)
+			ArgEncodingFlags arf = ArgEncodingFlags_Default)
 		{
 			AddOption(optionString1,
 				exactCount,
