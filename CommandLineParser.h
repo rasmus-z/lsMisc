@@ -209,7 +209,7 @@ namespace Ambiesoft {
 		ArgEncodingFlags_UTF8UrlEncode,
 	};
 
-	template <class myStringType, class myOptionType> 
+	template <class MyS_, class myOptionType> 
 	class BasicCommandLineParser;
 	
 	template<class myStringType> 
@@ -285,10 +285,10 @@ namespace Ambiesoft {
 			friend MyT_;
 		};
 
-		std::vector<myStringType> options_;
+		std::vector<MyS_> options_;
 
 		ArgCount argcountflag_;
-		std::vector<myStringType> values_;
+		std::vector<MyS_> values_;
 		bool hadOption_;
 		bool parsed_;
 		CaseFlags case_;
@@ -314,7 +314,7 @@ namespace Ambiesoft {
 			userTarget_.setMysTarget(pT);
 		}			
 
-		void AddValue(const myStringType& value)
+		void AddValue(const MyS_& value)
 		{
 			setHadOption();
 			userTarget_.setMys(encoding_ == ArgEncodingFlags_UTF8UrlEncode ? Utf8UrlDecode(value) : value);
@@ -329,15 +329,15 @@ namespace Ambiesoft {
 			}
 			hadOption_ = true;
 		}
-		bool isMatchOption(const myStringType& option, bool ignoreCase) const
+		bool isMatchOption(const MyS_& option, bool ignoreCase) const
 		{
 			if (!ignoreCase)
 			{
-				std::vector< myStringType >::const_iterator cIter = find(options_.begin(), options_.end(), option);
+				std::vector< MyS_ >::const_iterator cIter = find(options_.begin(), options_.end(), option);
 				return cIter != options_.end();
 			}
 			
-			for (std::vector< myStringType >::const_iterator cIter = options_.begin();
+			for (std::vector< MyS_ >::const_iterator cIter = options_.begin();
 				cIter != options_.end();
 				++cIter)
 			{
@@ -346,12 +346,12 @@ namespace Ambiesoft {
 			}
 			return false;
 		}
-		bool isMatchOption(const myStringType& option) const
+		bool isMatchOption(const MyS_& option) const
 		{
 			return isMatchOption(option, case_ == CaseFlags_Insensitive);
 		}
 
-		myStringType getFirstOption() const
+		MyS_ getFirstOption() const
 		{
 			return options_[0];
 		}
@@ -375,20 +375,47 @@ namespace Ambiesoft {
 			// pTarget_ = NULL;
 			encoding_ = ArgEncodingFlags_Default;
 		}
+		void copy(const MyT_& that)
+		{
+			options_ = that.options_;
+			argcountflag_ = that.argcountflag_;
+			values_ = that.values_;
+			hadOption_ = that.hadOption_;
+			parsed_ = that.parsed_;
+			case_ = that.case_;
+			encoding_ = that.encoding_;
+			userTarget_ = that.userTarget_;
+			helpString_ = that.helpString_;
+		}
 	public:
+		BasicOption(const MyT_& that)
+		{
+			if (this == &that)
+				return;
+
+			copy(that);
+		}
+		MyT_& operator=(const MyT_& that)
+		{
+			if (this == &that)
+				return *this;
+
+			copy(that);
+			return *this;
+		}
 		BasicOption()
 		{
 			init();
-			options_.push_back(myStringType());
+			options_.push_back(MyS_());
 			argcountflag_ = ArgCount_Infinite;
 		}
-		BasicOption(myStringType option, ArgCount acf) 
+		BasicOption(MyS_ option, ArgCount acf) 
 		{
 			init();
 			options_.push_back(option);
 			argcountflag_ = acf;
 		}
-		BasicOption(myStringType option, const int exactcount) 
+		BasicOption(MyS_ option, const int exactcount) 
 		{
 			init();
 			options_.push_back(option);
@@ -408,7 +435,7 @@ namespace Ambiesoft {
 			setArgFlag(exactcount);
 		}
 		
-		BasicOption(myStringType option1, myStringType option2, ArgCount acf)
+		BasicOption(MyS_ option1, MyS_ option2, ArgCount acf)
 		{
 			init();
 			options_.push_back(option1);
@@ -416,7 +443,7 @@ namespace Ambiesoft {
 			argcountflag_ = acf;
 		}
 		template<>
-		BasicOption(myStringType option1, myStringType option2, const int exactcount)
+		BasicOption(MyS_ option1, MyS_ option2, const int exactcount)
 		{
 			init();
 			options_.push_back(option1);
@@ -433,23 +460,24 @@ namespace Ambiesoft {
 			setArgFlag(exactcount);
 		}
 
-		BasicOption(myStringType option)
+		BasicOption(MyS_ option)
 		{
 			init();
 			options_.push_back(option);
 			argcountflag_ = ArgCount_Zero;
 		}
-		BasicOption(myStringType option1, myStringType option2)
+		BasicOption(MyS_ option1, MyS_ option2)
 		{
 			init();
 			options_.push_back(option1);
 			options_.push_back(option2);
+			argcountflag_ = ArgCount_Zero;
 		}
 		~BasicOption()
 		{
 			
 		}
-		friend class BasicCommandLineParser<myStringType, BasicOption<myStringType> >;
+		friend class BasicCommandLineParser<MyS_, BasicOption<MyS_> >;
 
 
 		// Command line had the option
@@ -467,13 +495,13 @@ namespace Ambiesoft {
 		}
 
 		// Get all values of the option
-		myStringType getValueStrings() const
+		MyS_ getValueStrings() const
 		{
 			assert(parsed_);
 
-			myStringType ret;
+			MyS_ ret;
 			bool looped = false;
-			for (std::vector<myStringType>::const_iterator it = values_.begin(); it != values_.end(); ++it)
+			for (std::vector<MyS_>::const_iterator it = values_.begin(); it != values_.end(); ++it)
 			{
 				if (looped)
 				{
@@ -486,11 +514,11 @@ namespace Ambiesoft {
 		}
 
 		// Get first value of the option
-		myStringType getFirstValue() const
+		MyS_ getFirstValue() const
 		{
 			assert(parsed_);
 
-			myStringType ret;
+			MyS_ ret;
 			if (values_.empty())
 				return ret;
 			return values_[0];
@@ -515,7 +543,7 @@ namespace Ambiesoft {
 			else
 				return (void*)getFirstValueAsUInt64();
 		}
-		myStringType getValue(int index)
+		MyS_ getValue(int index)
 		{
 			assert(parsed_);
 			return values_[index];
@@ -549,9 +577,9 @@ typedef BasicOption<std::string> COptionA;
 		typedef typename myStringType::traits_type::char_type Elem;
 		typedef typename myOptionType::MyS_ MyOS_;
 
-		static myStringType GetToken(LPCWSTR p)
+		static MyS_ GetToken(LPCWSTR p)
 		{
-			myStringType ret;
+			MyS_ ret;
 			if (!p || !p[0])
 				return ret;
 
@@ -589,10 +617,10 @@ typedef BasicOption<std::string> COptionA;
 
 
 
-		typedef std::vector<BasicOption<myStringType>*> POPTIONARRAY;
-		typedef std::vector<BasicOption<myStringType> > OPTIONARRAY;
+		typedef std::vector<BasicOption<MyS_>*> POPTIONARRAY;
+		typedef std::vector<BasicOption<MyS_> > OPTIONARRAY;
 
-		typedef BasicOption<myStringType> MyO_;
+		typedef BasicOption<MyS_> MyO_;
 		POPTIONARRAY useroptions_;
 		OPTIONARRAY inneroptions_;
 		OPTIONARRAY unknowns_;
@@ -601,7 +629,7 @@ typedef BasicOption<std::string> COptionA;
 		CaseFlags case_;
 		MyS_ description_;
 
-		MyO_* FindOption(const myStringType& option)
+		MyO_* FindOption(const MyS_& option)
 		{
 			for (POPTIONARRAY::iterator it = useroptions_.begin(); it != useroptions_.end(); ++it)
 			{
@@ -671,11 +699,11 @@ typedef BasicOption<std::string> COptionA;
 		{
 			return empty_;
 		}
-		myStringType getUnknowOptionStrings() const
+		MyS_ getUnknowOptionStrings() const
 		{
 			assert(parsed_);
 
-			myStringType ret;
+			MyS_ ret;
 			for (OPTIONARRAY::const_iterator it = unknowns_.begin(); it != unknowns_.end(); ++it)
 			{
 				ret += it->getFirstOption();
@@ -715,7 +743,7 @@ typedef BasicOption<std::string> COptionA;
 				assert((*it) != cli);
 
 				// check same option string is added
-				for(std::vector< myStringType >::const_iterator cIter=cli->options_.begin();
+				for(std::vector< MyS_ >::const_iterator cIter=cli->options_.begin();
 					cIter != cli->options_.end();
 					++cIter)
 				{
@@ -728,7 +756,7 @@ typedef BasicOption<std::string> COptionA;
 				it != inneroptions_.end();
 				++it)
 			{
-				for(std::vector< myStringType >::const_iterator cIter=cli->options_.begin();
+				for(std::vector< MyS_ >::const_iterator cIter=cli->options_.begin();
 					cIter != cli->options_.end();
 					++cIter)
 				{

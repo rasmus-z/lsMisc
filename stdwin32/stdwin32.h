@@ -161,9 +161,9 @@ namespace stdwin32 {
 	std::wstring stdAddBackSlash(const std::wstring& d);
 
 
-
-	std::wstring stdEncodeUrl(const std::wstring& d);
-	std::wstring stdEncodeUrl(LPCWSTR pData);
+	// broken
+	// std::wstring stdEncodeUrl(const std::wstring& d);
+	// std::wstring stdEncodeUrl(LPCWSTR pData);
 
 
 
