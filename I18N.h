@@ -1,4 +1,4 @@
-//Copyright (C) 2017 Ambiesoft All rights reserved.
+Ôªø//Copyright (C) 2017 Ambiesoft All rights reserved.
 //
 //Redistribution and use in source and binary forms, with or without
 //modification, are permitted provided that the following conditions
@@ -27,9 +27,9 @@
 // 3. Create a Folder named "lang" in the same folder your executable resides, and place a lang file in it 
 //    and name it like "myapp.jpn.txt" where myapp is name of the application.
 // 4. "myapp.jpn.txt" format is like follows:
-//    "Hello"="Ç±ÇÒÇ…ÇøÇÕ"
-//    "Goodby"="Ç≥ÇÊÇ§Ç»ÇÁ"
-// 5. Call I18N(L"Hello") in your code. It returns const "Ç±ÇÒÇ…ÇøÇÕ".
+//    "Hello"="„Åì„Çì„Å´„Å°„ÅØ"
+//    "Goodby"="„Åï„Çà„ÅÜ„Å™„Çâ"
+// 5. Call I18N(L"Hello") in your code. It returns const "„Åì„Çì„Å´„Å°„ÅØ".
 // 6. Call i18NChangexxxx() for translating windows or dialog texts. Show the source for more informations.
 // 7. Look the debugger output when the program exists. Untranslated words will be printed.
 
