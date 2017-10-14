@@ -38,6 +38,7 @@ using namespace std;
 
 #pragma comment(lib,"Comctl32.lib")
 #pragma comment(lib,"shlwapi.lib")
+#pragma comment(lib,"shell32.lib")
 
 #ifndef ARRAYSIZE
 #define ARRAYSIZE(t) sizeof(t)/sizeof(t[0])
@@ -73,7 +74,11 @@ static ULONGLONG GetDllVersion(LPCTSTR lpszDllName)
     return ullVersion;
 }
 
-static BOOL NotifyIconize(HWND hWnd, 
+#if _WIN32_WINNT==0x5000
+#pragma error("Do not use _WIN32_WINNT==0x5000, it has a bug in header.")
+#endif
+
+static BOOL NotifyIconizeW(HWND hWnd, 
 						  UINT uID,
 						  DWORD dwMessage, 
 						  HICON hIcon, 
@@ -83,6 +88,10 @@ static BOOL NotifyIconize(HWND hWnd,
 						  DWORD nBalloonIcon = 0)
 {
 //	InitCommonControls();
+	//INITCOMMONCONTROLSEX iccs={0};
+	//iccs.dwSize = sizeof(iccs);
+	//iccs.dwICC = 0xFFFFFFFF;
+	//InitCommonControlsEx(&iccs);
 
 	NOTIFYICONDATAW nid;
 	ZeroMemory(&nid,sizeof(nid));
@@ -96,13 +105,13 @@ static BOOL NotifyIconize(HWND hWnd,
 	nid.cbSize = sizeof(NOTIFYICONDATAW);
 	nid.hWnd = hWnd;
 	nid.uID = uID;
-	nid.uFlags = NIF_ICON; // | NIF_MESSAGE | NIF_TIP | 0x00000010;
-	nid.dwInfoFlags      = nBalloonIcon;
+	nid.uFlags = NIF_ICON;// | NIF_TIP | NIF_INFO | NIF_MESSAGE;
+	nid.dwInfoFlags = nBalloonIcon;
 	if(dwMessage != NIM_DELETE)
 		nid.uTimeout = duration;
-	nid.uTimeout         = duration;
+	
 	nid.uCallbackMessage = WM_APP_TRAYMESSAGE;
-	nid.hIcon = hIcon; //LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON_MAIN));
+	nid.hIcon = hIcon;
 	//if(pInfoTitle)
 	//{
 	//	nid.uFlags |= NIF_TIP;
@@ -122,6 +131,62 @@ static BOOL NotifyIconize(HWND hWnd,
 		}
 	}
 	BOOL ret= Shell_NotifyIconW(dwMessage,&nid);
+	
+	return ret;
+}
+static BOOL NotifyIconizeA(HWND hWnd, 
+						  UINT uID,
+						  DWORD dwMessage, 
+						  HICON hIcon, 
+						  int duration,
+						  LPCSTR pInfoTitle, 
+						  LPCSTR pInfo,
+						  DWORD nBalloonIcon = 0)
+{
+//	InitCommonControls();
+	//INITCOMMONCONTROLSEX iccs={0};
+	//iccs.dwSize = sizeof(iccs);
+	//iccs.dwICC = 0xFFFFFFFF;
+	//InitCommonControlsEx(&iccs);
+
+	NOTIFYICONDATAA nid;
+	ZeroMemory(&nid,sizeof(nid));
+
+	//ULONGLONG ullVersion = GetDllVersion(_T("Shell32.dll"));
+	//if(ullVersion >= MAKEDLLVERULL(5, 0,0,0))
+	//	nid.cbSize = sizeof(NOTIFYICONDATAW);
+	//else 
+	//	nid.cbSize = NOTIFYICONDATAW_V2_SIZE;
+
+	nid.cbSize = 952; //sizeof(NOTIFYICONDATAA_V2_SIZE);
+	nid.hWnd = hWnd;
+	nid.uID = uID;
+	nid.uFlags = NIF_ICON;
+	nid.dwInfoFlags = nBalloonIcon;
+	if(dwMessage != NIM_DELETE)
+		nid.uTimeout = duration;
+	
+	nid.uCallbackMessage = WM_APP_TRAYMESSAGE;
+	nid.hIcon = hIcon;
+	//if(pInfoTitle)
+	//{
+	//	nid.uFlags |= NIF_TIP;
+	//	lstrcpynW(nid.szTip, pInfoTitle, ARRAYSIZE(nid.szTip));
+	//}
+	if(dwMessage==NIM_ADD || dwMessage==NIM_MODIFY)
+	{
+		if(pInfoTitle)
+		{
+			nid.uFlags|=NIF_INFO;
+			lstrcpynA(nid.szInfoTitle, pInfoTitle, ARRAYSIZE(nid.szInfoTitle));
+		}
+		if(pInfo)
+		{
+			nid.uFlags|=NIF_INFO;
+			lstrcpynA(nid.szInfo, pInfo, ARRAYSIZE(nid.szInfo) );
+		}
+	}
+	BOOL ret= Shell_NotifyIconA(dwMessage,&nid);
 	
 	return ret;
 }
@@ -216,15 +281,16 @@ BOOL showballoon(HWND hWnd,
 
 	if(!bOnlyModify)
 	{
-		NotifyIconize(hWnd,uTrayID,NIM_DELETE, hIcon, duration, NULL, NULL);
-		if(!NotifyIconize(hWnd,uTrayID,NIM_ADD, hIcon, duration,NULL, NULL))
+		NotifyIconizeW(hWnd,uTrayID,NIM_DELETE, hIcon, duration, NULL, NULL);
+		if(!NotifyIconizeW(hWnd,uTrayID,NIM_ADD, hIcon, duration,NULL, NULL))
 		{
 			return FALSE;
 		}
 	}
 
 
-	if(!NotifyIconize(hWnd,uTrayID, NIM_MODIFY, hIcon, duration,title.c_str(), text.c_str(),dwBalloonIcon  ))
+	// if(!NotifyIconizeA(hWnd,uTrayID, NIM_ADD, hIcon, duration,"AAA","bbb",dwBalloonIcon  ))
+	if(!NotifyIconizeW(hWnd,uTrayID, NIM_MODIFY, hIcon, duration,title.c_str(), text.c_str(),dwBalloonIcon  ))
 	{
 		// MessageBoxA(NULL, "NotifyModify",NULL,MB_ICONERROR);
 		return FALSE;
@@ -242,7 +308,7 @@ BOOL showballoon(HWND hWnd,
 				DispatchMessage( &msg );
 			}
 		}
-		NotifyIconize(hWnd,uTrayID, NIM_DELETE, hIcon, duration,NULL, NULL);
+		NotifyIconizeW(hWnd,uTrayID, NIM_DELETE, hIcon, duration,NULL, NULL);
 	}
 //	DestroyWindow(hBalloon);
 //	DestroyIcon(ghIcon);
