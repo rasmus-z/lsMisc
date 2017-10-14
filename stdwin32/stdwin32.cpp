@@ -730,7 +730,7 @@ namespace stdwin32 {
 		DWORD dwReqChar = GetFullPathNameW(pPath, 0, NULL, NULL);
 		wchar_t* pBuffer = new wchar_t[dwReqChar];
 		pBuffer[0] = 0;
-		DWORD retChar = GetFullPathName(pPath, dwReqChar, pBuffer, NULL);
+		DWORD retChar = GetFullPathNameW(pPath, dwReqChar, pBuffer, NULL);
 		if (retChar > dwReqChar)
 		{
 			delete[] pBuffer;

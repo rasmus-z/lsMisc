@@ -83,6 +83,15 @@ namespace Ambiesoft {
 		return c == L'"';
 	}
 
+	static void GetModuleFileNameT(char* p)
+	{
+		GetModuleFileNameA(NULL,p,MAX_PATH);
+	}
+	static void GetModuleFileNameT(wchar_t* p)
+	{
+		GetModuleFileNameW(NULL,p,MAX_PATH);
+	}
+
 	template<class E>
 	class CCommandLineStringBase
 	{
@@ -254,7 +263,7 @@ namespace Ambiesoft {
 			if (!*pCommandLine)
 			{
 				E e[MAX_PATH];
-				GetModuleFileName(NULL, e, MAX_PATH);
+				GetModuleFileNameT(e);
 				init(e);
 			}
 			else
