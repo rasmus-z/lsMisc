@@ -28,6 +28,7 @@
 #include <tchar.h>
 #include <commctrl.h>
 #include <shellapi.h>
+#include <shlwapi.h>
 #include <Objbase.h>
 #include <string>
 using namespace std;
@@ -36,39 +37,92 @@ using namespace std;
 #include "CreateSimpleWindow.h"
 
 #pragma comment(lib,"Comctl32.lib")
+#pragma comment(lib,"shlwapi.lib")
 
 #ifndef ARRAYSIZE
 #define ARRAYSIZE(t) sizeof(t)/sizeof(t[0])
 #endif
+
+enum {
+	WM_APP_TRAYMESSAGE = WM_APP+1,
+};
+
+// https://www.codeproject.com/Articles/4768/Basic-use-of-Shell-NotifyIcon-in-Win
+typedef HRESULT (CALLBACK* DLLGETVERSIONPROC)(DLLVERSIONINFO *);
+static ULONGLONG GetDllVersion(LPCTSTR lpszDllName)
+{
+    ULONGLONG ullVersion = 0;
+	HINSTANCE hinstDll;
+    hinstDll = LoadLibrary(lpszDllName);
+    if(hinstDll)
+    {
+        DLLGETVERSIONPROC pDllGetVersion;
+        pDllGetVersion = (DLLGETVERSIONPROC)GetProcAddress(hinstDll, "DllGetVersion");
+        if(pDllGetVersion)
+        {
+            DLLVERSIONINFO dvi;
+            HRESULT hr;
+            ZeroMemory(&dvi, sizeof(dvi));
+            dvi.cbSize = sizeof(dvi);
+            hr = (*pDllGetVersion)(&dvi);
+            if(SUCCEEDED(hr))
+				ullVersion = MAKEDLLVERULL(dvi.dwMajorVersion, dvi.dwMinorVersion,0,0);
+        }
+        FreeLibrary(hinstDll);
+    }
+    return ullVersion;
+}
 
 static BOOL NotifyIconize(HWND hWnd, 
 						  UINT uID,
 						  DWORD dwMessage, 
 						  HICON hIcon, 
 						  int duration,
-						  LPCWSTR pInfoTitle , 
+						  LPCWSTR pInfoTitle, 
 						  LPCWSTR pInfo,
 						  DWORD nBalloonIcon = 0)
 {
+//	InitCommonControls();
+
 	NOTIFYICONDATAW nid;
 	ZeroMemory(&nid,sizeof(nid));
+
+	//ULONGLONG ullVersion = GetDllVersion(_T("Shell32.dll"));
+	//if(ullVersion >= MAKEDLLVERULL(5, 0,0,0))
+	//	nid.cbSize = sizeof(NOTIFYICONDATAW);
+	//else 
+	//	nid.cbSize = NOTIFYICONDATAW_V2_SIZE;
+
 	nid.cbSize = sizeof(NOTIFYICONDATAW);
 	nid.hWnd = hWnd;
 	nid.uID = uID;
-	nid.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP | 0x00000010;
-	nid.dwInfoFlags      = nBalloonIcon ;
+	nid.uFlags = NIF_ICON; // | NIF_MESSAGE | NIF_TIP | 0x00000010;
+	nid.dwInfoFlags      = nBalloonIcon;
+	if(dwMessage != NIM_DELETE)
+		nid.uTimeout = duration;
 	nid.uTimeout         = duration;
-	nid.uCallbackMessage = 0; //WM_APP_TRAYMESSAGE;
+	nid.uCallbackMessage = WM_APP_TRAYMESSAGE;
 	nid.hIcon = hIcon; //LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON_MAIN));
-	if(pInfoTitle)
-		lstrcpynW(nid.szTip, pInfoTitle, ARRAYSIZE(nid.szTip));
-	if(pInfoTitle)
-		lstrcpynW( nid.szInfoTitle, pInfoTitle, ARRAYSIZE(nid.szInfoTitle));
-	if(pInfo)
-		lstrcpynW( nid.szInfo, pInfo, ARRAYSIZE(nid.szInfo) );
+	//if(pInfoTitle)
+	//{
+	//	nid.uFlags |= NIF_TIP;
+	//	lstrcpynW(nid.szTip, pInfoTitle, ARRAYSIZE(nid.szTip));
+	//}
+	if(dwMessage==NIM_ADD || dwMessage==NIM_MODIFY)
+	{
+		if(pInfoTitle)
+		{
+			nid.uFlags|=NIF_INFO;
+			lstrcpynW(nid.szInfoTitle, pInfoTitle, ARRAYSIZE(nid.szInfoTitle));
+		}
+		if(pInfo)
+		{
+			nid.uFlags|=NIF_INFO;
+			lstrcpynW(nid.szInfo, pInfo, ARRAYSIZE(nid.szInfo) );
+		}
+	}
+	BOOL ret= Shell_NotifyIconW(dwMessage,&nid);
 	
-	BOOL ret= Shell_NotifyIconW( dwMessage,&nid);
-	//DestroyIcon(sfi.hIcon);
 	return ret;
 }
 
@@ -165,7 +219,6 @@ BOOL showballoon(HWND hWnd,
 		NotifyIconize(hWnd,uTrayID,NIM_DELETE, hIcon, duration, NULL, NULL);
 		if(!NotifyIconize(hWnd,uTrayID,NIM_ADD, hIcon, duration,NULL, NULL))
 		{
-			// MessageBoxA(NULL, "NotifyAdd",NULL,MB_ICONERROR);
 			return FALSE;
 		}
 	}

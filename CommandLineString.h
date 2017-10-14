@@ -92,6 +92,14 @@ namespace Ambiesoft {
 		GetModuleFileNameW(NULL,p,MAX_PATH);
 	}
 
+	static inline bool isLead(char c)
+	{
+		return !!IsDBCSLeadByte(c);
+	}
+	static inline bool isLead(wchar_t c)
+	{
+		return false;
+	}
 	template<class E>
 	class CCommandLineStringBase
 	{
@@ -203,7 +211,9 @@ namespace Ambiesoft {
 						else
 						{
 							// not in DQ, not WS, not DQ
-							now += (*p);
+							now += *p;
+							if(isLead(*p))
+								now+=*(p+1);
 							continue;
 						}
 					}
@@ -237,6 +247,8 @@ namespace Ambiesoft {
 					{
 						// inDQ, not DQ
 						now += *p;
+						if(isLead(*p))
+							now+=*(p+1);
 						continue;
 					}
 				}
