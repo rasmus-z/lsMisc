@@ -28,23 +28,16 @@
 #include "DebugNew.h"
 
 namespace Ambiesoft {
-	BOOL CenterWindow(HWND hwndChild, HWND hwndParent)
+	void CenterRect(const RECT& rChild, const RECT& rParent,
+		int& xNew, int& yNew)
 	{
-		if (hwndParent == NULL)
-			hwndParent = GetDesktopWindow();
+		int wChild, hChild, wParent, hParent;
+		BOOL bResult;
+		RECT rWorkArea;
 
-		RECT    rChild, rParent, rWorkArea;
-		int     wChild, hChild, wParent, hParent;
-		int     xNew, yNew;
-		BOOL  bResult;
-
-		// Get the Height and Width of the child window
-		GetWindowRect(hwndChild, &rChild);
 		wChild = rChild.right - rChild.left;
 		hChild = rChild.bottom - rChild.top;
 
-		// Get the Height and Width of the parent window
-		GetWindowRect(hwndParent, &rParent);
 		wParent = rParent.right - rParent.left;
 		hParent = rParent.bottom - rParent.top;
 
@@ -77,6 +70,21 @@ namespace Ambiesoft {
 		else if ((yNew + hChild) > rWorkArea.bottom) {
 			yNew = rWorkArea.bottom - hChild;
 		}
+	}
+
+	BOOL CenterWindow(HWND hwndChild, HWND hwndParent)
+	{
+		if (hwndParent == NULL)
+			hwndParent = GetDesktopWindow();
+
+		RECT rChild, rParent;
+		int	xNew, yNew;
+
+		// Get the Height and Width of the child window
+		GetWindowRect(hwndChild, &rChild);
+		GetWindowRect(hwndParent, &rParent);
+
+		CenterRect(rChild, rParent, xNew, yNew);
 
 		// Set it, and return
 		return SetWindowPos(hwndChild, NULL, xNew, yNew, 0, 0, SWP_NOSIZE | SWP_NOZORDER);

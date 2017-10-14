@@ -23,6 +23,8 @@
 
 #pragma once
 
+#include <Windows.h>
+
 namespace Ambiesoft {
 
 	enum MOVEWINDOWTYPE
@@ -32,6 +34,8 @@ namespace Ambiesoft {
 		MOVEWINDOW_BOTTOMLEFT,
 		MOVEWINDOW_BOTTOMRIGHT,
 	};
+	void CenterRect(const RECT& rChild, const RECT& rParent,
+		int& xNew, int& yNew);
 	BOOL CenterWindow(HWND hWnd, HWND hwndParent = NULL);
 	bool MoveWindowCommon(HWND hWnd, MOVEWINDOWTYPE type);
 }
