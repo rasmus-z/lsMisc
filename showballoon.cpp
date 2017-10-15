@@ -161,13 +161,19 @@ static BOOL NotifyIconizeA(HWND hWnd,
 	nid.cbSize = 952; //sizeof(NOTIFYICONDATAA_V2_SIZE);
 	nid.hWnd = hWnd;
 	nid.uID = uID;
-	nid.uFlags = NIF_ICON;
+	
 	nid.dwInfoFlags = nBalloonIcon;
 	if(dwMessage != NIM_DELETE)
 		nid.uTimeout = duration;
 	
+	nid.uFlags |= NIF_MESSAGE;
 	nid.uCallbackMessage = WM_APP_TRAYMESSAGE;
-	nid.hIcon = hIcon;
+
+	if(hIcon)
+	{
+		nid.uFlags |= NIF_ICON;
+		nid.hIcon = hIcon;
+	}
 	//if(pInfoTitle)
 	//{
 	//	nid.uFlags |= NIF_TIP;
@@ -192,6 +198,46 @@ static BOOL NotifyIconizeA(HWND hWnd,
 }
 
 
+struct WaitParam
+{
+	int nNim;
+	int uTrayID;
+	HICON hIcon;
+	int duration;
+	wstring title;
+	wstring text;
+	int dwBalloonIcon;
+	
+	int smaxcount;
+	WaitParam(
+		int nNim,
+		int uTrayID,
+		HICON hIcon,
+		int duration,
+		wstring title,
+		wstring text,
+		DWORD dwBalloonIcon)
+	{
+		this->nNim=nNim;
+		this->uTrayID=uTrayID;
+		this->hIcon=hIcon;
+		this->duration=duration;
+		this->title=title;
+		this->text=text;
+		this->dwBalloonIcon=dwBalloonIcon;
+	}
+
+	void operator()(HWND hWnd)
+	{
+		NotifyIconizeW(hWnd,
+					uTrayID, 
+					NIM_MODIFY,
+					NULL, 
+					duration,title.c_str(), 
+					text.c_str(),
+					dwBalloonIcon);
+	}
+};
 
 LRESULT CALLBACK WaitWindowProc(
    HWND   hwnd,
@@ -203,12 +249,15 @@ LRESULT CALLBACK WaitWindowProc(
 	static UINT sntimer;
 	static int sCounter;
 	static int smaxcount;
+	static WaitParam* spWaitParam;
 	switch(uMsg)
 	{
 	case WM_CREATE:
 		sntimer=SetTimer(hwnd, 0, 1000, NULL);
 		
-		smaxcount = (int)((CREATESTRUCT*)lParam)->lpCreateParams;
+		spWaitParam = (WaitParam*)((CREATESTRUCT*)lParam)->lpCreateParams;
+		smaxcount = spWaitParam->smaxcount;
+
 		break;
 	case WM_TIMER:
 		sCounter++;
@@ -217,6 +266,16 @@ LRESULT CALLBACK WaitWindowProc(
 			KillTimer(hwnd,sntimer);
 			DestroyWindow(hwnd);
 		}
+		//else
+		//{
+		//	if(spWaitParam && ((smaxcount-sCounter) > 5))
+		//	{
+		//		(*spWaitParam)(hwnd);
+		//	}
+		//}
+		break;
+	case WM_APP_TRAYMESSAGE:
+		// MessageBoxA(NULL,"ddd","",0);
 		break;
 	case WM_DESTROY:
 		PostQuitMessage(0);
@@ -242,14 +301,25 @@ BOOL showballoon(HWND hWnd,
 	// CoInitialize(NULL);
 
 	HWND hwndToDel = NULL;
+	WaitParam param(
+		NIM_MODIFY,
+		uTrayID,
+		hIcon,
+		duration,
+		title,
+		text,
+		dwBalloonIcon);
+
+
 	if(hWnd==NULL)
 	{
+		param.smaxcount = (duration/1000);
 		hWnd = CreateSimpleWindow(
 			NULL,
 			NULL,
 			_T("SimpleWindow"),
 			WaitWindowProc,
-			(void*)(duration/1000));
+			(void*)&param);
 		hwndToDel= hWnd;
 	}
 
@@ -289,7 +359,7 @@ BOOL showballoon(HWND hWnd,
 	}
 
 
-	// if(!NotifyIconizeA(hWnd,uTrayID, NIM_ADD, hIcon, duration,"AAA","bbb",dwBalloonIcon  ))
+
 	if(!NotifyIconizeW(hWnd,uTrayID, NIM_MODIFY, hIcon, duration,title.c_str(), text.c_str(),dwBalloonIcon  ))
 	{
 		// MessageBoxA(NULL, "NotifyModify",NULL,MB_ICONERROR);
