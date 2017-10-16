@@ -673,12 +673,12 @@ namespace stdwin32 {
 
 
 
-	// http://www.emoticode.net/c/urlencode-in-plain-c.html
-	static char i2a(char code) 
-	{
-		static char hex[] = "0123456789ABCDEF";
-		return hex[code & 15];
-	}
+	//// http://www.emoticode.net/c/urlencode-in-plain-c.html
+	//static char i2a(char code) 
+	//{
+	//	static char hex[] = "0123456789ABCDEF";
+	//	return hex[code & 15];
+	//}
 
 	//std::wstring stdEncodeUrl(const std::wstring& d)
 	//{
