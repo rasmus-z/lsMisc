@@ -6,6 +6,8 @@
 #include <Tlhelp32.h>
 #include <Psapi.h>
 #include <Shlwapi.h>
+#include <Winternl.h>
+#include <WinIoCtl.h>
 
 #include <string>
 #include <algorithm>
@@ -30,9 +32,11 @@ using namespace std;
         METHOD_BUFFERED,	            \
         FILE_READ_DATA | FILE_WRITE_DATA)
 
-typedef enum _SYSTEM_INFORMATION_CLASS {
-	SystemHandleInformation = 0X10,
-} SYSTEM_INFORMATION_CLASS;
+//typedef enum _SYSTEM_INFORMATION_CLASS {
+//	SystemHandleInformation = 0X10,
+//} SYSTEM_INFORMATION_CLASS;
+
+#define SystemHandleInformation ((SYSTEM_INFORMATION_CLASS)0x10)
 
 typedef struct _HANDLE_INFO
 {
