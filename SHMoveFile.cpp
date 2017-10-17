@@ -31,6 +31,13 @@
 #pragma warning(disable:4786)
 #endif
 
+#ifdef __cplusplus_cli
+#if defined(_M_CEE_PURE) || defined(_M_CEE_SAFE)
+#error("could not compile with /clr:safe or /clr:pure, use /clr instead.")
+#endif
+#endif // __cplusplus_cli
+
+
 #include <vector>
 #include <string>
 

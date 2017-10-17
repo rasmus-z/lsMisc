@@ -6,6 +6,9 @@
 #include <WinIoCtl.h>
 
 #include <string>
+
+#include <stlsoft/smartptr/scoped_handle.hpp>
+
 using std::wstring;
 
 namespace Ambiesoft{
@@ -48,8 +51,41 @@ namespace Ambiesoft{
 		DWORD cchFilePath,
 		DWORD dwFlags);
 
-	wstring ResolveNtfsPath(LPCWSTR pPath)
+	static bool worker1(LPCWSTR pPath, wstring& ret)
 	{
+		HANDLE hFile = CreateFile(pPath,
+			FILE_READ_EA,
+			FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, 
+			NULL,
+			OPEN_EXISTING,
+			FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OPEN_REPARSE_POINT, 
+			NULL);
+		if (hFile == INVALID_HANDLE_VALUE)
+		{
+			return false;
+		}
+		stlsoft::scoped_handle<HANDLE> ha(hFile, CloseHandle);
+
+		static GetFinalPathNameByHandleDef pGetFinalPathNameByHandle = 
+			(GetFinalPathNameByHandleDef)GetProcAddress(
+				GetModuleHandle(_T("kernel32.dll")), "GetFinalPathNameByHandleW");
+	
+		if (pGetFinalPathNameByHandle)
+		{
+			TCHAR szT[MAX_PATH]; szT[0] = 0;
+			pGetFinalPathNameByHandle(hFile,
+				szT,
+				_countof(szT),
+				0);
+			if (GetLastError() == NO_ERROR)
+			{
+				ret =szT;
+				return true;
+			}
+		}
+		return false;
+	}
+	static wstring ResolveDirectory(LPCWSTR pPath)
 		HANDLE hFile;
 		// LPCTSTR szMyFile = _T("C:\\Documents and Settings");  // Mount-Point (JUNCTION)
 		//LPCTSTR szMyFile = _T("C:\\Users\\All Users");  // Symbolic-Link (SYMLINKD)
@@ -66,21 +102,6 @@ namespace Ambiesoft{
 			return pPath;
 		}
 		
-		static GetFinalPathNameByHandleDef pGetFinalPathNameByHandle = 
-			(GetFinalPathNameByHandleDef)GetProcAddress(
-				GetModuleHandle(_T("kernel32.dll")), "GetFinalPathNameByHandleW");
-	
-		must test with XP
-		if (false && pGetFinalPathNameByHandle)
-		{
-			TCHAR szT[MAX_PATH]; szT[0] = 0;
-			pGetFinalPathNameByHandle(hFile,
-				szT,
-				_countof(szT),
-				0);
-			if (GetLastError() == NO_ERROR)
-				return szT;
-		}
 		// Allocate the reparse data structure
 		DWORD dwBufSize = MAXIMUM_REPARSE_DATA_BUFFER_SIZE;
 		REPARSE_DATA_BUFFER* rdata;
@@ -151,4 +172,34 @@ namespace Ambiesoft{
 		free(rdata);
 		return 0;
 	}
+
+	wstring ResolveNtfsPath(LPCWSTR pPathIn)
+	{
+		wstring ret;
+		if(worker1(pPathIn, ret))
+			return ret;
+
+		int pathsize = GetFullPathName(pPathIn, 0, NULL,NULL);
+		LPWSTR pPath = (LPWSTR)malloc((pathsize+1) * sizeof(WCHAR));
+		stlsoft::scoped_handle<void*> pPathFree(pPath, free);
+
+		GetFullPathName(pPathIn, pathsize+1, pPath, NULL);
+
+		vector<wstring> dirs;
+		LPWSTR pTmp = pPath;
+		while(pTmp)
+		{
+			dirs.push_back(pTmp);
+			pTmp = PathFindNextComponent(pTmp);
+		}
+
+		muzui
+		wstring mountpoint;
+		for(vector<string>::iterator it ; it != dirs.end() ; ++it)
+		{
+			wstring checkPath = ResolveDirectory(it->c_str());
+		}
+
+	}
+
 }
