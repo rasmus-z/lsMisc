@@ -238,6 +238,23 @@ namespace stdwin32 {
 		free((void*)p);
 		return ret;
 	}
+	std::wstring stdGetFileNameWitoutExtension(LPCWSTR pPath)
+	{
+		std::wstring filename = stdGetFileName(pPath);
+		WCHAR* p = _wcsdup(filename.c_str());
+		WCHAR* pExt = PathFindExtension(p);
+		if (pExt)
+		{
+			*pExt = 0;
+		}
+		std::wstring ret(p);
+		free((void*)p);
+		return ret;
+	}
+	std::wstring stdGetFileNameWitoutExtension(const std::wstring& w)
+	{
+		return stdGetFileNameWitoutExtension(w.c_str());
+	}
 
 	std::vector<std::wstring> stdSplitSCedPath(LPCWSTR pPath)
 	{

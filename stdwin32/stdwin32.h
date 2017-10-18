@@ -51,6 +51,9 @@ namespace stdwin32 {
 	std::wstring stdGetFileName(const std::wstring& full);
 	std::wstring stdGetFileName(LPCWSTR pFull);
 
+	std::wstring stdGetFileNameWitoutExtension(LPCWSTR pPath);
+	std::wstring stdGetFileNameWitoutExtension(const std::wstring& w);
+
 	std::vector<std::wstring> stdSplitSCedPath(LPCWSTR pPath);
 	
 
