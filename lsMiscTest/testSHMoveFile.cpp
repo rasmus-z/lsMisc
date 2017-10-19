@@ -35,20 +35,20 @@ void testSHMoveFile()
 	myfile.close();
 	LPCWSTR p1=s1.c_str();
 	LPCWSTR p2 = L"C:\\T\\New.txt";
-	DVERIFY(SHMoveFile(p2, p1));
-	DVERIFY(SHMoveFile(p1, p2));
+	DVERIFY(SHMoveFile(p2, p1)==0);
+	DVERIFY(SHMoveFile(p1, p2)==0);
 
 	LPCWSTR p3 = L"C:\\T\\New1.txt";
 	LPCWSTR p4 = L"C:\\T\\New2.txt";
-	DVERIFY(SHCopyFile(p3, p1));
-	DVERIFY(SHCopyFile(p4, p1));
+	DVERIFY(SHCopyFile(p3, p1)==0);
+	DVERIFY(SHCopyFile(p4, p1)==0);
 
 	LPCWSTR dir = L"C:\\T\\DIR";
 	CreateDirectory(dir, NULL);
 	vector<wstring> ws;
 	ws.push_back(p3);
 	ws.push_back(p4);
-	DVERIFY(SHMoveFile(dir, ws));
+	DVERIFY(SHMoveFile(dir, ws)==0);
 
 	ws.clear();
 	dir = L"C:\\T\\";
@@ -56,7 +56,7 @@ void testSHMoveFile()
 	p4 = L"C:\\T\\DIR\\New2.txt";
 	ws.push_back(p3);
 	ws.push_back(p4);
-	DVERIFY(SHMoveFile(dir, ws));
+	DVERIFY(SHMoveFile(dir, ws)==0);
 	
 	ws.clear();
 	dir = L"C:\\T\\DIR";
@@ -64,7 +64,7 @@ void testSHMoveFile()
 	p4 = L"C:\\T\\New2.txt";
 	ws.push_back(p3);
 	ws.push_back(p4);
-	DVERIFY(SHCopyFile(dir, ws));
+	DVERIFY(SHCopyFile(dir, ws)==0);
 
 
 	p3 = L"C:\\T\\New1.txt";
@@ -78,7 +78,7 @@ void testSHMoveFile()
 	wsS.push_back(p4);
 	wsD.push_back(p5);
 	wsD.push_back(p6);
-	DVERIFY(SHMoveFile(wsD, wsS));
+	DVERIFY(SHMoveFile(wsD, wsS)==0);
 
 	wsS.clear();
 	wsD.clear();
@@ -86,5 +86,5 @@ void testSHMoveFile()
 	wsS.push_back(p6);
 	wsD.push_back(p3);
 	wsD.push_back(p4);
-	DVERIFY(SHCopyFile(wsD, wsS));
+	DVERIFY(SHCopyFile(wsD, wsS)==0);
 }

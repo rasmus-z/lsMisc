@@ -26,6 +26,8 @@
 #include <tchar.h>
 #include "CreateSimpleWindow.h"
 
+komatta
+
 HWND CreateSimpleWindow(HINSTANCE hInst, 
 						LPCTSTR pClassName, 
 						LPCTSTR pWinName,
@@ -33,7 +35,7 @@ HWND CreateSimpleWindow(HINSTANCE hInst,
 						void* param)
 {
 	hInst = hInst ? hInst : GetModuleHandle(NULL);
-	pClassName = pClassName ? pClassName : TEXT("CreateSimpleWindowClass");
+	pClassName = pClassName ? pClassName : getClassName(TEXT("CreateSimpleWindowClass"));
 	WndProc = WndProc ? WndProc : DefWindowProc;
 
 	WNDCLASSEX wcex;

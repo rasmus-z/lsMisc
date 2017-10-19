@@ -44,6 +44,8 @@ using namespace std;
 #define ARRAYSIZE(t) sizeof(t)/sizeof(t[0])
 #endif
 
+namespace Ambiesoft {
+
 enum {
 	WM_APP_TRAYMESSAGE = WM_APP+1,
 };
@@ -389,3 +391,4 @@ BOOL showballoon(HWND hWnd,
 	return TRUE;
 }
 
+}

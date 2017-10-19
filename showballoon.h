@@ -22,6 +22,10 @@
 //SUCH DAMAGE.
 
 #pragma once
+#include <Windows.h>
+#include <string>
+
+namespace Ambiesoft {
 BOOL showballoon(
 				 HWND hWnd, 
 				 const std::wstring& title, 
@@ -31,3 +35,5 @@ BOOL showballoon(
 				 UINT uTrayID,
 				 BOOL bOnlyModify=FALSE,
 				 DWORD dwBalloonIcon=0);
+
+}

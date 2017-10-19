@@ -218,6 +218,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\GetLastErrorString.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\GetVersionString.cpp"
 				>
 			</File>
@@ -255,6 +259,10 @@
 			</File>
 			<File
 				RelativePath="..\SHMoveFile.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\showballoon.cpp"
 				>
 			</File>
 			<File
@@ -303,6 +311,10 @@
 			</File>
 			<File
 				RelativePath=".\testSHMoveFile.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\testShowBalloon.cpp"
 				>
 			</File>
 			<File
@@ -355,6 +367,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\GetLastErrorString.h"
+				>
+			</File>
+			<File
 				RelativePath="..\GetVersionString.h"
 				>
 			</File>
@@ -375,10 +391,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\os_traits.h"
-				>
-			</File>
-			<File
 				RelativePath="..\PathUtil.h"
 				>
 			</File>
@@ -388,6 +400,10 @@
 			</File>
 			<File
 				RelativePath="..\SHMoveFile.h"
+				>
+			</File>
+			<File
+				RelativePath="..\showballoon.h"
 				>
 			</File>
 			<File
