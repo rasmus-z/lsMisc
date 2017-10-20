@@ -9,9 +9,9 @@
 #pragma comment(lib,"Shell32.lib")
 #pragma comment(lib,"Advapi32.lib")
 
-
+#if _MSC_VER > 1200
 #include "gtest/gtest.h"
-
+#endif
 
 #include "../tstring.h"
 #include "../IsFileExists.h"
