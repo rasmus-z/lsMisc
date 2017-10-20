@@ -24,73 +24,90 @@
 #include "StdAfx.h"
 #include <windows.h>
 #include <tchar.h>
+
+#include "tstring.h"
 #include "CreateSimpleWindow.h"
 
-komatta
-
-HWND CreateSimpleWindow(HINSTANCE hInst, 
-						LPCTSTR pClassName, 
-						LPCTSTR pWinName,
-						WNDPROC WndProc,
-						void* param)
-{
-	hInst = hInst ? hInst : GetModuleHandle(NULL);
-	pClassName = pClassName ? pClassName : getClassName(TEXT("CreateSimpleWindowClass"));
-	WndProc = WndProc ? WndProc : DefWindowProc;
-
-	WNDCLASSEX wcex;
-	if(!GetClassInfoEx(hInst, pClassName, &wcex))
+namespace Ambiesoft {
+	static tstring getClassName(LPCTSTR pBase)
 	{
-		wcex.cbSize = sizeof(WNDCLASSEX); 
+		static int sI;
+		tstring ret(pBase);
+		if (sI > 0)
+		{
+			TCHAR szT[16];
+			wsprintf(szT, _T("%d"), sI);
+			ret += szT;
+		}
+		++sI;
+		return ret;
+	}
+	HWND CreateSimpleWindow(HINSTANCE hInst,
+		LPCTSTR pClassName,
+		LPCTSTR pWinName,
+		WNDPROC WndProc,
+		void* param)
+	{
+		hInst = hInst ? hInst : GetModuleHandle(NULL);
+		tstring className = pClassName ? pClassName : getClassName(TEXT("CreateSimpleWindowClass"));
+		WndProc = WndProc ? WndProc : DefWindowProc;
 
-		wcex.style			= 0; //CS_HREDRAW | CS_VREDRAW;
-		wcex.lpfnWndProc	= WndProc;
-		wcex.cbClsExtra		= 0;
-		wcex.cbWndExtra		= 0;
-		wcex.hInstance		= hInst;
-		wcex.hIcon			= NULL;
-		wcex.hCursor		= NULL;
-		wcex.hbrBackground	= NULL; //(HBRUSH)(COLOR_WINDOW+1);
-		wcex.lpszMenuName	= NULL;
-		wcex.lpszClassName	= pClassName;
-		wcex.hIconSm		= NULL;
+		WNDCLASSEX wcex;
+		if (GetClassInfoEx(hInst, className.c_str(), &wcex))
+			UnregisterClass(className.c_str(), hInst);
 
-		if(!RegisterClassEx( &wcex ))
+		memset(&wcex, 0, sizeof(wcex));
+		wcex.cbSize = sizeof(WNDCLASSEX);
+
+		wcex.style = 0; //CS_HREDRAW | CS_VREDRAW;
+		wcex.lpfnWndProc = WndProc;
+		wcex.cbClsExtra = 0;
+		wcex.cbWndExtra = 0;
+		wcex.hInstance = hInst;
+		wcex.hIcon = NULL;
+		wcex.hCursor = NULL;
+		wcex.hbrBackground = NULL; //(HBRUSH)(COLOR_WINDOW+1);
+		wcex.lpszMenuName = NULL;
+		wcex.lpszClassName = className.c_str();
+		wcex.hIconSm = NULL;
+
+		if (!RegisterClassEx(&wcex))
 			return NULL;
+
+
+		return CreateWindowEx(0,
+			className.c_str(),
+			pWinName,
+			0,
+			0,
+			0,
+			0,
+			0,
+			NULL,
+			NULL,
+			hInst,
+			param);
 	}
 
-	return CreateWindowEx(0, 
-		pClassName,
-		pWinName,
-		0,
-		0,
-		0,
-		0,
-		0,
-		NULL,
-		NULL,
-		hInst,
-		param);
-}
+	int WaitSimpleWindowClose(HWND hWnd)
+	{
+		BOOL bRet;
+		MSG msg;
 
-int WaitSimpleWindowClose(HWND hWnd)
-{
-	BOOL bRet;
-	MSG msg;
+		while ((bRet = GetMessage(&msg, NULL, 0, 0)) != 0)
+		{
+			if (bRet == -1)
+			{
+				return -1;
+			}
+			else
+			{
+				TranslateMessage(&msg);
+				DispatchMessage(&msg);
+			}
+		}
 
-    while( (bRet = GetMessage( &msg, NULL, 0, 0 )) != 0)
-    { 
-        if (bRet == -1)
-        {
-            return -1;
-        }
-        else
-        {
-            TranslateMessage(&msg); 
-            DispatchMessage(&msg); 
-        }
-    } 
- 
-    // Return the exit code to the system. 
-     return msg.wParam;
+		// Return the exit code to the system. 
+		return msg.wParam;
+	}
 }

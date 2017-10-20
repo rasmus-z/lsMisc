@@ -23,6 +23,8 @@
 
 #pragma once
 
+#include <Windows.h>
+
 #ifdef UNICODE
 #define IsFileExists IsFileExistsW
 #else

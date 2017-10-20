@@ -2,6 +2,7 @@
 *.opt
 *.plg
 *.suo
+*.user
 
 lsMiscTest/Debug/
 lsMiscTest/lsMiscTest.sdf

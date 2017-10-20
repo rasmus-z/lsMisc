@@ -46,9 +46,13 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Configuration)\2013\</OutDir>
+    <IntDir>$(Configuration)\2013\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Configuration)\2013\</OutDir>
+    <IntDir>$(Configuration)\2013\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Midl>
@@ -64,7 +68,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalIncludeDirectories>.;../stlsoft/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../stlsoft/include;googletest\googletest;googletest\googletest\include</AdditionalIncludeDirectories>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -95,7 +99,7 @@
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>.;../stlsoft/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../stlsoft/include;googletest\googletest;googletest\googletest\include</AdditionalIncludeDirectories>
       <AssemblerListingLocation>$(IntDir)2013\</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)2013\</ObjectFileName>
       <ProgramDataBaseFileName>$(IntDir)2013\vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
@@ -210,6 +214,7 @@
     <ClCompile Include="..\WritePrivateProfileWString.cpp" />
     <ClCompile Include="..\XBrowseForFolder.cpp" />
     <ClCompile Include="debug.cpp" />
+    <ClCompile Include="googletest\googletest\src\gtest-all.cc" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="testCommandLineParser.cpp" />
     <ClCompile Include="testCommnadLineString.cpp" />
@@ -223,6 +228,7 @@
     <ClCompile Include="testOSTraits.cpp" />
     <ClCompile Include="testPathUtil.cpp" />
     <ClCompile Include="testSHMoveFile.cpp" />
+    <ClCompile Include="testShowBalloon.cpp" />
     <ClCompile Include="testStlsoft.cpp" />
     <ClCompile Include="testUrlEncode.cpp" />
   </ItemGroup>

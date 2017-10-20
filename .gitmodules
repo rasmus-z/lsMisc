@@ -1,0 +1,5 @@
+[submodule "lsMiscTest/googletest"]
+	path = lsMiscTest/googletest
+	url = https://github.com/google/googletest.git
+	ignore = dirty
+

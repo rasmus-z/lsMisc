@@ -10,6 +10,8 @@
 #pragma comment(lib,"Advapi32.lib")
 
 
+#include "gtest/gtest.h"
+
 
 #include "../tstring.h"
 #include "../IsFileExists.h"
@@ -31,7 +33,7 @@ void testStlMutex();
 void testPathUtil();
 void testUrlEncode();
 void testFormatSizeof();
-void testSHMoveFile();
+//void testSHMoveFile();
 void testOpenCommon();
 void testOpenedFiles();
 void testI18N();
@@ -48,10 +50,17 @@ int main()
 		_CRTDBG_CHECK_ALWAYS_DF		|
 		_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG));
 #endif
+
+
+	testing::InitGoogleTest(&__argc, __argv);
+	int gret = RUN_ALL_TESTS();
+	return gret;
+
+
 	// testOSTraits();
 	testShowBalloon();
 	testCommandLineString();
-	testSHMoveFile();
+	//testSHMoveFile();
 	testOpenedFiles();
 	
 	
@@ -112,3 +121,4 @@ int main()
 	b = IsFileExistsW(L"c:\\T\\ccc");
 	return 0;
 }
+

@@ -318,6 +318,10 @@
     <ClCompile Include="testOSTraits.cpp">
       <Filter>Test Files</Filter>
     </ClCompile>
+    <ClCompile Include="testShowBalloon.cpp">
+      <Filter>Test Files</Filter>
+    </ClCompile>
+    <ClCompile Include="googletest\googletest\src\gtest-all.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
