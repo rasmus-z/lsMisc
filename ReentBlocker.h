@@ -27,6 +27,7 @@ namespace Ambiesoft {
 	{
 		bool* pB_;
 		bool eB_;
+	public:
 		ReentBlocker(bool* p, bool initbool, bool exitbool)
 		{
 			*p = initbool;
