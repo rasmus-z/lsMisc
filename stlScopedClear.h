@@ -22,8 +22,8 @@
 //SUCH DAMAGE.
 
 #pragma once
-#include "stlsoft/smartptr/scoped_handle.hpp"
+#include <stlsoft/smartptr/scoped_handle.hpp>
 
 
 
-#define STLSCOPEDFREE(ptr) stlsoft::scoped_handle<void*> stlscopedfree_##ptr((void*)ptr, free)
+#define STLSCOPEDFREE(PTR,T,F) stlsoft::scoped_handle<T> stlscopedfree_##PTR((T)PTR, F)
