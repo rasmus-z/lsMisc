@@ -192,6 +192,7 @@
     <ClCompile Include="..\RemoveLastInValidURLChar.cpp" />
     <ClCompile Include="..\ReplaceFileHelper.cpp" />
     <ClCompile Include="..\ResolveLink.cpp" />
+    <ClCompile Include="..\RevealFolder.cpp" />
     <ClCompile Include="..\SetClipboardText.cpp" />
     <ClCompile Include="..\SetCSIDLtoEnv.cpp" />
     <ClCompile Include="..\SetFileOntoClipboard.cpp" />
@@ -227,6 +228,7 @@
     <ClCompile Include="testI18N.cpp" />
     <ClCompile Include="testOSTraits.cpp" />
     <ClCompile Include="testPathUtil.cpp" />
+    <ClCompile Include="testRevealFolder.cpp" />
     <ClCompile Include="testSHMoveFile.cpp" />
     <ClCompile Include="testShowBalloon.cpp" />
     <ClCompile Include="testStlsoft.cpp" />
@@ -316,6 +318,7 @@
     <ClInclude Include="..\RemoveLastInValidURLChar.h" />
     <ClInclude Include="..\ReplaceFileHelper.h" />
     <ClInclude Include="..\ResolveLink.h" />
+    <ClInclude Include="..\RevealFolder.h" />
     <ClInclude Include="..\SetClipboardText.h" />
     <ClInclude Include="..\SetCSIDLtoEnv.h" />
     <ClInclude Include="..\SetFileOntoClipboard.h" />

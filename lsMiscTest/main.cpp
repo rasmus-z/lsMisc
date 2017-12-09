@@ -40,6 +40,7 @@ void testI18N();
 void testCommandLineString();
 // void testOSTraits();
 void testShowBalloon();
+void testRevealFolder();
 
 int main()
 {
@@ -51,12 +52,13 @@ int main()
 		_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG));
 #endif
 
+	testRevealFolder();
 
 	testing::InitGoogleTest(&__argc, __argv);
 	int gret = RUN_ALL_TESTS();
-	return gret;
+	// return gret;
 
-
+	
 	// testOSTraits();
 	testShowBalloon();
 	testCommandLineString();

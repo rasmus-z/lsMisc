@@ -322,6 +322,12 @@
       <Filter>Test Files</Filter>
     </ClCompile>
     <ClCompile Include="googletest\googletest\src\gtest-all.cc" />
+    <ClCompile Include="..\RevealFolder.cpp">
+      <Filter>lsMisc\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="testRevealFolder.cpp">
+      <Filter>Test Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -651,6 +657,9 @@
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
     <ClInclude Include="..\stdwin32\stdwin32.h">
+      <Filter>lsMisc\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RevealFolder.h">
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
   </ItemGroup>
