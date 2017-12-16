@@ -21,5 +21,7 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
-
-tstring GetUnexistingFile(LPCTSTR pDir, LPCTSTR pPrefix, LPCTSTR pSuffix);
+#include <string>
+namespace Ambiesoft {
+	std::wstring GetUnexistingFile(LPCWSTR pDir, LPCWSTR pPrefix, LPCWSTR pSuffix);
+}

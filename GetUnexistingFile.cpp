@@ -30,39 +30,42 @@
 #include "tstring.h"
 #include "GetUnexistingFile.h"
 
-tstring GetUnexistingFile(LPCTSTR pDir, LPCTSTR pPrefix, LPCTSTR pSuffix)
-{
-	tstring ret;
-	
-	TCHAR szFileName[MAX_PATH] = {0};
-	if ( pDir )
+using namespace std;
+namespace Ambiesoft {
+	std::wstring GetUnexistingFile(LPCWSTR pDir, LPCWSTR pPrefix, LPCWSTR pSuffix)
 	{
-		lstrcpy(szFileName, pDir);
-		PathAddBackslash(szFileName);
-	}
+		wstring ret;
 
-
-	for ( int i=1;;++i )
-	{
-		TCHAR szTry[MAX_PATH] = {0};
-		wsprintf(szTry, _T("%d"), i);
-
-		tstring strT(szFileName);
-		if ( pPrefix )
-			strT += pPrefix;
-
-		strT += szTry;
-
-		if ( pSuffix )
-			strT += pSuffix;
-
-		if ( GetFileAttributes(strT.c_str()) == 0xFFFFFFFF )
+		wchar_t szFileName[MAX_PATH] = { 0 };
+		if (pDir)
 		{
-			ret = strT;
-			break;
+			lstrcpyW(szFileName, pDir);
+			PathAddBackslashW(szFileName);
 		}
+
+
+		for (int i = 1;; ++i)
+		{
+			wchar_t szTry[MAX_PATH] = { 0 };
+			wnsprintfW(szTry, MAX_PATH, L"%d", i);
+
+			wstring strT(szFileName);
+			if (pPrefix)
+				strT += pPrefix;
+
+			strT += szTry;
+
+			if (pSuffix)
+				strT += pSuffix;
+
+			if (GetFileAttributesW(strT.c_str()) == 0xFFFFFFFF)
+			{
+				ret = strT;
+				break;
+			}
+		}
+
+
+		return ret;
 	}
-
-
-	return ret;
 }
