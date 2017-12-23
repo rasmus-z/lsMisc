@@ -50,5 +50,12 @@ std::wstring FormatSizeof(double num)
 }
 std::wstring FormatSizeof(long long ll)
 {
+	if (ll < 1024)
+	{
+		wchar_t buff[32] = { 0 };
+		_i64tow_s(ll, buff, _countof(buff), 10);
+		return buff;
+	}
+
 	return FormatSizeof((double)ll);
 }
