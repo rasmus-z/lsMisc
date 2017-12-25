@@ -27,3 +27,4 @@
 
 
 #define STLSCOPEDFREE(PTR,T,F) stlsoft::scoped_handle<T> stlscopedfree_##PTR((T)PTR, F)
+#define STLSCODEDFREECRT(PTR) STLSCOPEDFREE(PTR,void*,free)
