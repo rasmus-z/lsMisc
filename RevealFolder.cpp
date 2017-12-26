@@ -28,49 +28,173 @@
 #include <Shlobj.h>
 #pragma comment(lib,"Shell32.lib")
 
+#include <Shlobj.h>
+#include <Shobjidl.h>
+#include <comdef.h>
+#include <comdefsp.h>
+
 #include <tchar.h>
 #include <assert.h>
 #include <string>
+
+#include "stlScopedClear.h"
 #include "RevealFolder.h"
-#include "GetOpenFile.h"
+// #include "GetOpenFile.h"
+
 using namespace std;
 namespace Ambiesoft
 {
-	BOOL RevealFolder(LPTSTR lpString)
+
+	// http://www.kab-studio.biz/Programing/Codian/ShellExtension/05.html
+	static BOOL PolulateDirectory(IShellFolderPtr pSF, LPITEMIDLIST pFolderIDList)
 	{
-		if (PathIsDirectory(lpString))
-			return TRUE;
-
-		if (PathFileExists(lpString))
-			return TRUE;
-
-		wstring fff(lpString);
-		fff += L"*.*";
-		WIN32_FIND_DATA fd;
-		FindFirstFile(fff.c_str(), &fd);
-		HRESULT hr;
-		// hr = ShowShareFolderUI(nullptr, lpString);
-
-		GetOpenFile(NULL,
-			NULL,
-			lpString,
-			L"",
-			NULL);
-		ITEMIDLIST* pII = nullptr;
-		hr = SHParseDisplayName(
-			lpString,
-			NULL,
-			&pII,
-			SFGAO_SHARE,
-			NULL);
+		HRESULT hRes;
 		
-		if (SUCCEEDED(hr))
+		
+		
+		IShellFolderPtr	pCurFolder;
+		IEnumIDListPtr	pEnumIDList;
+
+		if (pFolderIDList != NULL)
 		{
-			IShellItem* pShellItem = nullptr;
-			hr = SHCreateShellItem(NULL, NULL, pII, &pShellItem);
-			if (SUCCEEDED(hr))
+			hRes = pSF->BindToObject(pFolderIDList, NULL, IID_IShellFolder, (LPVOID *)&pCurFolder);
+			if (hRes != NOERROR)
 				return TRUE;
 		}
-		return FALSE;
+		else
+		{
+			hRes = ::SHGetDesktopFolder(&pCurFolder);
+			if (hRes != NOERROR)
+				return TRUE;
+		}
+
+
+		hRes = pCurFolder->EnumObjects(
+			NULL,
+			SHCONTF_NONFOLDERS | SHCONTF_INCLUDEHIDDEN | SHCONTF_FOLDERS, 
+			&pEnumIDList);
+		if (hRes != NOERROR)
+			return FALSE;
+
+		LPITEMIDLIST pFileIDList;
+		ULONG ulRetNo;
+		while (pEnumIDList->Next(1, &pFileIDList, &ulRetNo) == NOERROR)
+		{
+			STRRET stFileName = { 0 };
+			stFileName.uType = -1;
+			hRes = pCurFolder->GetDisplayNameOf(
+				pFileIDList,
+				SHGDN_FORPARSING,
+				&stFileName);
+			if (hRes != NOERROR)
+				break;
+
+			if (stFileName.uType == STRRET_WSTR)
+				CoTaskMemFree(stFileName.pOleStr);
+			CoTaskMemFree(pFileIDList);
+		}
+
+		return TRUE;
 	}
+
+
+	static LPITEMIDLIST GetItemIDList(IShellFolderPtr pSF, LPCWSTR pFolder)
+	{
+		if (pFolder == NULL || pFolder[0] == 0)
+			return NULL;
+
+		HRESULT		hRes;
+		ULONG		chEaten;
+		ULONG		dwAttributes;
+		LPITEMIDLIST	pIDL = NULL;
+
+		hRes = pSF->ParseDisplayName(NULL, NULL, (LPWSTR)pFolder, &chEaten, &pIDL, &dwAttributes);
+
+		if (hRes != NOERROR)
+			pIDL = NULL;
+
+		return pIDL;
+	}
+
+	bool RevealFolder(LPCWSTR pFolder)
+	{
+		IShellFolderPtr pSF;
+		HRESULT hRes = ::SHGetDesktopFolder(&pSF);
+		if (!pSF)
+			return false;
+
+		LPITEMIDLIST pIIL = GetItemIDList(pSF, pFolder);
+		if (!pIIL)
+			return false;
+		STLSCOPEDFREE(pIIL, LPVOID, CoTaskMemFree);
+
+		if (!PolulateDirectory(pSF, pIIL))
+			return false;
+
+		return true;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	//BOOL RevealFolder_obsolete(LPTSTR lpString)
+	//{
+	//	if (PathIsDirectory(lpString))
+	//		return TRUE;
+
+	//	if (PathFileExists(lpString))
+	//		return TRUE;
+
+	//	wstring fff(lpString);
+	//	fff += L"*.*";
+	//	WIN32_FIND_DATA fd;
+	//	FindFirstFile(fff.c_str(), &fd);
+	//	HRESULT hr;
+	//	// hr = ShowShareFolderUI(nullptr, lpString);
+
+	//	GetOpenFile(NULL,
+	//		NULL,
+	//		lpString,
+	//		L"",
+	//		NULL);
+	//	ITEMIDLIST* pII = nullptr;
+	//	hr = SHParseDisplayName(
+	//		lpString,
+	//		NULL,
+	//		&pII,
+	//		SFGAO_SHARE,
+	//		NULL);
+	//	
+	//	if (SUCCEEDED(hr))
+	//	{
+	//		IShellItem* pShellItem = nullptr;
+	//		hr = SHCreateShellItem(NULL, NULL, pII, &pShellItem);
+	//		if (SUCCEEDED(hr))
+	//			return TRUE;
+	//	}
+	//	return FALSE;
+	//}
 }

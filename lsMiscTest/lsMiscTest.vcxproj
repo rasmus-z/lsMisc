@@ -140,6 +140,7 @@
     <ClCompile Include="..\DebugMacro.cpp" />
     <ClCompile Include="..\DeleteIECache.cpp" />
     <ClCompile Include="..\EnableDebugPriv.cpp" />
+    <ClCompile Include="..\ExpandPath.cpp" />
     <ClCompile Include="..\FormatSizeof.cpp" />
     <ClCompile Include="..\GetChildWindowBy.cpp" />
     <ClCompile Include="..\GetClipboardText.cpp" />
@@ -219,6 +220,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="testCommandLineParser.cpp" />
     <ClCompile Include="testCommnadLineString.cpp" />
+    <ClCompile Include="testExpandPath.cpp" />
     <ClCompile Include="testFormatSizeof.cpp" />
     <ClCompile Include="testGetVersionString.cpp" />
     <ClCompile Include="testHira2Kata.cpp" />
@@ -261,6 +263,7 @@
     <ClInclude Include="..\DeleteIECache.h" />
     <ClInclude Include="..\EnableDebugPriv.h" />
     <ClInclude Include="..\EveryCloser.h" />
+    <ClInclude Include="..\ExpandPath.h" />
     <ClInclude Include="..\FormatSizeof.h" />
     <ClInclude Include="..\GetChildWindowBy.h" />
     <ClInclude Include="..\GetClipboardText.h" />

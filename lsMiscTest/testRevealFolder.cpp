@@ -14,6 +14,7 @@ using namespace Ambiesoft;
 
 void testRevealFolder()
 {
-	RevealFolder(L"P:\\");
-	RevealFolder(L"P:\\AAAA");
+	assert(RevealFolder(L"P:\\"));
+	assert(RevealFolder(L"P:\\AAAA"));
+	assert(!RevealFolder(L"P:\\AAAfwefewfewwefewweA"));
 }

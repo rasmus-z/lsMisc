@@ -41,6 +41,7 @@ void testCommandLineString();
 // void testOSTraits();
 void testShowBalloon();
 void testRevealFolder();
+void testExpandPath();
 
 int main()
 {
@@ -52,6 +53,7 @@ int main()
 		_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG));
 #endif
 
+	testExpandPath();
 	testRevealFolder();
 
 	testing::InitGoogleTest(&__argc, __argv);

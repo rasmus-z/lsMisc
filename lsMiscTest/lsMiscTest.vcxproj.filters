@@ -328,6 +328,12 @@
     <ClCompile Include="testRevealFolder.cpp">
       <Filter>Test Files</Filter>
     </ClCompile>
+    <ClCompile Include="testExpandPath.cpp">
+      <Filter>Test Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ExpandPath.cpp">
+      <Filter>lsMisc\2 Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -660,6 +666,9 @@
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
     <ClInclude Include="..\RevealFolder.h">
+      <Filter>lsMisc\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ExpandPath.h">
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
   </ItemGroup>

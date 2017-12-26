@@ -21,6 +21,14 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
-namespace Ambiesoft {
-	bool RevealFolder(LPCWSTR pFolder);
+#include <vector>
+#include <string>
+
+namespace Ambiesoft{
+
+
+	bool ExpandPath(const std::wstring& path, std::vector<std::wstring>& results);
+
+
+
 }
