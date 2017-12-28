@@ -86,6 +86,7 @@ namespace Ambiesoft{
 		return false;
 	}
 	static wstring ResolveDirectory(LPCWSTR pPath)
+	{
 		HANDLE hFile;
 		// LPCTSTR szMyFile = _T("C:\\Documents and Settings");  // Mount-Point (JUNCTION)
 		//LPCTSTR szMyFile = _T("C:\\Users\\All Users");  // Symbolic-Link (SYMLINKD)
