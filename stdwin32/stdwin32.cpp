@@ -242,7 +242,7 @@ namespace stdwin32 {
 	{
 		std::wstring filename = stdGetFileName(pPath);
 		WCHAR* p = _wcsdup(filename.c_str());
-		WCHAR* pExt = PathFindExtension(p);
+		WCHAR* pExt = PathFindExtensionW(p);
 		if (pExt)
 		{
 			*pExt = 0;
