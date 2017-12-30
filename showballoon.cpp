@@ -321,6 +321,8 @@ BOOL showballoon(HWND hWnd,
 			NULL,
 			_T("SimpleWindow"),
 			WaitWindowProc,
+			0,
+			0,
 			(void*)&param);
 		hwndToDel= hWnd;
 	}
