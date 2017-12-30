@@ -15,6 +15,8 @@
 #include <vector>
 
 #include "OpenedFiles.h"
+#include "stlScopedClear.h"
+#include "SystemInfo.h"
 
 #include "DebugNew.h"
 
@@ -22,10 +24,14 @@
 #pragma comment(lib,"Psapi.lib")
 
 using namespace std;
+using namespace zoltan_csizmadia;
 
 #pragma warning(disable:4996)
 
+#ifndef NT_SUCCESS
 #define NT_SUCCESS(Status) ((NTSTATUS)(Status) >= 0)
+#endif
+
 #define IOCTL_LISTDRV_BUFFERED_IO		\
         CTL_CODE(FILE_DEVICE_UNKNOWN,	\
         0x802,							\
@@ -36,7 +42,7 @@ using namespace std;
 //	SystemHandleInformation = 0X10,
 //} SYSTEM_INFORMATION_CLASS;
 
-#define SystemHandleInformation ((SYSTEM_INFORMATION_CLASS)0x10)
+#define SystemHandleInformationDefine ((SYSTEM_INFORMATION_CLASS)0x10)
 
 typedef struct _HANDLE_INFO
 {
@@ -335,7 +341,7 @@ void EnumerateOpenedFiles(wstring& csPath, OF_CALLBACK CallBackProc, UINT_PTR pU
 	PSYSTEM_HANDLE_INFORMATION pSysHandleInformation = new SYSTEM_HANDLE_INFORMATION;
 	DWORD size = sizeof(SYSTEM_HANDLE_INFORMATION);
 	DWORD needed = 0;
-	NTSTATUS status = NtQuerySystemInformation(SystemHandleInformation, pSysHandleInformation, size, &needed);
+	NTSTATUS status = NtQuerySystemInformation(SystemHandleInformationDefine, pSysHandleInformation, size, &needed);
 	if (!NT_SUCCESS(status))
 	{
 		if (0 == needed)
@@ -346,7 +352,7 @@ void EnumerateOpenedFiles(wstring& csPath, OF_CALLBACK CallBackProc, UINT_PTR pU
 		delete pSysHandleInformation;
 		size = needed + 1024;
 		pSysHandleInformation = (PSYSTEM_HANDLE_INFORMATION)new BYTE[size];
-		status = NtQuerySystemInformation(SystemHandleInformation, pSysHandleInformation, size, &needed);
+		status = NtQuerySystemInformation(SystemHandleInformationDefine, pSysHandleInformation, size, &needed);
 		if (!NT_SUCCESS(status))
 		{
 			// some other error so quit.
@@ -790,7 +796,7 @@ wstring GetPathFromProcessID(const DWORD dwID)
 	return NtPathToWin32Path(ret);
 }
 
-void GetOpenedFilesSimple(LPCTSTR pFilter, vector<OPENEDFILEINFO>& v)
+void GetOpenedFilesSimple_obsolete(LPCTSTR pFilter, vector<OPENEDFILEINFO>& v)
 {
 	CallbackData cd(&v);
 	cd.setFilter(pFilter);
@@ -802,4 +808,137 @@ void GetOpenedFilesSimple(LPCTSTR pFilter, vector<OPENEDFILEINFO>& v)
 		(UINT_PTR)&cd);
 
 
+}
+
+// http://read.pudn.com/downloads36/sourcecode/windows/111597/NtSystemInfo/NtSystemInfoTest/NtSystemInfoTest.cpp__.htm
+static LPCTSTR GetFileNamePosition(LPCTSTR lpPath)
+{
+	LPCTSTR lpAct = lpPath + _tcslen(lpPath);
+
+	while (lpAct > lpPath && *lpAct != _T('\\') && *lpAct != _T('/'))
+		lpAct--;
+
+	if (lpAct > lpPath)
+		lpAct++;
+
+	return lpAct;
+}
+void WhoUsesFile(LPCTSTR lpFileName, BOOL bFullPathCheck, vector<OPENEDFILEINFO>& vResult)
+{
+	BOOL bShow = FALSE;
+	wstring name;
+	wstring processName;
+	wstring deviceFileName;
+	wstring fsFilePath;
+	SystemProcessInformation::SYSTEM_PROCESS_INFORMATION* p;
+	zoltan_csizmadia::SystemProcessInformation pi;
+	zoltan_csizmadia::SystemHandleInformation hi;
+
+	if (!SystemInfoUtils::GetDeviceFileName(lpFileName, deviceFileName))
+	{
+		// _tprintf(_T("GetDeviceFileName() failed.\n"));
+		return;
+	}
+
+
+	hi.SetFilter(_T("File"), TRUE);
+
+	// if (hi.m_HandleInfos.GetHeadPosition() == NULL)
+	if (hi.m_HandleInfos.empty())
+	{
+		// _tprintf(_T("No handle information\n"));
+		return;
+	}
+
+	pi.Refresh();
+
+	//_tprintf(_T("%-6s  %-20s  %s\n"), _T("PID"), _T("Name"), _T("Path"));
+	//_tprintf(_T("------------------------------------------------------\n"));
+
+	//for (POSITION pos = hi.m_HandleInfos.GetHeadPosition(); pos != NULL;)
+	for (const auto& h : hi.m_HandleInfos)
+	{
+		//SystemHandleInformation::SYSTEM_HANDLE& h = hi.m_HandleInfos.GetNext(pos);
+
+		// if (pi.m_ProcessInfos.Lookup(h.ProcessID, p))
+		if (pi.m_ProcessInfos.find(h.ProcessID) != pi.m_ProcessInfos.end() )
+		{
+			p = pi.m_ProcessInfos[h.ProcessID];
+			SystemInfoUtils::Unicode2wstring(&p->usName, processName);
+		}
+		else
+			processName = L"";
+
+		//NT4 Stupid thing if it is the services.exe and I call GetName :((
+		if (INtDll::dwNTMajorVersion == 4 && _tcsicmp(processName.c_str(), _T("services.exe")) == 0)
+			continue;
+
+		hi.GetName((HANDLE)h.HandleNumber, name, h.ProcessID);
+
+		if (bFullPathCheck)
+			bShow = _tcsicmp(name.c_str(), deviceFileName.c_str()) == 0;
+		else
+		{
+			// bShow = _tcsicmp(GetFileNamePosition(name.c_str()), lpFileName) == 0;
+			bShow = wcsstr(name.c_str(), deviceFileName.c_str()) == name.c_str();
+		}
+
+		if (bShow)
+		{
+			if (!bFullPathCheck)
+			{
+				fsFilePath = L"";
+				SystemInfoUtils::GetFsFileName(name.c_str(), fsFilePath);
+			}
+
+			//_tprintf(_T("0x%04X  %-20s  %s\n"),
+			//	h.ProcessID,
+			//	processName,
+			//	!bFullPathCheck ? fsFilePath : lpFileName);
+			OPENEDFILEINFO ofi;
+			ofi.dwPID = h.ProcessID;
+			lstrcpy(ofi.filename, !bFullPathCheck ? fsFilePath.c_str() : lpFileName);
+			ofi.hFile = nullptr;
+
+			vResult.push_back(ofi);
+		}
+	}
+}
+bool EnableDebugPriv(void)
+{
+	HANDLE hToken;
+	LUID sedebugnameValue;
+	TOKEN_PRIVILEGES tkp;
+
+	// enable the SeDebugPrivilege
+	if (!OpenProcessToken(GetCurrentProcess(),
+		TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hToken))
+	{
+		// _tprintf(_T("OpenProcessToken() failed, Error = %d SeDebugPrivilege is not available.\n"), GetLastError());
+		return false;
+	}
+	STLSCOPEDFREE(hToken, HANDLE, CloseHandle);
+	if (!LookupPrivilegeValue(NULL, SE_DEBUG_NAME, &sedebugnameValue))
+	{
+		// _tprintf(_T("LookupPrivilegeValue() failed, Error = %d SeDebugPrivilege is not available.\n"), GetLastError());
+		CloseHandle(hToken);
+		return false;
+	}
+
+	tkp.PrivilegeCount = 1;
+	tkp.Privileges[0].Luid = sedebugnameValue;
+	tkp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
+
+	if (!AdjustTokenPrivileges(hToken, FALSE, &tkp, sizeof tkp, NULL, NULL))
+	{
+		// _tprintf(_T("AdjustTokenPrivileges() failed, Error = %d SeDebugPrivilege is not available.\n"), GetLastError());
+		return false;
+	}
+
+	return true;
+}
+bool GetOpenedFilesSimple(LPCTSTR pFilter, vector<OPENEDFILEINFO>& v)
+{
+	WhoUsesFile(pFilter, FALSE, v);
+	return true;
 }

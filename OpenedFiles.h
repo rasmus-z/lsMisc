@@ -38,4 +38,5 @@ void GetOpenedFiles(LPCWSTR lpPath,
 	UINT_PTR pUserContext);
 
 std::wstring GetPathFromProcessID(const DWORD dwID);
-void GetOpenedFilesSimple(LPCTSTR pFilter, std::vector<OPENEDFILEINFO>& v);
+bool EnableDebugPriv(void);
+bool GetOpenedFilesSimple(LPCTSTR pFilter, std::vector<OPENEDFILEINFO>& v);
