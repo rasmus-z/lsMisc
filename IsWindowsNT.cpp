@@ -25,6 +25,8 @@
 #include <windows.h>
 #include "IsWindowsNT.h"
 
+#pragma warning(disable:4996) // deprecated GetVersionExW
+
 BOOL IsWindowsNT(void)
 {
     static BOOL once = FALSE;
