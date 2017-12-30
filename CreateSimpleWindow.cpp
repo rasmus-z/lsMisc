@@ -46,6 +46,8 @@ namespace Ambiesoft {
 		LPCTSTR pClassName,
 		LPCTSTR pWinName,
 		WNDPROC WndProc,
+		DWORD dwStyles,
+		DWORD dwExStyles,
 		void* param)
 	{
 		hInst = hInst ? hInst : GetModuleHandle(NULL);
@@ -74,11 +76,24 @@ namespace Ambiesoft {
 		if (!RegisterClassEx(&wcex))
 			return NULL;
 
-
-		return CreateWindowEx(0,
+		//CreateWindowExW(
+		//	_In_ DWORD dwExStyle,
+		//	_In_opt_ LPCWSTR lpClassName,
+		//	_In_opt_ LPCWSTR lpWindowName,
+		//	_In_ DWORD dwStyle,
+		//	_In_ int X,
+		//	_In_ int Y,
+		//	_In_ int nWidth,
+		//	_In_ int nHeight,
+		//	_In_opt_ HWND hWndParent,
+		//	_In_opt_ HMENU hMenu,
+		//	_In_opt_ HINSTANCE hInstance,
+		//	_In_opt_ LPVOID lpParam);
+		return CreateWindowEx(
+			dwExStyles,
 			className.c_str(),
 			pWinName,
-			0,
+			dwStyles,
 			0,
 			0,
 			0,

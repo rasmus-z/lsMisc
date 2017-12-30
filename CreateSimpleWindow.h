@@ -27,6 +27,9 @@ namespace Ambiesoft {
 		LPCTSTR pClassName = NULL,
 		LPCTSTR pWinName = NULL,
 		WNDPROC WndProc = NULL,
-		void* param = NULL);
+		DWORD dwStyles = 0,
+		DWORD dwExStyles = 0,
+		void* param = NULL
+		);
 	int WaitSimpleWindowClose(HWND hWnd);
 }
