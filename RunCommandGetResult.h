@@ -23,6 +23,8 @@
 
 #pragma once
 #include <string>
+#include <Windows.h>
+
 namespace Ambiesoft {
-	DWORD RunCommandGetResult(LPCWSTR pExe, LPCWSTR pArg, int* pIRetCommand, std::string* pStrRetCommand);
+	BOOL RunCommandGetResult(LPCWSTR pExe, LPCWSTR pArg, int* pIRetCommand, std::string* pStrRetCommand, DWORD* pdwLastError = nullptr);
 }

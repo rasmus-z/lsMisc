@@ -23,12 +23,16 @@
 
 #include "stdafx.h"
 
+#include <cassert>
+#include <stlsoft/smartptr/scoped_handle.hpp>
+
 #include "stlScopedClear.h"
 #include "RunCommandGetResult.h"
 #include "DebugNew.h"
 
 namespace Ambiesoft {
-	BOOL RunCommandGetResult(LPCWSTR pExe, LPCWSTR pArg, int* pIRetCommand, std::string* pStrRetCommand, DWORD* pdwLastError)
+	
+	static BOOL CreateHandles(HANDLE& h1, HANDLE& h2, BOOL i1, BOOL i2, DWORD* pdwLastError)
 	{
 		SECURITY_ATTRIBUTES sa;
 
@@ -37,20 +41,100 @@ namespace Ambiesoft {
 		sa.lpSecurityDescriptor = NULL;
 		sa.bInheritHandle = TRUE;
 
-		HANDLE hPipeSourceIn = NULL;
-		HANDLE hPipeDestOut = NULL;
-		if (!CreatePipe(&hPipeSourceIn, &hPipeDestOut, &sa, 0))
+		if (!CreatePipe(&h1, &h2, &sa, 0))
 		{
 			if (pdwLastError)
 				*pdwLastError = GetLastError();
 			return FALSE;
 		}
-		STLSCOPEDFREE(hPipeSourceIn, HANDLE, CloseHandle);
-		STLSCODEDFREE(hPipeDestOut, HANDLE, CloseHandle);
 
-		DuplicateHandle(
-			GetCurrentProcess(),
-			)
-		HANDLE hPipeDestOutDup = NULL;
+		if (!i1)
+		{
+			if (!SetHandleInformation(h1, HANDLE_FLAG_INHERIT, 0))
+			{
+				if (pdwLastError)
+					*pdwLastError = GetLastError();
+				return FALSE;
+			}
+		}
+		if (!i2)
+		{
+			if (!SetHandleInformation(h2, HANDLE_FLAG_INHERIT, 0))
+			{
+				if (pdwLastError)
+					*pdwLastError = GetLastError();
+				return FALSE;
+			}
+		}
+
+#ifdef _DEBUG
+		{
+			// check inheritance
+			DWORD dwFlags = 0;
+			if (!GetHandleInformation(h1, &dwFlags))
+				assert(false);
+			assert((i1 && (dwFlags & HANDLE_FLAG_INHERIT)) || (!i1 && (dwFlags & HANDLE_FLAG_INHERIT) == 0));
+
+			if (!GetHandleInformation(h2, &dwFlags))
+				assert(false);
+			assert((i2 && (dwFlags & HANDLE_FLAG_INHERIT)) || (!i2 && (dwFlags & HANDLE_FLAG_INHERIT) == 0));
+		}
+#endif
+		return TRUE;
+	}
+	BOOL RunCommandGetResult(LPCWSTR pExe, LPCWSTR pArg, int* pIRetCommand, std::string* pStrRetCommand, DWORD* pdwLastError)
+	{
+		HANDLE hPipeStdInRead = NULL;
+		HANDLE hPipeStdInWrite = NULL;
+		if (!CreateHandles(hPipeStdInRead, hPipeStdInWrite, TRUE, FALSE, pdwLastError))
+			return FALSE;
+		STLSCOPEDFREE(hPipeStdInRead, HANDLE, CloseHandle);
+		STLSCOPEDFREE(hPipeStdInWrite, HANDLE, CloseHandle);
+
+		HANDLE hPipeStdOutRead = nullptr;
+		HANDLE hPipeStdOutWrite = nullptr;
+		if (!CreateHandles(hPipeStdOutRead, hPipeStdOutWrite, FALSE, TRUE, pdwLastError))
+			return FALSE;
+		STLSCOPEDFREE(hPipeStdOutRead, HANDLE, CloseHandle);
+		STLSCOPEDFREE(hPipeStdOutWrite, HANDLE, CloseHandle);
+
+		HANDLE hPipeStdErrRead = nullptr;
+		HANDLE hPipeStdErrWrite = nullptr;
+		if (!CreateHandles(hPipeStdErrRead, hPipeStdErrWrite, FALSE, TRUE, pdwLastError))
+			return FALSE;
+		STLSCOPEDFREE(hPipeStdErrRead, HANDLE, CloseHandle);
+		STLSCOPEDFREE(hPipeStdErrWrite, HANDLE, CloseHandle);
+
+		// createprocess
+		LPWSTR pArgCP = pArg ? _wcsdup(pArg) : NULL;
+		STLSCODEDFREECRT(pArgCP, free);
+
+		STARTUPINFO siStartInfo = { 0 };
+		siStartInfo.cb = sizeof(STARTUPINFO);
+		siStartInfo.hStdInput = hPipeStdInRead;
+		siStartInfo.hStdOutput = hPipeStdOutWrite;
+		siStartInfo.hStdError = hPipeStdErrWrite;
+		siStartInfo.dwFlags |= STARTF_USESTDHANDLES;
+
+		PROCESS_INFORMATION pi = { 0 };
+		if(!CreateProcess(
+			pExe,
+			pArgCP,
+			nullptr, // sec
+			nullptr, // sec thread
+			TRUE, // inherit
+			0, // flags
+			nullptr, // env
+			nullptr, // dir
+			&siStartInfo,
+			&pi))
+		{
+			if (pdwLastError)
+				*pdwLastError = GetLastError();
+			return FALSE;
+		}
+
+		CreateThread()
+		return TRUE;
 	}
 }
