@@ -28,3 +28,4 @@
 
 #define STLSCOPEDFREE(PTR,T,F) stlsoft::scoped_handle<T> stlscopedfree_##PTR((T)PTR, F)
 #define STLSCODEDFREECRT(PTR) STLSCOPEDFREE(PTR,void*,free)
+#define STLSCOPEDFREE_CLIPBOARD stlsoft::scoped_handle<void> stlscopedfree_clipboard(CloseClipboard);

@@ -26,16 +26,20 @@
 #include <Windows.h>
 #include <ShlObj.h>
 
+#include "stlScopedClear.h"
+
 #include "SetFileOntoClipboard.h"
 
 namespace Ambiesoft {
-	BOOL SetFileOntoClipboard(const CStringArray& arFiles, BOOL bCut)
+	BOOL SetFileOntoClipboard(const std::vector<std::wstring>& arFiles, BOOL bCut)
 	{
-		int i;
+		size_t i;
 		// COleDataSource ds;
 
 		if (!OpenClipboard(NULL))
 			return FALSE;
+		STLSCOPEDFREE_CLIPBOARD;
+
 		if (!EmptyClipboard())
 			return FALSE;
 
@@ -44,10 +48,9 @@ namespace Ambiesoft {
 			UINT uBuffSize = 0;
 			HGLOBAL hgDrop = NULL;
 
-
-			for (i = 0; i < arFiles.GetSize(); ++i)
+			for (i = 0; i < arFiles.size(); ++i)
 			{
-				uBuffSize += arFiles[i].GetLength() + 1;
+				uBuffSize += arFiles[i].size() + 1;
 			}
 
 			uBuffSize = sizeof(DROPFILES) + sizeof(TCHAR) * (uBuffSize + 1);
@@ -70,9 +73,9 @@ namespace Ambiesoft {
 #endif
 
 			LPTSTR pszBuff = (TCHAR*)(LPBYTE(pDrop) + sizeof(DROPFILES));
-			for (i = 0; i < arFiles.GetSize(); ++i)
+			for (i = 0; i < arFiles.size(); ++i)
 			{
-				lstrcpy(pszBuff, (LPCTSTR)arFiles[i]);
+				lstrcpy(pszBuff, arFiles[i].c_str());
 				pszBuff = 1 + _tcschr(pszBuff, '\0');
 			}
 
@@ -94,33 +97,31 @@ namespace Ambiesoft {
 		}
 
 
-	{
-		static UINT CF_PREFERREDDROPEFFECT = RegisterClipboardFormat(CFSTR_PREFERREDDROPEFFECT);
-		HGLOBAL hgDE = GlobalAlloc(GHND | GMEM_SHARE, sizeof(DWORD));
-		if (NULL == hgDE)
-			return FALSE;
-
-		DWORD* pDE = (DWORD*)GlobalLock(hgDE);
-		if (NULL == pDE)
 		{
-			GlobalFree(hgDE);
-			return FALSE;
+			static UINT CF_PREFERREDDROPEFFECT = RegisterClipboardFormat(CFSTR_PREFERREDDROPEFFECT);
+			HGLOBAL hgDE = GlobalAlloc(GHND | GMEM_SHARE, sizeof(DWORD));
+			if (NULL == hgDE)
+				return FALSE;
+
+			DWORD* pDE = (DWORD*)GlobalLock(hgDE);
+			if (NULL == pDE)
+			{
+				GlobalFree(hgDE);
+				return FALSE;
+			}
+
+			*pDE = bCut ? DROPEFFECT_MOVE : DROPEFFECT_COPY;
+
+			GlobalUnlock(hgDE);
+
+			if (!SetClipboardData(CF_PREFERREDDROPEFFECT, hgDE))
+				return FALSE;
+
+			//FORMATETC etcHDROP = { CF_PREFERREDDROPEFFECT, NULL, DVASPECT_CONTENT, -1, TYMED_HGLOBAL };
+			//ds.CacheGlobalData ( CF_PREFERREDDROPEFFECT, hg4, &etcHDROP );
 		}
 
-		*pDE = bCut ? DROPEFFECT_MOVE : DROPEFFECT_COPY;
-
-		GlobalUnlock(hgDE);
-
-		if (!SetClipboardData(CF_PREFERREDDROPEFFECT, hgDE))
-			return FALSE;
-
-		//FORMATETC etcHDROP = { CF_PREFERREDDROPEFFECT, NULL, DVASPECT_CONTENT, -1, TYMED_HGLOBAL };
-		//ds.CacheGlobalData ( CF_PREFERREDDROPEFFECT, hg4, &etcHDROP );
-	}
-
-	CloseClipboard();
-
-	return TRUE;
+		return TRUE;
 	}
 
 }

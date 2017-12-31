@@ -123,6 +123,6 @@ namespace Ambiesoft {
 		}
 
 		// Return the exit code to the system. 
-		return msg.wParam;
+		return (int)msg.wParam;
 	}
 }

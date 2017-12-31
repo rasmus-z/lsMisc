@@ -21,4 +21,9 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
-BOOL SetFileOntoClipboard(const CStringArray& arFiles, BOOL bCut = FALSE);
+#include <vector>
+#include <string>
+
+namespace Ambiesoft{
+	BOOL SetFileOntoClipboard(const std::vector<std::wstring>& arFiles, BOOL bCut = FALSE);
+}
