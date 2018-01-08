@@ -22,76 +22,21 @@
 //SUCH DAMAGE.
 
 #include "stdafx.h"
-
 #include <windows.h>
-#include <comdef.h>
-#include <tchar.h>
-
-#include "AnyCloser.h"
 #include "Registory.h"
 
+#include "BrowserEmulation.h"
+
+#include "DebugNew.h"
+
 namespace Ambiesoft {
-	BOOL TrxIsRegKeyExists(HKEY hRoot, LPCTSTR pSub)
+	bool SetBrowserEmulation(LPCWSTR pName, DWORD mode)
 	{
-		BOOL bRet = FALSE;
-		HKEY hRet = NULL;
-		if (ERROR_SUCCESS == RegOpenKeyEx(hRoot, pSub, 0, KEY_QUERY_VALUE, &hRet))
-		{
-			bRet = TRUE;
-			RegCloseKey(hRet);
-		}
-
-		return bRet;
+		static const wchar_t* FEATURE_BROWSER_EMULATION = L"Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION";
+		Registory reg;
+		reg.Open(HKEY_CURRENT_USER, FEATURE_BROWSER_EMULATION);
+		if (!reg)
+			return false;
+		return reg.Set(pName, mode);
 	}
-
-	BOOL TrxRegGetValue(HKEY hRoot, LPCTSTR pSub, LPCTSTR pName, tstring& value)
-	{
-		HKEY hKey;
-
-		if (ERROR_SUCCESS != RegOpenKeyEx(hRoot,
-			pSub,
-			0,
-			KEY_QUERY_VALUE,
-			&hKey))
-		{
-			return FALSE;
-		}
-
-		RegCloser closer(hKey);
-
-		DWORD dwType = REG_SZ;
-		BYTE* szT[512] = { 0 };
-		DWORD dwSize = sizeof(szT) - 1;
-		if (ERROR_SUCCESS != RegQueryValueEx(
-			hKey,
-			pName,
-			0,
-			&dwType,
-			(BYTE*)szT,
-			&dwSize))
-		{
-			return FALSE;
-		}
-
-		if (dwType == REG_SZ)
-		{
-			value = (LPCTSTR)szT;
-		}
-		else if (dwType == REG_DWORD)
-		{
-			DWORD d = *((DWORD*)szT);
-			if (d == 0)
-				value = _T("0");
-			else if (d == 1)
-				value = _T("1");
-		}
-		else
-		{
-			return FALSE;
-		}
-
-		return TRUE;
-	}
-
-
 }

@@ -23,5 +23,62 @@
 
 #include "tstring.h"
 
-BOOL TrxIsRegKeyExists(HKEY hRoot, LPCTSTR pSub);
-BOOL TrxRegGetValue(HKEY hRoot, LPCTSTR pSub, LPCTSTR pName, tstring& value);
+namespace Ambiesoft
+{
+	BOOL TrxIsRegKeyExists(HKEY hRoot, LPCTSTR pSub);
+	BOOL TrxRegGetValue(HKEY hRoot, LPCTSTR pSub, LPCTSTR pName, tstring& value);
+
+
+	class Registory
+	{
+		HKEY hKey_ = nullptr;
+	public:
+		Registory(){}
+		~Registory()
+		{
+			Close();
+		}
+
+		bool Open(HKEY hRoot, LPCWSTR pSub)
+		{
+			if (hKey_)
+				Close();
+
+			RegOpenKeyEx(hRoot,
+				pSub,
+				0,
+				KEY_ALL_ACCESS,
+				&hKey_);
+			return hKey_ != nullptr;
+		}
+		bool Close()
+		{
+			bool ret = RegCloseKey(hKey_) == ERROR_SUCCESS;
+			hKey_ = nullptr;
+			return ret;
+		}
+		bool Get(LPCWSTR pName, DWORD& value) const
+		{
+			DWORD size = sizeof(value);
+			return RegQueryValueEx(hKey_,
+				pName,
+				0,
+				nullptr, // type
+				(LPBYTE)&value,
+				&size) == ERROR_SUCCESS;
+		}
+		bool Set(LPCWSTR pName, DWORD value) const
+		{
+			return RegSetValueEx(hKey_,
+				pName,
+				0,
+				REG_DWORD,
+				(const BYTE*)&value,
+				sizeof(value)) == ERROR_SUCCESS;
+		}
+		operator bool() const
+		{
+			return hKey_ != nullptr;
+		}
+	};
+}

@@ -21,77 +21,11 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
-#include "stdafx.h"
+#pragma once
 
-#include <windows.h>
-#include <comdef.h>
-#include <tchar.h>
+#include <Windows.h>
 
-#include "AnyCloser.h"
-#include "Registory.h"
 
 namespace Ambiesoft {
-	BOOL TrxIsRegKeyExists(HKEY hRoot, LPCTSTR pSub)
-	{
-		BOOL bRet = FALSE;
-		HKEY hRet = NULL;
-		if (ERROR_SUCCESS == RegOpenKeyEx(hRoot, pSub, 0, KEY_QUERY_VALUE, &hRet))
-		{
-			bRet = TRUE;
-			RegCloseKey(hRet);
-		}
-
-		return bRet;
-	}
-
-	BOOL TrxRegGetValue(HKEY hRoot, LPCTSTR pSub, LPCTSTR pName, tstring& value)
-	{
-		HKEY hKey;
-
-		if (ERROR_SUCCESS != RegOpenKeyEx(hRoot,
-			pSub,
-			0,
-			KEY_QUERY_VALUE,
-			&hKey))
-		{
-			return FALSE;
-		}
-
-		RegCloser closer(hKey);
-
-		DWORD dwType = REG_SZ;
-		BYTE* szT[512] = { 0 };
-		DWORD dwSize = sizeof(szT) - 1;
-		if (ERROR_SUCCESS != RegQueryValueEx(
-			hKey,
-			pName,
-			0,
-			&dwType,
-			(BYTE*)szT,
-			&dwSize))
-		{
-			return FALSE;
-		}
-
-		if (dwType == REG_SZ)
-		{
-			value = (LPCTSTR)szT;
-		}
-		else if (dwType == REG_DWORD)
-		{
-			DWORD d = *((DWORD*)szT);
-			if (d == 0)
-				value = _T("0");
-			else if (d == 1)
-				value = _T("1");
-		}
-		else
-		{
-			return FALSE;
-		}
-
-		return TRUE;
-	}
-
-
+	bool SetBrowserEmulation(LPCWSTR pName, DWORD mode);
 }
