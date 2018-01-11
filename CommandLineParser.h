@@ -842,7 +842,7 @@ typedef BasicOption<std::string> COptionA;
 			MyO_ option(first, last, exactCount);
 			option.case_ = case_;
 			check(&option);
-			*pTarget = false;
+			// *pTarget = false;
 			option.setTarget(pTarget);
 			inneroptions_.push_back(option);
 		}
