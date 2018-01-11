@@ -23,21 +23,43 @@
 
 #pragma once
 
-
-#pragma once
+#include <Windows.h>
 #include <string>
-#include <iostream>
+#include <vector>
 
-#ifdef UNICODE
-	typedef std::wstring tstring;
-	typedef std::wifstream tifstream;
-	typedef std::wofstream tofstream;
-	inline std::wostream& tcoutfunc() { return std::wcout; }
-	#define tcout tcoutfunc()
-#else
-	typedef std::string tstring;
-	typedef std::ifstream tifstream;
-	typedef std::ofstream tofstream;
-	inline std::ostream& tcoutfunc() { return std::cout; }
-	#define tcout tcoutfunc()
-#endif
+
+
+namespace Ambiesoft {
+	class CSingleAppMutex
+	{
+		HANDLE h_;
+		std::wstring name_;
+		DWORD dwLE_;
+	public:
+		CSingleAppMutex(const wchar_t* pName)
+		{
+			name_ = pName;
+			h_ = CreateMutex(NULL, TRUE, pName);
+			dwLE_ = GetLastError();
+		}
+		~CSingleAppMutex()
+		{
+			CloseHandle(h_);
+		}
+		bool IsFirst() const
+		{
+			return h_ != nullptr && dwLE_ == ERROR_SUCCESS;
+		}
+		bool IsSecond() const
+		{
+			return h_ != nullptr && dwLE_ == ERROR_ALREADY_EXISTS;
+		}
+		bool IsOK() const
+		{
+			return h_ != nullptr;
+		}
+		static std::vector<HWND> GetExistingWindow(const wchar_t* pTitle, const wchar_t* pClassName);
+		static bool SendInfo(HWND hwnd, HWND hSender, ULONG_PTR category, const unsigned char* data, unsigned int len);
+		static void ReceiveInfo(WPARAM wParam, LPARAM lParam, HWND* phSender, ULONG_PTR* pCategory, unsigned int* pLen, unsigned char** pData);
+	};
+}

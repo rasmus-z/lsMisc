@@ -41,6 +41,24 @@ namespace Ambiesoft {
 	{
 		return iswspace(c) != 0;
 	}
+	
+	static inline bool myContainSpace(const std::wstring& s)
+	{
+		for (wchar_t c : s)
+		{
+			if (myIsSpace(c))
+				return true;
+		}
+		return false;
+	}
+	static inline std::wstring myEncloseDQ(const std::wstring& s)
+	{
+		return L"\"" + s + L"\"";
+	}
+	static inline std::wstring myAddSpace(const std::wstring& s)
+	{
+		return s + L" ";
+	}
 
 	static inline const char* skipWS(const char* p)
 	{
@@ -309,7 +327,7 @@ namespace Ambiesoft {
 			return ret;
 		}
 
-		static E** getCommandLine(const E* pCL, int* argc)
+		static E** getCommandLineArg(const E* pCL, int* argc)
 		{
 			CCommandLineStringBase<E> me(pCL);
 
@@ -334,13 +352,40 @@ namespace Ambiesoft {
 			*ppRet = NULL;
 			return ppRetReturn;
 		}
-		static void freeCommandLine(E** argv)
+		static void freeCommandLineArg(E** argv)
 		{
 			for (E** pp = argv; *pp; ++pp)
 			{
 				LocalFree(*pp);
 			}
 			LocalFree(argv);
+		}
+
+		static myS getCommandLine(const std::vector<myS>& args, const E* pSeparator = nullptr)
+		{
+			myS ret;
+			for (size_t i = 0; i < args.size();++i)
+			{
+				myS t = args[i];
+				if (t.empty())
+					continue;
+				if (myContainSpace(t))
+				{
+					if (!isDQ(t[0]))
+					{
+						t = myEncloseDQ(t);
+					}
+				}
+				ret += t;
+				if ((i + 1) != args.size())
+				{
+					if (pSeparator)
+						ret += pSeparator;
+					else
+						ret = myAddSpace(ret);
+				}
+			}
+			return ret;
 		}
 	};
 
