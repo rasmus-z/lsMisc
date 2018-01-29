@@ -185,5 +185,22 @@ namespace stdwin32 {
 
 	std::string stdToString(const wchar_t * pIN);
 	std::string stdToString(const std::wstring& ws);
+
+	std::vector<std::wstring> split_string(const std::wstring& str,
+		const std::wstring& delimiter);
+	std::vector<std::wstring> split_string_toline(const std::wstring& str);
+
+
+
+
+	std::wstring StdStringReplaceW(std::wstring str, const std::wstring& from, const std::wstring& to);
+	std::string  StdStringReplaceA(std::string str, const std::string& from, const std::string& to);
+
+#ifdef UNICODE
+#define StdStringReplace StdStringReplaceW
+#else
+#define StdStringReplace StdStringReplaceA
+#endif
+
 }
 

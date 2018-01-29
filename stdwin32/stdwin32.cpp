@@ -799,4 +799,57 @@ namespace stdwin32 {
 	{
 		return stdToString(ws.c_str());
 	}
+
+
+	// https://stackoverflow.com/a/13172514
+	std::vector<std::wstring> split_string(const std::wstring& str,
+		const std::wstring& delimiter)
+	{
+		std::vector<std::wstring> strings;
+
+		std::wstring::size_type pos = 0;
+		std::wstring::size_type prev = 0;
+		while ((pos = str.find(delimiter, prev)) != std::wstring::npos)
+		{
+			strings.push_back(str.substr(prev, pos - prev));
+			prev = pos + 1;
+		}
+
+		// To get the last substring (or only, if delimiter is not found)
+		strings.push_back(str.substr(prev));
+
+		return strings;
+	}
+	std::vector<std::wstring> split_string_toline(const std::wstring& str)
+	{
+		wstring t = StdStringReplace(StdStringReplace(str, L"\r\n", L"\n"),
+			L"\r", L"\n");
+
+		return split_string(t, L"\n");
+	}
+
+
+	std::wstring StdStringReplaceW(std::wstring str, const std::wstring& from, const std::wstring& to)
+	{
+		size_t start_pos = 0;
+		while ((start_pos = str.find(from, start_pos)) != std::string::npos)
+		{
+			str.replace(start_pos, from.length(), to);
+			start_pos += to.length(); // Handles case where 'to' is a substring of 'from'
+		}
+		return str;
+	}
+
+	std::string StdStringReplaceA(std::string str, const std::string& from, const std::string& to)
+	{
+		size_t start_pos = 0;
+		while ((start_pos = str.find(from, start_pos)) != std::string::npos)
+		{
+			str.replace(start_pos, from.length(), to);
+			start_pos += to.length();
+		}
+		return str;
+	}
+
+
 } // namespace stdwin32
