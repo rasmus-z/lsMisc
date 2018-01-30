@@ -31,7 +31,7 @@
 #include <vector>
 #include <sstream>
 
-#include "StdStringReplace.h"
+
 #include "ExpandPath.h"
 #include "stdwin32\stdwin32.h"
 
