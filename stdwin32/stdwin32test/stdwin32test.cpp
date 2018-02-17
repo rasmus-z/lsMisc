@@ -40,5 +40,11 @@ int main(int argc, char* argv[])
 	ws = stdItoW(5);
 	assert(ws==L"5");
 
+
+	assert(stdGetFirstLine(L"") == L"");
+	assert(stdGetFirstLine(L"a") == L"a");
+	assert(stdGetFirstLine(L"a\r") == L"a");
+	assert(stdGetFirstLine(L"a\r\n") == L"a");
+	assert(stdGetFirstLine(L"a\n") == L"a");
 	return 0;
 }

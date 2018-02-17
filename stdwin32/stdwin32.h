@@ -202,5 +202,8 @@ namespace stdwin32 {
 #define StdStringReplace StdStringReplaceA
 #endif
 
+
+
+	std::wstring stdGetFirstLine(const std::wstring& str);
 }
 

@@ -822,7 +822,7 @@ namespace stdwin32 {
 	}
 	std::vector<std::wstring> split_string_toline(const std::wstring& str)
 	{
-		wstring t = StdStringReplace(StdStringReplace(str, L"\r\n", L"\n"),
+		wstring t = StdStringReplaceW(StdStringReplaceW(str, L"\r\n", L"\n"),
 			L"\r", L"\n");
 
 		return split_string(t, L"\n");
@@ -850,6 +850,23 @@ namespace stdwin32 {
 		}
 		return str;
 	}
+	
+	std::wstring stdGetFirstLine(const std::wstring& str)
+	{
+		size_t rpos = str.find(L"\r");
+		size_t nlpos = str.find(L"\n");
 
+		if (rpos == std::wstring::npos)
+		{
+			if (nlpos == std::wstring::npos)
+			{
+				return str;
+			}
+			return str.substr(0, nlpos);
+		}
+
+		// rpos found
+		return str.substr(0, rpos);
+	}
 
 } // namespace stdwin32
