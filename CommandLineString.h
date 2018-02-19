@@ -44,9 +44,9 @@ namespace Ambiesoft {
 	
 	static inline bool myContainSpace(const std::wstring& s)
 	{
-		for (wchar_t c : s)
+		for (size_t i=0 ; i < s.size() ; ++i )
 		{
-			if (myIsSpace(c))
+			if (myIsSpace(s[i]))
 				return true;
 		}
 		return false;
