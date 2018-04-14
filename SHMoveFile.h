@@ -32,18 +32,36 @@ namespace Ambiesoft {
 	enum {
 		default_fopFlags = FOF_ALLOWUNDO,
 	};
+	
+	int SHMoveFile(HWND hWnd, LPCTSTR lpFileTo, LPCTSTR lpFileFrom, FILEOP_FLAGS fopFlags = default_fopFlags);
 	int SHMoveFile(LPCTSTR lpFileTo, LPCTSTR lpFileFrom, FILEOP_FLAGS fopFlags = default_fopFlags);
+
+	int SHCopyFile(HWND hWnd, LPCTSTR lpFileTo, LPCTSTR lpFileFrom, FILEOP_FLAGS fopFlags = default_fopFlags);
 	int SHCopyFile(LPCTSTR lpFileTo, LPCTSTR lpFileFrom, FILEOP_FLAGS fopFlags = default_fopFlags);
+
+	int SHDeleteFile(HWND hWnd, LPCTSTR lpFile, FILEOP_FLAGS fopFlags = default_fopFlags);
 	int SHDeleteFile(LPCTSTR lpFile, FILEOP_FLAGS fopFlags = default_fopFlags);
 
 
+
+
+	int SHMoveFile(HWND hWnd, LPCTSTR lpFileTo, const std::vector<std::wstring>& sourcefiles, FILEOP_FLAGS fopFlags = default_fopFlags);
 	int SHMoveFile(LPCTSTR lpFileTo, const std::vector<std::wstring>& sourcefiles, FILEOP_FLAGS fopFlags = default_fopFlags);
+
+	int SHCopyFile(HWND hWnd, LPCTSTR lpFileTo, const std::vector<std::wstring>& sourcefiles, FILEOP_FLAGS fopFlags = default_fopFlags);
 	int SHCopyFile(LPCTSTR lpFileTo, const std::vector<std::wstring>& sourcefiles, FILEOP_FLAGS fopFlags = default_fopFlags);
+
+	int SHDeleteFile(HWND hWnd, const std::vector<std::wstring>& files, FILEOP_FLAGS fopFlags = default_fopFlags);
 	int SHDeleteFile(const std::vector<std::wstring>& files, FILEOP_FLAGS fopFlags = default_fopFlags);
 
 
-	int SHMoveFile(const std::vector<std::wstring>& destfiles, const std::vector<std::wstring>& sourcefiles, FILEOP_FLAGS fopFlags = default_fopFlags);
-	int SHCopyFile(const std::vector<std::wstring>& destfiles, const std::vector<std::wstring>& sourcefiles, FILEOP_FLAGS fopFlags = default_fopFlags);
 	
+	
+	int SHMoveFile(HWND hWnd, const std::vector<std::wstring>& destfiles, const std::vector<std::wstring>& sourcefiles, FILEOP_FLAGS fopFlags = default_fopFlags);
+	int SHMoveFile(const std::vector<std::wstring>& destfiles, const std::vector<std::wstring>& sourcefiles, FILEOP_FLAGS fopFlags = default_fopFlags);
+
+	int SHCopyFile(HWND hWnd, const std::vector<std::wstring>& destfiles, const std::vector<std::wstring>& sourcefiles, FILEOP_FLAGS fopFlags = default_fopFlags);
+	int SHCopyFile(const std::vector<std::wstring>& destfiles, const std::vector<std::wstring>& sourcefiles, FILEOP_FLAGS fopFlags = default_fopFlags);
+
 	std::wstring GetSHFileOpErrorString(int nRet);
 }
