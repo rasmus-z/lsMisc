@@ -81,7 +81,9 @@ static LPTSTR createcommandline(LPCTSTR a, LPCTSTR b)
 BOOL CreateProcessCommon(LPCTSTR pApp, 
 						 LPCTSTR pArg, // =NULL,
 						 BOOL bHide, //=FALSE
-						 DWORD* pdwLastError
+						 DWORD* pdwLastError,
+						 WaitProcessType wpt,
+						 DWORD dwMaxWait
 						 )
 {
 	STARTUPINFO si = {0};
@@ -206,6 +208,12 @@ BOOL CreateProcessCommon(LPCTSTR pApp,
 	{
 		return FALSE;
 	}
+
+	// Wait if necessary
+	if(wpt==WaitProcess_InputIdle)
+		WaitForInputIdle(pi.hProcess, dwMaxWait);
+	else if(wpt==WaitProcess_Complete)
+		WaitForSingleObject(pi.hProcess, dwMaxWait);
 
 	// ハンドルを閉じる
 	CloseHandle(pi.hThread);

@@ -21,7 +21,16 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
+enum WaitProcessType {
+	WaitProcess_None,
+	WaitProcess_InputIdle,
+	WaitProcess_Complete,
+};
+
 BOOL CreateProcessCommon(LPCTSTR pApp,
 						 LPCTSTR pArg=NULL,
 						 BOOL bHide=FALSE,
-						 DWORD* pdwLastError=NULL);
+						 DWORD* pdwLastError=NULL,
+						 WaitProcessType wpt=WaitProcess_None,
+						 DWORD dwMaxWait = INFINITE
+						 );
