@@ -76,6 +76,10 @@ namespace Ambiesoft
 				(const BYTE*)&value,
 				sizeof(value)) == ERROR_SUCCESS;
 		}
+		bool Delete(LPCWSTR pName)
+		{
+			return RegDeleteValue(hKey_, pName) == ERROR_SUCCESS;
+		}
 		operator bool() const
 		{
 			return hKey_ != nullptr;

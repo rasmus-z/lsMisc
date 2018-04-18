@@ -39,4 +39,11 @@ namespace Ambiesoft {
 			return false;
 		return reg.Set(pName, mode);
 	}
+	bool UnsetBrowserEmulation(LPCWSTR pName)
+	{
+		static const wchar_t* FEATURE_BROWSER_EMULATION = L"Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION";
+		Registory reg;
+		reg.Open(HKEY_CURRENT_USER, FEATURE_BROWSER_EMULATION);
+		return reg.Delete(pName);
+	}
 }

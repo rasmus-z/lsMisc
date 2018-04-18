@@ -28,4 +28,5 @@
 
 namespace Ambiesoft {
 	bool SetBrowserEmulation(LPCWSTR pName, DWORD mode);
+	bool UnsetBrowserEmulation(LPCWSTR pName);
 }
