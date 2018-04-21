@@ -126,7 +126,7 @@ namespace Ambiesoft
 		LPITEMIDLIST pIIL = GetItemIDList(pSF, pFolder);
 		if (!pIIL)
 			return false;
-		STLSCOPEDFREE(pIIL, LPVOID, CoTaskMemFree);
+		STLSOFT_SCOPEDFREE(pIIL, LPVOID, CoTaskMemFree);
 
 		if (!PolulateDirectory(pSF, pIIL))
 			return false;
