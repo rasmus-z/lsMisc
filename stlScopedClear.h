@@ -26,6 +26,6 @@
 
 
 
-#define STLSCOPEDFREE(PTR,T,F) stlsoft::scoped_handle<T> stlscopedfree_##PTR((T)PTR, F)
-#define STLSCODEDFREECRT(PTR) STLSCOPEDFREE(PTR,void*,free)
-#define STLSCOPEDFREE_CLIPBOARD stlsoft::scoped_handle<void> stlscopedfree_clipboard(CloseClipboard);
+#define STLSOFT_SCOPEDFREE(PTR,T,F) stlsoft::scoped_handle<T> stlscopedfree_##PTR((T)PTR, F)
+#define STLSOFT_SCODEDFREE_CRT(PTR) STLSOFT_SCOPEDFREE(PTR,void*,free)
+#define STLSOFT_SCOPEDFREE_CLIPBOARD stlsoft::scoped_handle<void> stlscopedfree_clipboard(CloseClipboard);
