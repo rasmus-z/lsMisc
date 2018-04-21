@@ -314,7 +314,15 @@ namespace Ambiesoft {
 			}
 			return -1;
 		}
-
+		int getCount() const {
+			return (int)args_.size();
+		}
+		myS getArg(size_t i) const {
+			return args_[i];
+		}
+		myS operator[](int i) const {
+			return args_[i];
+		}
 		std::basic_string<E> subString(int index) const
 		{
 			if (offsets_.size() == index)
