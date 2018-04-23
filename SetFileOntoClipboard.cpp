@@ -38,7 +38,7 @@ namespace Ambiesoft {
 
 		if (!OpenClipboard(NULL))
 			return FALSE;
-		STLSCOPEDFREE_CLIPBOARD;
+		STLSOFT_SCOPEDFREE_CLIPBOARD;
 
 		if (!EmptyClipboard())
 			return FALSE;
