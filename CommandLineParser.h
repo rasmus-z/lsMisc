@@ -333,11 +333,11 @@ namespace Ambiesoft {
 		{
 			if (!ignoreCase)
 			{
-				std::vector< MyS_ >::const_iterator cIter = find(options_.begin(), options_.end(), option);
+                                typename std::vector< MyS_ >::const_iterator cIter = find(options_.begin(), options_.end(), option);
 				return cIter != options_.end();
 			}
 			
-			for (std::vector< MyS_ >::const_iterator cIter = options_.begin();
+                        for (typename std::vector< MyS_ >::const_iterator cIter = options_.begin();
 				cIter != options_.end();
 				++cIter)
 			{
@@ -442,7 +442,7 @@ namespace Ambiesoft {
 			options_.push_back(option2);
 			argcountflag_ = acf;
 		}
-		template<>
+                // template<> isthis ok?
 		BasicOption(MyS_ option1, MyS_ option2, const int exactcount)
 		{
 			init();
@@ -501,7 +501,7 @@ namespace Ambiesoft {
 
 			MyS_ ret;
 			bool looped = false;
-			for (std::vector<MyS_>::const_iterator it = values_.begin(); it != values_.end(); ++it)
+                        for (typename std::vector<MyS_>::const_iterator it = values_.begin(); it != values_.end(); ++it)
 			{
 				if (looped)
 				{
@@ -573,7 +573,7 @@ typedef BasicOption<std::string> COptionA;
 	template <class myStringType, class myOptionType> 
 	class BasicCommandLineParser
 	{
-		typedef typename myStringType MyS_;
+                typedef myStringType MyS_;
 		typedef typename myStringType::traits_type::char_type Elem;
 		typedef typename myOptionType::MyS_ MyOS_;
 
@@ -631,7 +631,7 @@ typedef BasicOption<std::string> COptionA;
 
 		MyO_* FindOption(const MyS_& option)
 		{
-			for (POPTIONARRAY::iterator it = useroptions_.begin(); it != useroptions_.end(); ++it)
+                        for (typename POPTIONARRAY::iterator it = useroptions_.begin(); it != useroptions_.end(); ++it)
 			{
 				if ((*it)->isMatchOption(option))
 				{
@@ -639,7 +639,7 @@ typedef BasicOption<std::string> COptionA;
 				}
 			}
 
-			for (OPTIONARRAY::iterator it = inneroptions_.begin();
+                        for (typename OPTIONARRAY::iterator it = inneroptions_.begin();
 				it != inneroptions_.end();
 				++it)
 			{
@@ -704,7 +704,7 @@ typedef BasicOption<std::string> COptionA;
 			assert(parsed_);
 
 			MyS_ ret;
-			for (OPTIONARRAY::const_iterator it = unknowns_.begin(); it != unknowns_.end(); ++it)
+                        for (typename OPTIONARRAY::const_iterator it = unknowns_.begin(); it != unknowns_.end(); ++it)
 			{
 				ret += it->getFirstOption();
 				if (!it->hadValue())
@@ -798,7 +798,7 @@ typedef BasicOption<std::string> COptionA;
 			AddOption(first, last, exactCount, pTarget);
 		}
 
-		template<>
+                // template<>
 		void AddOption(
 			MyS_ optionString1,
 			MyS_ optionString2,
@@ -846,7 +846,7 @@ typedef BasicOption<std::string> COptionA;
 			option.setTarget(pTarget);
 			inneroptions_.push_back(option);
 		}
-		template<>
+                // template<>
 		void AddOption(
 			MyS_ optionString1,
 			MyS_ optionString2,
@@ -999,14 +999,14 @@ typedef BasicOption<std::string> COptionA;
 			// mark all options as parsed.
 			// when user call some functions which is not added to parser or before parse(),
 			// assert() fails.
-			for (POPTIONARRAY::const_iterator it = useroptions_.begin();
+                        for (typename POPTIONARRAY::const_iterator it = useroptions_.begin();
 				it != useroptions_.end();
 				++it)
 			{
 				(*it)->setParsed();
 			}
 
-			for (OPTIONARRAY::iterator it = unknowns_.begin();
+                        for (typename OPTIONARRAY::iterator it = unknowns_.begin();
 				it != unknowns_.end();
 				++it)
 			{
