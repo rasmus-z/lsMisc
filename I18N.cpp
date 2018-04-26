@@ -287,7 +287,7 @@ LPCWSTR i18nInitLangmap(HINSTANCE hInst, LPCWSTR pLang, LPCWSTR pAppName)
 					lstrcpy(szLang, stLang);
 					{
                         // _tcslwr_s(szLang);
-                        wcslwr(szLang);
+                        _wcslwr(szLang);
 						TCHAR szT[MAX_PATH]={0};
 						GetModuleFileNameW(hInst,szT,(sizeof(szT)/sizeof(szT[0]))-1);
 						*(_tcsrchr(szT, L'\\'))=0;
