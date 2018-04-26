@@ -232,6 +232,11 @@ static void ClearMap()
 	i18map.clear();
 }
 
+static errno_t mywcslwr(TCHAR* str, size_t size) 
+{
+	return _tcslwr_s(str, size);
+}
+
 LPCWSTR i18nInitLangmap(HINSTANCE hInst, LPCWSTR pLang, LPCWSTR pAppName)
 {
 	ghInst = hInst;
@@ -286,8 +291,8 @@ LPCWSTR i18nInitLangmap(HINSTANCE hInst, LPCWSTR pLang, LPCWSTR pAppName)
 					TCHAR szLang[4];
 					lstrcpy(szLang, stLang);
 					{
-                        // _tcslwr_s(szLang);
-                        _wcslwr(szLang);
+                       
+                        mywcslwr(szLang, sizeof(szLang)/sizeof(szLang[0]));
 						TCHAR szT[MAX_PATH]={0};
 						GetModuleFileNameW(hInst,szT,(sizeof(szT)/sizeof(szT[0]))-1);
 						*(_tcsrchr(szT, L'\\'))=0;
