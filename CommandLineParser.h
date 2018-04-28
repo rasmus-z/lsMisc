@@ -215,9 +215,9 @@ namespace Ambiesoft {
 	template<class myStringType> 
 	class BasicOption
 	{
-		typedef BasicOption<myStringType> MyT_;
-		typedef typename myStringType::traits_type::char_type Elem;
-		typedef myStringType MyS_;
+        typedef BasicOption<myStringType> MyT_;
+        typedef typename myStringType::traits_type::char_type Elem;
+        typedef myStringType MyS_;
 
 		class UserTarget
 		{
@@ -333,11 +333,11 @@ namespace Ambiesoft {
 		{
 			if (!ignoreCase)
 			{
-                                typename std::vector< MyS_ >::const_iterator cIter = find(options_.begin(), options_.end(), option);
+                typename std::vector< MyS_ >::const_iterator cIter = find(options_.begin(), options_.end(), option);
 				return cIter != options_.end();
 			}
 			
-                        for (typename std::vector< MyS_ >::const_iterator cIter = options_.begin();
+            for (typename std::vector< MyS_ >::const_iterator cIter = options_.begin();
 				cIter != options_.end();
 				++cIter)
 			{
@@ -473,6 +473,14 @@ namespace Ambiesoft {
 			options_.push_back(option2);
 			argcountflag_ = ArgCount_Zero;
 		}
+		BasicOption(MyS_ option1, MyS_ option2, MyS_ option3)
+		{
+			init();
+			options_.push_back(option1);
+			options_.push_back(option2);
+			options_.push_back(option3);
+			argcountflag_ = ArgCount_Zero;
+		}
 		~BasicOption()
 		{
 			
@@ -501,7 +509,7 @@ namespace Ambiesoft {
 
 			MyS_ ret;
 			bool looped = false;
-                        for (typename std::vector<MyS_>::const_iterator it = values_.begin(); it != values_.end(); ++it)
+            for (typename std::vector<MyS_>::const_iterator it = values_.begin(); it != values_.end(); ++it)
 			{
 				if (looped)
 				{
@@ -562,7 +570,7 @@ typedef BasicOption<std::string> COptionA;
 #ifdef UNICODE
 	typedef COptionW COption;
 #else
-	typedef COptionA COption
+	typedef COptionA COption;
 #endif
 
 
@@ -573,7 +581,7 @@ typedef BasicOption<std::string> COptionA;
 	template <class myStringType, class myOptionType> 
 	class BasicCommandLineParser
 	{
-                typedef myStringType MyS_;
+        typedef myStringType MyS_;
 		typedef typename myStringType::traits_type::char_type Elem;
 		typedef typename myOptionType::MyS_ MyOS_;
 
@@ -617,10 +625,10 @@ typedef BasicOption<std::string> COptionA;
 
 
 
-		typedef std::vector<BasicOption<MyS_>*> POPTIONARRAY;
-		typedef std::vector<BasicOption<MyS_> > OPTIONARRAY;
+		typedef typename std::vector<BasicOption<MyS_>*> POPTIONARRAY;
+		typedef typename std::vector<BasicOption<MyS_> > OPTIONARRAY;
 
-		typedef BasicOption<MyS_> MyO_;
+        typedef BasicOption<MyS_> MyO_;
 		POPTIONARRAY useroptions_;
 		OPTIONARRAY inneroptions_;
 		OPTIONARRAY unknowns_;
@@ -631,7 +639,7 @@ typedef BasicOption<std::string> COptionA;
 
 		MyO_* FindOption(const MyS_& option)
 		{
-                        for (typename POPTIONARRAY::iterator it = useroptions_.begin(); it != useroptions_.end(); ++it)
+            for (typename POPTIONARRAY::iterator it = useroptions_.begin(); it != useroptions_.end(); ++it)
 			{
 				if ((*it)->isMatchOption(option))
 				{
@@ -639,7 +647,8 @@ typedef BasicOption<std::string> COptionA;
 				}
 			}
 
-                        for (typename OPTIONARRAY::iterator it = inneroptions_.begin();
+
+            for (typename OPTIONARRAY::iterator it = inneroptions_.begin();
 				it != inneroptions_.end();
 				++it)
 			{
@@ -681,16 +690,18 @@ typedef BasicOption<std::string> COptionA;
 				{
 					MyS_ optionstring = inneroptions_[i].options_[j];
 					ret += optionstring;
+					addkaigyo(ret);
 
 					MyS_ helpstring = inneroptions_[i].helpString_;
 					if (!helpstring.empty())
 					{
-						addkaigyo(ret);
+						// addkaigyo(ret);
 						addspace(ret);
 						addspace(ret);
 						ret += helpstring;
 						addkaigyo(ret);
 					}
+					addkaigyo(ret);
 				}
 			}
 			return ret;
@@ -735,7 +746,7 @@ typedef BasicOption<std::string> COptionA;
 #ifdef _DEBUG
 		void check(MyO_* cli)
 		{
-			for (POPTIONARRAY::const_iterator it = useroptions_.begin();
+			for (typename POPTIONARRAY::const_iterator it = useroptions_.begin();
 				it != useroptions_.end();
 				++it)
 			{
@@ -743,7 +754,7 @@ typedef BasicOption<std::string> COptionA;
 				assert((*it) != cli);
 
 				// check same option string is added
-				for(std::vector< MyS_ >::const_iterator cIter=cli->options_.begin();
+				for(typename std::vector< MyS_ >::const_iterator cIter=cli->options_.begin();
 					cIter != cli->options_.end();
 					++cIter)
 				{
@@ -752,11 +763,11 @@ typedef BasicOption<std::string> COptionA;
 				}
 			}
 
-			for(OPTIONARRAY::const_iterator it = inneroptions_.begin();
+			for(typename OPTIONARRAY::const_iterator it = inneroptions_.begin();
 				it != inneroptions_.end();
 				++it)
 			{
-				for(std::vector< MyS_ >::const_iterator cIter=cli->options_.begin();
+				for(typename std::vector< MyS_ >::const_iterator cIter=cli->options_.begin();
 					cIter != cli->options_.end();
 					++cIter)
 				{
@@ -768,135 +779,141 @@ typedef BasicOption<std::string> COptionA;
 #else
 		void check(MyO_* cli){}
 #endif
-		// bool target
-		template<class InputIterator>
+		
+		// Iterator option strings
+		template<class InputIterator, class TARGET>
 		void AddOption(
 			InputIterator first,
 			InputIterator last,
 			int exactCount,
-			bool* pTarget,
+			TARGET* pTarget,
 			ArgEncodingFlags arf = ArgEncodingFlags_Default,
 			const MyS_& helpstring = MyS_())
 		{
 			MyO_ option(first, last, exactCount);
 			option.case_ = case_;
 			check(&option);
-			*pTarget = false;
+			*pTarget = TARGET();
 			option.setTarget(pTarget);
 			option.encoding_ = arf;
 			option.helpString_ = helpstring;
 			inneroptions_.push_back(option);
 		}
 
+		// single option string
+		template<class TARGET>
 		void AddOption(
 			MyS_ optionString1,
 			int exactCount,
-			bool* pTarget)
+			TARGET* pTarget,
+			ArgEncodingFlags arf = ArgEncodingFlags_Default,
+			const MyS_& helpstring = MyS_())
 		{
 			MyS_* first = &optionString1;
 			MyS_* last = first + 1;
-			AddOption(first, last, exactCount, pTarget);
+			AddOption(first, last, exactCount, pTarget, arf, helpstring);
 		}
 
-                // template<>
+		// two option strings
+		template<class TARGET>
 		void AddOption(
 			MyS_ optionString1,
 			MyS_ optionString2,
 			int exactCount,
-			bool* pTarget,
-			ArgEncodingFlags arf,
-			const MyS_& helpstring)
+			TARGET* pTarget,
+			ArgEncodingFlags arf = ArgEncodingFlags_Default,
+			const MyS_& helpstring = MyS_())
 		{
 			const MyS_ ops[] = { optionString1, optionString2 };
-			AddOption(ops, ops + _countof(ops), exactCount, pTarget);
+			AddOption(ops, ops + _countof(ops), exactCount, pTarget, arf, helpstring);
 		}
 
-		void AddOption(
-			const Elem* p1,
-			const Elem* p2,
-			int exactCount,
-			bool* pTarget)
-		{
-			const Elem* ops[] = { p1, p2 };
-			AddOption(ops, ops + _countof(ops), exactCount, pTarget);
-		}
+		//void AddOption(
+		//	const Elem* p1,
+		//	const Elem* p2,
+		//	int exactCount,
+		//	bool* pTarget)
+		//{
+		//	const Elem* ops[] = { p1, p2 };
+		//	AddOption(ops, ops + _countof(ops), exactCount, pTarget);
+		//}
 
 
-		// int target
-		void AddOption(
-			MyS_ optionString1,
-			int exactCount,
-			int* pTarget)
-		{
-			MyS_* first = &optionString1;
-			MyS_* last = first + 1;
-			AddOption(first, last, exactCount, pTarget);
-		}
-		template<class InputIterator>
-		void AddOption(
-			InputIterator first,
-			InputIterator last,
-			int exactCount,
-			int* pTarget)
-		{
-			MyO_ option(first, last, exactCount);
-			option.case_ = case_;
-			check(&option);
-			// *pTarget = false;
-			option.setTarget(pTarget);
-			inneroptions_.push_back(option);
-		}
-                // template<>
-		void AddOption(
-			MyS_ optionString1,
-			MyS_ optionString2,
-			int exactCount,
-			int* pTarget)
-		{
-			const MyS_ ops[] = { optionString1, optionString2 };
-			AddOption(ops, ops + _countof(ops), exactCount, pTarget);
-		}
+		//// int target
+		//void AddOption(
+		//	MyS_ optionString1,
+		//	int exactCount,
+		//	int* pTarget)
+		//{
+		//	MyS_* first = &optionString1;
+		//	MyS_* last = first + 1;
+		//	AddOption(first, last, exactCount, pTarget);
+		//}
+		//template<class InputIterator>
+		//void AddOption(
+		//	InputIterator first,
+		//	InputIterator last,
+		//	int exactCount,
+		//	int* pTarget)
+		//{
+		//	MyO_ option(first, last, exactCount);
+		//	option.case_ = case_;
+		//	check(&option);
+		//	// *pTarget = false;
+		//	option.setTarget(pTarget);
+		//	inneroptions_.push_back(option);
+		//}
+  //              // template<>
+		//void AddOption(
+		//	MyS_ optionString1,
+		//	MyS_ optionString2,
+		//	int exactCount,
+		//	int* pTarget)
+		//{
+		//	const MyS_ ops[] = { optionString1, optionString2 };
+		//	AddOption(ops, ops + _countof(ops), exactCount, pTarget);
+		//}
 
-		void AddOption(
-			const Elem* p1,
-			const Elem* p2,
-			int exactCount,
-			int* pTarget)
-		{
-			const Elem* ops[] = { p1, p2 };
-			AddOption(ops, ops + _countof(ops), exactCount, pTarget);
-		}
+		//void AddOption(
+		//	const Elem* p1,
+		//	const Elem* p2,
+		//	int exactCount,
+		//	int* pTarget)
+		//{
+		//	const Elem* ops[] = { p1, p2 };
+		//	AddOption(ops, ops + _countof(ops), exactCount, pTarget);
+		//}
 
 
-		// wstring target
-		void AddOption(
-			const MyS_& optionString1,
-			int exactCount,
-			MyS_* pTarget,
-			ArgEncodingFlags arf,
-			const MyS_& helpstring)
-		{
-			MyO_ option(optionString1, exactCount);
-			option.case_ = case_;
-			option.encoding_ = arf;
-			check(&option);
-			*pTarget = L"";
-			option.setTarget(pTarget);
-			option.helpString_ = helpstring;
-			inneroptions_.push_back(option);
-		}
-		void AddOption(
-			const MyS_& optionString1,
-			int exactCount,
-			MyS_* pTarget,
-			ArgEncodingFlags arf = ArgEncodingFlags_Default)
-		{
-			AddOption(optionString1,
-				exactCount,
-				pTarget,
-				arf,
-				L"");
-		}
+		//template<class TARGET>
+		//void AddOption(
+		//	const MyS_& optionString1,
+		//	int exactCount,
+		//	TARGET* pTarget,
+		//	ArgEncodingFlags arf,
+		//	const MyS_& helpstring)
+		//{
+		//	MyO_ option(optionString1, exactCount);
+		//	option.case_ = case_;
+		//	option.encoding_ = arf;
+		//	check(&option);
+		//	*pTarget = TARGET();
+		//	option.setTarget(pTarget);
+		//	option.helpString_ = helpstring;
+		//	inneroptions_.push_back(option);
+		//}
+		//void AddOption(
+		//	const MyS_& optionString1,
+		//	int exactCount,
+		//	MyS_* pTarget,
+		//	ArgEncodingFlags arf = ArgEncodingFlags_Default)
+		//{
+		//	AddOption(optionString1,
+		//		exactCount,
+		//		pTarget,
+		//		arf,
+		//		L"");
+		//}
 
 #ifdef _WIN32
 #ifdef UNICODE
