@@ -83,7 +83,8 @@ BOOL CreateProcessCommon(LPCTSTR pApp,
 						 BOOL bHide, //=FALSE
 						 DWORD* pdwLastError,
 						 WaitProcessType wpt,
-						 DWORD dwMaxWait
+						 DWORD dwMaxWait,
+						HANDLE* phProcess
 						 )
 {
 	STARTUPINFO si = {0};
@@ -217,7 +218,11 @@ BOOL CreateProcessCommon(LPCTSTR pApp,
 
 	// ハンドルを閉じる
 	CloseHandle(pi.hThread);
-	CloseHandle(pi.hProcess);
+
+	if (phProcess)
+		*phProcess = pi.hProcess;
+	else
+		CloseHandle(pi.hProcess);
 
 
 	return TRUE;

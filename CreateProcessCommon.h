@@ -32,5 +32,6 @@ BOOL CreateProcessCommon(LPCTSTR pApp,
 						 BOOL bHide=FALSE,
 						 DWORD* pdwLastError=NULL,
 						 WaitProcessType wpt=WaitProcess_None,
-						 DWORD dwMaxWait = INFINITE
+						 DWORD dwMaxWait = INFINITE,
+						 HANDLE* phProcess = NULL
 						 );
