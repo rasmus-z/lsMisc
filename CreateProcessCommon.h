@@ -21,6 +21,8 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
+#pragma once
+
 enum WaitProcessType {
 	WaitProcess_None,
 	WaitProcess_InputIdle,
