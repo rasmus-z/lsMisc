@@ -793,7 +793,7 @@ typedef BasicOption<std::string> COptionA;
 			MyO_ option(first, last, exactCount);
 			option.case_ = case_;
 			check(&option);
-			*pTarget = TARGET();
+			// *pTarget = TARGET();
 			option.setTarget(pTarget);
 			option.encoding_ = arf;
 			option.helpString_ = helpstring;
