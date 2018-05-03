@@ -55,6 +55,10 @@ public:
 	BOOL* operator&() {
 		return &b_;
 	}
+	BOOL toggle() {
+		b_ = !b_;
+		return b_;
+	}
 };
 
 }
