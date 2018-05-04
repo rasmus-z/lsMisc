@@ -125,6 +125,7 @@ namespace Ambiesoft {
 		std::vector<size_t> offsets_;
 		typedef std::basic_string<E> myS;
 		typedef typename std::vector<std::basic_string<E> > myVS;
+		typedef typename std::vector<std::basic_string<E> >::iterator myVSIterator;
 		typedef typename std::char_traits<E> myTr;
 
 		std::vector<std::basic_string<E> > args_;
@@ -301,6 +302,8 @@ namespace Ambiesoft {
 				init(pCommandLine);
 			}
 		}
+		
+
 		~CCommandLineStringBase()
 		{
 			delete[] (E*)p_;
@@ -343,7 +346,7 @@ namespace Ambiesoft {
 			E** ppRetReturn = (E**)LocalAlloc(0, (me.args_.size() + 1) * sizeof(E*));
 			E** ppRet = ppRetReturn;
 			int i = 0;
-			for (myVS::iterator it = me.args_.begin();
+			for (myVSIterator it = me.args_.begin();
 				it != me.args_.end(); ++it)
 			{
 				if (it->empty())
@@ -394,6 +397,19 @@ namespace Ambiesoft {
 				}
 			}
 			return ret;
+		}
+
+		static void ExplodeExeAndArg(const E* pE, myS& exe, myS& arg)
+		{
+			myS all;
+			if (pE)
+				all = pE;
+			else
+				all = GetCommandLine();
+
+			CCommandLineStringBase<E> tcl(all.c_str());
+			exe = tcl.getArg(0);
+			arg = tcl.subString(1);
 		}
 	};
 
