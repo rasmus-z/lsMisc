@@ -917,7 +917,7 @@ bool EnableDebugPriv(void)
 		// _tprintf(_T("OpenProcessToken() failed, Error = %d SeDebugPrivilege is not available.\n"), GetLastError());
 		return false;
 	}
-	STLSCOPEDFREE(hToken, HANDLE, CloseHandle);
+	STLSOFT_SCOPEDFREE_HANDLE(hToken);
 	if (!LookupPrivilegeValue(NULL, SE_DEBUG_NAME, &sedebugnameValue))
 	{
 		// _tprintf(_T("LookupPrivilegeValue() failed, Error = %d SeDebugPrivilege is not available.\n"), GetLastError());

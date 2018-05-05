@@ -88,26 +88,26 @@ namespace Ambiesoft {
 		HANDLE hPipeStdInWrite = NULL;
 		if (!CreateHandles(hPipeStdInRead, hPipeStdInWrite, TRUE, FALSE, pdwLastError))
 			return FALSE;
-		STLSCOPEDFREE(hPipeStdInRead, HANDLE, CloseHandle);
-		STLSCOPEDFREE(hPipeStdInWrite, HANDLE, CloseHandle);
+		STLSOFT_SCOPEDFREE_HANDLE(hPipeStdInRead);
+		STLSOFT_SCOPEDFREE_HANDLE(hPipeStdInWrite);
 
 		HANDLE hPipeStdOutRead = nullptr;
 		HANDLE hPipeStdOutWrite = nullptr;
 		if (!CreateHandles(hPipeStdOutRead, hPipeStdOutWrite, FALSE, TRUE, pdwLastError))
 			return FALSE;
-		STLSCOPEDFREE(hPipeStdOutRead, HANDLE, CloseHandle);
-		STLSCOPEDFREE(hPipeStdOutWrite, HANDLE, CloseHandle);
+		STLSOFT_SCOPEDFREE_HANDLE(hPipeStdOutRead);
+		STLSOFT_SCOPEDFREE_HANDLE(hPipeStdOutWrite);
 
 		HANDLE hPipeStdErrRead = nullptr;
 		HANDLE hPipeStdErrWrite = nullptr;
 		if (!CreateHandles(hPipeStdErrRead, hPipeStdErrWrite, FALSE, TRUE, pdwLastError))
 			return FALSE;
-		STLSCOPEDFREE(hPipeStdErrRead, HANDLE, CloseHandle);
-		STLSCOPEDFREE(hPipeStdErrWrite, HANDLE, CloseHandle);
+		STLSOFT_SCOPEDFREE_HANDLE(hPipeStdErrRead);
+		STLSOFT_SCOPEDFREE_HANDLE(hPipeStdErrWrite);
 
 		// createprocess
 		LPWSTR pArgCP = pArg ? _wcsdup(pArg) : NULL;
-		STLSCODEDFREECRT(pArgCP, free);
+		STLSOFT_SCODEDFREE_CRT(pArgCP);
 
 		STARTUPINFO siStartInfo = { 0 };
 		siStartInfo.cb = sizeof(STARTUPINFO);
@@ -134,7 +134,7 @@ namespace Ambiesoft {
 			return FALSE;
 		}
 
-		CreateThread()
+		CreateThread();
 		return TRUE;
 	}
 }
