@@ -24,12 +24,14 @@
 #include "stdafx.h"
 
 #include <cassert>
+#include <string>
 #include <stlsoft/smartptr/scoped_handle.hpp>
 
 #include "stlScopedClear.h"
 #include "RunCommandGetResult.h"
 #include "DebugNew.h"
 
+using namespace std;
 namespace Ambiesoft {
 	
 	static BOOL CreateHandles(HANDLE& h1, HANDLE& h2, BOOL i1, BOOL i2, DWORD* pdwLastError)
@@ -82,7 +84,38 @@ namespace Ambiesoft {
 #endif
 		return TRUE;
 	}
-	BOOL RunCommandGetResult(LPCWSTR pExe, LPCWSTR pArg, int* pIRetCommand, std::string* pStrRetCommand, DWORD* pdwLastError)
+
+	struct WorkerStruct {
+		HANDLE h_;
+		string s_;
+	};
+	static UINT __stdcall workerThread(LPVOID pParam)
+	{
+		WorkerStruct* pWorker = (WorkerStruct*)pParam;
+		DWORD d = 0;
+		BYTE szB[4096] = { 0 };
+		while (ReadFile(pWorker->h_,
+			szB,
+			sizeof(szB) - 1,
+			&d,
+			NULL))
+		{
+			
+			pWorker->s_ += (char*)szB;
+			ZeroMemory(szB, sizeof(szB));
+		}
+		return 0;
+	}
+
+
+
+	BOOL RunCommandGetResult(
+		LPCWSTR pExe,
+		LPCWSTR pArg,
+		DWORD* pIRetCommand, 
+		std::string* pStrOutCommand,
+		std::string* pStrErrCommand,
+		DWORD* pdwLastError)
 	{
 		HANDLE hPipeStdInRead = NULL;
 		HANDLE hPipeStdInWrite = NULL;
@@ -114,13 +147,19 @@ namespace Ambiesoft {
 		siStartInfo.hStdInput = hPipeStdInRead;
 		siStartInfo.hStdOutput = hPipeStdOutWrite;
 		siStartInfo.hStdError = hPipeStdErrWrite;
-		siStartInfo.dwFlags |= STARTF_USESTDHANDLES;
+		siStartInfo.dwFlags |= STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
+		siStartInfo.wShowWindow = SW_HIDE;
+
+		SECURITY_ATTRIBUTES sa = { 0 };
+		sa.nLength = sizeof(SECURITY_ATTRIBUTES);
+		sa.lpSecurityDescriptor = NULL;
+		sa.bInheritHandle = TRUE;
 
 		PROCESS_INFORMATION pi = { 0 };
 		if(!CreateProcess(
 			pExe,
 			pArgCP,
-			nullptr, // sec
+			&sa, // sec
 			nullptr, // sec thread
 			TRUE, // inherit
 			0, // flags
@@ -133,8 +172,50 @@ namespace Ambiesoft {
 				*pdwLastError = GetLastError();
 			return FALSE;
 		}
+		HANDLE hProcess = pi.hProcess;
+		HANDLE hThread = pi.hThread;
+		STLSOFT_SCOPEDFREE_HANDLE(hProcess);
+		STLSOFT_SCOPEDFREE_HANDLE(hThread);
 
-		CreateThread();
+
+
+		//BYTE buffOut, buffErr;
+		//DWORD readedOut = 1;
+		//DWORD readedErr = 1;
+
+		WorkerStruct wsOut;
+		wsOut.h_ = hPipeStdOutRead;
+		HANDLE hWorkerOut = (HANDLE)_beginthreadex(NULL,
+			0,
+			workerThread,
+			&wsOut,
+			CREATE_SUSPENDED,
+			NULL);
+		STLSOFT_SCOPEDFREE_HANDLE(hWorkerOut);
+
+		WorkerStruct wsErr;
+		wsErr.h_ = hPipeStdErrRead;
+		HANDLE hWorkerErr = (HANDLE)_beginthreadex(NULL,
+			0,
+			workerThread,
+			&wsErr,
+			CREATE_SUSPENDED,
+			NULL);
+		STLSOFT_SCOPEDFREE_HANDLE(hWorkerErr);
+		
+		ResumeThread(hWorkerOut);
+		ResumeThread(hWorkerErr);
+		HANDLE h3[] = { pi.hProcess, hWorkerOut, hWorkerErr };
+		WaitForMultipleObjects(sizeof(h3)/sizeof(h3[0]), h3, TRUE, INFINITE);
+
+		if (pStrOutCommand)
+			*pStrOutCommand = wsOut.s_;
+		if (pStrErrCommand)
+			*pStrErrCommand = wsErr.s_;
+
+		if (pIRetCommand)
+			GetExitCodeProcess(pi.hProcess, pIRetCommand);
+
 		return TRUE;
 	}
 }

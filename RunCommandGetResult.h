@@ -26,5 +26,11 @@
 #include <Windows.h>
 
 namespace Ambiesoft {
-	BOOL RunCommandGetResult(LPCWSTR pExe, LPCWSTR pArg, int* pIRetCommand, std::string* pStrRetCommand, DWORD* pdwLastError = nullptr);
+	BOOL RunCommandGetResult(
+		LPCWSTR pExe,
+		LPCWSTR pArg,
+		DWORD* pIRetCommand,
+		std::string* pStrOutCommand,
+		std::string* pStrErrCommand,
+		DWORD* pdwLastError = nullptr);
 }
