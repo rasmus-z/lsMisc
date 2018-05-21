@@ -85,6 +85,19 @@ namespace Ambiesoft {
 		return TRUE;
 	}
 
+	static wstring dq(LPCWSTR p)
+	{
+		if (!p || !p[0])
+			return wstring();
+		if (p[0] == L'"')
+			return p;
+		for (LPCWSTR pT = p; *pT; ++pT)
+		{
+			if (*pT == L' ')
+				return wstring(L"\"") + p + L"\"";
+		}
+		return p;
+	}
 	struct WorkerStruct {
 		HANDLE h_;
 		string s_;
@@ -108,7 +121,44 @@ namespace Ambiesoft {
 	}
 
 
+	struct HandleFreer {
+		HANDLE* ph_;
+		HandleFreer(HANDLE* ph) :ph_(ph)
+		{
+			assert(ph);
+		}
+		~HandleFreer() {
+			if (*ph_)
+				CloseHandle(*ph_);
+		}
+	};
 
+	struct CHandle {
+		HANDLE h_;
+		CHandle(HANDLE h) :h_(h)
+		{
+
+		}
+		~CHandle() {
+			Close();
+		}
+		HANDLE Detach() {
+			HANDLE ret = h_;
+			h_ = NULL;
+			return ret;
+		}
+		void Close() {
+			if (h_)
+				CloseHandle(h_);
+			h_ = NULL;
+		}
+	};
+	static BOOL ClearHandle(HANDLE& h)
+	{
+		BOOL bRet = CloseHandle(h);
+		h = NULL;
+		return bRet;
+	}
 	BOOL RunCommandGetResult(
 		LPCWSTR pExe,
 		LPCWSTR pArg,
@@ -121,22 +171,22 @@ namespace Ambiesoft {
 		HANDLE hPipeStdInWrite = NULL;
 		if (!CreateHandles(hPipeStdInRead, hPipeStdInWrite, TRUE, FALSE, pdwLastError))
 			return FALSE;
-		STLSOFT_SCOPEDFREE_HANDLE(hPipeStdInRead);
-		STLSOFT_SCOPEDFREE_HANDLE(hPipeStdInWrite);
+		HandleFreer h1(&hPipeStdInRead);
+		HandleFreer h2(&hPipeStdInWrite);
 
 		HANDLE hPipeStdOutRead = nullptr;
 		HANDLE hPipeStdOutWrite = nullptr;
 		if (!CreateHandles(hPipeStdOutRead, hPipeStdOutWrite, FALSE, TRUE, pdwLastError))
 			return FALSE;
-		STLSOFT_SCOPEDFREE_HANDLE(hPipeStdOutRead);
-		STLSOFT_SCOPEDFREE_HANDLE(hPipeStdOutWrite);
+		HandleFreer h3(&hPipeStdOutRead);
+		HandleFreer h4(&hPipeStdOutWrite);
 
 		HANDLE hPipeStdErrRead = nullptr;
 		HANDLE hPipeStdErrWrite = nullptr;
 		if (!CreateHandles(hPipeStdErrRead, hPipeStdErrWrite, FALSE, TRUE, pdwLastError))
 			return FALSE;
-		STLSOFT_SCOPEDFREE_HANDLE(hPipeStdErrRead);
-		STLSOFT_SCOPEDFREE_HANDLE(hPipeStdErrWrite);
+		HandleFreer h5(&hPipeStdErrRead);
+		HandleFreer h6(&hPipeStdErrWrite);
 
 		// createprocess
 		LPWSTR pArgCP = pArg ? _wcsdup(pArg) : NULL;
@@ -147,7 +197,7 @@ namespace Ambiesoft {
 		siStartInfo.hStdInput = hPipeStdInRead;
 		siStartInfo.hStdOutput = hPipeStdOutWrite;
 		siStartInfo.hStdError = hPipeStdErrWrite;
-		siStartInfo.dwFlags |= STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
+		siStartInfo.dwFlags = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
 		siStartInfo.wShowWindow = SW_HIDE;
 
 		SECURITY_ATTRIBUTES sa = { 0 };
@@ -155,10 +205,12 @@ namespace Ambiesoft {
 		sa.lpSecurityDescriptor = NULL;
 		sa.bInheritHandle = TRUE;
 
+		wstring cmd = dq(pExe) + L" " + pArgCP;
+		LPWSTR pCmd = _wcsdup(cmd.c_str());
 		PROCESS_INFORMATION pi = { 0 };
 		if(!CreateProcess(
-			pExe,
-			pArgCP,
+			NULL,
+			pCmd,
 			&sa, // sec
 			nullptr, // sec thread
 			TRUE, // inherit
@@ -172,17 +224,21 @@ namespace Ambiesoft {
 				*pdwLastError = GetLastError();
 			return FALSE;
 		}
-		HANDLE hProcess = pi.hProcess;
-		HANDLE hThread = pi.hThread;
-		STLSOFT_SCOPEDFREE_HANDLE(hProcess);
-		STLSOFT_SCOPEDFREE_HANDLE(hThread);
+		HandleFreer h7(&pi.hProcess);
+		HandleFreer h8(&pi.hThread);
+
+		ClearHandle(hPipeStdInRead);
+		ClearHandle(hPipeStdOutWrite);
+		ClearHandle(hPipeStdErrWrite);
+
 
 
 
 		//BYTE buffOut, buffErr;
 		//DWORD readedOut = 1;
 		//DWORD readedErr = 1;
-
+		//DWORD d;
+		//WriteFile(hPipeStdInWrite, "", 1, &d, NULL);
 		WorkerStruct wsOut;
 		wsOut.h_ = hPipeStdOutRead;
 		HANDLE hWorkerOut = (HANDLE)_beginthreadex(NULL,
@@ -205,8 +261,8 @@ namespace Ambiesoft {
 		
 		ResumeThread(hWorkerOut);
 		ResumeThread(hWorkerErr);
-		HANDLE h3[] = { pi.hProcess, hWorkerOut, hWorkerErr };
-		WaitForMultipleObjects(sizeof(h3)/sizeof(h3[0]), h3, TRUE, INFINITE);
+		HANDLE hWaits[] = { pi.hProcess, hWorkerOut, hWorkerErr };
+		WaitForMultipleObjects(sizeof(hWaits) / sizeof(hWaits[0]), hWaits, TRUE, INFINITE);
 
 		if (pStrOutCommand)
 			*pStrOutCommand = wsOut.s_;
