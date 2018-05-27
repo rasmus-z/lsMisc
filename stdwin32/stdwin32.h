@@ -172,6 +172,7 @@ namespace stdwin32 {
 
 
 	std::wstring stdGetFullPathName(LPCWSTR pPath);
+	std::wstring stdGetFullPathName(const std::wstring& ws);
 
 
 

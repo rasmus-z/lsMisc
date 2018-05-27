@@ -759,7 +759,10 @@ namespace stdwin32 {
 
 		return ret;
 	}
-
+	std::wstring stdGetFullPathName(const std::wstring& ws)
+	{
+		return stdGetFullPathName(ws.c_str());
+	}
 
 	std::string stdToString(const wchar_t * pIN)
 	{

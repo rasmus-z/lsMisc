@@ -328,7 +328,7 @@ namespace Ambiesoft {
 		}
 		std::basic_string<E> subString(int index) const
 		{
-			if (offsets_.size() == index)
+			if (offsets_.size() <= (size_t)index)
 				return std::basic_string<E>();
 
 			int ofs = offsets_[index];
