@@ -85,7 +85,27 @@ namespace Ambiesoft {
 		s += L" ";
 	}
 
-	
+	inline static std::string getFileName(std::string program)
+	{
+		const size_t last_slash_idx = program.find_last_of("\\/");
+		if (std::string::npos != last_slash_idx)
+		{
+			program.erase(0, last_slash_idx + 1);
+		}
+
+		return program;
+	}
+	inline static std::wstring getFileName(std::wstring program)
+	{
+		const size_t last_slash_idx = program.find_last_of(L"\\/");
+		if (std::wstring::npos != last_slash_idx)
+		{
+			program.erase(0, last_slash_idx + 1);
+		}
+
+		return program;
+	}
+
 	std::wstring Utf8UrlDecode(const std::wstring& ws);
 
 	//// explicit_specialization.cpp  
@@ -415,10 +435,15 @@ namespace Ambiesoft {
 			options_.push_back(option);
 			argcountflag_ = acf;
 		}
-		BasicOption(MyS_ option, const int exactcount) 
+		BasicOption(MyS_ option, 
+			const int exactcount,
+			ArgEncodingFlags arf = ArgEncodingFlags_Default,
+			const MyS_& helpstring = MyS_())
 		{
 			init();
 			options_.push_back(option);
+			encoding_ = arf;
+			helpString_ = helpstring;
 			setArgFlag(exactcount);
 		}
 
@@ -636,6 +661,7 @@ typedef BasicOption<std::string> COptionA;
 		bool parsed_;
 		CaseFlags case_;
 		MyS_ description_;
+		MyS_ program_;
 
 		MyO_* FindOption(const MyS_& option)
 		{
@@ -667,6 +693,46 @@ typedef BasicOption<std::string> COptionA;
 			parsed_=false;
 			case_ = CaseFlags_Default;
 		}
+
+		void processOptionStringHelper(
+			const ArgCount& argcount,
+			const MyS_& optionstring,
+			const MyS_& helpstring,
+			MyS_& explain,
+			MyS_& usage) const
+		{
+			// usage
+			if (optionstring.empty())
+			{
+				// main arg
+				if (argcount == ArgCount_Infinite)
+				{
+					usage += L" [Arg1 [Arg2 [...]]]";
+				}
+				else if (argcount == ArgCount_Two)
+				{
+					usage += L" Arg1 Arg2";
+				}
+			}
+			else
+			{
+			}
+
+			// explain
+			explain += optionstring;
+			addkaigyo(explain);
+
+			if (!helpstring.empty())
+			{
+				// addkaigyo(explain);
+				addspace(explain);
+				addspace(explain);
+				explain += helpstring;
+				addkaigyo(explain);
+			}
+			addkaigyo(explain);
+		}
+
 	public:
 		BasicCommandLineParser()
 		{
@@ -678,33 +744,60 @@ typedef BasicOption<std::string> COptionA;
 			case_ = kase;
 			description_ = description;
 		}
-		MyS_ getHelpMessage() const {
-			MyS_ ret;
-			ret += description_;
-			addkaigyo(ret);
-			addkaigyo(ret);
+		BasicCommandLineParser(const MyS_& description)
+		{
+			init();
+			description_ = description;
+		}
 
+		MyS_ getHelpMessage() const {
+			MyS_ description;
+			MyS_ explain;
+			MyS_ usage;
+
+			if (!description_.empty())
+			{
+				description += description_;
+				addkaigyo(description);
+			}
+
+			MyS_ program;
+			if (program_.empty())
+				program = L"program";
+			else
+			{
+				program = getFileName(program_);
+			}
+			usage += program;
+			addspace(usage);
+			
+			for (size_t i = 0; i < useroptions_.size(); ++i)
+			{
+				for (size_t j = 0; j < useroptions_[i]->options_.size(); ++j)
+				{
+					processOptionStringHelper(
+						useroptions_[i]->argcountflag_,
+						useroptions_[i]->options_[j],
+						useroptions_[i]->helpString_,
+						explain,
+						usage);
+				}
+			}
 			for (size_t i = 0; i < inneroptions_.size(); ++i)
 			{
 				for (size_t j = 0; j < inneroptions_[i].options_.size(); ++j)
 				{
-					MyS_ optionstring = inneroptions_[i].options_[j];
-					ret += optionstring;
-					addkaigyo(ret);
-
-					MyS_ helpstring = inneroptions_[i].helpString_;
-					if (!helpstring.empty())
-					{
-						// addkaigyo(ret);
-						addspace(ret);
-						addspace(ret);
-						ret += helpstring;
-						addkaigyo(ret);
-					}
-					addkaigyo(ret);
+					processOptionStringHelper(
+						inneroptions_[i].argcountflag_,
+						inneroptions_[i].options_[j],
+						inneroptions_[i].helpString_,
+						explain,
+						usage);
 				}
 			}
-			return ret;
+
+			addkaigyo(usage);
+			return description + usage + explain;
 		}
 		bool isEmpty() const
 		{
@@ -715,7 +808,8 @@ typedef BasicOption<std::string> COptionA;
 			assert(parsed_);
 
 			MyS_ ret;
-                        for (typename OPTIONARRAY::const_iterator it = unknowns_.begin(); it != unknowns_.end(); ++it)
+                        
+			for (typename OPTIONARRAY::const_iterator it = unknowns_.begin(); it != unknowns_.end(); ++it)
 			{
 				ret += it->getFirstOption();
 				if (!it->hadValue())
@@ -969,6 +1063,10 @@ typedef BasicOption<std::string> COptionA;
 			assert(!parsed_);  // already parsed
 			parsed_ = true;
 
+			if (argc > 0)
+			{
+				program_ = targv[0];
+			}
 
 			for (int i = 1; i < argc; ++i)
 			{
@@ -1016,14 +1114,14 @@ typedef BasicOption<std::string> COptionA;
 			// mark all options as parsed.
 			// when user call some functions which is not added to parser or before parse(),
 			// assert() fails.
-                        for (typename POPTIONARRAY::const_iterator it = useroptions_.begin();
+			for (typename POPTIONARRAY::const_iterator it = useroptions_.begin();
 				it != useroptions_.end();
 				++it)
 			{
 				(*it)->setParsed();
 			}
 
-                        for (typename OPTIONARRAY::iterator it = unknowns_.begin();
+			for (typename OPTIONARRAY::iterator it = unknowns_.begin();
 				it != unknowns_.end();
 				++it)
 			{
