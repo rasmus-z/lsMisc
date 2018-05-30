@@ -21,6 +21,8 @@ int main(int argc, char* argv[])
 	cout << "WINVER=" << "0x" << std::hex << WINVER << endl;
 	cout << "_WIN32_IE=" << "0x" << std::hex << _WIN32_IE << endl;
 
+	std::wstring shortname = stdwin32::stdGetShortPath(L"C:\\Users\\zgjEr\\Desktop\\aaaaaaaaaaaaaaaaaaaaaaaaa.txt");
+
 	std::string s=	stdwin32::string_format("%d-%s", 100, "aaa");
 	wstring ws;
 
