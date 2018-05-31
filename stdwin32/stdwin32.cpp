@@ -927,4 +927,20 @@ namespace stdwin32 {
 	{
 		return stdGetShortPath(ws.c_str());
 	}
+
+	std::wstring stdApplyDQ(const std::wstring& ws)
+	{
+		if (ws.empty())
+			return ws;
+
+		if (ws[0] == L'"')
+			return ws;
+
+		for (int i = 0; i < ws.length(); ++i)
+		{
+			if (iswspace(ws[i]))
+				return L"\"" + ws + L"\"";
+		}
+		return ws;
+	}
 } // namespace stdwin32

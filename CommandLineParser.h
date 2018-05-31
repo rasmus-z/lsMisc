@@ -435,7 +435,7 @@ namespace Ambiesoft {
 			options_.push_back(option);
 			argcountflag_ = acf;
 		}
-		BasicOption(MyS_ option, 
+		BasicOption(MyS_ option,
 			const int exactcount,
 			ArgEncodingFlags arf = ArgEncodingFlags_Default,
 			const MyS_& helpstring = MyS_())
@@ -445,6 +445,17 @@ namespace Ambiesoft {
 			encoding_ = arf;
 			helpString_ = helpstring;
 			setArgFlag(exactcount);
+		}
+		BasicOption(MyS_ option,
+			const ArgCount acf,
+			ArgEncodingFlags arf = ArgEncodingFlags_Default,
+			const MyS_& helpstring = MyS_())
+		{
+			init();
+			options_.push_back(option);
+			encoding_ = arf;
+			helpString_ = helpstring;
+			argcountflag_ = acf;
 		}
 
 		template<class InputIterator>
@@ -708,18 +719,26 @@ typedef BasicOption<std::string> COptionA;
 				if (argcount == ArgCount_Infinite)
 				{
 					usage += L" [Arg1 [Arg2 [...]]]";
+					addkaigyo(usage);
 				}
 				else if (argcount == ArgCount_Two)
 				{
 					usage += L" Arg1 Arg2";
+					addkaigyo(usage);
 				}
 			}
 			else
 			{
 			}
+			
+			
 
 			// explain
-			explain += optionstring;
+			if (optionstring.empty())
+				explain += L"Arg";
+			else
+				explain += optionstring;
+			
 			addkaigyo(explain);
 
 			if (!helpstring.empty())
@@ -758,6 +777,7 @@ typedef BasicOption<std::string> COptionA;
 			if (!description_.empty())
 			{
 				description += description_;
+				addkaigyo(description);
 				addkaigyo(description);
 			}
 
@@ -876,7 +896,7 @@ typedef BasicOption<std::string> COptionA;
 		
 		// Iterator option strings
 		template<class InputIterator, class TARGET>
-		void AddOption(
+		void AddOptionRange(
 			InputIterator first,
 			InputIterator last,
 			int exactCount,
@@ -905,7 +925,7 @@ typedef BasicOption<std::string> COptionA;
 		{
 			MyS_* first = &optionString1;
 			MyS_* last = first + 1;
-			AddOption(first, last, exactCount, pTarget, arf, helpstring);
+			AddOptionRange(first, last, exactCount, pTarget, arf, helpstring);
 		}
 
 		// two option strings
@@ -919,7 +939,7 @@ typedef BasicOption<std::string> COptionA;
 			const MyS_& helpstring = MyS_())
 		{
 			const MyS_ ops[] = { optionString1, optionString2 };
-			AddOption(ops, ops + _countof(ops), exactCount, pTarget, arf, helpstring);
+			AddOptionRange(ops, ops + _countof(ops), exactCount, pTarget, arf, helpstring);
 		}
 
 		//void AddOption(
