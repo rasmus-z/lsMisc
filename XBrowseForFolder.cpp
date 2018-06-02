@@ -21,17 +21,17 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 // if you don't want to use MFC, comment out the following line:
-// #include "stdafx.h"
+#include "stdafx.h"
 
 #ifndef __AFX_H__
-#include "windows.h"
-#include "crtdbg.h"
-#include "tchar.h"
+#include <windows.h>
+#include <crtdbg.h>
+#include <tchar.h>
 #endif
 
-#include "Shlobj.h"
-#include "Shellapi.h"
-#include "io.h"
+#include <Shlobj.h>
+#include <Shellapi.h>
+#include <io.h>
 #include "XBrowseForFolder.h"
 
 #pragma warning(disable: 4127)	// conditional expression is constant (_ASSERTE)
