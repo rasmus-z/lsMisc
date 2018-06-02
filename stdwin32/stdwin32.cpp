@@ -936,7 +936,7 @@ namespace stdwin32 {
 		if (ws[0] == L'"')
 			return ws;
 
-		for (int i = 0; i < ws.length(); ++i)
+		for (size_t i = 0; i < ws.length(); ++i)
 		{
 			if (iswspace(ws[i]))
 				return L"\"" + ws + L"\"";
