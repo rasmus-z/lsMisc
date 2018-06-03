@@ -33,6 +33,9 @@ LPWSTR UTF16_convertEndian(LPCWSTR pIN);
 LPWSTR MultiBytetoUTF16(UINT cp, const LPBYTE pIN, size_t cbLen=-1);
 LPWSTR UTF8toUTF16(const LPBYTE pIN);
 bool UTF8toUTF16(const LPBYTE pIN, std::wstring& w);
+
+std::string toStdString(const std::wstring& w);
+
 #ifdef __cplusplus_cli  
 BYTE* UTF16toUTF8(System::String^ s);
 #endif //__cplusplus_cli  

@@ -31,6 +31,8 @@
 #include <string>
 #include "UTF16toUTF8.h"
 
+using namespace std;
+
 namespace Ambiesoft {
 
 BYTE* UTF16toMultiByte(UINT cp, LPCWSTR pIN, size_t* pLenOut)
@@ -142,7 +144,13 @@ bool UTF8toUTF16(const LPBYTE pIN, std::wstring& w)
 	return true;
 }
 
-
+string toStdString(const wstring& w)
+{
+	BYTE* p = UTF16toUTF8(w.c_str());
+	string ret = (char* )p;
+	free((void*)p);
+	return ret;
+}
 #ifdef __cplusplus_cli  
 BYTE* UTF16toUTF8(System::String^ s)
 {
