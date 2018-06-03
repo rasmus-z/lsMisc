@@ -206,5 +206,11 @@ namespace stdwin32 {
 
 
 	std::wstring stdGetFirstLine(const std::wstring& str);
+
+	std::wstring stdGetShortPath(const wchar_t* pIN);
+	std::wstring stdGetShortPath(const std::wstring& ws);
+
+
+	std::wstring stdApplyDQ(const std::wstring& ws);
 }
 

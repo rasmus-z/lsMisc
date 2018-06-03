@@ -30,6 +30,11 @@
 #include <ShlGuid.h>
 #include <comdef.h>
 #include <shlwapi.h>
+
+#include "SHMoveFile.h"
+
+#include "CreateShortcutFile.h"
+
 #pragma comment(lib, "shlwapi.lib")
 
 namespace Ambiesoft {
@@ -96,7 +101,8 @@ static BOOL CheckShortcutFile(LPCTSTR pszShortcutFile,
 	return !bFailed;
 }
 
-BOOL CreateShortcutFile(LPCTSTR pszShortcutFile, 
+BOOL CreateShortcutFile(HWND hWnd,
+								LPCTSTR pszShortcutFile, 
 							   LPCTSTR pszTargetFile,
 							   LPCTSTR pszCurDir,
 							   LPCTSTR pszArg,
@@ -161,7 +167,10 @@ BOOL CreateShortcutFile(LPCTSTR pszShortcutFile,
 		return FALSE;
 	}
 
-	if(!MoveFileEx(szTempFile, pszShortcutFile, MOVEFILE_REPLACE_EXISTING))
+	//if(!MoveFileEx(szTempFile, pszShortcutFile, MOVEFILE_REPLACE_EXISTING))
+	//	return FALSE;
+
+	if (0 != SHMoveFile(hWnd, pszShortcutFile, szTempFile, FOF_NOCONFIRMATION))
 		return FALSE;
 
 	return TRUE;

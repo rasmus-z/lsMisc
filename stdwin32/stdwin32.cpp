@@ -81,6 +81,11 @@
 #include <memory.h>
 #endif
 
+#ifndef _MEMORY_
+#pragma message("including memory")
+#include <memory>
+#endif
+
 #ifndef _INC_SHLWAPI
 #pragma message("including shlwlapi.h and lib")
 #include <Shlwapi.h>
@@ -872,4 +877,70 @@ namespace stdwin32 {
 		return str.substr(0, rpos);
 	}
 
+	static bool isLongpath(const std::wstring& ws)
+	{
+		if (ws.size() > 4 &&
+			ws[0] == L'\\' &&
+			ws[1] == L'\\' &&
+			ws[2] == L'?' &&
+			ws[3] == L'\\')
+		{
+			return true;
+		}
+		return false;
+	}
+	static std::wstring removeLongpath(const std::wstring& ws)
+	{
+		if (!isLongpath(ws))
+			return ws;
+
+		return (ws.c_str() + 4);
+	}
+	std::wstring stdGetShortPath(const wchar_t* pIN)
+	{
+		if (!pIN)
+			return std::wstring();
+
+		wstring longname = pIN;
+		if (isLongpath(longname))
+		{
+			// already has prepend
+		}
+		else
+		{
+			longname = L"\\\\?\\" + longname;
+		}
+
+		std::unique_ptr<wchar_t> pOut(new wchar_t[longname.size() * 2]);
+		DWORD ret = GetShortPathNameW(longname.c_str(),
+			pOut.get(),
+			longname.size() * 2);
+		if (!ret || (ret > (longname.size() * 2)))
+			return pIN;
+
+		wstring retstring = pOut.get();
+		retstring = removeLongpath(retstring);
+
+		return retstring;
+	}
+	std::wstring stdGetShortPath(const std::wstring& ws)
+	{
+		return stdGetShortPath(ws.c_str());
+	}
+
+	std::wstring stdApplyDQ(const std::wstring& ws)
+	{
+		if (ws.empty())
+			return ws;
+
+		if (ws[0] == L'"')
+			return ws;
+
+		for (size_t i = 0; i < ws.length(); ++i)
+		{
+			if (iswspace(ws[i]))
+				return L"\"" + ws + L"\"";
+		}
+		return ws;
+	}
 } // namespace stdwin32
