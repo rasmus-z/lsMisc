@@ -30,3 +30,4 @@
 #define STLSOFT_SCODEDFREE_CRT(PTR) STLSOFT_SCOPEDFREE(PTR,void*,free)
 #define STLSOFT_SCOPEDFREE_CLIPBOARD stlsoft::scoped_handle<void> stlscopedfree_clipboard(CloseClipboard);
 #define STLSOFT_SCOPEDFREE_HANDLE(handle) STLSOFT_SCOPEDFREE(handle, HANDLE, CloseHandle);
+#define STLSOFT_SCOPEDFREE_LOCALMEMORY(PTR) STLSOFT_SCOPEDFREE(PTR, void*, LocalFree);
