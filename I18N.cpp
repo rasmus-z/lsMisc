@@ -617,14 +617,25 @@ void i18nChangeMenuText(HMENU menu)
 		CFreer maBuff(pBuff);
 		GetMenuStringW(menu,i,pBuff,len+1,MF_BYPOSITION|MFT_STRING);
 
-		LPWSTR text = _wcsdup(I18N(pBuff));
-		CFreer maText(text);
-		
+		TCHAR* pTab = _tcschr(pBuff, L'\t');
+		wstring afterTab;
+		if (pTab)
+		{
+			*pTab = 0;
+			afterTab = (pTab + 1);
+		}
+
+		wstring newtext = I18N(pBuff);
+		if (!afterTab.empty())
+		{
+			newtext += L"\t";
+			newtext += afterTab;
+		}
 
 		MENUITEMINFO miiset;
 		miiset.cbSize=sizeof(miiset);
 		miiset.fMask = 0x00000040; //MIIM_STRING;
-		miiset.dwTypeData = text;
+		miiset.dwTypeData = (LPWSTR)newtext.c_str();
 		SetMenuItemInfoW(menu,i,TRUE, &miiset);
 		
 
