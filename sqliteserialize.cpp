@@ -273,9 +273,9 @@ namespace Ambiesoft {
 			SAFE_SQLFINALIZE(stmtCommit_);
 		}
 	};
-#ifdef _DEBUG
+
 	int stTransactionScope::cc_;
-#endif
+
 	sqlite3_stmt* stTransactionScope::stmtBegin_;
 	sqlite3_stmt* stTransactionScope::stmtCommit_;
 
