@@ -196,26 +196,25 @@ namespace Ambiesoft {
 		return ret;
 	}
 
+
 	struct stTransactionScope
 	{
-#ifdef _DEBUG
-		static int cc_;
-#endif
 
+		static int cc_;
 
 	private:
 		static sqlite3_stmt* stmtBegin_;
 		static sqlite3_stmt* stmtCommit_;
 		sqlite3* pDB_;
 	public:
-		stTransactionScope(sqlite3* pDB)
+		stTransactionScope(sqlite3* pDB) : pDB_(pDB)
 		{
-#ifdef _DEBUG
+
 			++cc_;
 			assert(cc_==1);
-#endif
+
 			assert(pDB);
-			pDB_ = pDB;
+
 			// DVERIFY_IS(fn_sqlite3_exec(db_, "BEGIN TRANSACTION", NULL, NULL, NULL), SQLITE_OK);
 			if (!stmtBegin_)
 			{
@@ -251,9 +250,8 @@ namespace Ambiesoft {
 		}
 		~stTransactionScope()
 		{
-#ifdef _DEBUG
+
 			--cc_;
-#endif
 			assert(pDB_);
 			// DVERIFY_IS(fn_sqlite3_exec(db_, "COMMIT;", NULL, NULL, NULL), SQLITE_OK);
 
@@ -261,6 +259,11 @@ namespace Ambiesoft {
 			if (SQLITE_DONE != inifinite_sqlite3_step(stmtCommit_))
 			{
 				//ReportSQLError(__FILE__,__LINE__);
+			}
+
+			if (cc_ == 0)
+			{
+				Finalize();
 			}
 		}
 
@@ -275,6 +278,16 @@ namespace Ambiesoft {
 #endif
 	sqlite3_stmt* stTransactionScope::stmtBegin_;
 	sqlite3_stmt* stTransactionScope::stmtCommit_;
+
+	//struct stTransactionScopeFinalizer
+	//{
+	//	~stTransactionScopeFinalizer()
+	//	{
+	//		stTransactionScope::Finalize();
+	//	}
+	//};
+	//static stTransactionScopeFinalizer gsTransactionScopeFinalizer;
+
 	/*
 	static sqlite3_stmt* getInsertStatement(sqlite3* pDB,LPCWSTR pApp)
 	{

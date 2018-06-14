@@ -1,11 +1,11 @@
-// testsqliteserialize.cpp : コンソール アプリケーションのエントリ ポイントを定義します。
-//
 
 #include "stdafx.h"
 #include <iostream>
 #include <sstream>
 #include "../../../sqliteserialize.h"
 #include "stlsoft/smartptr/scoped_handle.hpp"
+
+using namespace Ambiesoft;
 
 std::wstring getKey()
 {
@@ -23,7 +23,8 @@ std::wstring getKey()
 
 int main()
 {
-	for (int i=0 ; i< 1000; ++i)
+	int trycount = 1;
+	for (int i=0 ; i< trycount; ++i)
 	{
 		int d = (int)GetTickCount();
 		std::wstring key=getKey();
