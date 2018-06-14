@@ -66,7 +66,7 @@ public:
 CString dqIfSpace(const CString& s);
 
 
-bool HasDupPaths(LPCTSTR pLeft, const CStringArray& saPaths, int startindex, int& hitindex, CString& common);
-bool checkDupPaths(const CStringArray& saPaths, CString&left, CString& right, CString&common);
+//bool HasDupPaths(LPCTSTR pLeft, const CStringArray& saPaths, int startindex, int& hitindex, CString& common);
+//bool checkDupPaths(const CStringArray& saPaths, CString&left, CString& right, CString&common);
 
 void getLinesFromEdit(CEdit& edit, CStringArray& ar, bool bRaw);

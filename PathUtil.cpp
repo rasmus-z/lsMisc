@@ -224,4 +224,45 @@ namespace Ambiesoft {
 
 		return TRUE;
 	}
+
+
+	static bool HasDupPaths(
+		const wstring& left, 
+		const vector<wstring>& saPaths, 
+		int startindex, 
+		int& hitindex, 
+		wstring& common)
+	{
+		for (size_t i = startindex; i < saPaths.size(); ++i)
+		{
+			CString tmp;
+			wstring dupParent;
+			if (myPathIsChildIncluded(left.c_str(), saPaths[i].c_str(), &dupParent))
+			{
+				common = dupParent.c_str();
+				hitindex = i;
+				return true;
+			}
+		}
+		return false;
+	}
+
+	bool checkDupPaths(const vector<wstring>& saPaths, 
+		wstring&left,
+		wstring& right,
+		wstring&common)
+	{
+		for (size_t i = 0; i < saPaths.size(); ++i)
+		{
+			wstring tmpleft = saPaths[i];
+			int hitindex = 0;
+			if (HasDupPaths(tmpleft, saPaths, i + 1, hitindex, common))
+			{
+				left = tmpleft;
+				right = saPaths[hitindex];
+				return false;
+			}
+		}
+		return true;
+	}
 }
