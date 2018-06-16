@@ -286,13 +286,13 @@ namespace zoltan_csizmadia {
 			DWORD	ProcessID;
 			WORD	HandleType;
 			WORD	HandleNumber;
-			DWORD	KernelAddress;
+			void*	KernelAddress;
 			DWORD	Flags;
 		} SYSTEM_HANDLE;
 
 		typedef struct _SYSTEM_HANDLE_INFORMATION
 		{
-			DWORD			Count;
+			LPARAM   			Count;
 			SYSTEM_HANDLE	Handles[1];
 		} SYSTEM_HANDLE_INFORMATION;
 

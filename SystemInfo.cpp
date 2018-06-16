@@ -416,7 +416,7 @@ namespace zoltan_csizmadia {
 	{
 		DWORD size = 0x2000;
 		DWORD needed = 0;
-		DWORD i = 0;
+		LPARAM i = 0;
 		BOOL  ret = TRUE;
 		wstring strType;
 
@@ -426,8 +426,12 @@ namespace zoltan_csizmadia {
 			return FALSE;
 
 		// Allocate the memory for the buffer
-		SYSTEM_HANDLE_INFORMATION* pSysHandleInformation = (SYSTEM_HANDLE_INFORMATION*)
-			VirtualAlloc(NULL, size, MEM_COMMIT, PAGE_READWRITE);
+		SYSTEM_HANDLE_INFORMATION* pSysHandleInformation = 
+			(SYSTEM_HANDLE_INFORMATION*)VirtualAlloc(
+			NULL,
+			size,
+			MEM_COMMIT,
+			PAGE_READWRITE);
 
 		if (pSysHandleInformation == NULL)
 			return FALSE;
@@ -474,7 +478,9 @@ namespace zoltan_csizmadia {
 				else
 				{
 					// Type filtering
-					GetTypeToken((HANDLE)pSysHandleInformation->Handles[i].HandleNumber, strType, pSysHandleInformation->Handles[i].ProcessID);
+					GetTypeToken((HANDLE)pSysHandleInformation->Handles[i].HandleNumber,
+						strType,
+						pSysHandleInformation->Handles[i].ProcessID);
 
 					bAdd = strType == m_strTypeFilter;
 				}
@@ -551,7 +557,11 @@ namespace zoltan_csizmadia {
 		if (INtDll::NtQueryObject(handle, 2, lpBuffer, size, NULL) == 0)
 		{
 			str = _T("");
+#ifdef _WIN64
+			SystemInfoUtils::LPCWSTR2wstring((LPCWSTR)(lpBuffer + 0x68), str);
+#else
 			SystemInfoUtils::LPCWSTR2wstring((LPCWSTR)(lpBuffer + 0x60), str);
+#endif		
 
 			ret = TRUE;
 		}
