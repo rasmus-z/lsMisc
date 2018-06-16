@@ -914,7 +914,7 @@ namespace stdwin32 {
 		std::unique_ptr<wchar_t> pOut(new wchar_t[longname.size() * 2]);
 		DWORD ret = GetShortPathNameW(longname.c_str(),
 			pOut.get(),
-			longname.size() * 2);
+			DWORD(longname.size() * 2));
 		if (!ret || (ret > (longname.size() * 2)))
 			return pIN;
 
