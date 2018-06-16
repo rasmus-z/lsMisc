@@ -587,7 +587,7 @@ namespace Ambiesoft {
 			else
 				return (void*)getFirstValueAsUInt64();
 		}
-		MyS_ getValue(int index)
+		MyS_ getValue(size_t index)
 		{
 			assert(parsed_);
 			return values_[index];
