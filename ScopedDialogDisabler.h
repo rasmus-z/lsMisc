@@ -21,77 +21,56 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
-// Must comment out to define NOMINMAX
-// #include "stdafx.h"
+#pragma once
 
-#define NOMINMAX
 #include <Windows.h>
 
 #include <vector>
-#include <limits>
 
 #include "GetChildWindowBy.h"
 
-using namespace std;
+namespace Ambiesoft {
 
-namespace Ambiesoft{
-	namespace {
-		struct ContextData {
-			size_t maxcount;
-			LPCWSTR pName;
-			vector<HWND> results;
-		};
-
-		static BOOL CALLBACK enumProc(
-			_In_ HWND   hwnd,
-			_In_ LPARAM lParam
-			)
+	class ScopedDialogDisabler
+	{
+		std::vector<HWND> hwnds_;
+	public:
+		ScopedDialogDisabler(const std::vector<HWND> hwnds) :
+			hwnds_(hwnds)
 		{
-			ContextData* pCxt = (ContextData*)lParam;
-
-			if (pCxt->pName)
+			disable();
+		}
+		ScopedDialogDisabler(HWND hwnd, const BOOL bAllChildWindow)
+		{
+			if (bAllChildWindow)
 			{
-				TCHAR szT[1024]; szT[0] = 0;
-				GetWindowText(hwnd, szT, 1024);
-				if (lstrcmp(szT, pCxt->pName) == 0)
-				{
-					pCxt->results.push_back(hwnd);
-				}
+				hwnds_ = GetChildWindows(hwnd);
 			}
 			else
 			{
-				pCxt->results.push_back(hwnd);
+				hwnds_.push_back(hwnd);
 			}
-
-			if (pCxt->results.size() >= pCxt->maxcount)
-			{
-				// no continue;
-				return FALSE;
-			}
-
-			// continue
-			return TRUE;
+			disable();
 		}
-	}
-	HWND GetChildWindowByName(HWND hwndParent, LPCWSTR pName)
-	{
-		ContextData context = {};
-		context.maxcount = 1;
-		context.pName = pName;
-
-		EnumChildWindows(hwndParent, enumProc, (LPARAM)&context);
-
-		return context.results.empty() ? NULL : context.results[0];
-	}
-
-	vector<HWND> GetChildWindows(HWND hwndParent)
-	{
-		ContextData context = {};
-		context.maxcount = std::numeric_limits<size_t>::max();
-		context.pName = NULL;
-
-		EnumChildWindows(hwndParent, enumProc, (LPARAM)&context);
-
-		return context.results;
-	}
-} // namespace
+		virtual ~ScopedDialogDisabler()
+		{
+			enable();
+		}
+	private:
+		void work(const BOOL bEnable)
+		{
+			for (HWND hwnd : hwnds_)
+			{
+				EnableWindow(hwnd, bEnable);
+			}
+		}
+		void disable()
+		{
+			work(FALSE);
+		}
+		void enable()
+		{
+			work(TRUE);
+		}
+	};
+}
