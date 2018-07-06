@@ -21,6 +21,10 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
+#ifdef _WIN32
+#include <Windows.h>
+#endif
+
 #include <vector>
 #include <string>
 #include <cassert>
@@ -30,6 +34,7 @@
 #ifndef _countof
 #define _countof(t) (sizeof(t)/sizeof(t[0]))
 #endif
+
 
 namespace Ambiesoft {
 
@@ -82,10 +87,23 @@ namespace Ambiesoft {
 		s=L"";
 	}
 
+
+    template<typename T>
+    static const wchar_t* nextP(const T* p)
+    {
+        ++p;
+        return p;
+    }
+    template<char>
 	static const char* nextP(const char* p)
 	{
+#ifdef _WIN32
 		return CharNextA(p);
+#else
+        return p+1;
+#endif
 	}
+    template<wchar_t>
 	static const wchar_t* nextP(const wchar_t* p)
 	{
 		++p;
@@ -101,24 +119,46 @@ namespace Ambiesoft {
 		return c == L'"';
 	}
 
-	static void GetModuleFileNameT(char* p)
-	{
-		GetModuleFileNameA(NULL,p,MAX_PATH);
-	}
-	static void GetModuleFileNameT(wchar_t* p)
+    template<typename T>
+    static void GetModuleFileNameT(T* p)
+    {
+
+    }
+    template<char>
+    static void GetModuleFileNameT(char* p)
+    {
+        GetModuleFileNameA(NULL,p,MAX_PATH);
+    }
+    template<wchar_t>
+    static void GetModuleFileNameT(wchar_t* p)
 	{
 		GetModuleFileNameW(NULL,p,MAX_PATH);
 	}
 
 	static inline bool isLead(char c)
 	{
+#ifdef _WIN32
 		return !!IsDBCSLeadByte(c);
+#else
+        (void)c;
+        return false;
+#endif
 	}
-	static inline bool isLead(wchar_t c)
+    static inline bool isLead(wchar_t c)
 	{
+        (void)c;
 		return false;
 	}
-	template<class E>
+
+    char* GetCommandLineT(char *)
+    {
+        return GetCommandLineA();
+    }
+    wchar_t* GetCommandLineT(wchar_t*)
+    {
+        return GetCommandLineW();
+    }
+    template<class E>
 	class CCommandLineStringBase
 	{
 		const E* p_;
@@ -188,15 +228,8 @@ namespace Ambiesoft {
 				return;
 
 			bool inDQ = false;
-			E c = 0;
+            // E c = 0;
 			const E* pStart = p;
-			//if ((pStart - p_) != 0)
-			//{
-			//	offsets_.push_back(0);
-			//	args_.push_back(L"");
-			//}
-			//offsets_.push_back(pStart - pCommandLine);
-			//args_.push_back(L"");
 
 			std::basic_string<E> now;
 
@@ -287,7 +320,7 @@ namespace Ambiesoft {
 	public:
 		CCommandLineStringBase()
 		{
-			init(GetCommandLine());
+            init(GetCommandLineT((E*)NULL));
 		}
 		CCommandLineStringBase(const E* pCommandLine)
 		{
@@ -326,7 +359,7 @@ namespace Ambiesoft {
 		myS operator[](int i) const {
 			return args_[i];
 		}
-		std::basic_string<E> subString(int index) const
+        std::basic_string<E> subString(size_t index) const
 		{
 			if (offsets_.size() <= (size_t)index)
 				return std::basic_string<E>();
