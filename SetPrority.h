@@ -22,7 +22,11 @@
 //SUCH DAMAGE.
 
 #pragma once
+
+#include <string>
+
 namespace Ambiesoft {
+
 enum CPUPRIORITY : int {
     CPU_NONE,
     CPU_HIGH,
@@ -39,7 +43,8 @@ enum IOPRIORITY : int {
     IO_BELOWNORMAL,
     IO_IDLE,
 };
-bool SetProirity(int64_t pid,
+
+bool SetProirity(void* pid,
                  CPUPRIORITY cpuPriority,
                  IOPRIORITY ioPriority,
                  std::string& error);

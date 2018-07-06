@@ -21,179 +21,136 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
-#include "stdafx.h"
-#include <comdef.h>
-#include "AnyCloser.h"
+#include <unistd.h>
+#include <sys/syscall.h>   /* For SYS_xxx definitions */
 
-#include "addBaseElement.h"
+#include <sys/time.h>
+#include <sys/resource.h>
 
-#include "DebugNew.h"
+#include <sstream>
+
+#include "SetPrority.h"
 
 namespace Ambiesoft {
-	bool addBaseElement(_bstr_t& bstrHtml, LPCWSTR pSourceURL)
-	{
-		if (pSourceURL == NULL || pSourceURL[0] == 0)
-			return false;
 
-		WCHAR* pw = _wcsdup(bstrHtml);
-		if (!pw)
-			return false;
-
-		//	struct strfreer_t {
-		//		WCHAR* p;
-		//		strfreer_t(WCHAR* q) : p(q) {}
-		//		~strfreer_t() {
-		//			free((void*)p);
-		//		}
-		//	} strfreer(pw);
-
-		CRTFreer freer(pw);
-
-		LPWSTR p = (LPWSTR)wcsstr(pw, L"<head");
-		if (p == NULL)
-			p = wcsstr(pw, L"<HEAD");
-		if (p == NULL)
-			p = wcsstr(pw, L"<Head");
-		if (p)
-		{
-			while (*p && *p != L'>')
-				p++;
-			p++;
-
-			_bstr_t ret;
-
-			WCHAR c = *p;
-			*p = 0;
-			ret += pw;
-
-			ret += L"<base href=\"";
-			ret += pSourceURL;
-			ret += L"\" />";
-
-			*p = c;
-			ret += p;
-			bstrHtml = ret;
-			return true;
-		}
-		else
-		{
-			LPWSTR p = (LPWSTR)wcsstr(pw, L"<html");
-			if (p == NULL)
-				p = wcsstr(pw, L"<HTML");
-			if (p == NULL)
-				p = wcsstr(pw, L"<Html");
-
-			if (p)
-			{
-				while (*p && *p != L'>')
-					p++;
-				p++;
-
-				_bstr_t ret;
-
-				WCHAR c = *p;
-				*p = 0;
-				ret += pw;
-
-				ret += L"<head><base href=\"";
-				ret += pSourceURL;
-				ret += L"\" /></head>";
-
-				*p = c;
-				ret += p;
-				bstrHtml = ret;
-				return true;
-			}
-		}
-		return false;
-	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	//bool addBaseElement(_bstr_t& bstrHtml, LPCWSTR pSourceURL)
-	//{
-	//	if ( !pSourceURL )
-	//		return false;
-	//
-	//	WCHAR* pW = wcsdup(bstrHtml);
-	//	if(!pW)
-	//		return false;
-	//
-	//	struct strfreer_t {
-	//		WCHAR* p;
-	//		strfreer_t(WCHAR* q) : p(q) {}
-	//		~strfreer_t() {
-	//			free((void*)p);
-	//		}
-	//	} strfreer(pW);
-	//
-	//	WCHAR* p = wcsstr(pW, L"</head");
-	//	if ( p==NULL )
-	//		p = wcsstr(pW, L"</HEAD");
-	//	if ( p==NULL )
-	//		p = wcsstr(pW, L"</Head");
-	//	if ( p==NULL )
-	//	{ // could not find head tag, try to find body tag
-	//		p = wcsstr(pW, L"<body");
-	//		if ( p==NULL )
-	//			p = wcsstr(pW, L"<BODY");
-	//		if ( p==NULL )
-	//			p = wcsstr(pW, L"<Body");
-	//		if ( p==NULL )
-	//		{
-	//			ASSERT(false);
-	//			return false;
-	//		}
-	//
-	//		// body tag found.
-	//		_bstr_t ret;
-	//		*p = 0;
-	//		ret = pW;
-	//		*p = L'<';
-	//
-	//		ret += L"<head><base href=\"";
-	//		ret += pSourceURL;
-	//		ret += L"\" /></head>";
-	//
-	//		ret += p;
-	//		bstrHtml = ret;
-	//		return true;
-	//	}
-	//	else
-	//	{ // head tag found.
-	//		_bstr_t ret;
-	//		*p = 0;
-	//		ret = pW;
-	//		*p = L'<';
-	//
-	//		ret += L"<base href=\"";
-	//		ret += pSourceURL;
-	//		ret += L"\" />";
-	//
-	//		ret += p;
-	//
-	//		bstrHtml = ret;
-	//		return true;
-	//	}
-	//	ASSERT(false);
-	//	return false;
-	//}
+static inline int ioprio_set(int which, int who, int ioprio)
+{
+    return syscall(SYS_ioprio_set, which, who, ioprio);
 }
+
+enum {
+    IOPRIO_CLASS_NONE,
+    IOPRIO_CLASS_RT,
+    IOPRIO_CLASS_BE,
+    IOPRIO_CLASS_IDLE,
+};
+
+enum {
+    IOPRIO_WHO_PROCESS = 1,
+    IOPRIO_WHO_PGRP,
+    IOPRIO_WHO_USER,
+};
+
+#define IOPRIO_CLASS_SHIFT	(13)
+#define IOPRIO_PRIO_MASK	((1UL << IOPRIO_CLASS_SHIFT) - 1)
+
+#define IOPRIO_PRIO_CLASS(mask)	((mask) >> IOPRIO_CLASS_SHIFT)
+#define IOPRIO_PRIO_DATA(mask)	((mask) & IOPRIO_PRIO_MASK)
+#define IOPRIO_PRIO_VALUE(class, data)	(((class) << IOPRIO_CLASS_SHIFT) | data)
+
+
+static bool setpriorityStuff(id_t pid,
+                 CPUPRIORITY cpuPriority,
+                 IOPRIORITY ioPriority,
+                 std::string& error)
+{
+    int prio = -1;
+    switch(cpuPriority)
+    {
+    case CPU_HIGH:
+        prio = -19;
+        break;
+    case CPU_ABOVENORMAL:
+        prio = -5;
+        break;
+    case CPU_NORMAL:
+        prio=0;
+        break;
+    case CPU_BELOWNORMAL:
+        prio=5;
+        break;
+    case CPU_IDLE:
+        prio=19;
+        break;
+    default:
+        error = "Invalid CPU Priority";
+        return false;
+    }
+    std::stringstream ss;
+
+    bool failed = false;
+    int err = setpriority(PRIO_PROCESS, pid, prio);
+    if(err != 0)
+    {
+        ss <<
+              "setpriority(" <<
+              prio <<
+              ") failed with " <<
+              err <<
+              "." <<
+              std::endl;
+        failed = true;
+    }
+
+    int ioprioclass = IOPRIO_CLASS_NONE;
+    switch(ioPriority)
+    {
+    case IO_HIGH:
+    case IO_ABOVENORMAL:
+        ioprioclass = IOPRIO_CLASS_RT;
+        break;
+    case IO_BELOWNORMAL:
+        ioprioclass = IOPRIO_CLASS_BE;
+        break;
+    case IO_IDLE:
+        ioprioclass = IOPRIO_CLASS_IDLE;
+        break;
+    default:
+        break;
+    }
+
+    if(ioprioclass != IOPRIO_CLASS_NONE)
+    {
+        // 7 is from https://github.com/karelzak/util-linux/blob/master/schedutils/ionice.c
+        int iopriovalue = IOPRIO_PRIO_VALUE(IOPRIO_CLASS_IDLE,7);
+        err = ioprio_set(IOPRIO_WHO_PROCESS, pid, iopriovalue);
+        if(err != 0)
+        {
+            failed = true;
+            ss <<
+                      "ioprio_set(" <<
+                      ioprioclass <<
+                      ") failed with " <<
+                      err <<
+                      "." <<
+                      std::endl;
+        }
+    }
+    error = ss.str();
+    return !failed;
+}
+bool SetProirity(void* pid,
+                 CPUPRIORITY cpuPriority,
+                 IOPRIORITY ioPriority,
+                 std::string& error)
+{
+    id_t pidid = (long)pid;
+    return setpriorityStuff(pidid,
+                       cpuPriority,
+                       ioPriority,
+                       error);
+}
+
+
+
+}  // namespace Ambiesoft
