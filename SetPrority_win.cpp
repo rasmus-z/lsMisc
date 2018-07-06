@@ -196,7 +196,7 @@ namespace Ambiesoft {
         } ;
     } // anonymous namespace
 
-    bool SetProirity(int64_t pid,
+    bool SetProirity(void* pid,
                      CPUPRIORITY cpuPriority,
                      IOPRIORITY ioPriority,
                      std::string& error)
