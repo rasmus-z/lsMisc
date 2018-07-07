@@ -361,10 +361,10 @@ namespace Ambiesoft {
 		}
         std::basic_string<E> subString(size_t index) const
 		{
-			if (offsets_.size() <= (size_t)index)
+			if (offsets_.size() <= index)
 				return std::basic_string<E>();
 
-			int ofs = offsets_[index];
+			size_t ofs = offsets_[index];
 			std::basic_string<E> ret(&p_[ofs]);
 			const E* pTrimming = ret.c_str();
 			ret = skipWS(pTrimming);
