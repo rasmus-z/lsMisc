@@ -44,12 +44,6 @@
     <ClCompile Include="..\UTF16toUTF8.cpp">
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
-    <ClCompile Include="testCommandLineParser.cpp">
-      <Filter>Test Files</Filter>
-    </ClCompile>
-    <ClCompile Include="testFormatSizeof.cpp">
-      <Filter>Test Files</Filter>
-    </ClCompile>
     <ClCompile Include="testGetVersionString.cpp">
       <Filter>Test Files</Filter>
     </ClCompile>
@@ -306,9 +300,6 @@
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
     <ClCompile Include="debug.cpp" />
-    <ClCompile Include="testCommnadLineString.cpp">
-      <Filter>Test Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\stdwin32\stdwin32.cpp">
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
@@ -338,6 +329,15 @@
     </ClCompile>
     <ClCompile Include="..\SystemInfo.cpp">
       <Filter>lsMisc\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="gtestCommandLineParser.cpp">
+      <Filter>GTest Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gtestCommnadLineString.cpp">
+      <Filter>GTest Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gtestFormatSizeof.cpp">
+      <Filter>GTest Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

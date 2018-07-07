@@ -106,6 +106,40 @@ namespace Ambiesoft {
 		return program;
 	}
 
+	inline static bool hasSpace(const std::string& s)
+	{
+		for (char c : s)
+		{
+			if (isspace(c))
+				return true;
+		}
+		return false;
+	}
+	inline static bool hasSpace(const std::wstring& s)
+	{
+		for (wchar_t c : s)
+		{
+			if (iswspace(c))
+				return true;
+		}
+		return false;
+	}
+
+	inline static std::string dq(const std::string& s)
+	{
+		if (!hasSpace(s))
+			return s;
+
+		return "\"" + s + "\"";
+	}
+	inline static std::wstring dq(const std::wstring& s)
+	{
+		if (!hasSpace(s))
+			return s;
+
+		return L"\"" + s + L"\"";
+	}
+
 	std::wstring Utf8UrlDecode(const std::wstring& ws);
 
 	//// explicit_specialization.cpp  
@@ -193,7 +227,17 @@ namespace Ambiesoft {
 	//	return pOut;
 	//}
 
-
+	enum class ExactCount : short
+	{
+		Exact_1 = 1,
+		Exact_2,
+		Exact_3,
+		Exact_4,
+		Exact_5,
+		Exact_6,
+		Exact_7,
+	};
+		
 	// 000000001(1) = only zero
 	// 000000010(2) = only one
 	// 000000011(3) = zero or one
@@ -202,7 +246,7 @@ namespace Ambiesoft {
 	// 000000110(6) = one or two
 	// 000000111(7) = zero, one or two
 	// 000001000(8) = only tree
-	enum ArgCount
+	enum class ArgCount : unsigned int
 	{
 		ArgCount_Uninitialized = 0,
 		ArgCount_Zero = 1,
@@ -343,7 +387,7 @@ namespace Ambiesoft {
 		}
 		void setHadOption()
 		{
-			if(argcountflag_== ArgCount_Zero)
+			if (argcountflag_ == ArgCount::ArgCount_Zero)
 			{
 				userTarget_.setTrue();
 			}
@@ -390,7 +434,7 @@ namespace Ambiesoft {
 		{
 			hadOption_ = false;
 			parsed_ = false;
-			argcountflag_ = ArgCount_Uninitialized;
+			argcountflag_ = ArgCount::ArgCount_Uninitialized;
 			case_ = CaseFlags_Default;
 			// pTarget_ = NULL;
 			encoding_ = ArgEncodingFlags_Default;
@@ -427,16 +471,17 @@ namespace Ambiesoft {
 		{
 			init();
 			options_.push_back(MyS_());
-			argcountflag_ = ArgCount_Infinite;
+			argcountflag_ = ArgCount::ArgCount_Infinite;
 		}
-		BasicOption(MyS_ option, ArgCount acf) 
-		{
-			init();
-			options_.push_back(option);
-			argcountflag_ = acf;
-		}
-		BasicOption(MyS_ option,
-			const int exactcount,
+		//BasicOption(MyS_ option, ArgCount acf) 
+		//{
+		//	init();
+		//	options_.push_back(option);
+		//	argcountflag_ = acf;
+		//}
+		BasicOption(
+			const MyS_& option,
+			ExactCount exactcount,
 			ArgEncodingFlags arf = ArgEncodingFlags_Default,
 			const MyS_& helpstring = MyS_())
 		{
@@ -444,10 +489,11 @@ namespace Ambiesoft {
 			options_.push_back(option);
 			encoding_ = arf;
 			helpString_ = helpstring;
-			setArgFlag(exactcount);
+			setArgFlag((int)exactcount);
 		}
-		BasicOption(MyS_ option,
-			const ArgCount acf,
+		BasicOption(
+			const MyS_& option,
+			ArgCount acf,
 			ArgEncodingFlags arf = ArgEncodingFlags_Default,
 			const MyS_& helpstring = MyS_())
 		{
@@ -500,21 +546,27 @@ namespace Ambiesoft {
 		{
 			init();
 			options_.push_back(option);
-			argcountflag_ = ArgCount_Zero;
+			argcountflag_ = ArgCount::ArgCount_Zero;
 		}
-		BasicOption(MyS_ option1, MyS_ option2)
+		//BasicOption(const MyS_& option1, const MyS_& option2)
+		//{
+		//	init();
+		//	options_.push_back(option1);
+		//	options_.push_back(option2);
+		//	argcountflag_ = ArgCount_Zero;
+		//}
+		//BasicOption(const MyS_& option1, const MyS_& option2, const MyS_& option3)
+		//{
+		//	init();
+		//	options_.push_back(option1);
+		//	options_.push_back(option2);
+		//	options_.push_back(option3);
+		//	argcountflag_ = ArgCount_Zero;
+		//}
+		BasicOption(const std::vector<MyS_>& options)
 		{
 			init();
-			options_.push_back(option1);
-			options_.push_back(option2);
-			argcountflag_ = ArgCount_Zero;
-		}
-		BasicOption(MyS_ option1, MyS_ option2, MyS_ option3)
-		{
-			init();
-			options_.push_back(option1);
-			options_.push_back(option2);
-			options_.push_back(option3);
+			options_ = options;
 			argcountflag_ = ArgCount_Zero;
 		}
 		~BasicOption()
@@ -552,7 +604,7 @@ namespace Ambiesoft {
 					ret += _T(" ");
 				}
 				looped = true;
-				ret += *it;
+				ret += dq(*it);
 			}
 			return ret;
 		}
@@ -716,12 +768,12 @@ typedef BasicOption<std::string> COptionA;
 			if (optionstring.empty())
 			{
 				// main arg
-				if (argcount == ArgCount_Infinite)
+				if (argcount == ArgCount::ArgCount_Infinite)
 				{
 					usage += L" [Arg1 [Arg2 [...]]]";
 					addkaigyo(usage);
 				}
-				else if (argcount == ArgCount_Two)
+				else if (argcount == ArgCount::ArgCount_Two)
 				{
 					usage += L" Arg1 Arg2";
 					addkaigyo(usage);
@@ -1057,10 +1109,10 @@ typedef BasicOption<std::string> COptionA;
 	private:
 		int ParseParam(int i, int argc, LPWSTR* targv, MyO_* pMyO)
 		{
-			if (pMyO->argcountflag_ == ArgCount_Zero)
+			if (pMyO->argcountflag_ == ArgCount::ArgCount_Zero)
 				return i;
 
-			if (pMyO->argcountflag_ == ArgCount_One)
+			if (pMyO->argcountflag_ == ArgCount::ArgCount_One)
 			{
 				++i;
 				if (i >= argc)

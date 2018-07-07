@@ -27,18 +27,16 @@
 
 
 void testMoveWindowCommon();
-void testCommandLine();
 void testHira2Kata();
 void testGetVersionString();
 void testStlMutex();
 void testPathUtil();
 void testUrlEncode();
-void testFormatSizeof();
+
 //void testSHMoveFile();
 void testOpenCommon();
 void testOpenedFiles();
 void testI18N();
-void testCommandLineString();
 // void testOSTraits();
 void testShowBalloon();
 void testRevealFolder();
@@ -64,17 +62,17 @@ int main()
 	
 	// testOSTraits();
 	testShowBalloon();
-	testCommandLineString();
+
 	//testSHMoveFile();
-	testOpenedFiles();
+
 	
 	
-	testCommandLine();
+
 	testI18N();
 	
 	testOpenCommon();
 
-	testFormatSizeof();
+
 	testUrlEncode();
 	testPathUtil();
 
@@ -85,7 +83,7 @@ int main()
 
 
 
-
+	testOpenedFiles();
 
 
 	// kernel object
