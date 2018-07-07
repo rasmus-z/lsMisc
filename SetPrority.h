@@ -36,16 +36,25 @@ enum CPUPRIORITY : int {
     CPU_IDLE,
 };
 enum IOPRIORITY : int {
-    IO_NONE,
-    IO_HIGH,
-    IO_ABOVENORMAL,
-    IO_NORMAL,
-    IO_BELOWNORMAL,
-    IO_IDLE,
+	IO_NONE,
+	IO_HIGH,
+	IO_ABOVENORMAL,
+	IO_NORMAL,
+	IO_BELOWNORMAL,
+	IO_IDLE,
+};
+enum MEMORYPRIORITY : int {
+	MEMORY_NONE,
+	MEMORY_HIGH,
+	MEMORY_ABOVENORMAL,
+	MEMORY_NORMAL,
+	MEMORY_BELOWNORMAL,
+	MEMORY_IDLE,
 };
 
-bool SetProirity(void* pid,
+bool SetProirity(uint64_t  pid,
                  CPUPRIORITY cpuPriority,
                  IOPRIORITY ioPriority,
+				 MEMORYPRIORITY memPriority,
                  std::string& error);
 }

@@ -21,11 +21,16 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
+#include "StdAfx.h"
+
 #include <Windows.h>
 
 #include <sstream>
+#include <cassert>
 
 #include "SetPrority.h"
+
+using namespace std;
 
 namespace Ambiesoft {
     namespace {
@@ -85,12 +90,14 @@ namespace Ambiesoft {
             BOOL SetPriority(HANDLE hProcess,
                              CPUPRIORITY cpuPriority,
                              IOPRIORITY ioPriority,
+				             MEMORYPRIORITY memPriority,
                              std::string& error)
             {
                 std::stringstream ss;
                 BOOL ret = SetPriority(hProcess,
                                        cpuPriority,
                                        ioPriority,
+					                   memPriority,
                                        ss);
                 error = ss.str();
                 return ret;
@@ -98,17 +105,19 @@ namespace Ambiesoft {
             BOOL SetPriority(HANDLE hProcess,
                              CPUPRIORITY cpuPriority,
                              IOPRIORITY ioPriority,
+				             MEMORYPRIORITY memPriority,
                              std::ostream& ss)
             {
                 DWORD dwProcessPriority = -1;
                 switch(cpuPriority)
                 {
+				case CPU_NONE: break;
                 case CPU_HIGH: dwProcessPriority = HIGH_PRIORITY_CLASS;break;
                 case CPU_ABOVENORMAL: dwProcessPriority = ABOVE_NORMAL_PRIORITY_CLASS;break;
                 case CPU_NORMAL:dwProcessPriority=NORMAL_PRIORITY_CLASS;break;
                 case CPU_BELOWNORMAL:dwProcessPriority=BELOW_NORMAL_PRIORITY_CLASS;break;
                 case CPU_IDLE:dwProcessPriority=IDLE_PRIORITY_CLASS;break;
-                default:break;
+				default:assert(false); break;
                 }
 
                 BOOL bFailed = FALSE;
@@ -126,25 +135,30 @@ namespace Ambiesoft {
                              std::endl;
                 }
 
-                ULONG nativeMemoryPriority = -1;
                 ULONG nativeIOPriority = -1;
                 switch(ioPriority)
                 {
-                case IO_NORMAL:
-                    nativeMemoryPriority = DefaultMemoryPriority;
-                    nativeIOPriority = DefaultIoPriority;
-                    break;
+				case IO_NONE:break;
+				case IO_HIGH:
+				case IO_ABOVENORMAL:
+                case IO_NORMAL: nativeIOPriority = DefaultIoPriority; break;
                 case IO_BELOWNORMAL:
-                    nativeMemoryPriority = LowMemoryPriority;
-                    nativeIOPriority = LowIoPriority;
-                    break;
-                case IO_IDLE:
-                    nativeMemoryPriority = LowMemoryPriority;
-                    nativeIOPriority = VeryLowIoPriority;
-                    break;
-                default:
-                    break;
+                case IO_IDLE: nativeIOPriority = VeryLowIoPriority; break;
+				default:assert(false); break;
                 }
+
+				ULONG nativeMemoryPriority = -1;
+				switch (memPriority)
+				{
+				case MEMORY_NONE:break;
+				case MEMORY_HIGH:
+				case MEMORY_ABOVENORMAL:
+				case MEMORY_NORMAL:	nativeMemoryPriority = DefaultMemoryPriority;break;
+				case MEMORY_BELOWNORMAL:
+				case MEMORY_IDLE:nativeMemoryPriority = LowMemoryPriority;break;
+				default:assert(false); break;
+				}
+
                 if (fnNtSetInformationProcess)
                 {
                     if(nativeMemoryPriority != (ULONG)-1)
@@ -196,10 +210,11 @@ namespace Ambiesoft {
         } ;
     } // anonymous namespace
 
-    bool SetProirity(void* pid,
-                     CPUPRIORITY cpuPriority,
-                     IOPRIORITY ioPriority,
-                     std::string& error)
+    bool SetProirity(uint64_t pid,
+		CPUPRIORITY cpuPriority,
+		IOPRIORITY ioPriority,
+		MEMORYPRIORITY memPriority,
+		std::string& error)
     {
         NativeHandle handle(OpenProcess(PROCESS_SET_INFORMATION, FALSE, (DWORD)pid));
         if (!handle)
@@ -209,9 +224,11 @@ namespace Ambiesoft {
             return false;
         }
         static NTFuncs stNTFuncs;
-        return stNTFuncs.SetPriority(handle,
-                                     cpuPriority,
-                                     ioPriority,
-                                     error);
+        return stNTFuncs.SetPriority(
+			handle,
+			cpuPriority,
+			ioPriority,
+			memPriority,
+			error);
     }
 } // namespace Ambiesoft
