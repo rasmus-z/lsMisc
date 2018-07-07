@@ -78,15 +78,17 @@ static LPTSTR createcommandline(LPCTSTR a, LPCTSTR b)
 	return q;
 }
 
-BOOL CreateProcessCommon(LPCTSTR pApp, 
-						 LPCTSTR pArg, // =NULL,
-						 BOOL bHide, //=FALSE
-						 DWORD* pdwLastError,
-						 WaitProcessType wpt,
-						 DWORD dwMaxWait,
-                         HANDLE* phProcess,
-                         DWORD* pdwProcessID
-						 )
+BOOL CreateProcessCommon(LPCTSTR pApp,
+	LPCTSTR pArg, // =NULL,
+	BOOL bHide, //=FALSE
+	DWORD* pdwLastError,
+	WaitProcessType wpt,
+	DWORD dwMaxWait,
+	HANDLE* phProcess,
+	DWORD* pdwProcessID,
+	HANDLE* phThread,
+	DWORD* pdwThreadID,
+	BOOL bSuspend)
 {
 	STARTUPINFO si = {0};
 	
@@ -142,23 +144,38 @@ BOOL CreateProcessCommon(LPCTSTR pApp,
 	}
 
 
+	// フラグ
+	DWORD dwCreationFlags = 0;
+	// 作成のフラグ（一部）
+	//CREATE_DEFAULT_ERROR_MODE		| // エラーモードを継承しない
+	//CREATE_NO_WINDOW				| // コンソールウインドウを表示しない
+	//CREATE_SUSPENDED				| // 起動させないでサスペンドする
+	//IDLE_PRIORITY_CLASS			| // プロセスの優先順位
+	if (bSuspend)
+		dwCreationFlags |= CREATE_SUSPENDED;
 
+
+	if (wpt != WaitProcessType::WaitProcess_None && bSuspend)
+	{
+		// サスペンドしながら待てない
+		return FALSE;
+	}
 
 	// 出力用、設定不要
 	PROCESS_INFORMATION pi = {0};
 
 
-	LPTSTR cl = createcommandline(pApp, pArg);
-
+	// LPTSTR cl = createcommandline(pApp, pArg);
+	LPTSTR pArgTmp = _tcsdup(pArg);
 	BOOL bRet = CreateProcess(
 		 //LPCTSTR lpApplicationName, 
 		 // 実行可能モジュールの名前、NULLでもいい
-		NULL,
+		pApp,
 
 		// LPTSTR lpCommandLine,
 		// コマンドラインの文字列、NULLでもいい
 		// コンストじゃだめ
-		cl,
+		pArgTmp,
 
 		// LPSECURITY_ATTRIBUTES lpProcessAttributes,
 		// セキュリティ記述子
@@ -173,13 +190,8 @@ BOOL CreateProcessCommon(LPCTSTR pApp,
 		// ハンドルの継承オプション
 		FALSE,
 
-		// DWORD dwCreationFlags, 
-		// 作成のフラグ（一部）
-		//CREATE_DEFAULT_ERROR_MODE		| // エラーモードを継承しない
-		//CREATE_NO_WINDOW				| // コンソールウインドウを表示しない
-		//CREATE_SUSPENDED				| // 起動させないでサスペンドする
-		//IDLE_PRIORITY_CLASS			| // プロセスの優先順位
-		0,
+		// 作成のフラグ
+		dwCreationFlags,
 
 		// LPVOID lpEnvironment,
 		// 新しい環境ブロック
@@ -200,11 +212,12 @@ BOOL CreateProcessCommon(LPCTSTR pApp,
 		// プロセス情報
 		&pi
 	);
-
+	
 	if(pdwLastError)
 		*pdwLastError = GetLastError();
-
-	freestring(cl);
+	
+	free(pArgTmp);
+	// freestring(cl);
 
 	if(!bRet)
 	{
@@ -217,9 +230,8 @@ BOOL CreateProcessCommon(LPCTSTR pApp,
 	else if(wpt==WaitProcess_Complete)
 		WaitForSingleObject(pi.hProcess, dwMaxWait);
 
-	// ハンドルを閉じる
-	CloseHandle(pi.hThread);
 
+	// プロセスハンドルとIDを設定
 	if (phProcess)
 		*phProcess = pi.hProcess;
 	else
@@ -227,6 +239,17 @@ BOOL CreateProcessCommon(LPCTSTR pApp,
 
     if(pdwProcessID)
         *pdwProcessID = pi.dwProcessId;
+
+
+	// スレッドハンドルとIDを設定
+	if (phThread)
+		*phThread = pi.hThread;
+	else
+		CloseHandle(pi.hThread);
+
+	if (pdwThreadID)
+		*pdwThreadID = pi.dwThreadId;
+
 
 	return TRUE;
 }

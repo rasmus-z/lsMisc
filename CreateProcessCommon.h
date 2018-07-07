@@ -30,11 +30,14 @@ enum WaitProcessType {
 };
 
 BOOL CreateProcessCommon(LPCTSTR pApp,
-						 LPCTSTR pArg=NULL,
-						 BOOL bHide=FALSE,
-						 DWORD* pdwLastError=NULL,
-						 WaitProcessType wpt=WaitProcess_None,
-						 DWORD dwMaxWait = INFINITE,
-                         HANDLE* phProcess = NULL,
-                         DWORD* pdwProcessID = NULL
-						 );
+	LPCTSTR pArg = NULL,
+	BOOL bHide = FALSE,
+	DWORD* pdwLastError = NULL,
+	WaitProcessType wpt = WaitProcess_None,
+	DWORD dwMaxWait = INFINITE,
+	HANDLE* phProcess = NULL,
+	DWORD* pdwProcessID = NULL,
+	HANDLE* phThread = NULL,
+	DWORD* pdwThreadID = NULL,
+	BOOL bSuspend = FALSE);
+
