@@ -281,9 +281,6 @@
     <ClCompile Include="..\StartProcess.cpp">
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
-    <ClCompile Include="..\StdStringReplace.cpp">
-      <Filter>lsMisc\2 Source</Filter>
-    </ClCompile>
     <ClCompile Include="..\stringEndwith.cpp">
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
@@ -321,7 +318,6 @@
     <ClCompile Include="testShowBalloon.cpp">
       <Filter>Test Files</Filter>
     </ClCompile>
-    <ClCompile Include="googletest\googletest\src\gtest-all.cc" />
     <ClCompile Include="..\RevealFolder.cpp">
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
@@ -332,6 +328,15 @@
       <Filter>Test Files</Filter>
     </ClCompile>
     <ClCompile Include="..\ExpandPath.cpp">
+      <Filter>lsMisc\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="gtestUtf8toUtf16.cpp">
+      <Filter>GTest Files</Filter>
+    </ClCompile>
+    <ClCompile Include="googletest\googletest\src\gtest-all.cc">
+      <Filter>gtest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SystemInfo.cpp">
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
   </ItemGroup>
@@ -613,9 +618,6 @@
     <ClInclude Include="..\StartProcess.h">
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
-    <ClInclude Include="..\StdStringReplace.h">
-      <Filter>lsMisc\1 Header</Filter>
-    </ClInclude>
     <ClInclude Include="..\stlScopedClear.h">
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
@@ -671,13 +673,13 @@
     <ClInclude Include="..\ExpandPath.h">
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
+    <ClInclude Include="..\SystemInfo.h">
+      <Filter>lsMisc\1 Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Test Files">
       <UniqueIdentifier>{43430429-1536-450c-82b8-85ab66f69f39}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="4 lang">
-      <UniqueIdentifier>{2ff9e5c6-e3e5-4de2-9ae2-7c7d6dedcee5}</UniqueIdentifier>
     </Filter>
     <Filter Include="lsMisc">
       <UniqueIdentifier>{084a73a9-8735-4bc7-9edb-1c324b405313}</UniqueIdentifier>
@@ -688,10 +690,19 @@
     <Filter Include="lsMisc\2 Source">
       <UniqueIdentifier>{5186c18b-00bd-4c8b-bf12-a388afaa042c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GTest Files">
+      <UniqueIdentifier>{94fd61e2-0663-4dcb-bfd0-d08f71669934}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lang">
+      <UniqueIdentifier>{2ff9e5c6-e3e5-4de2-9ae2-7c7d6dedcee5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gtest">
+      <UniqueIdentifier>{6b14a10e-1189-40d4-b6bd-d2655c1f5728}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="lang\jpn.txt">
-      <Filter>4 lang</Filter>
+      <Filter>lang</Filter>
     </Text>
   </ItemGroup>
 </Project>

@@ -88,13 +88,6 @@ namespace Ambiesoft {
 	}
 
 
-    template<typename T>
-    static const wchar_t* nextP(const T* p)
-    {
-        ++p;
-        return p;
-    }
-    template<char>
 	static const char* nextP(const char* p)
 	{
 #ifdef _WIN32
@@ -103,7 +96,6 @@ namespace Ambiesoft {
         return p+1;
 #endif
 	}
-    template<wchar_t>
 	static const wchar_t* nextP(const wchar_t* p)
 	{
 		++p;
@@ -119,17 +111,10 @@ namespace Ambiesoft {
 		return c == L'"';
 	}
 
-    template<typename T>
-    static void GetModuleFileNameT(T* p)
-    {
-
-    }
-    template<char>
     static void GetModuleFileNameT(char* p)
     {
         GetModuleFileNameA(NULL,p,MAX_PATH);
     }
-    template<wchar_t>
     static void GetModuleFileNameT(wchar_t* p)
 	{
 		GetModuleFileNameW(NULL,p,MAX_PATH);
@@ -335,7 +320,8 @@ namespace Ambiesoft {
 				init(pCommandLine);
 			}
 		}
-		
+		CCommandLineStringBase(const myS& s) :
+			CCommandLineStringBase(s.c_str()) {}
 
 		~CCommandLineStringBase()
 		{

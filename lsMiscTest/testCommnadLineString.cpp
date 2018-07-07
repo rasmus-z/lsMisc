@@ -17,7 +17,7 @@ static bool isSameResult(LPWSTR pCL)
 
 	int argc1 = 0;
 	LPWSTR* argv1 = NULL;
-	argv1 = CCommandLineString::getCommandLine(pCL,&argc1);
+	argv1 = CCommandLineString::getCommandLineArg(pCL,&argc1);
 
 	//assert(argc1 == 2);
 	//mytrace(argv1[0]);
@@ -37,7 +37,7 @@ static bool isSameResult(LPWSTR pCL)
 		assert(wcscmp(argv1[i], argv2[i]) == 0);
 	}
 
-	CCommandLineString::freeCommandLine(argv1);
+	CCommandLineString::freeCommandLineArg(argv1);
 	LocalFree(argv2);
 	return true;
 }

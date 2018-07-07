@@ -26,6 +26,9 @@
 #include <string>
 #include <time.h>
 #include "stdwin32/stdwin32.h"
+
+#include "tstring.h"
+
 #include "CLogger.h"
 
 namespace Ambiesoft {

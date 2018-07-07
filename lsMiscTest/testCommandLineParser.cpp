@@ -41,8 +41,8 @@ static void testCommandLine1()
 
 	CCommandLineParser clp;
 	clp.AddOption(L"-h", L"/?", 0, &isHelp);
-	clp.AddOption(vs.begin(), vs.end(), 0, &isABC);
-	clp.AddOption(opXYZ, opXYZ + _countof(opXYZ), 0, &isXYZ);
+	clp.AddOptionRange(vs.begin(), vs.end(), 0, &isABC);
+	clp.AddOptionRange(opXYZ, opXYZ + _countof(opXYZ), 0, &isXYZ);
 	clp.AddOption(L"-path", 1, &path);
 
 	wchar_t* argv[] = {

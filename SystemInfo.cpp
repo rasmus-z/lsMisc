@@ -596,7 +596,7 @@ namespace zoltan_csizmadia {
 	BOOL SystemHandleInformation::GetTypeFromTypeToken(LPCTSTR typeToken, WORD& type)
 	{
 		const WORD count = 27;
-		wstring constStrTypes[count] = {
+		static wstring constStrTypes[count] = {
 			_T(""), _T(""), _T("Directory"), _T("SymbolicLink"), _T("Token"),
 			_T("Process"), _T("Thread"), _T("Unknown7"), _T("Event"), _T("EventPair"), _T("Mutant"),
 			_T("Unknown11"), _T("Semaphore"), _T("Timer"), _T("Profile"), _T("WindowStation"),

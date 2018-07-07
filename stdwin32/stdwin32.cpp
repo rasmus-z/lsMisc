@@ -243,6 +243,8 @@ namespace stdwin32 {
 		free((void*)p);
 		return ret;
 	}
+	
+	
 	std::wstring stdGetFileNameWitoutExtension(LPCWSTR pPath)
 	{
 		std::wstring filename = stdGetFileName(pPath);
@@ -260,6 +262,20 @@ namespace stdwin32 {
 	{
 		return stdGetFileNameWitoutExtension(w.c_str());
 	}
+
+	std::wstring stdGetFileExtension(LPCWSTR pPath)
+	{
+		WCHAR* pExt = PathFindExtensionW(pPath);
+		if (!pExt)
+			return std::wstring();
+
+		return pExt;
+	}
+	std::wstring stdGetFileExtension(const std::wstring& w)
+	{
+		return stdGetFileExtension(w.c_str());
+	}
+
 
 	std::vector<std::wstring> stdSplitSCedPath(LPCWSTR pPath)
 	{
@@ -402,12 +418,24 @@ namespace stdwin32 {
 
 
 
-	bool isTdigit(const tstring& str)
+	bool isTdigit(const string& str)
 	{
 		if (str.size() == 0)
 			return false;
 
-		for (tstring::const_iterator it = str.begin(); it != str.end(); ++it)
+		for (string::const_iterator it = str.begin(); it != str.end(); ++it)
+		{
+			if (!isdigit(*it))
+				return false;
+		}
+		return true;
+	}
+	bool isTdigit(const wstring& str)
+	{
+		if (str.size() == 0)
+			return false;
+
+		for (wstring::const_iterator it = str.begin(); it != str.end(); ++it)
 		{
 			if (!isdigit(*it))
 				return false;
@@ -444,6 +472,32 @@ namespace stdwin32 {
 			return false;
 		}
 	}
+
+
+
+
+
+
+
+
+
+
+
+	//template<typename stringtype>
+	//bool bbbb(stringtype const &fullString, stringtype const &ending) {
+	//	stringtype fullI(fullString);
+	//	std::transform(fullI.begin(), fullI.end(), fullI.begin(), ::tolower);
+
+	//	stringtype endI(ending);
+	//	std::transform(endI.begin(), endI.end(), endI.begin(), ::tolower);
+
+	//	return bbbb(fullI, endI);
+	//}
+
+
+
+
+
 
 
 	bool hasEndingIA(std::string const &fullString, std::string const &ending) {
@@ -769,12 +823,19 @@ namespace stdwin32 {
 		return stdGetFullPathName(ws.c_str());
 	}
 
+
+
+
 	std::string stdToString(const wchar_t * pIN)
 	{
+		if (pIN == NULL || pIN[0] == 0)
+			return std::string();
+
+		size_t cbSize = wcslen(pIN) + 1;
 		int nReqSize = WideCharToMultiByte(CP_ACP,
 			0,
 			pIN,
-			-1,
+			cbSize,
 			NULL,
 			0,
 			NULL,
@@ -787,7 +848,7 @@ namespace stdwin32 {
 		int nRet = WideCharToMultiByte(CP_ACP,
 			0,
 			pIN,
-			-1,
+			cbSize,
 			pOut,
 			nReqSize,
 			NULL,
@@ -808,6 +869,47 @@ namespace stdwin32 {
 		return stdToString(ws.c_str());
 	}
 
+
+	std::wstring stdToWstring(const char* pStr)
+	{
+		if (pStr == NULL || pStr[0] == 0)
+			return std::wstring();
+
+		size_t cbLen = strlen(pStr)+1;
+		int nReqSize = MultiByteToWideChar(
+			CP_ACP,
+			0,
+			(const char*)pStr,
+			(int)cbLen,
+			NULL,
+			0);
+
+		if (nReqSize == 0)
+			return NULL;
+
+		LPWSTR pOut = (LPWSTR)malloc(nReqSize * sizeof(WCHAR));
+		int nRet = MultiByteToWideChar(
+			CP_ACP,
+			0,
+			(const char*)pStr,
+			(int)cbLen,
+			pOut,
+			nReqSize);
+
+		if (nRet == 0 || nRet != nReqSize)
+		{
+			free(pOut);
+			return NULL;
+		}
+
+		std::wstring ret = pOut;
+		free(pOut);
+		return ret;
+	}
+	std::wstring stdToWstring(const std::string& s)
+	{
+		return stdToWstring(s.c_str());
+	}
 
 	// https://stackoverflow.com/a/13172514
 	std::vector<std::wstring> split_string(const std::wstring& str,

@@ -26,7 +26,7 @@
 #include <vector>
 #include <string>
 #include <windows.h>
-#include "../tstring.h"
+// #include "../tstring.h"
 
 namespace stdwin32 {
 
@@ -53,6 +53,9 @@ namespace stdwin32 {
 
 	std::wstring stdGetFileNameWitoutExtension(LPCWSTR pPath);
 	std::wstring stdGetFileNameWitoutExtension(const std::wstring& w);
+
+	std::wstring stdGetFileExtension(LPCWSTR pPath);
+	std::wstring stdGetFileExtension(const std::wstring& w);
 
 	std::vector<std::wstring> stdSplitSCedPath(LPCWSTR pPath);
 	
@@ -81,8 +84,16 @@ namespace stdwin32 {
 
 
 
-	bool isTdigit(const tstring& str);
+	bool isTdigitA(const std::string& str);
+	bool isTdigitW(const std::wstring& str);
+#ifdef UNICODE
+#define isTdigit isTdigitW
+#else
+#define isTdigit isTdigitA
+#endif
 
+	
+	
 	std::wstring stdGetCurrentDirectory();
 
 
@@ -186,6 +197,11 @@ namespace stdwin32 {
 
 	std::string stdToString(const wchar_t * pIN);
 	std::string stdToString(const std::wstring& ws);
+
+	std::wstring stdToWstring(const char* pStr);
+	std::wstring stdToWstring(const std::string& s);
+
+
 
 	std::vector<std::wstring> split_string(const std::wstring& str,
 		const std::wstring& delimiter);

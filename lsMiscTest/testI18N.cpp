@@ -36,6 +36,7 @@ static void prepareLang()
 	assert(f);
 	fwrite(pUtf8, strlen((char*)pUtf8),1, f);
 	fclose(f);
+	free(pUtf8);
 }
 
 void testI18N()
