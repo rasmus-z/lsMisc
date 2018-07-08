@@ -21,5 +21,7 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
+#include <Windows.h>
+#include <tchar.h>
 #include "tstring.h"
 tstring ChangeFilenamable(LPCTSTR pch, bool bToSjisZen=true);

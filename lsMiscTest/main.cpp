@@ -1,5 +1,10 @@
 #include "stdafx.h"
+
+#ifndef NDEBUG
+// include only in DEBUG mode
 #include <vld.h>
+#endif
+
 #include <windows.h>
 #include <tchar.h>
 #include <TlHelp32.h>
@@ -16,7 +21,6 @@
 
 #include "../tstring.h"
 #include "../IsFileExists.h"
-#include "../ProcessList.h"
 #include "../ChangeFilenamable.h"
 #include "../PathUtil.h"
 #include "../OpenedFiles.h"
@@ -26,20 +30,10 @@
 
 
 
-void testMoveWindowCommon();
-void testHira2Kata();
-void testGetVersionString();
-void testStlMutex();
-void testPathUtil();
-void testUrlEncode();
 
-//void testSHMoveFile();
-void testOpenCommon();
+
+void testStlMutex();
 void testOpenedFiles();
-void testI18N();
-// void testOSTraits();
-void testShowBalloon();
-void testRevealFolder();
 void testExpandPath();
 
 int main()
@@ -52,72 +46,15 @@ int main()
 		_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG));
 #endif
 
-	testExpandPath();
-	testRevealFolder();
-
 	testing::InitGoogleTest(&__argc, __argv);
 	int gret = RUN_ALL_TESTS();
-	// return gret;
 
 	
-	// testOSTraits();
-	testShowBalloon();
-
-	//testSHMoveFile();
-
-	
-	
-
-	testI18N();
-	
-	testOpenCommon();
+	//testExpandPath();
+	//testOpenedFiles();
+	//testStlMutex();
 
 
-	testUrlEncode();
-	testPathUtil();
-
-	testMoveWindowCommon();
-	
-	testHira2Kata();
-	testGetVersionString();
-
-
-
-	testOpenedFiles();
-
-
-	// kernel object
-	{
-		HANDLE h = CreateMutex(NULL, FALSE, NULL);
-		if (h == NULL)
-			return -1;
-
-		stlsoft::scoped_handle<HANDLE> ko(h, CloseHandle);
-	}
-
-	{
-		FILE* f = NULL;
-#if _MSC_VER <= 1200
-		f = fopen("C:\\T\\Test.txt", "w");
-#else
-		fopen_s(&f, "C:\\T\\Test.txt", "w");
-#endif
-		if (!f)
-			return -1;
-
-		stlsoft::scoped_handle<FILE*> fo(f, fclose);
-	}
-
-	//TCHAR buf[MAX_PATH];
-
-
-
-
-	std::vector<PROCESSENTRY32> ret;
-	GetProcessList(ret);
-
-	TCHAR szT[] = _T("開発機構特別資料");
-	tstring t = ChangeFilenamable(szT);
 
 	BOOL b = IsFileExists(_T("c:\\T\\aaa.txt"));
 	b = IsFileExistsA("c:\\T\\bbb.txt");

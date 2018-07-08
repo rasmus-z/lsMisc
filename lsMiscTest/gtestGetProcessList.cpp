@@ -1,0 +1,29 @@
+#include "stdafx.h"
+
+#include "gtest/gtest.h"
+
+#include "../stdwin32/stdwin32.h"
+#include "../GetProcessList.h"
+
+using namespace std;
+using namespace stdwin32;
+
+TEST(GetProcessList, Basic)
+{
+	vector<PROCESSENTRY32> ret;
+	EXPECT_TRUE(GetProcessList(ret));
+	EXPECT_GT(ret.size(), 0UL);
+	
+	bool ok = false;
+	DWORD thisid = GetCurrentProcessId();
+	wstring thisexefilename = stdGetFileName(stdGetModuleFileName());
+	for (PROCESSENTRY32& entry : ret)
+	{
+		if (thisid == entry.th32ProcessID)
+		{
+			EXPECT_STREQ(entry.szExeFile, thisexefilename.c_str());
+			ok = true;
+		}
+	}
+	EXPECT_TRUE(ok);
+}

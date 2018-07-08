@@ -25,9 +25,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <PlatformToolset>v120</PlatformToolset>
-    <UseOfMfc>false</UseOfMfc>
+    <UseOfMfc>Static</UseOfMfc>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -187,7 +187,7 @@
     <ClCompile Include="..\OpenedFiles.cpp" />
     <ClCompile Include="..\PathUtil.cpp" />
     <ClCompile Include="..\pragmashowversions.cpp" />
-    <ClCompile Include="..\ProcessList.cpp" />
+    <ClCompile Include="..\GetProcessList.cpp" />
     <ClCompile Include="..\Registory.cpp" />
     <ClCompile Include="..\RemoveLastInValidURLChar.cpp" />
     <ClCompile Include="..\ReplaceFileHelper.cpp" />
@@ -214,6 +214,8 @@
     <ClCompile Include="..\WritePrivateProfileInt.cpp" />
     <ClCompile Include="..\WritePrivateProfileWString.cpp" />
     <ClCompile Include="..\XBrowseForFolder.cpp" />
+    <ClCompile Include="gtestChangeFilenamable.cpp" />
+    <ClCompile Include="gtestGetProcessList.cpp" />
     <ClCompile Include="debug.cpp" />
     <ClCompile Include="googletest\googletest\src\gtest-all.cc" />
     <ClCompile Include="gtestUtf8toUtf16.cpp" />
@@ -222,19 +224,19 @@
     <ClCompile Include="gtestCommnadLineString.cpp" />
     <ClCompile Include="testExpandPath.cpp" />
     <ClCompile Include="gtestFormatSizeof.cpp" />
-    <ClCompile Include="testGetVersionString.cpp" />
-    <ClCompile Include="testHira2Kata.cpp" />
-    <ClCompile Include="testMoveWindowCommon.cpp" />
-    <ClCompile Include="testOpenCommon.cpp" />
+    <ClCompile Include="gtestGetVersionString.cpp" />
+    <ClCompile Include="gtestHira2Kata.cpp" />
+    <ClCompile Include="gtestMoveWindowCommon.cpp" />
+    <ClCompile Include="gtestOpenCommon.cpp" />
     <ClCompile Include="testOpenedFiles.cpp" />
-    <ClCompile Include="testI18N.cpp" />
+    <ClCompile Include="gtestI18N.cpp" />
     <ClCompile Include="testOSTraits.cpp" />
-    <ClCompile Include="testPathUtil.cpp" />
-    <ClCompile Include="testRevealFolder.cpp" />
-    <ClCompile Include="testSHMoveFile.cpp" />
-    <ClCompile Include="testShowBalloon.cpp" />
+    <ClCompile Include="gtestPathUtil.cpp" />
+    <ClCompile Include="gtestRevealFolder.cpp" />
+    <ClCompile Include="gtestSHMoveFile.cpp" />
+    <ClCompile Include="gtestShowBalloon.cpp" />
     <ClCompile Include="testStlsoft.cpp" />
-    <ClCompile Include="testUrlEncode.cpp" />
+    <ClCompile Include="gtestUrlEncode.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\addBaseElement.h" />
@@ -259,7 +261,6 @@
     <ClInclude Include="..\CreateSimpleWindow.h" />
     <ClInclude Include="..\CreateWString.h" />
     <ClInclude Include="..\DebugMacro.h" />
-    <ClInclude Include="..\DebugMacroOperatorNew.h" />
     <ClInclude Include="..\DeleteIECache.h" />
     <ClInclude Include="..\EnableDebugPriv.h" />
     <ClInclude Include="..\EveryCloser.h" />
@@ -316,7 +317,7 @@
     <ClInclude Include="..\os_traits.h" />
     <ClInclude Include="..\PathUtil.h" />
     <ClInclude Include="..\pragmashowversions.h" />
-    <ClInclude Include="..\ProcessList.h" />
+    <ClInclude Include="..\GetProcessList.h" />
     <ClInclude Include="..\Registory.h" />
     <ClInclude Include="..\RemoveLastInValidURLChar.h" />
     <ClInclude Include="..\ReplaceFileHelper.h" />
@@ -349,10 +350,14 @@
     <ClInclude Include="..\WritePrivateProfileWString.h" />
     <ClInclude Include="..\XBrowseForFolder.h" />
     <ClInclude Include="debug.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="lang\jpn.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="lsMiscTest.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

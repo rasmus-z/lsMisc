@@ -21,26 +21,8 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
+#pragma once
+
 #include <windows.h>
 #include <tlhelp32.h>
-#include <vector>
-#include "ProcessList.h"
-
-BOOL GetProcessList(std::vector<PROCESSENTRY32>& ret)
-{
-	HANDLE hSnapshot=CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS,0);
-	if (INVALID_HANDLE_VALUE == hSnapshot)
-		return FALSE;
-
-	PROCESSENTRY32 pe;
-	pe.dwSize=sizeof(PROCESSENTRY32);
-	BOOL retval=Process32First(hSnapshot,&pe);
-	while(retval)
-	{
-		ret.push_back(pe);
-		retval=Process32Next(hSnapshot,&pe);
-	}
-
-	CloseHandle(hSnapshot);
-	return TRUE;
-}
+BOOL GetProcessList(std::vector<PROCESSENTRY32>& ret);

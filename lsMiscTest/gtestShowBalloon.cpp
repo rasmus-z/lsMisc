@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include "gtest/gtest.h"
 
 #include "../showBalloon.h"
 
@@ -7,9 +8,9 @@ using namespace Ambiesoft;
 
 
 
-void testShowBalloon()
+TEST(ShowBalloon, Show)
 {
-	showballoon(
+	EXPECT_TRUE(showballoon(
 				 NULL,
 				 L"tttitle",
 				 L"teeeeeeeext",
@@ -17,6 +18,5 @@ void testShowBalloon()
 				 3000,
 				 3332,
 				 FALSE,
- 				 1);
-
+ 				 1));
 }

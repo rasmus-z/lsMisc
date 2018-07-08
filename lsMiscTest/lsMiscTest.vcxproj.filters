@@ -32,9 +32,6 @@
     <ClCompile Include="..\PathUtil.cpp">
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
-    <ClCompile Include="..\ProcessList.cpp">
-      <Filter>lsMisc\2 Source</Filter>
-    </ClCompile>
     <ClCompile Include="..\SHMoveFile.cpp">
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
@@ -44,28 +41,7 @@
     <ClCompile Include="..\UTF16toUTF8.cpp">
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
-    <ClCompile Include="testGetVersionString.cpp">
-      <Filter>Test Files</Filter>
-    </ClCompile>
-    <ClCompile Include="testHira2Kata.cpp">
-      <Filter>Test Files</Filter>
-    </ClCompile>
-    <ClCompile Include="testMoveWindowCommon.cpp">
-      <Filter>Test Files</Filter>
-    </ClCompile>
-    <ClCompile Include="testOpenCommon.cpp">
-      <Filter>Test Files</Filter>
-    </ClCompile>
-    <ClCompile Include="testPathUtil.cpp">
-      <Filter>Test Files</Filter>
-    </ClCompile>
-    <ClCompile Include="testSHMoveFile.cpp">
-      <Filter>Test Files</Filter>
-    </ClCompile>
     <ClCompile Include="testStlsoft.cpp">
-      <Filter>Test Files</Filter>
-    </ClCompile>
-    <ClCompile Include="testUrlEncode.cpp">
       <Filter>Test Files</Filter>
     </ClCompile>
     <ClCompile Include="testOpenedFiles.cpp">
@@ -76,9 +52,6 @@
     </ClCompile>
     <ClCompile Include="..\OpenedFiles.cpp">
       <Filter>lsMisc\2 Source</Filter>
-    </ClCompile>
-    <ClCompile Include="testI18N.cpp">
-      <Filter>Test Files</Filter>
     </ClCompile>
     <ClCompile Include="..\CommandLineParser.cpp">
       <Filter>lsMisc\2 Source</Filter>
@@ -306,14 +279,8 @@
     <ClCompile Include="testOSTraits.cpp">
       <Filter>Test Files</Filter>
     </ClCompile>
-    <ClCompile Include="testShowBalloon.cpp">
-      <Filter>Test Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\RevealFolder.cpp">
       <Filter>lsMisc\2 Source</Filter>
-    </ClCompile>
-    <ClCompile Include="testRevealFolder.cpp">
-      <Filter>Test Files</Filter>
     </ClCompile>
     <ClCompile Include="testExpandPath.cpp">
       <Filter>Test Files</Filter>
@@ -337,6 +304,45 @@
       <Filter>GTest Files</Filter>
     </ClCompile>
     <ClCompile Include="gtestFormatSizeof.cpp">
+      <Filter>GTest Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gtestGetVersionString.cpp">
+      <Filter>GTest Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gtestHira2Kata.cpp">
+      <Filter>GTest Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gtestI18N.cpp">
+      <Filter>GTest Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gtestMoveWindowCommon.cpp">
+      <Filter>GTest Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gtestOpenCommon.cpp">
+      <Filter>GTest Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gtestSHMoveFile.cpp">
+      <Filter>GTest Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gtestRevealFolder.cpp">
+      <Filter>GTest Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gtestShowBalloon.cpp">
+      <Filter>GTest Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gtestUrlEncode.cpp">
+      <Filter>GTest Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gtestPathUtil.cpp">
+      <Filter>GTest Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GetProcessList.cpp">
+      <Filter>lsMisc\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="gtestGetProcessList.cpp">
+      <Filter>GTest Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gtestChangeFilenamable.cpp">
       <Filter>GTest Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -376,9 +382,6 @@
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
     <ClInclude Include="..\SHMoveFile.h">
-      <Filter>lsMisc\1 Header</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ProcessList.h">
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
     <ClInclude Include="..\PathUtil.h">
@@ -439,9 +442,6 @@
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
     <ClInclude Include="..\DebugMacro.h">
-      <Filter>lsMisc\1 Header</Filter>
-    </ClInclude>
-    <ClInclude Include="..\DebugMacroOperatorNew.h">
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
     <ClInclude Include="..\DeleteIECache.h">
@@ -676,6 +676,10 @@
     <ClInclude Include="..\SystemInfo.h">
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="..\GetProcessList.h">
+      <Filter>lsMisc\1 Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Test Files">
@@ -704,5 +708,8 @@
     <Text Include="lang\jpn.txt">
       <Filter>lang</Filter>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="lsMiscTest.rc" />
   </ItemGroup>
 </Project>

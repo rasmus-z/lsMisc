@@ -1,4 +1,4 @@
-
+#pragma once
 
 #include <windows.h>
 //
@@ -8,4 +8,5 @@
 //		"FileDescription", "FileVersion", "InternalName", 
 //		"ProductName", "ProductVersion", etc  (see MSDN for others)
 //
-TCHAR *GetVersionString(TCHAR *szFileName, TCHAR *szValue, TCHAR *szBuffer, ULONG nLength);
+// TCHAR *GetVersionString(TCHAR *szFileName, TCHAR *szValue, TCHAR *szBuffer, ULONG nLength);
+std::wstring GetVersionString(LPCTSTR szFileName);

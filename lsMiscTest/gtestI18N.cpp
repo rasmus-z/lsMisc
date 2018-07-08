@@ -1,6 +1,9 @@
 ﻿#include "stdafx.h"
 
 #include <Shlwapi.h>
+
+#include "gtest/gtest.h"
+
 #pragma comment(lib, "shlwapi.lib")
 
 #include <cassert>
@@ -24,8 +27,8 @@ static void prepareLang()
 	CreateDirectory(langdir.c_str(), NULL);
 
 	wstring langfile = stdCombinePath(langdir, L"jpn.txt");
-	if (PathFileExists(langfile.c_str()))
-		return;
+	//if (PathFileExists(langfile.c_str()))
+	//	return;
 
 
 	wstring data(L"\"AAA\"=\"あああ\"");
@@ -39,12 +42,12 @@ static void prepareLang()
 	free(pUtf8);
 }
 
-void testI18N()
+TEST(I18N,BASIC)
 {
 	prepareLang();
 	i18nInitLangmap(NULL, L"JPN");
 
 	// wchar_t aaa[] = { 0x4230, 0x4230, 0x4230, 0 };
 	wchar_t aaa[] = { 0x3042, 0x3042, 0x3042, 0 };
-	assert(std::wstring(I18N(L"AAA")) == aaa);
+	EXPECT_STREQ(I18N(L"AAA"), aaa);
 }
