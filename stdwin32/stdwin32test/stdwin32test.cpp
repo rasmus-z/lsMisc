@@ -23,9 +23,12 @@ int main(int argc, char* argv[])
 	cout << "WINVER=" << "0x" << std::hex << WINVER << endl;
 	cout << "_WIN32_IE=" << "0x" << std::hex << _WIN32_IE << endl;
 
+	string exe = stdGetModuleFileName();
+	wstring wexe = stdGetModuleFileNameW();
+
 	std::wstring shortname = stdwin32::stdGetShortPath(L"C:\\Users\\zgjEr\\Desktop\\aaaaaaaaaaaaaaaaaaaaaaaaa.txt");
 
-	std::string s=	stdwin32::string_format("%d-%s", 100, "aaa");
+	std::string s=	string_format("%d-%s", 100, "aaa");
 	wstring ws;
 
 	s = stdItoA(1234);

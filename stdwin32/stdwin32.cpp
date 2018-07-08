@@ -111,38 +111,24 @@ namespace stdwin32 {
 
 	static const wchar_t* Nil = L"";
 
-	std::string stdGetModuleFileNameA(HINSTANCE hInst)
-	{
-		LPSTR p = NULL;
-		DWORD size = 64;
-		for (;;)
-		{
-			p = (LPSTR)realloc(p, size * sizeof(char));
-			if (GetModuleFileNameA(hInst, p, size) < size)
-				break;
-			size *= 2;
-		}
 
-		std::string ret = p;
-		free((void*)p);
-		return ret;
-	}
-	std::wstring stdGetModuleFileNameW(HINSTANCE hInst)
-	{
-		LPWSTR p = NULL;
-		DWORD size = 64;
-		for (;;)
-		{
-			p = (LPWSTR)realloc(p, size * sizeof(wchar_t));
-			if (GetModuleFileNameW(hInst, p, size) < size)
-				break;
-			size *= 2;
-		}
 
-		std::wstring ret = p;
-		free((void*)p);
-		return ret;
-	}
+	//std::wstring stdGetModuleFileNameW(HINSTANCE hInst)
+	//{
+	//	LPWSTR p = NULL;
+	//	DWORD size = 64;
+	//	for (;;)
+	//	{
+	//		p = (LPWSTR)realloc(p, size * sizeof(wchar_t));
+	//		if (GetModuleFileNameW(hInst, p, size) < size)
+	//			break;
+	//		size *= 2;
+	//	}
+
+	//	std::wstring ret = p;
+	//	free((void*)p);
+	//	return ret;
+	//}
 
 	bool stdIsFullPath(LPCWSTR pD, bool allownetwork)
 	{

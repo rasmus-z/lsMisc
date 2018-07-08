@@ -30,18 +30,65 @@
 
 namespace stdwin32 {
 
-	std::string stdGetModuleFileNameA(HINSTANCE hInst=NULL);
-	std::wstring stdGetModuleFileNameW(HINSTANCE hInst=NULL);
-#ifdef UNICODE
-	#define stdGetModuleFileName stdGetModuleFileNameW
-#else
-	#define stdGetModuleFileName stdGetModuleFileNameA
-#endif
+	template<typename T>
+	struct StdCharTraits
+	{
+		static DWORD ssGetModuleFileName(
+			HMODULE hModule,
+			T* lpFilename,
+			DWORD nSize
+			)
+		{
+			return GetModuleFileNameA(hModule, lpFilename, nSize);
+		}
+	};
+	template<>
+	struct StdCharTraits<wchar_t>
+	{
+		static DWORD ssGetModuleFileName(
+			HMODULE hModule,
+			wchar_t* lpFilename,
+			DWORD nSize
+			)
+		{
+			return GetModuleFileNameW(hModule, lpFilename, nSize);
+		}
+	};
+
+	template<typename ST>
+	ST stdGetModuleFileNameTmplate(HINSTANCE hInst = NULL)
+	{
+		ST::traits_type::char_type* p = NULL;
+		DWORD size = 64;
+		for (;;)
+		{
+			p = (ST::traits_type::char_type*)realloc(p, size * sizeof(ST::traits_type::char_type));
+			if (StdCharTraits<ST::traits_type::char_type>::ssGetModuleFileName(hInst, p, size) < size)
+				break;
+
+			// Make double the size of required memory
+			size *= 2;
+		}
+
+		ST ret = p;
+		free((void*)p);
+		return ret;
+	}
+
+	#define stdGetModuleFileNameA stdGetModuleFileNameTmplate<std::string>
+	#define stdGetModuleFileNameW stdGetModuleFileNameTmplate<std::wstring>
+	#ifdef UNICODE
+		#define stdGetModuleFileName stdGetModuleFileNameW
+	#else
+		#define stdGetModuleFileName stdGetModuleFileNameA
+	#endif
 
 
 
 
 	bool stdIsFullPath(LPCWSTR pD, bool allownetwork = true);
+
+
 	std::wstring stdCombinePath(LPCWSTR pD1, LPCWSTR pD2);
 	std::wstring stdCombinePath(const std::wstring& d1, const std::wstring& d2);
 	

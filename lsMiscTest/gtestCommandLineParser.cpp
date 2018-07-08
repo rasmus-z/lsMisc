@@ -82,3 +82,135 @@ TEST(CommandLineParser, Basic)
 	EXPECT_STREQ(opMain.getValueStrings().c_str(), L"file1.txt file2.txt file3.txt \"space file.txt\"");
 }
 
+TEST(CommandLineParser, OptionConstructorAll)
+{
+	// Default Ctor for Main arg and inifinite
+	{
+		CCommandLineParser parser;
+		COption op1;
+		parser.AddOption(&op1);
+
+		wchar_t* argv[] = {
+			L"exe.exe",
+			L"-h",
+			L"-b",
+			L"-path",
+			ACTULAPATH,  // Main arg starts here
+			L"file1.txt",
+			L"file2.txt",
+			L"file3.txt",
+			L"space file.txt",
+			NULL
+		};
+
+		size_t argc = _countof(argv) - 1;
+		parser.Parse(argc, argv);
+		int i = 0;
+		for (size_t iArg = 4; iArg < argc; ++iArg, ++i)
+		{
+			EXPECT_STREQ(argv[iArg], op1.getValue(i).c_str());
+		}
+	}
+}
+
+TEST(CommandLineParser, Bool)
+{
+	// Specified
+	{
+		CCommandLineParser parser;
+		bool b = false;
+		parser.AddOption(L"-b", 0, &b);
+
+		wchar_t* argv[] = {
+			L"exe.exe",
+			L"-h",
+			L"-b",
+			L"-path",
+			ACTULAPATH,  // Main arg starts here
+			L"file1.txt",
+			L"file2.txt",
+			L"file3.txt",
+			L"space file.txt",
+			NULL
+		};
+		size_t argc = _countof(argv) - 1;
+		parser.Parse(argc, argv);
+
+		EXPECT_TRUE(b);
+	}
+	// UnSpecified
+	{
+		CCommandLineParser parser;
+		bool b = false;
+		parser.AddOption(L"-b", 0, &b);
+
+		wchar_t* argv[] = {
+			L"exe.exe",
+			L"-h",
+			L"-cb",
+			L"-path",
+			ACTULAPATH,  // Main arg starts here
+			L"file1.txt",
+			L"file2.txt",
+			L"file3.txt",
+			L"space file.txt",
+			NULL
+		};
+		size_t argc = _countof(argv) - 1;
+		parser.Parse(argc, argv);
+
+		EXPECT_FALSE(b);
+	}
+}
+
+TEST(CommandLineParser, Int)
+{
+	// Specified
+	{
+		CCommandLineParser parser;
+		int intval = 0;
+		parser.AddOption(L"-i", 1, &intval);
+
+		wchar_t* argv[] = {
+			L"exe.exe",
+			L"-h",
+			L"-i",
+			L"1001",
+			L"-path",
+			ACTULAPATH,  // Main arg starts here
+			L"file1.txt",
+			L"file2.txt",
+			L"file3.txt",
+			L"space file.txt",
+			NULL
+		};
+		size_t argc = _countof(argv) - 1;
+		parser.Parse(argc, argv);
+
+		EXPECT_EQ(intval, 1001);
+	}
+	// Unspecified
+	{
+		CCommandLineParser parser;
+		int intval = -1;
+		parser.AddOption(L"-i", 1, &intval);
+
+		wchar_t* argv[] = {
+			L"exe.exe",
+			L"-h",
+			L"-fi",
+			L"1001",
+			L"-path",
+			ACTULAPATH,  // Main arg starts here
+			L"file1.txt",
+			L"file2.txt",
+			L"file3.txt",
+			L"space file.txt",
+			NULL
+		};
+		size_t argc = _countof(argv) - 1;
+		parser.Parse(argc, argv);
+
+		EXPECT_EQ(intval, -1);
+	}
+}
