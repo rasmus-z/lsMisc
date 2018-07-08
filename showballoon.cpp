@@ -248,7 +248,7 @@ LRESULT CALLBACK WaitWindowProc(
    LPARAM lParam
 )
 {
-	static UINT sntimer;
+	static UINT_PTR sntimer;
 	static int sCounter;
 	static int smaxcount;
 	static WaitParam* spWaitParam;

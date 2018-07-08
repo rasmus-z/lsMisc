@@ -817,7 +817,7 @@ namespace stdwin32 {
 		if (pIN == NULL || pIN[0] == 0)
 			return std::string();
 
-		size_t cbSize = wcslen(pIN) + 1;
+		int cbSize = (int)wcslen(pIN) + 1;
 		int nReqSize = WideCharToMultiByte(CP_ACP,
 			0,
 			pIN,

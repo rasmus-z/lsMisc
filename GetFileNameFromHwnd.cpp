@@ -7,6 +7,9 @@
 
 #include "GetFileNameFromHwnd.h"
 
+// warning C4996: 'GetVersionExW': was declared deprecated
+#pragma warning(disable: 4996)
+
 static BOOL (WINAPI *lpfEnumProcessModules)
                     (HANDLE, HMODULE*, DWORD, LPDWORD);
 static DWORD (WINAPI *lpfGetModuleFileNameEx)

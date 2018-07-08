@@ -30,9 +30,9 @@
 
 static tstring LCMapCommon(LPCTSTR p, DWORD flag)
 {
-	size_t len = lstrlen(p);
+	int len = lstrlen(p);
 
-	size_t outlen = (len+1)*2;
+	int outlen = (len+1)*2;
 	TCHAR* q = (TCHAR*)malloc(outlen*sizeof(TCHAR));
 	struct Qfree {
 		TCHAR* q_;

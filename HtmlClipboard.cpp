@@ -76,7 +76,7 @@ bool CHtmlClipboard::getHtmlFromClipboard(HWND hWnd, _bstr_t* pHtml, _bstr_t* pT
 		} unlocker(h);
 
 		// "HTML Format" is UTF8 encoding.
-		pcopy = strdup(p);
+		pcopy = _strdup(p);
 	}
 
 	if ( pcopy == NULL )
@@ -109,15 +109,15 @@ bool CHtmlClipboard::getHtml(LPSTR p, _bstr_t* pHtml, _bstr_t* pTitle, _bstr_t* 
 			part++;
 		}
 
-		if ( stricmp(token, "StartHTML")==0 )
+		if ( _stricmp(token, "StartHTML")==0 )
 		{
 			startbyte = atoi(part);
 		}
-		else if (stricmp(token, "EndHTML")==0 )
+		else if (_stricmp(token, "EndHTML") == 0)
 		{
 			endbyte = atoi(part);
 		}
-		else if (pURL && stricmp(token, "SourceURL")==0 )
+		else if (pURL && _stricmp(token, "SourceURL") == 0)
 		{
 			size_t s = strlen(part);
 			if ( s > 0 && part[s-1]=='\r')

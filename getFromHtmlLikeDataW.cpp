@@ -38,7 +38,7 @@ void getFromHtmlLikeDataW(const WCHAR* pDataO, map<_bstr_t, _bstr_t>& headerMap,
 	
 //	size_t checkcount = 0;
 
-	WCHAR* pDataOrig = wcsdup(pDataO);
+	WCHAR* pDataOrig = _wcsdup(pDataO);
 	WCHAR* pData = pDataOrig;
 	WCHAR* pOUT = pDataOrig;
 

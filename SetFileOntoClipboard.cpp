@@ -45,7 +45,7 @@ namespace Ambiesoft {
 
 
 		{
-			UINT uBuffSize = 0;
+			size_t uBuffSize = 0;
 			HGLOBAL hgDrop = NULL;
 
 			for (i = 0; i < arFiles.size(); ++i)

@@ -229,8 +229,8 @@ namespace Ambiesoft {
 	static bool HasDupPaths(
 		const wstring& left, 
 		const vector<wstring>& saPaths, 
-		int startindex, 
-		int& hitindex, 
+		size_t startindex,
+		size_t& hitindex,
 		wstring& common)
 	{
 		for (size_t i = startindex; i < saPaths.size(); ++i)
@@ -248,14 +248,14 @@ namespace Ambiesoft {
 	}
 
 	bool checkDupPaths(const vector<wstring>& saPaths, 
-		wstring&left,
+		wstring& left,
 		wstring& right,
-		wstring&common)
+		wstring& common)
 	{
 		for (size_t i = 0; i < saPaths.size(); ++i)
 		{
 			wstring tmpleft = saPaths[i];
-			int hitindex = 0;
+			size_t hitindex = 0;
 			if (HasDupPaths(tmpleft, saPaths, i + 1, hitindex, common))
 			{
 				left = tmpleft;
