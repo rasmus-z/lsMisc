@@ -1,9 +1,13 @@
+#define NOMINMAX
 #include "stdafx.h"
 #include <string>
+#include <limits>
 #include <gtest/gtest.h>
 #include "../FormatSizeof.h"
 
 #include "debug.h"
+
+using namespace std;
 
 TEST(FormatSizeof, Basic)
 {
@@ -14,4 +18,7 @@ TEST(FormatSizeof, Basic)
 	EXPECT_STREQ(FormatSizeof(79741314LL).c_str(), L"76.0M");
 	EXPECT_STREQ(FormatSizeof(123456777666LL).c_str(), L"115.0G");
 	EXPECT_STREQ(FormatSizeof(4676464874646464465LL).c_str(), L"4.1E");
+
+	// TODO(this looks not corrent)
+	wstring t = FormatSizeof(std::numeric_limits<double>::max());
 }

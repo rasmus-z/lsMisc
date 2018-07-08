@@ -23,4 +23,4 @@
 
 #include "stdafx.h"
 
-#include "pragmashowversions.h"
+#include "PragmaShowVersions.h"

@@ -105,7 +105,7 @@ namespace zoltan_csizmadia {
 				{
 					//Mapped network drive 
 
-					char cDriveLetter;
+					TCHAR cDriveLetter;
 					DWORD dwParam;
 
 					TCHAR lpSharedName[0x1000];
@@ -167,7 +167,7 @@ namespace zoltan_csizmadia {
 				{
 					//Mapped network drive 
 
-					char cDriveLetter;
+					TCHAR cDriveLetter;
 					DWORD dwParam;
 
 					TCHAR lpSharedName[0x1000];

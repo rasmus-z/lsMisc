@@ -37,7 +37,7 @@ BOOL WritePrivateProfileWString(const TCHAR *lpszSection, const TCHAR *lpszKey, 
 	}
 	
 	char szBuff[4096] = {0};
-	int cpylen = min(sizeof(szBuff), (lstrlen(lpszIn)+1)*sizeof(TCHAR));
+	size_t cpylen = std::min(sizeof(szBuff), (lstrlen(lpszIn)+1)*sizeof(TCHAR));
 	memcpy(szBuff, lpszIn, cpylen);
 	szBuff[ sizeof(szBuff)-1 ] = 0;
 	

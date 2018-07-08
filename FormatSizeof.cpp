@@ -44,7 +44,8 @@ std::wstring FormatSizeof(double num)
 		num /= 1024.0;
 	}
 
-	swprintf_s(szT, L"%.1f%s%s", num, L"Y");
+	// TODO(this looks not corrent)
+	_snwprintf_s(szT, _countof(szT), _countof(szT)-1, L"%.1f%s", num, L"Y");
 	ret = szT;
 	return ret;
 }

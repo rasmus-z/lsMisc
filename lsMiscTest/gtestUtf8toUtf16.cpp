@@ -1,4 +1,4 @@
-
+#include "StdAfx.h"
 #include "gtest/gtest.h"
 
 #include "../UTF16toUTF8.h"

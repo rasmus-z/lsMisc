@@ -21,32 +21,33 @@
   <PropertyGroup Label="Globals">
     <ProjectName>lsMiscTest</ProjectName>
     <ProjectGuid>{086AB526-37F9-465E-96DF-8229F05B4DBA}</ProjectGuid>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <UseOfMfc>Dynamic</UseOfMfc>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <UseOfMfc>Dynamic</UseOfMfc>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <UseOfMfc>Dynamic</UseOfMfc>
     <UseDebugLibraries>false</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <UseOfMfc>Dynamic</UseOfMfc>
     <UseDebugLibraries>false</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
@@ -76,23 +77,23 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Configuration)\$(Platform)\2013\</OutDir>
-    <IntDir>$(Configuration)\$(Platform)\2013\</IntDir>
+    <OutDir>$(SolutionDir)$(Configuration)\$(Platform)\$(PlatformToolset)\</OutDir>
+    <IntDir>$(Configuration)\$(Platform)\$(PlatformToolset)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Configuration)\$(Platform)\2013\</OutDir>
-    <IntDir>$(Configuration)\$(Platform)\2013\</IntDir>
+    <OutDir>$(SolutionDir)$(Configuration)\$(Platform)\$(PlatformToolset)\</OutDir>
+    <IntDir>$(Configuration)\$(Platform)\$(PlatformToolset)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Configuration)\$(Platform)\2013\</OutDir>
-    <IntDir>$(Configuration)\$(Platform)\2013\</IntDir>
+    <OutDir>$(SolutionDir)$(Configuration)\$(Platform)\$(PlatformToolset)\</OutDir>
+    <IntDir>$(Configuration)\$(Platform)\$(PlatformToolset)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Configuration)\$(Platform)\2013\</OutDir>
-    <IntDir>$(Configuration)\$(Platform)\2013\</IntDir>
+    <OutDir>$(SolutionDir)$(Configuration)\$(Platform)\$(PlatformToolset)\</OutDir>
+    <IntDir>$(Configuration)\$(Platform)\$(PlatformToolset)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Midl>
@@ -102,7 +103,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions);_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING;_CRT_NON_CONFORMING_WCSTOK</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -110,6 +111,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalIncludeDirectories>.;../stlsoft/include;googletest\googletest;googletest\googletest\include</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -134,7 +136,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions);_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING;_CRT_NON_CONFORMING_WCSTOK</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -142,6 +144,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalIncludeDirectories>.;../stlsoft/include;googletest\googletest;googletest\googletest\include</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -163,7 +166,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions);_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING;_CRT_NON_CONFORMING_WCSTOK</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -172,6 +175,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <AdditionalIncludeDirectories>.;../stlsoft/include;googletest\googletest;googletest\googletest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -196,7 +200,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions);_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING;_CRT_NON_CONFORMING_WCSTOK</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
@@ -204,6 +208,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <AdditionalIncludeDirectories>.;../stlsoft/include;googletest\googletest;googletest\googletest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -220,9 +225,9 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\addBaseElement.cpp" />
-    <ClCompile Include="..\addCharset.cpp" />
-    <ClCompile Include="..\browseFolder.cpp" />
+    <ClCompile Include="..\AddBaseElement.cpp" />
+    <ClCompile Include="..\AddCharset.cpp" />
+    <ClCompile Include="..\BrowseFolder.cpp" />
     <ClCompile Include="..\CenterWindow.cpp" />
     <ClCompile Include="..\ChangeDirPos.cpp" />
     <ClCompile Include="..\ChangeFilenamable.cpp" />
@@ -240,7 +245,12 @@
     <ClCompile Include="..\EnableDebugPriv.cpp" />
     <ClCompile Include="..\ExpandPath.cpp" />
     <ClCompile Include="..\FormatSizeof.cpp" />
-    <ClCompile Include="..\GetChildWindowBy.cpp" />
+    <ClCompile Include="..\GetChildWindowBy.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="..\GetClipboardText.cpp" />
     <ClCompile Include="..\GetDesktopDir.cpp" />
     <ClCompile Include="..\GetDirFromPath.cpp" />
@@ -248,7 +258,7 @@
     <ClCompile Include="..\GetFileNameFromHwnd.cpp" />
     <ClCompile Include="..\GetFilesInfo.cpp" />
     <ClCompile Include="..\GetFormattedTime.cpp" />
-    <ClCompile Include="..\getFromHtmlLikeDataW.cpp" />
+    <ClCompile Include="..\GetFromHtmlLikeDataW.cpp" />
     <ClCompile Include="..\GetHotkeyString.cpp" />
     <ClCompile Include="..\GetLastErrorString.cpp" />
     <ClCompile Include="..\GetModuleDirectory.cpp" />
@@ -260,7 +270,7 @@
     <ClCompile Include="..\GetUnexistingFile.cpp" />
     <ClCompile Include="..\GetURLFromClipboard.cpp" />
     <ClCompile Include="..\GetVersionString.cpp" />
-    <ClCompile Include="..\getWindowTstring.cpp" />
+    <ClCompile Include="..\GetWindowTstring.cpp" />
     <ClCompile Include="..\GetWorkingArea.cpp" />
     <ClCompile Include="..\HandleUtility.cpp" />
     <ClCompile Include="..\HtmlClipboard.cpp" />
@@ -285,7 +295,7 @@
     <ClCompile Include="..\OpenCommon.cpp" />
     <ClCompile Include="..\OpenedFiles.cpp" />
     <ClCompile Include="..\PathUtil.cpp" />
-    <ClCompile Include="..\pragmashowversions.cpp" />
+    <ClCompile Include="..\PragmaShowVersions.cpp" />
     <ClCompile Include="..\GetProcessList.cpp" />
     <ClCompile Include="..\Registory.cpp" />
     <ClCompile Include="..\RemoveLastInValidURLChar.cpp" />
@@ -298,12 +308,22 @@
     <ClCompile Include="..\SHMoveFile.cpp" />
     <ClCompile Include="..\showballoon.cpp" />
     <ClCompile Include="..\SkipSpace.cpp" />
-    <ClCompile Include="..\sqlite3.c" />
+    <ClCompile Include="..\sqlite3.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="..\sqliteserialize.cpp" />
     <ClCompile Include="..\StartProcess.cpp" />
     <ClCompile Include="..\stdwin32\stdwin32.cpp" />
     <ClCompile Include="..\stringEndwith.cpp" />
-    <ClCompile Include="..\SystemInfo.cpp" />
+    <ClCompile Include="..\SystemInfo.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="..\UnHtmlEntity.cpp" />
     <ClCompile Include="..\UrlEncode.cpp" />
     <ClCompile Include="..\UTF16toUTF8.cpp" />
@@ -316,11 +336,22 @@
     <ClCompile Include="gtestChangeFilenamable.cpp" />
     <ClCompile Include="gtestGetProcessList.cpp" />
     <ClCompile Include="debug.cpp" />
-    <ClCompile Include="googletest\googletest\src\gtest-all.cc" />
+    <ClCompile Include="googletest\googletest\src\gtest-all.cc">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="gtestUtf8toUtf16.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="gtestCommandLineParser.cpp" />
     <ClCompile Include="gtestCommnadLineString.cpp" />
+    <ClCompile Include="StdAfx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="testExpandPath.cpp" />
     <ClCompile Include="gtestFormatSizeof.cpp" />
     <ClCompile Include="gtestGetVersionString.cpp" />
@@ -338,11 +369,11 @@
     <ClCompile Include="gtestUrlEncode.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\addBaseElement.h" />
-    <ClInclude Include="..\addCharset.h" />
+    <ClInclude Include="..\AddBaseElement.h" />
+    <ClInclude Include="..\AddCharset.h" />
     <ClInclude Include="..\AnyCloser.h" />
     <ClInclude Include="..\BasicScopeOutHandler.h" />
-    <ClInclude Include="..\browseFolder.h" />
+    <ClInclude Include="..\BrowseFolder.h" />
     <ClInclude Include="..\CBool.h" />
     <ClInclude Include="..\CenterWindow.h" />
     <ClInclude Include="..\ChangeDirPos.h" />
@@ -373,7 +404,7 @@
     <ClInclude Include="..\GetFileNameFromHwnd.h" />
     <ClInclude Include="..\GetFilesInfo.h" />
     <ClInclude Include="..\GetFormattedTime.h" />
-    <ClInclude Include="..\getFromHtmlLikeDataW.h" />
+    <ClInclude Include="..\GetFromHtmlLikeDataW.h" />
     <ClInclude Include="..\GetHotkeyString.h" />
     <ClInclude Include="..\GetIETempFile.h" />
     <ClInclude Include="..\GetLastErrorString.h" />
@@ -386,7 +417,7 @@
     <ClInclude Include="..\GetUnexistingFile.h" />
     <ClInclude Include="..\GetURLFromClipboard.h" />
     <ClInclude Include="..\GetVersionString.h" />
-    <ClInclude Include="..\getWindowTstring.h" />
+    <ClInclude Include="..\GetWindowTstring.h" />
     <ClInclude Include="..\GetWorkingArea.h" />
     <ClInclude Include="..\HandleUtility.h" />
     <ClInclude Include="..\HelpDefines.h" />
@@ -415,7 +446,7 @@
     <ClInclude Include="..\OpenedFiles.h" />
     <ClInclude Include="..\os_traits.h" />
     <ClInclude Include="..\PathUtil.h" />
-    <ClInclude Include="..\pragmashowversions.h" />
+    <ClInclude Include="..\PragmaShowVersions.h" />
     <ClInclude Include="..\GetProcessList.h" />
     <ClInclude Include="..\Registory.h" />
     <ClInclude Include="..\RemoveLastInValidURLChar.h" />
@@ -450,7 +481,7 @@
     <ClInclude Include="..\XBrowseForFolder.h" />
     <ClInclude Include="debug.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="StdAfx.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="lang\jpn.txt" />

@@ -2,9 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="..\browseFolder.cpp">
-      <Filter>lsMisc\2 Source</Filter>
-    </ClCompile>
     <ClCompile Include="..\CenterWindow.cpp">
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
@@ -57,12 +54,6 @@
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sqlite3.c">
-      <Filter>lsMisc\2 Source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\addBaseElement.cpp">
-      <Filter>lsMisc\2 Source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\addCharset.cpp">
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
     <ClCompile Include="..\ChangeDirPos.cpp">
@@ -122,9 +113,6 @@
     <ClCompile Include="..\GetFormattedTime.cpp">
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
-    <ClCompile Include="..\getFromHtmlLikeDataW.cpp">
-      <Filter>lsMisc\2 Source</Filter>
-    </ClCompile>
     <ClCompile Include="..\GetHotkeyString.cpp">
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
@@ -153,9 +141,6 @@
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
     <ClCompile Include="..\GetURLFromClipboard.cpp">
-      <Filter>lsMisc\2 Source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\getWindowTstring.cpp">
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
     <ClCompile Include="..\GetWorkingArea.cpp">
@@ -210,9 +195,6 @@
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
     <ClCompile Include="..\myStrStrI.cpp">
-      <Filter>lsMisc\2 Source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\pragmashowversions.cpp">
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
     <ClCompile Include="..\Registory.cpp">
@@ -345,12 +327,27 @@
     <ClCompile Include="gtestChangeFilenamable.cpp">
       <Filter>GTest Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\AddBaseElement.cpp">
+      <Filter>lsMisc\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\AddCharset.cpp">
+      <Filter>lsMisc\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\BrowseFolder.cpp">
+      <Filter>lsMisc\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GetFromHtmlLikeDataW.cpp">
+      <Filter>lsMisc\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\PragmaShowVersions.cpp">
+      <Filter>lsMisc\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GetWindowTstring.cpp">
+      <Filter>lsMisc\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="StdAfx.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="..\browseFolder.h">
-      <Filter>lsMisc\1 Header</Filter>
-    </ClInclude>
     <ClInclude Include="..\CenterWindow.h">
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
@@ -394,12 +391,6 @@
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
     <ClInclude Include="..\CommandLineParser.h">
-      <Filter>lsMisc\1 Header</Filter>
-    </ClInclude>
-    <ClInclude Include="..\addBaseElement.h">
-      <Filter>lsMisc\1 Header</Filter>
-    </ClInclude>
-    <ClInclude Include="..\addCharset.h">
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
     <ClInclude Include="..\AnyCloser.h">
@@ -477,9 +468,6 @@
     <ClInclude Include="..\GetFormattedTime.h">
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
-    <ClInclude Include="..\getFromHtmlLikeDataW.h">
-      <Filter>lsMisc\1 Header</Filter>
-    </ClInclude>
     <ClInclude Include="..\GetHotkeyString.h">
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
@@ -511,9 +499,6 @@
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
     <ClInclude Include="..\GetURLFromClipboard.h">
-      <Filter>lsMisc\1 Header</Filter>
-    </ClInclude>
-    <ClInclude Include="..\getWindowTstring.h">
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
     <ClInclude Include="..\GetWorkingArea.h">
@@ -577,9 +562,6 @@
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
     <ClInclude Include="..\myStrStrI.h">
-      <Filter>lsMisc\1 Header</Filter>
-    </ClInclude>
-    <ClInclude Include="..\pragmashowversions.h">
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
     <ClInclude Include="..\Registory.h">
@@ -680,6 +662,25 @@
     <ClInclude Include="..\GetProcessList.h">
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
+    <ClInclude Include="..\PragmaShowVersions.h">
+      <Filter>lsMisc\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\AddBaseElement.h">
+      <Filter>lsMisc\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\AddCharset.h">
+      <Filter>lsMisc\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\BrowseFolder.h">
+      <Filter>lsMisc\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GetFromHtmlLikeDataW.h">
+      <Filter>lsMisc\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GetWindowTstring.h">
+      <Filter>lsMisc\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="StdAfx.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Test Files">

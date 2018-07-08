@@ -21,6 +21,8 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
+#include "StdAfx.h"
+
 #include <windows.h>
 #include <tlhelp32.h>
 #include <vector>

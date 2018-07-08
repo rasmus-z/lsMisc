@@ -1,9 +1,6 @@
 #include "stdafx.h"
 
-#ifndef NDEBUG
-// include only in DEBUG mode
-#include <vld.h>
-#endif
+
 
 #include <windows.h>
 #include <tchar.h>

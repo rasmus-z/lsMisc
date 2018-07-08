@@ -25,24 +25,25 @@
 
 #include <Windows.h>
 
-class CWaitCursor  
-{
-public:
-	CWaitCursor()
+namespace Ambiesoft {
+	class CWaitCursor
 	{
-		DoWait(TRUE);
-	}
+	public:
+		CWaitCursor()
+		{
+			DoWait(TRUE);
+		}
 
-	~CWaitCursor()
-	{
-		DoWait(FALSE);
-	}
+		~CWaitCursor()
+		{
+			DoWait(FALSE);
+		}
 
-private:
-	static LPCRITICAL_SECTION ms_pcsCursor;
-	static void DeleteCursorCS(void);
-	void DoWait(BOOL bWait);
-	static int m_nCount;
-	HCURSOR m_hCurOld;
-};
-
+	private:
+		static LPCRITICAL_SECTION ms_pcsCursor;
+		static void DeleteCursorCS(void);
+		void DoWait(BOOL bWait);
+		static int m_nCount;
+		HCURSOR m_hCurOld;
+	};
+}

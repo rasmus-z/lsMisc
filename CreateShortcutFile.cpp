@@ -54,9 +54,9 @@ static BOOL CheckShortcutFile(LPCTSTR pszShortcutFile,
 	IShellLinkWPtr pShellLink = NULL;
 	CoInitialize(NULL);
     hr = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_IShellLink, (LPVOID*)&pShellLink);
-	int bufflen = max(lstrlen(pszShortcutFile), lstrlen(pszTargetFile));
-	bufflen = max(bufflen, lstrlen(pszCurDir));
-	bufflen = max(bufflen, lstrlen(pszArg));
+	int bufflen = std::max(lstrlen(pszShortcutFile), lstrlen(pszTargetFile));
+	bufflen = std::max(bufflen, lstrlen(pszCurDir));
+	bufflen = std::max(bufflen, lstrlen(pszArg));
 	bufflen++;
 	LPTSTR pBuffer = (LPTSTR)malloc(bufflen * sizeof(TCHAR));
 	if(SUCCEEDED(hr) && pShellLink != NULL)
