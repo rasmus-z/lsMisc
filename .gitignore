@@ -4,16 +4,3 @@
 *.suo
 *.user
 
-lsMiscTest/Debug/
-lsMiscTest/lsMiscTest.sdf
-lsMiscTest/lsMiscTest.v12.suo
-lsMiscTest/lang/
-
-
-lsMiscTest/lsMiscTest2008.ncb
-lsMiscTest/lsMiscTest2008.vcproj.*.user
-lsMiscTest/Release/
-
-
-lsMiscTest/MyUtilityTest.sdf
-lsMiscTest/MyUtilityTest.v12.suo

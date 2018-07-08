@@ -1,4 +1,4 @@
-//Copyright (C) 2017 Ambiesoft All rights reserved.
+Ôªø//Copyright (C) 2017 Ambiesoft All rights reserved.
 //
 //Redistribution and use in source and binary forms, with or without
 //modification, are permitted provided that the following conditions
@@ -50,39 +50,39 @@ tstring ChangeFilenamable(LPCTSTR pch, bool bToSjisZen)
 		switch(*pch)
 		{
 		case _T('\\'):
-			ret += bToSjisZen ? _T("Åè") : _T("_");
+			ret += bToSjisZen ? _T("Ôø•") : _T("_");
 			break;
 
 		case _T(':'):
-			ret += bToSjisZen ? _T("ÅF") : _T("_");
+			ret += bToSjisZen ? _T("Ôºö") : _T("_");
 			break;
 			
 		case _T('*'):
-			ret += bToSjisZen ? _T("Åñ") : _T("_");
+			ret += bToSjisZen ? _T("Ôºä") : _T("_");
 			break;
 			
 		case _T('?'):
-			ret += bToSjisZen ? _T("ÅH") : _T("_");
+			ret += bToSjisZen ? _T("Ôºü") : _T("_");
 			break;
 			
 		case _T('\"'):
-			ret += bToSjisZen ? _T("Åg") : _T("_");
+			ret += bToSjisZen ? _T("‚Äú") : _T("_");
 			break;
 			
 		case _T('<'):
-			ret += bToSjisZen ? _T("ÅÉ") : _T("_");
+			ret += bToSjisZen ? _T("Ôºú") : _T("_");
 			break;
 
 		case _T('>'):
-			ret += bToSjisZen ? _T("ÅÑ") : _T("_");
+			ret += bToSjisZen ? _T("Ôºû") : _T("_");
 			break;
 
 		case _T('|'):
-			ret += bToSjisZen ? _T("Åb") : _T("_");
+			ret += bToSjisZen ? _T("ÔΩú") : _T("_");
 			break;
 
 		case _T('/'):
-			ret += bToSjisZen ? _T("Å^") : _T("_");
+			ret += bToSjisZen ? _T("Ôºè") : _T("_");
 			break;
 
 		default:
@@ -138,9 +138,9 @@ template<class E, class T, class A>
 
 static std::basic_string<E,T,A>
 replace_all(
-  const std::basic_string<E,T,A>& source,   // sourceíÜÇ…Ç†ÇÈ
-  const std::basic_string<E,T,A>& pattern,  // patternÇ
-  const std::basic_string<E,T,A>& placement // placementÇ…íuÇ´ä∑Ç¶ÇÈ
+  const std::basic_string<E,T,A>& source,   // source‰∏≠„Å´„ÅÇ„Çã
+  const std::basic_string<E,T,A>& pattern,  // pattern„Çí
+  const std::basic_string<E,T,A>& placement // placement„Å´ÁΩÆ„ÅçÊèõ„Åà„Çã
   ) {
   std::basic_string<E,T,A> result(source);
   for ( std::string::size_type pos = 0 ;
@@ -156,47 +156,47 @@ std::string ChangeFilenamable2(LPCTSTR pch)
 	ret=replace_all(
 		ret,
 		std::string(_T("\\")),
-		std::string(_T("Åè"))
+		std::string(_T("Ôø•"))
 		);
 	ret=replace_all(
 		ret,
 		std::string(_T(":")),
-		std::string(_T("ÅF"))
+		std::string(_T("Ôºö"))
 		);
 	ret=replace_all(
 		ret,
 		std::string(_T("*")),
-		std::string(_T("Åñ"))
+		std::string(_T("Ôºä"))
 		);
 	ret=replace_all(
 		ret,
 		std::string(_T("?")),
-		std::string(_T("ÅH"))
+		std::string(_T("Ôºü"))
 		);
 	ret=replace_all(
 		ret,
 		std::string(_T("\"")),
-		std::string(_T("Åh"))
+		std::string(_T("‚Äù"))
 		);
 	ret=replace_all(
 		ret,
 		std::string(_T("<")),
-		std::string(_T("ÅÉ"))
+		std::string(_T("Ôºú"))
 		);
 	ret=replace_all(
 		ret,
 		std::string(_T(">")),
-		std::string(_T("ÅÑ"))
+		std::string(_T("Ôºû"))
 		);
 	ret=replace_all(
 		ret,
 		std::string(_T("|")),
-		std::string(_T("Åb"))
+		std::string(_T("ÔΩú"))
 		);
 	ret=replace_all(
 		ret,
 		std::string(_T("/")),
-		std::string(_T("Å^"))
+		std::string(_T("Ôºè"))
 		);
 
 

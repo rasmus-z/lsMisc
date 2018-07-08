@@ -1107,7 +1107,7 @@ typedef BasicOption<std::string> COptionA;
 		//}
 
 	private:
-		int ParseParam(int i, int argc, LPWSTR* targv, MyO_* pMyO)
+		size_t ParseParam(size_t i, size_t argc, LPWSTR* targv, MyO_* pMyO)
 		{
 			if (pMyO->argcountflag_ == ArgCount::ArgCount_Zero)
 				return i;
@@ -1130,7 +1130,7 @@ typedef BasicOption<std::string> COptionA;
 			return 1044410;
 		}
 	public:
-		void Parse(int argc, LPWSTR* targv)
+		void Parse(size_t argc, LPWSTR* targv)
 		{
 			assert(!parsed_);  // already parsed
 			parsed_ = true;
@@ -1140,7 +1140,7 @@ typedef BasicOption<std::string> COptionA;
 				program_ = targv[0];
 			}
 
-			for (int i = 1; i < argc; ++i)
+			for (size_t i = 1; i < argc; ++i)
 			{
 				LPCWSTR pArgv = targv[i];
 				if (!pArgv || !pArgv[0])

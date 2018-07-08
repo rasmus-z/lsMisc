@@ -24,4 +24,4 @@
 #include <Windows.h>
 #include <tchar.h>
 #include "tstring.h"
-tstring ChangeFilenamable(LPCTSTR pch, bool bToSjisZen=true);
+tstring ChangeFilenamable(LPCTSTR pch, bool bToSjisZen=false);

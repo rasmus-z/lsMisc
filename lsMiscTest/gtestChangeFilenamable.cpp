@@ -15,5 +15,5 @@ TEST(ChangeFilenamable, Basic)
 
 	p = _T("aaa\\bbb");
 	ret = ChangeFilenamable(p);
-	EXPECT_STREQ(ret.c_str(), _T("aaabbb"));
+	EXPECT_STREQ(ret.c_str(), _T("aaa_bbb"));
 }
