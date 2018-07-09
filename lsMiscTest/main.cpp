@@ -35,13 +35,13 @@ void testExpandPath();
 
 int main()
 {
-#ifdef _DEBUG
-	_CrtSetDbgFlag(
-		_CRTDBG_ALLOC_MEM_DF		|
-		_CRTDBG_LEAK_CHECK_DF		| 
-		_CRTDBG_CHECK_ALWAYS_DF		|
-		_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG));
-#endif
+//#ifdef _DEBUG
+//	_CrtSetDbgFlag(
+//		_CRTDBG_ALLOC_MEM_DF		|
+//		_CRTDBG_LEAK_CHECK_DF		| 
+//		_CRTDBG_CHECK_ALWAYS_DF		|
+//		_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG));
+//#endif
 
 	testing::InitGoogleTest(&__argc, __argv);
 	int gret = RUN_ALL_TESTS();

@@ -39,7 +39,11 @@
 #pragma comment(lib,"shlwapi.lib")
 #endif
 
+// warning C4091: 'typedef ': ignored on left of 'tagGPFIDL_FLAGS' when no variable is declared
+#pragma warning(push)
+#pragma warning(disable: 4091)
 #include <ShlObj.h>
+#pragma warning(pop)
 
 #include "GetSpecialFolderPath.h"
 #include "CreateFolderIniPath.h"

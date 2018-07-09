@@ -27,8 +27,12 @@
 #include <comdef.h> 
 #include <tchar.h>
 #include <objbase.h>
-#include <shlobj.h>
 
+// warning C4091: 'typedef ': ignored on left of 'tagGPFIDL_FLAGS' when no variable is declared
+#pragma warning(push)
+#pragma warning(disable: 4091)
+#include <ShlObj.h>
+#pragma warning(pop)
 
 #include <io.h>
 
