@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <ProjectName>lsMiscTest</ProjectName>
     <ProjectGuid>{086AB526-37F9-465E-96DF-8229F05B4DBA}</ProjectGuid>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>7.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -225,6 +225,7 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\OpParser.cpp" />
     <ClCompile Include="..\AddBaseElement.cpp" />
     <ClCompile Include="..\AddCharset.cpp" />
     <ClCompile Include="..\BrowseFolder.cpp" />
@@ -334,6 +335,7 @@
     <ClCompile Include="..\WritePrivateProfileWString.cpp" />
     <ClCompile Include="..\XBrowseForFolder.cpp" />
     <ClCompile Include="gtestChangeFilenamable.cpp" />
+    <ClCompile Include="gtestOpParser.cpp" />
     <ClCompile Include="gtestGetProcessList.cpp" />
     <ClCompile Include="debug.cpp" />
     <ClCompile Include="googletest\googletest\src\gtest-all.cc">
@@ -369,6 +371,7 @@
     <ClCompile Include="gtestUrlEncode.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\OpParser.h" />
     <ClInclude Include="..\AddBaseElement.h" />
     <ClInclude Include="..\AddCharset.h" />
     <ClInclude Include="..\AnyCloser.h" />

@@ -346,6 +346,12 @@
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
     <ClCompile Include="StdAfx.cpp" />
+    <ClCompile Include="..\OpParser.cpp">
+      <Filter>lsMisc\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="gtestOpParser.cpp">
+      <Filter>GTest Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\CenterWindow.h">
@@ -639,7 +645,6 @@
     <ClInclude Include="..\XBrowseForFolder.h">
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
-    <ClInclude Include="debug.h" />
     <ClInclude Include="..\CommandLineString.h">
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
@@ -658,7 +663,6 @@
     <ClInclude Include="..\SystemInfo.h">
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h" />
     <ClInclude Include="..\GetProcessList.h">
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
@@ -680,7 +684,18 @@
     <ClInclude Include="..\GetWindowTstring.h">
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
-    <ClInclude Include="StdAfx.h" />
+    <ClInclude Include="..\OpParser.h">
+      <Filter>lsMisc\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="debug.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="StdAfx.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Test Files">
@@ -704,6 +719,12 @@
     <Filter Include="gtest">
       <UniqueIdentifier>{6b14a10e-1189-40d4-b6bd-d2655c1f5728}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource">
+      <UniqueIdentifier>{60021751-ef5b-4b39-bfb5-c43d1b7c20d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header">
+      <UniqueIdentifier>{47986b19-0e7d-47cc-9aa7-9fe4641e7537}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="lang\jpn.txt">
@@ -711,6 +732,8 @@
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="lsMiscTest.rc" />
+    <ResourceCompile Include="lsMiscTest.rc">
+      <Filter>Resource</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>
