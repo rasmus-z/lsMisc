@@ -33,5 +33,7 @@
 #include <iostream>
 
 
-
+// In lsMiscTest directory, run the following command
+// git submodule init
+// git submodule update
 #include "gtest/gtest.h"

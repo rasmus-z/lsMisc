@@ -4,7 +4,7 @@
 
 #include "../OpParser.h"
 
-using namespace Ambiesoft;
+using namespace Ambiesoft::OpParser;
 using namespace std;
 
 namespace {
@@ -40,36 +40,36 @@ TEST(OpParser, ParenOnly)
 	{
 		gcallcount = 0;
 		OpParser<wstring> opp(myEvaluator);
-		opp.AddOperator(TOKEN_BEGINNING_PAREN);
-		opp.AddOperator(TOKEN_ENDING_PAREN);
+		opp.AddBeginningParenthesis();
+		opp.AddEndingParenthesis();
 		EXPECT_FALSE(opp.Evaluate());
 		EXPECT_EQ(gcallcount, 0);
 	}
 	{
 		gcallcount = 0;
 		OpParser<wstring> opp(myEvaluator);
-		opp.AddOperator(TOKEN_BEGINNING_PAREN);
-		opp.AddOperator(TOKEN_BEGINNING_PAREN);
-		opp.AddOperator(TOKEN_ENDING_PAREN);
-		opp.AddOperator(TOKEN_ENDING_PAREN);
+		opp.AddBeginningParenthesis();
+		opp.AddBeginningParenthesis();
+		opp.AddEndingParenthesis();
+		opp.AddEndingParenthesis();
 		EXPECT_FALSE(opp.Evaluate());
 		EXPECT_EQ(gcallcount, 0);
 	}
 	{
 		gcallcount = 0;
 		OpParser<wstring> opp(myEvaluator);
-		opp.AddOperator(TOKEN_BEGINNING_PAREN);
-		opp.AddOperator(TOKEN_BEGINNING_PAREN);
-		opp.AddOperator(TOKEN_BEGINNING_PAREN);
-		opp.AddOperator(TOKEN_BEGINNING_PAREN);
-		opp.AddOperator(TOKEN_BEGINNING_PAREN);
-		opp.AddOperator(TOKEN_BEGINNING_PAREN);
-		opp.AddOperator(TOKEN_ENDING_PAREN);
-		opp.AddOperator(TOKEN_ENDING_PAREN);
-		opp.AddOperator(TOKEN_ENDING_PAREN);
-		opp.AddOperator(TOKEN_ENDING_PAREN);
-		opp.AddOperator(TOKEN_ENDING_PAREN);
-		opp.AddOperator(TOKEN_ENDING_PAREN);
+		opp.AddBeginningParenthesis();
+		opp.AddBeginningParenthesis();
+		opp.AddBeginningParenthesis();
+		opp.AddBeginningParenthesis();
+		opp.AddBeginningParenthesis();
+		opp.AddBeginningParenthesis();
+		opp.AddEndingParenthesis();
+		opp.AddEndingParenthesis();
+		opp.AddEndingParenthesis();
+		opp.AddEndingParenthesis();
+		opp.AddEndingParenthesis();
+		opp.AddEndingParenthesis();
 		EXPECT_FALSE(opp.Evaluate());
 		EXPECT_EQ(gcallcount, 0);
 	}
@@ -97,7 +97,7 @@ TEST(OpParser, BasicAnd)
 		gcallcount = 0;
 		OpParser<wstring> opp(myEvaluator);
 		opp.AddWord(L"true");
-		opp.AddOperator(TOKEN_AND);
+		opp.AddAnd();
 		opp.AddWord(L"true");
 
 		EXPECT_TRUE(opp.Evaluate());
@@ -107,7 +107,7 @@ TEST(OpParser, BasicAnd)
 		gcallcount = 0;
 		OpParser<wstring> opp(myEvaluator);
 		opp.AddWord(L"true");
-		opp.AddOperator(TOKEN_AND);
+		opp.AddAnd();
 		opp.AddWord(L"false");
 
 		EXPECT_FALSE(opp.Evaluate());
@@ -117,7 +117,7 @@ TEST(OpParser, BasicAnd)
 		gcallcount = 0;
 		OpParser<wstring> opp(myEvaluator);
 		opp.AddWord(L"false");
-		opp.AddOperator(TOKEN_AND);
+		opp.AddAnd();
 		opp.AddWord(L"true");
 
 		EXPECT_FALSE(opp.Evaluate());
@@ -127,7 +127,7 @@ TEST(OpParser, BasicAnd)
 		gcallcount = 0;
 		OpParser<wstring> opp(myEvaluator);
 		opp.AddWord(L"false");
-		opp.AddOperator(TOKEN_AND);
+		opp.AddAnd();
 		opp.AddWord(L"false");
 
 		EXPECT_FALSE(opp.Evaluate());
@@ -140,11 +140,11 @@ TEST(OpParser, BasicParenAnd)
 	{
 		gcallcount = 0;
 		OpParser<wstring> opp(myEvaluator);
-		opp.AddOperator(TOKEN_BEGINNING_PAREN);
+		opp.AddBeginningParenthesis();
 		opp.AddWord(L"true");
-		opp.AddOperator(TOKEN_AND);
+		opp.AddAnd();
 		opp.AddWord(L"true");
-		opp.AddOperator(TOKEN_ENDING_PAREN);
+		opp.AddEndingParenthesis();
 
 		EXPECT_TRUE(opp.Evaluate());
 		EXPECT_EQ(gcallcount, 2);
@@ -152,11 +152,11 @@ TEST(OpParser, BasicParenAnd)
 	{
 		gcallcount = 0;
 		OpParser<wstring> opp(myEvaluator);
-		opp.AddOperator(TOKEN_BEGINNING_PAREN);
+		opp.AddBeginningParenthesis();
 		opp.AddWord(L"true");
-		opp.AddOperator(TOKEN_AND);
+		opp.AddAnd();
 		opp.AddWord(L"false");
-		opp.AddOperator(TOKEN_ENDING_PAREN);
+		opp.AddEndingParenthesis();
 
 		EXPECT_FALSE(opp.Evaluate());
 		EXPECT_EQ(gcallcount, 2);
@@ -164,11 +164,11 @@ TEST(OpParser, BasicParenAnd)
 	{
 		gcallcount = 0;
 		OpParser<wstring> opp(myEvaluator);
-		opp.AddOperator(TOKEN_BEGINNING_PAREN);
+		opp.AddBeginningParenthesis();
 		opp.AddWord(L"false");
-		opp.AddOperator(TOKEN_AND);
+		opp.AddAnd();
 		opp.AddWord(L"true");
-		opp.AddOperator(TOKEN_ENDING_PAREN);
+		opp.AddEndingParenthesis();
 
 		EXPECT_FALSE(opp.Evaluate());
 		EXPECT_EQ(gcallcount, 1);
@@ -176,11 +176,11 @@ TEST(OpParser, BasicParenAnd)
 	{
 		gcallcount = 0;
 		OpParser<wstring> opp(myEvaluator);
-		opp.AddOperator(TOKEN_BEGINNING_PAREN);
+		opp.AddBeginningParenthesis();
 		opp.AddWord(L"false");
-		opp.AddOperator(TOKEN_AND);
+		opp.AddAnd();
 		opp.AddWord(L"false");
-		opp.AddOperator(TOKEN_ENDING_PAREN);
+		opp.AddEndingParenthesis();
 
 		EXPECT_FALSE(opp.Evaluate());
 		EXPECT_EQ(gcallcount, 1);
@@ -192,7 +192,7 @@ TEST(OpParser, BasicOr)
 		gcallcount = 0;
 		OpParser<wstring> opp(myEvaluator);
 		opp.AddWord(L"true");
-		opp.AddOperator(TOKEN_OR);
+		opp.AddOr();
 		opp.AddWord(L"true");
 
 		EXPECT_TRUE(opp.Evaluate());
@@ -202,7 +202,7 @@ TEST(OpParser, BasicOr)
 		gcallcount = 0;
 		OpParser<wstring> opp(myEvaluator);
 		opp.AddWord(L"true");
-		opp.AddOperator(TOKEN_OR);
+		opp.AddOr();
 		opp.AddWord(L"false");
 
 		EXPECT_TRUE(opp.Evaluate());
@@ -212,7 +212,7 @@ TEST(OpParser, BasicOr)
 		gcallcount = 0;
 		OpParser<wstring> opp(myEvaluator);
 		opp.AddWord(L"false");
-		opp.AddOperator(TOKEN_OR);
+		opp.AddOr();
 		opp.AddWord(L"true");
 
 		EXPECT_TRUE(opp.Evaluate());
@@ -222,7 +222,7 @@ TEST(OpParser, BasicOr)
 		gcallcount = 0;
 		OpParser<wstring> opp(myEvaluator);
 		opp.AddWord(L"false");
-		opp.AddOperator(TOKEN_OR);
+		opp.AddOr();
 		opp.AddWord(L"false");
 
 		EXPECT_FALSE(opp.Evaluate());
@@ -234,11 +234,11 @@ TEST(OpParser, BasicParenOr)
 	{
 		gcallcount = 0;
 		OpParser<wstring> opp(myEvaluator);
-		opp.AddOperator(TOKEN_BEGINNING_PAREN);
+		opp.AddBeginningParenthesis();
 		opp.AddWord(L"true");
-		opp.AddOperator(TOKEN_OR);
+		opp.AddOr();
 		opp.AddWord(L"true");
-		opp.AddOperator(TOKEN_ENDING_PAREN);
+		opp.AddEndingParenthesis();
 
 		EXPECT_TRUE(opp.Evaluate());
 		EXPECT_EQ(gcallcount, 1);
@@ -246,11 +246,11 @@ TEST(OpParser, BasicParenOr)
 	{
 		gcallcount = 0;
 		OpParser<wstring> opp(myEvaluator);
-		opp.AddOperator(TOKEN_BEGINNING_PAREN);
+		opp.AddBeginningParenthesis();
 		opp.AddWord(L"true");
-		opp.AddOperator(TOKEN_OR);
+		opp.AddOr();
 		opp.AddWord(L"false");
-		opp.AddOperator(TOKEN_ENDING_PAREN);
+		opp.AddEndingParenthesis();
 
 		EXPECT_TRUE(opp.Evaluate());
 		EXPECT_EQ(gcallcount, 1);
@@ -258,11 +258,11 @@ TEST(OpParser, BasicParenOr)
 	{
 		gcallcount = 0;
 		OpParser<wstring> opp(myEvaluator);
-		opp.AddOperator(TOKEN_BEGINNING_PAREN);
+		opp.AddBeginningParenthesis();
 		opp.AddWord(L"false");
-		opp.AddOperator(TOKEN_OR);
+		opp.AddOr();
 		opp.AddWord(L"true");
-		opp.AddOperator(TOKEN_ENDING_PAREN);
+		opp.AddEndingParenthesis();
 
 		EXPECT_TRUE(opp.Evaluate());
 		EXPECT_EQ(gcallcount, 2);
@@ -270,11 +270,11 @@ TEST(OpParser, BasicParenOr)
 	{
 		gcallcount = 0;
 		OpParser<wstring> opp(myEvaluator);
-		opp.AddOperator(TOKEN_BEGINNING_PAREN);
+		opp.AddBeginningParenthesis();
 		opp.AddWord(L"false");
-		opp.AddOperator(TOKEN_OR);
+		opp.AddOr();
 		opp.AddWord(L"false");
-		opp.AddOperator(TOKEN_ENDING_PAREN);
+		opp.AddEndingParenthesis();
 
 		EXPECT_FALSE(opp.Evaluate());
 		EXPECT_EQ(gcallcount, 2);
@@ -285,13 +285,13 @@ TEST(OpParser, BasicMultiParen)
 	{
 		gcallcount = 0;
 		OpParser<wstring> opp(myEvaluator);
-		opp.AddOperator(TOKEN_BEGINNING_PAREN);
-		opp.AddOperator(TOKEN_BEGINNING_PAREN);
+		opp.AddBeginningParenthesis();
+		opp.AddBeginningParenthesis();
 		opp.AddWord(L"true");
-		opp.AddOperator(TOKEN_AND);
+		opp.AddAnd();
 		opp.AddWord(L"false");
-		opp.AddOperator(TOKEN_ENDING_PAREN);
-		opp.AddOperator(TOKEN_ENDING_PAREN);
+		opp.AddEndingParenthesis();
+		opp.AddEndingParenthesis();
 
 		EXPECT_FALSE(opp.Evaluate());
 		EXPECT_EQ(gcallcount, 2);
@@ -299,17 +299,17 @@ TEST(OpParser, BasicMultiParen)
 	{
 		gcallcount = 0;
 		OpParser<wstring> opp(myEvaluator);
-		opp.AddOperator(TOKEN_BEGINNING_PAREN);
-		opp.AddOperator(TOKEN_BEGINNING_PAREN);
-		opp.AddOperator(TOKEN_BEGINNING_PAREN);
-		opp.AddOperator(TOKEN_BEGINNING_PAREN);
+		opp.AddBeginningParenthesis();
+		opp.AddBeginningParenthesis();
+		opp.AddBeginningParenthesis();
+		opp.AddBeginningParenthesis();
 		opp.AddWord(L"true");
-		opp.AddOperator(TOKEN_AND);
+		opp.AddAnd();
 		opp.AddWord(L"false");
-		opp.AddOperator(TOKEN_ENDING_PAREN);
-		opp.AddOperator(TOKEN_ENDING_PAREN);
-		opp.AddOperator(TOKEN_ENDING_PAREN);
-		opp.AddOperator(TOKEN_ENDING_PAREN);
+		opp.AddEndingParenthesis();
+		opp.AddEndingParenthesis();
+		opp.AddEndingParenthesis();
+		opp.AddEndingParenthesis();
 
 		EXPECT_FALSE(opp.Evaluate());
 		EXPECT_EQ(gcallcount, 2);
@@ -319,13 +319,13 @@ TEST(OpParser, BasicMultiParen)
 	{
 		gcallcount = 0;
 		OpParser<wstring> opp(myEvaluator);
-		opp.AddOperator(TOKEN_BEGINNING_PAREN);
-		opp.AddOperator(TOKEN_BEGINNING_PAREN);
+		opp.AddBeginningParenthesis();
+		opp.AddBeginningParenthesis();
 		opp.AddWord(L"true");
-		opp.AddOperator(TOKEN_OR);
+		opp.AddOr();
 		opp.AddWord(L"false");
-		opp.AddOperator(TOKEN_ENDING_PAREN);
-		opp.AddOperator(TOKEN_ENDING_PAREN);
+		opp.AddEndingParenthesis();
+		opp.AddEndingParenthesis();
 
 		EXPECT_TRUE(opp.Evaluate());
 		EXPECT_EQ(gcallcount, 1);
@@ -333,17 +333,17 @@ TEST(OpParser, BasicMultiParen)
 	{
 		gcallcount = 0;
 		OpParser<wstring> opp(myEvaluator);
-		opp.AddOperator(TOKEN_BEGINNING_PAREN);
-		opp.AddOperator(TOKEN_BEGINNING_PAREN);
-		opp.AddOperator(TOKEN_BEGINNING_PAREN);
-		opp.AddOperator(TOKEN_BEGINNING_PAREN);
+		opp.AddBeginningParenthesis();
+		opp.AddBeginningParenthesis();
+		opp.AddBeginningParenthesis();
+		opp.AddBeginningParenthesis();
 		opp.AddWord(L"false");
-		opp.AddOperator(TOKEN_OR);
+		opp.AddOr();
 		opp.AddWord(L"false");
-		opp.AddOperator(TOKEN_ENDING_PAREN);
-		opp.AddOperator(TOKEN_ENDING_PAREN);
-		opp.AddOperator(TOKEN_ENDING_PAREN);
-		opp.AddOperator(TOKEN_ENDING_PAREN);
+		opp.AddEndingParenthesis();
+		opp.AddEndingParenthesis();
+		opp.AddEndingParenthesis();
+		opp.AddEndingParenthesis();
 
 		EXPECT_FALSE(opp.Evaluate());
 		EXPECT_EQ(gcallcount, 2);
@@ -352,28 +352,30 @@ TEST(OpParser, BasicMultiParen)
 
 TEST(OpParser, ComplexNullParen)
 {
-	// "()()"
+	// "() and ()"
 	{
 		gcallcount = 0;
 		OpParser<wstring> opp(myEvaluator);
-		opp.AddOperator(TOKEN_BEGINNING_PAREN);
-		opp.AddOperator(TOKEN_ENDING_PAREN);
-		opp.AddOperator(TOKEN_BEGINNING_PAREN);
-		opp.AddOperator(TOKEN_ENDING_PAREN);
+		opp.AddBeginningParenthesis();
+		opp.AddEndingParenthesis();
+		opp.AddAnd();
+		opp.AddBeginningParenthesis();
+		opp.AddEndingParenthesis();
 		EXPECT_FALSE(opp.Evaluate());
 		EXPECT_EQ(gcallcount, 0);
 	}
 
-	// "(()())"
+	// "(() and ())"
 	{
 		gcallcount = 0;
 		OpParser<wstring> opp(myEvaluator);
-		opp.AddOperator(TOKEN_BEGINNING_PAREN);
-		opp.AddOperator(TOKEN_BEGINNING_PAREN);
-		opp.AddOperator(TOKEN_ENDING_PAREN);
-		opp.AddOperator(TOKEN_BEGINNING_PAREN);
-		opp.AddOperator(TOKEN_ENDING_PAREN);
-		opp.AddOperator(TOKEN_ENDING_PAREN);
+		opp.AddBeginningParenthesis();
+		opp.AddBeginningParenthesis();
+		opp.AddEndingParenthesis();
+		opp.AddAnd();
+		opp.AddBeginningParenthesis();
+		opp.AddEndingParenthesis();
+		opp.AddEndingParenthesis();
 		EXPECT_FALSE(opp.Evaluate());
 		EXPECT_EQ(gcallcount, 0);
 	}
@@ -386,9 +388,9 @@ TEST(OpParser, ComplexSingleWord)
 		gcallcount = 0;
 		OpParser<wstring> opp(myEvaluator);
 		opp.AddWord(L"true");
-		opp.AddOperator(TOKEN_AND);
+		opp.AddAnd();
 		opp.AddWord(L"true");
-		opp.AddOperator(TOKEN_AND);
+		opp.AddAnd();
 		opp.AddWord(L"false");
 		EXPECT_FALSE(opp.Evaluate());
 		EXPECT_EQ(gcallcount, 3);
@@ -399,9 +401,9 @@ TEST(OpParser, ComplexSingleWord)
 		gcallcount = 0;
 		OpParser<wstring> opp(myEvaluator);
 		opp.AddWord(L"false");
-		opp.AddOperator(TOKEN_AND);
+		opp.AddAnd();
 		opp.AddWord(L"true");
-		opp.AddOperator(TOKEN_AND);
+		opp.AddAnd();
 		opp.AddWord(L"true");
 		EXPECT_FALSE(opp.Evaluate());
 		EXPECT_EQ(gcallcount, 1);
@@ -412,9 +414,9 @@ TEST(OpParser, ComplexSingleWord)
 		gcallcount = 0;
 		OpParser<wstring> opp(myEvaluator);
 		opp.AddWord(L"true");
-		opp.AddOperator(TOKEN_AND);
+		opp.AddAnd();
 		opp.AddWord(L"false");
-		opp.AddOperator(TOKEN_AND);
+		opp.AddAnd();
 		opp.AddWord(L"false");
 		EXPECT_FALSE(opp.Evaluate());
 		EXPECT_EQ(gcallcount, 2);
@@ -436,9 +438,9 @@ TEST(OpParser, ComplexSingleWord)
 		gcallcount = 0;
 		OpParser<wstring> opp(myEvaluator);
 		opp.AddWord(L"true");
-		opp.AddOperator(TOKEN_OR);
+		opp.AddOr();
 		opp.AddWord(L"false");
-		opp.AddOperator(TOKEN_AND);
+		opp.AddAnd();
 		opp.AddWord(L"true");
 		EXPECT_TRUE(opp.Evaluate());
 		EXPECT_EQ(gcallcount, 1);
@@ -463,9 +465,9 @@ TEST(OpParser, ComplexSingleWord)
 		gcallcount = 0;
 		OpParser<wstring> opp(myEvaluator);
 		opp.AddWord(L"false");
-		opp.AddOperator(TOKEN_OR);
+		opp.AddOr();
 		opp.AddWord(L"false");
-		opp.AddOperator(TOKEN_AND);
+		opp.AddAnd();
 		opp.AddWord(L"true");
 		EXPECT_FALSE(opp.Evaluate());
 		EXPECT_EQ(gcallcount, 2);
@@ -493,12 +495,12 @@ TEST(OpParser, ComplexParen)
 		gcallcount = 0;
 		OpParser<wstring> opp(myEvaluator);
 		opp.AddWord(L"true");
-		opp.AddOperator(TOKEN_OR);
-		opp.AddOperator(TOKEN_BEGINNING_PAREN);
+		opp.AddOr();
+		opp.AddBeginningParenthesis();
 		opp.AddWord(L"false");
-		opp.AddOperator(TOKEN_AND);
+		opp.AddAnd();
 		opp.AddWord(L"true");
-		opp.AddOperator(TOKEN_ENDING_PAREN);
+		opp.AddEndingParenthesis();
 		EXPECT_TRUE(opp.Evaluate());
 		EXPECT_EQ(gcallcount, 1);
 		EXPECT_EQ(gcalledWords.size(), (size_t)1);
@@ -522,12 +524,12 @@ TEST(OpParser, ComplexParen)
 		gcalledWords.clear();
 		gcallcount = 0;
 		OpParser<wstring> opp(myEvaluator);
-		opp.AddOperator(TOKEN_BEGINNING_PAREN);
+		opp.AddBeginningParenthesis();
 		opp.AddWord(L"false");
-		opp.AddOperator(TOKEN_OR);
+		opp.AddOr();
 		opp.AddWord(L"true");
-		opp.AddOperator(TOKEN_ENDING_PAREN);
-		opp.AddOperator(TOKEN_AND);
+		opp.AddEndingParenthesis();
+		opp.AddAnd();
 		opp.AddWord(L"true");
 		EXPECT_TRUE(opp.Evaluate());
 		EXPECT_EQ(gcallcount, 3);
@@ -562,16 +564,16 @@ TEST(OpParser, ComplexMultiParen)
 		gcallcount = 0;
 		OpParser<wstring> opp(myEvaluator);
 		opp.AddWord(L"true");
-		opp.AddOperator(TOKEN_OR);
-		opp.AddOperator(TOKEN_BEGINNING_PAREN);
+		opp.AddOr();
+		opp.AddBeginningParenthesis();
 		opp.AddWord(L"false");
-		opp.AddOperator(TOKEN_AND);
-		opp.AddOperator(TOKEN_BEGINNING_PAREN);
+		opp.AddAnd();
+		opp.AddBeginningParenthesis();
 		opp.AddWord(L"false");
-		opp.AddOperator(TOKEN_AND);
+		opp.AddAnd();
 		opp.AddWord(L"true");
-		opp.AddOperator(TOKEN_ENDING_PAREN);
-		opp.AddOperator(TOKEN_ENDING_PAREN);
+		opp.AddEndingParenthesis();
+		opp.AddEndingParenthesis();
 
 		
 		
@@ -606,21 +608,81 @@ TEST(OpParser, ComplexMultiParen)
 		gcallcount = 0;
 		OpParser<wstring> opp(myEvaluator);
 		// "" => False
-		opp.AddOperator(TOKEN_BEGINNING_PAREN);
+		opp.AddBeginningParenthesis();
 		opp.AddWord(L"false");
-		opp.AddOperator(TOKEN_OR);
+		opp.AddOr();
 		opp.AddWord(L"true");
-		opp.AddOperator(TOKEN_ENDING_PAREN);
-		opp.AddOperator(TOKEN_AND);
-		opp.AddOperator(TOKEN_BEGINNING_PAREN);
+		opp.AddEndingParenthesis();
+		opp.AddAnd();
+		opp.AddBeginningParenthesis();
 		opp.AddWord(L"false");
-		opp.AddOperator(TOKEN_OR);
-		opp.AddOperator(TOKEN_BEGINNING_PAREN);
+		opp.AddOr();
+		opp.AddBeginningParenthesis();
 		opp.AddWord(L"true");
-		opp.AddOperator(TOKEN_AND);
+		opp.AddAnd();
 		opp.AddWord(L"false");
-		opp.AddOperator(TOKEN_ENDING_PAREN);
-		opp.AddOperator(TOKEN_ENDING_PAREN);
+		opp.AddEndingParenthesis();
+		opp.AddEndingParenthesis();
+
+
+		EXPECT_FALSE(opp.Evaluate());
+
+		EXPECT_EQ(gcallcount, 5);
+		EXPECT_EQ(gcalledWords.size(), (size_t)5);
+		EXPECT_STREQ(gcalledWords[0].c_str(), L"false");
+		EXPECT_STREQ(gcalledWords[1].c_str(), L"true");
+		EXPECT_STREQ(gcalledWords[2].c_str(), L"false");
+		EXPECT_STREQ(gcalledWords[3].c_str(), L"true");
+		EXPECT_STREQ(gcalledWords[4].c_str(), L"false");
+
+	}
+
+}
+
+TEST(OpParser, ImplicitAndError)
+{
+	{
+		gcallcount = 0;
+		OpParser<wstring> opp(myEvaluator);
+		opp.AddWord(L"true");
+		EXPECT_THROW(opp.AddWord(L"true"), std::exception);
+
+		EXPECT_TRUE(opp.Evaluate());
+		EXPECT_EQ(gcallcount, 1);
+	}
+	{
+		gcallcount = 0;
+		OpParser<wstring> opp(myEvaluator, false, true);
+		opp.AddWord(L"true");
+		opp.AddWord(L"true");
+
+		EXPECT_TRUE(opp.Evaluate());
+		EXPECT_EQ(gcallcount, 2);
+	}
+
+	// Same as above, but use implicitAnd.
+	// "(False or True) (False or (True False))" => False
+	// Evalution is twice.
+	{
+		gcalledWords.clear();
+		gcallcount = 0;
+		OpParser<wstring> opp(myEvaluator,false,true);
+		// "" => False
+		opp.AddBeginningParenthesis();
+		opp.AddWord(L"false");
+		opp.AddOr();
+		opp.AddWord(L"true");
+		opp.AddEndingParenthesis();
+		// opp.AddAnd();
+		opp.AddBeginningParenthesis();
+		opp.AddWord(L"false");
+		opp.AddOr();
+		opp.AddBeginningParenthesis();
+		opp.AddWord(L"true");
+		// opp.AddAnd();
+		opp.AddWord(L"false");
+		opp.AddEndingParenthesis();
+		opp.AddEndingParenthesis();
 
 
 		EXPECT_FALSE(opp.Evaluate());
