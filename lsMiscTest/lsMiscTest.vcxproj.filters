@@ -346,9 +346,6 @@
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
     <ClCompile Include="StdAfx.cpp" />
-    <ClCompile Include="..\OpParser.cpp">
-      <Filter>lsMisc\2 Source</Filter>
-    </ClCompile>
     <ClCompile Include="gtestOpParser.cpp">
       <Filter>GTest Files</Filter>
     </ClCompile>

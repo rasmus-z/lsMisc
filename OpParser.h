@@ -30,7 +30,7 @@
 
 
 namespace Ambiesoft {
-	namespace OpParser {
+    namespace Logic {
 
 		class OpParserError : public std::runtime_error
 		{
@@ -165,13 +165,13 @@ namespace Ambiesoft {
 			TokenVectorT subtokens_;
 		};
 
-		template<typename T>
+		template<typename T, typename... Args>
 		class OpParser
 		{
 			using TokenT = Token<T>;
-			using OpParserT = OpParser<T>;
+			using OpParserT = OpParser<T, Args...>;
 			using TokenVectorT = std::vector<TokenT>;
-			using EvaluatorT = std::function<bool(const T&)>;
+			using EvaluatorT = std::function<bool(const T&, Args...)>;
 
 			enum ThrowType {
 				Throw_Unknow,
@@ -185,8 +185,8 @@ namespace Ambiesoft {
 			};
 
 			void overMe(const OpParserT& that) {
-				nullResult_ = that.nullResult_;
-				implicitAnd_ = that.implicitAnd_;
+				*(const_cast<bool*>(&nullResult_)) = that.nullResult_;
+				*(const_cast<bool*>(&implicitAnd_)) = that.implicitAnd_;
 				evaluator_ = that.evaluator_;
 				tokens_ = that.tokens_;
 				lastAddedTokenType_ = that.lastAddedTokenType_;
@@ -301,13 +301,13 @@ namespace Ambiesoft {
 				tokens_.push_back(TokenT(std::move(word)));
 			}
 
-			bool Evaluate() const {
+			bool Evaluate(Args... args) const {
 				TokenVectorT vTmp(tokens_);
-				return Evaluate(vTmp);
+				return EvaluateInner(vTmp, false, args...);
 			}
-			void TryEvaluate() const {
+			void TryEvaluate(Args...args) const {
 				TokenVectorT vTmp(tokens_);
-				Evaluate(vTmp, true);
+				EvaluateInner(vTmp, true, args...);
 			}
 		private:
 			// remove paren
@@ -430,35 +430,35 @@ namespace Ambiesoft {
 				UnAnd(tv);
 			}
 		
-			bool EvaluateAnd(const TokenT& left, const TokenT& right, const bool dryRun) const
+			bool EvaluateAnd(const TokenT& left, const TokenT& right, const bool dryRun, Args...args) const
 			{
-				return EvaluateToken(left,dryRun) && EvaluateToken(right,dryRun);
+				return EvaluateToken(left,dryRun, args...) && EvaluateToken(right,dryRun, args...);
 			}
-			bool EvaluateOr(const TokenT& left, const TokenT& right, const bool dryRun) const
+			bool EvaluateOr(const TokenT& left, const TokenT& right, const bool dryRun, Args...args) const
 			{
-				return EvaluateToken(left,dryRun) || EvaluateToken(right,dryRun);
+				return EvaluateToken(left,dryRun, args...) || EvaluateToken(right,dryRun, args...);
 			}
 			void makeThrow(ThrowType) const {
 				throw OpParserError("");
 			}
-			bool CallEvaluator(const T& word, const bool dryRun) const {
+			bool CallEvaluator(const T& word, const bool dryRun, Args...args) const {
 				if (dryRun)
 					return nullResult_;
-				return evaluator_(word);
+				return evaluator_(word, args...);
 			}
-			bool EvaluateToken(const TokenT& token, const bool dryRun) const
+			bool EvaluateToken(const TokenT& token, const bool dryRun, Args...args) const
 			{
 				if (token.IsWord())
-					return CallEvaluator(token.word(), dryRun);
+					return CallEvaluator(token.word(), dryRun, args...);
 				else if (token.IsParent())
-					return Evaluate(token.subTokensCopy());
+					return EvaluateInner(token.subTokensCopy(), dryRun, args...);
 				else if (token.IsOperator())
 					return nullResult_;
 
 				makeThrow(Throw_Unknow);
 				return false;
 			}
-			bool Evaluate(TokenVectorT& tv, const bool dryRun = false) const {
+			bool EvaluateInner(TokenVectorT& tv, const bool dryRun, Args...args) const {
 				if (tv.empty())
 					return nullResult_;
 
@@ -482,22 +482,22 @@ namespace Ambiesoft {
 				{
 					if (tv[0].IsWord())
 					{
-						return CallEvaluator(tv[0].word(), dryRun);
+						return CallEvaluator(tv[0].word(), dryRun, args...);
 					}
 					if (tv[0].IsParent())
 					{
 						// Todo: remove Copy by add const everywhere
 						TokenVectorT tokenVec = tv[0].subTokensCopy();
 						if (tokenVec.size() == 1)
-							return EvaluateToken(tokenVec[0], dryRun);
+							return EvaluateToken(tokenVec[0], dryRun, args...);
 
 						assert(tokenVec.size() == 3);
 						assert(tokenVec[1].IsOperator());
 
 						if (tokenVec[1].IsAnd())
-							return EvaluateAnd(tokenVec[0], tokenVec[2], dryRun);
+							return EvaluateAnd(tokenVec[0], tokenVec[2], dryRun, args...);
 						else if (tokenVec[1].IsOr())
-							return EvaluateOr(tokenVec[0], tokenVec[2], dryRun);
+							return EvaluateOr(tokenVec[0], tokenVec[2], dryRun, args...);
 
 						makeThrow(Throw_Unknow);
 					}
@@ -513,7 +513,7 @@ namespace Ambiesoft {
 					TokenVectorT::iterator it1 = it - 1;
 					TokenVectorT::iterator it2 = it + 1;
 
-					if (EvaluateOr(*it1, *it2, dryRun))
+					if (EvaluateOr(*it1, *it2, dryRun, args...))
 					{
 						// true means no more evaluation needs
 						return true;
@@ -521,11 +521,15 @@ namespace Ambiesoft {
 				}
 				return false;
 			}
-			
+
+		public:
 			EvaluatorT ResetEvaluator(EvaluatorT ev) {
 				EvaluatorT tmp = evaluator_;
 				evaluator_ = ev;
 				return tmp;
+			}
+			bool HasEvaluator() const {
+				return !!evaluator_;
 			}
 		private:
 			// When no equations are provided like '', '()' and '(()())',

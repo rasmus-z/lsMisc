@@ -225,7 +225,6 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\OpParser.cpp" />
     <ClCompile Include="..\AddBaseElement.cpp" />
     <ClCompile Include="..\AddCharset.cpp" />
     <ClCompile Include="..\BrowseFolder.cpp" />

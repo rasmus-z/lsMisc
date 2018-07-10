@@ -4,7 +4,7 @@
 
 #include "../OpParser.h"
 
-using namespace Ambiesoft::OpParser;
+using namespace Ambiesoft::Logic;
 using namespace std;
 
 namespace {
@@ -421,7 +421,7 @@ TEST(OpParser, ComplexSingleWord)
 		EXPECT_FALSE(opp.Evaluate());
 		EXPECT_EQ(gcallcount, 2);
 	}
-	
+
 	// "true or false and true" => true
 	// Evalution is once
 	{
@@ -485,7 +485,7 @@ TEST(OpParser, ComplexParen)
 		// First, try with C++'s || and &&
 		gcalledWords.clear();
 		gcallcount = 0;
-		EXPECT_TRUE(myEvaluator(L"true") || ( myEvaluator(L"false") && myEvaluator(L"true") ));
+		EXPECT_TRUE(myEvaluator(L"true") || (myEvaluator(L"false") && myEvaluator(L"true")));
 		EXPECT_EQ(gcallcount, 1);
 		EXPECT_EQ(gcalledWords.size(), (size_t)1);
 		EXPECT_STREQ(gcalledWords[0].c_str(), L"true");
@@ -550,10 +550,10 @@ TEST(OpParser, ComplexMultiParen)
 		gcalledWords.clear();
 		gcallcount = 0;
 		EXPECT_TRUE(
-			myEvaluator(L"true") || 
-				(myEvaluator(L"false") && 
-					(myEvaluator(L"false") && myEvaluator(L"true")) 
-				) 
+			myEvaluator(L"true") ||
+			(myEvaluator(L"false") &&
+			(myEvaluator(L"false") && myEvaluator(L"true"))
+				)
 		);
 		EXPECT_EQ(gcallcount, 1);
 		EXPECT_EQ(gcalledWords.size(), (size_t)1);
@@ -575,8 +575,8 @@ TEST(OpParser, ComplexMultiParen)
 		opp.AddEndingParenthesis();
 		opp.AddEndingParenthesis();
 
-		
-		
+
+
 		EXPECT_TRUE(opp.Evaluate());
 		EXPECT_EQ(gcallcount, 1);
 		EXPECT_EQ(gcalledWords.size(), (size_t)1);
@@ -591,8 +591,8 @@ TEST(OpParser, ComplexMultiParen)
 		gcallcount = 0;
 		EXPECT_FALSE(
 			(myEvaluator(L"false") || myEvaluator(L"true")) &&
-				(myEvaluator(L"false") ||
-					(myEvaluator(L"true") && myEvaluator(L"false"))
+			(myEvaluator(L"false") ||
+			(myEvaluator(L"true") && myEvaluator(L"false"))
 				)
 		);
 		EXPECT_EQ(gcallcount, 5);
@@ -666,7 +666,7 @@ TEST(OpParser, ImplicitAndError)
 	{
 		gcalledWords.clear();
 		gcallcount = 0;
-		OpParser<wstring> opp(myEvaluator,false,true);
+		OpParser<wstring> opp(myEvaluator, false, true);
 		// "" => False
 		opp.AddBeginningParenthesis();
 		opp.AddWord(L"false");
@@ -737,94 +737,95 @@ TEST(OpParser, UnmatchedParenthesisError)
 
 int gCtorCount;
 int gAllocDAllocCounter;
-TEST(OpParser, Pod)
+struct MyPod
 {
-	struct MyPod
-	{
-		char* p_ = nullptr;
-		MyPod() {
-			gCtorCount++;
-			gAllocDAllocCounter++;
-			p_ = new char[100];
-			memset(p_, 0, 100);
-		}
-		~MyPod() {
-			if(p_)
-				gAllocDAllocCounter--;
-			delete p_;
-		}
+	char* p_ = nullptr;
+	MyPod() {
+		gCtorCount++;
+		gAllocDAllocCounter++;
+		p_ = new char[100];
+		memset(p_, 0, 100);
+	}
+	~MyPod() {
+		if (p_)
+			gAllocDAllocCounter--;
+		delete p_;
+	}
 
-		//MyPod(const MyPod& that) = delete;
-		MyPod(const MyPod& that) {
-			for (int i = 0; i < 100; ++i)
-				EXPECT_EQ(that.p_[i], 0);
-			gCtorCount++;
-			gAllocDAllocCounter++;
-			p_ = new char[100];
+	//MyPod(const MyPod& that) = delete;
+	MyPod(const MyPod& that) {
+		for (int i = 0; i < 100; ++i)
+			EXPECT_EQ(that.p_[i], 0);
+		gCtorCount++;
+		gAllocDAllocCounter++;
+		p_ = new char[100];
+		memcpy(p_, that.p_, 100);
+	}
+	MyPod(MyPod&& that) {
+		for (int i = 0; i < 100; ++i)
+			EXPECT_EQ(that.p_[i], 0);
+		p_ = that.p_;
+		that.p_ = nullptr;
+	}
+
+	// const MyPod& operator=(const MyPod& that) = delete;
+	const MyPod& operator=(const MyPod& that) {
+		if (this != &that)
+		{
 			memcpy(p_, that.p_, 100);
 		}
-		MyPod(MyPod&& that) {
-			for (int i = 0; i < 100; ++i)
-				EXPECT_EQ(that.p_[i], 0);
-			p_ = that.p_;
-			that.p_ = nullptr;
-		}
+		return *this;
+	}
+	const MyPod& operator=(MyPod&& that) {
+		p_ = that.p_;
+		that.p_ = nullptr;
+		return *this;
+	}
 
-		// const MyPod& operator=(const MyPod& that) = delete;
-		const MyPod& operator=(const MyPod& that) {
-			if (this != &that)
+	static bool evaluate(const MyPod& that) {
+		for (int i = 0; i < 100; ++i)
+		{
+			if (that.p_[i] != 0)
 			{
-				memcpy(p_, that.p_, 100);
+				return false;
 			}
-			return *this;
 		}
-		const MyPod& operator=(MyPod&& that) {
-			p_ = that.p_;
-			that.p_ = nullptr;
-			return *this;
+		return true;
+	}
+	static bool evaluate_shared(const shared_ptr<MyPod>& that) {
+		for (int i = 0; i < 100; ++i)
+		{
+			if (that->p_[i] != 0)
+			{
+				return false;
+			}
 		}
+		return true;
+	}
+	static bool evaluate_unique(const unique_ptr<MyPod>& that) {
+		for (int i = 0; i < 100; ++i)
+		{
+			if (that->p_[i] != 0)
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+	static bool evaluate_pointer(const MyPod* that) {
+		for (int i = 0; i < 100; ++i)
+		{
+			if (that->p_[i] != 0)
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+};
 
-		static bool evaluate(const MyPod& that) {
-			for (int i = 0; i < 100; ++i)
-			{
-				if (that.p_[i] != 0)
-				{
-					return false;
-				}
-			}
-			return true;
-		}
-		static bool evaluate_shared(const shared_ptr<MyPod>& that) {
-			for (int i = 0; i < 100; ++i)
-			{
-				if (that->p_[i] != 0)
-				{
-					return false;
-				}
-			}
-			return true;
-		}
-		static bool evaluate_unique(const unique_ptr<MyPod>& that) {
-			for (int i = 0; i < 100; ++i)
-			{
-				if (that->p_[i] != 0)
-				{
-					return false;
-				}
-			}
-			return true;
-		}
-		static bool evaluate_pointer(const MyPod* that) {
-			for (int i = 0; i < 100; ++i)
-			{
-				if (that->p_[i] != 0)
-				{
-					return false;
-				}
-			}
-			return true;
-		}
-	};
+TEST(OpParser, Pod)
+{
 
 	{
 		gCtorCount = 0;
@@ -920,5 +921,60 @@ TEST(OpParser, Pod)
 	//opp.AddOr();
 	//opp.AddWord(MyPod());
 
-	
+
+}
+
+bool MyEvArgStringInt(const string& s, int i)
+{
+	return to_string(i) == s;
+}
+TEST(OpParser, BasicWithArg)
+{
+	{
+		OpParser<string, int> opp(&MyEvArgStringInt, false, true);
+		opp.AddWord("1");
+		opp.AddOr();
+		opp.AddWord("2");
+
+
+		EXPECT_FALSE(opp.Evaluate(0));
+		EXPECT_TRUE(opp.Evaluate(1));
+		EXPECT_TRUE(opp.Evaluate(2));
+		EXPECT_FALSE(opp.Evaluate(3));
+	}
+}
+
+namespace {
+	string gs;
+	int gi;
+	double gd;
+	string gs2;
+}
+bool MyEvArgStringIntDouble(const string& s, int i, const double& d, const string& s2, wstring& wref)
+{
+	gs = s;
+	gi = i;
+	gd = d;
+	gs2 = s2;
+	wref = L"wref";
+	return false;
+}
+TEST(OpParser, BasicWithMultiArg)
+{
+	{
+		OpParser<string, int, double&, string&, wstring&> oppa(&MyEvArgStringIntDouble, false, true);
+		OpParser<string, int, double&, string&, wstring&> opp;
+		opp = oppa;
+		opp.AddWord("1");
+
+		double dd = 1;
+		wstring wref;
+		EXPECT_FALSE(opp.Evaluate(0, dd, string("fff"), wref));
+
+		EXPECT_STREQ(gs.c_str(), "1");
+		EXPECT_EQ(gi, 0);
+		EXPECT_EQ(gd, 1);
+		EXPECT_STREQ(gs2.c_str(), "fff");
+		EXPECT_STREQ(wref.c_str(), L"wref");
+	}
 }

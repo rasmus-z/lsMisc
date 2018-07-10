@@ -24,7 +24,7 @@
 #include <cstdarg>
 #include <functional>
 #include <locale>
-#include <memory.h>
+
 
 #include <cassert>
 #include <string>
