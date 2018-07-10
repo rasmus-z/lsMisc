@@ -32,37 +32,13 @@
 namespace Ambiesoft {
 	namespace OpParser {
 
-		//            if(itFirst->IsBeginParen())
-		//            {
-		//                // find inner
-		//                size_t numberOfBegin = 0;
-		//                TokenVectorT::iterator itStart = tv.begin() + 1;
-		//                TokenVectorT::iterator it = itStart;
-		//                for(  ; it != tv.end(); ++it)
-		//                {
-		//                    // Token<T>& testToken =
-		//                    if(it->IsBeginParen())
-		//                    {
-		//                        ++numberOfBegin;
-		//                        continue;
-		//                    }
-		//                    else if(it->IsEndParen())
-		//                    {
-		//                        if(numberOfBegin==0)
-		//                        {
-		//                            // found begin and end paren
-		//                            break;
-		//                        }
-		//                    }
-		//                }
-		//                if(numberOfBegin != 0)
-		//                {
-		//                    // paren not match
-		//                    throw std::exception();
-		//                }
-		//                TokenVectorT insideParenVec(itStart, it);
-
-		//            }
+		class OpParserError : public std::runtime_error
+		{
+		public:
+			OpParserError(char const* const message) :
+				std::runtime_error(message) {}
+		
+		};
 
 		namespace {
 			enum TokenType
@@ -93,6 +69,10 @@ namespace Ambiesoft {
 			explicit Token(const T& word) :
 				tt_(TOKEN_WORD),
 				word_(word) {}
+			// rval
+			explicit Token(T&& word) :
+				tt_(std::move(TOKEN_WORD)),
+				word_(std::move(word)) {}
 
 			// Ctor for parent token which contains sub tokens
 			explicit Token(const TokenVectorT& v) :
@@ -105,6 +85,13 @@ namespace Ambiesoft {
 				word_(that.word_),
 				subtokens_(that.subtokens_)
 			{}
+			
+			// rval copy
+			explicit Token(TokenT&& that) :
+				tt_(std::move(that.tt_)),
+				word_(std::move(that.word_)),
+				subtokens_(std::move(that.subtokens_))
+			{}
 
 			// Equal Operator
 			TokenT& operator=(const TokenT& that) {
@@ -113,6 +100,16 @@ namespace Ambiesoft {
 					this->tt_ = that.tt_;
 					this->word_ = that.word_;
 					this->subtokens_ = that.subtokens_;
+				}
+				return *this;
+			}
+			// rval Equal Operator
+			TokenT& operator=(TokenT&& that) {
+				if (this != &that)
+				{
+					this->tt_ = std::move(that.tt_);
+					this->word_ = std::move(that.word_);
+					this->subtokens_ = std::move(that.subtokens_);
 				}
 				return *this;
 			}
@@ -160,6 +157,7 @@ namespace Ambiesoft {
 			TokenType tt_;
 
 			// User's operand.
+			// Much of copy will be performed on T.
 			T word_;
 
 			// When token type is Parent, this is set.
@@ -173,6 +171,7 @@ namespace Ambiesoft {
 			using TokenT = Token<T>;
 			using OpParserT = OpParser<T>;
 			using TokenVectorT = std::vector<TokenT>;
+			using EvaluatorT = std::function<bool(const T&)>;
 
 			enum ThrowType {
 				Throw_Unknow,
@@ -181,6 +180,8 @@ namespace Ambiesoft {
 				Throw_SysntaxErrorOr,
 				Throw_SysntaxErrorEndingParenthesis,
 				Throw_SysntaxErrorWord,
+
+				Throw_SysntaxErrorMismatchedParenthesis,
 			};
 
 			void overMe(const OpParserT& that) {
@@ -192,7 +193,7 @@ namespace Ambiesoft {
 			}
 		public:
 			explicit OpParser() {}
-			explicit OpParser(std::function<bool(const T&)> evaluator,
+			explicit OpParser(EvaluatorT evaluator,
 				bool nullResult = false,
 				bool implicitAnd = false) :
 				evaluator_(evaluator),
@@ -275,7 +276,8 @@ namespace Ambiesoft {
 				tokens_.push_back(TokenT(lastAddedTokenType_ = TOKEN_ENDING_PARENTHESIS));
 			}
 
-			void AddWord(const T& word) {
+		private:
+			void PreAddWord() {
 				// 'A A' is illegal
 				// implicit: 'A and A' is legal.
 				if (lastAddedTokenType_ == TOKEN_WORD)
@@ -285,15 +287,28 @@ namespace Ambiesoft {
 					else
 						makeThrow(Throw_SysntaxErrorWord);
 				}
+			}
+		public:
+			void AddWord(const T& word) {
+				PreAddWord();
 				lastAddedTokenType_ = TOKEN_WORD;
 				tokens_.push_back(TokenT(word));
+			}
+			// rval
+			void AddWord(T&& word) {
+				PreAddWord();
+				lastAddedTokenType_ = TOKEN_WORD;
+				tokens_.push_back(TokenT(std::move(word)));
 			}
 
 			bool Evaluate() const {
 				TokenVectorT vTmp(tokens_);
 				return Evaluate(vTmp);
 			}
-
+			void TryEvaluate() const {
+				TokenVectorT vTmp(tokens_);
+				Evaluate(vTmp, true);
+			}
 		private:
 			// remove paren
 			void Unparen(TokenVectorT& tv) const
@@ -312,7 +327,7 @@ namespace Ambiesoft {
 						if (itLastHit == tv.end())
 						{
 							// not found start paren
-							throw std::exception();
+							makeThrow(Throw_SysntaxErrorMismatchedParenthesis);
 						}
 						found = true;
 						it++;
@@ -322,7 +337,14 @@ namespace Ambiesoft {
 
 				if (!found)
 				{
-					// no paren found
+					// no ending paren found
+
+					if (itLastHit != tv.end())
+					{
+						// but starting paren found
+						makeThrow(Throw_SysntaxErrorMismatchedParenthesis);
+					}
+					
 					// now tokes are liner
 					return;
 				}
@@ -402,15 +424,32 @@ namespace Ambiesoft {
 				newVec.insert(newVec.end(), it2 + 1, tv.end());
 
 				// reset our vector
-				tv = newVec;
+				tv = std::move(newVec);
 
 				// dont know whether it's liner
 				UnAnd(tv);
 			}
-			bool EvaluateToken(const TokenT& token) const
+		
+			bool EvaluateAnd(const TokenT& left, const TokenT& right, const bool dryRun) const
+			{
+				return EvaluateToken(left,dryRun) && EvaluateToken(right,dryRun);
+			}
+			bool EvaluateOr(const TokenT& left, const TokenT& right, const bool dryRun) const
+			{
+				return EvaluateToken(left,dryRun) || EvaluateToken(right,dryRun);
+			}
+			void makeThrow(ThrowType) const {
+				throw OpParserError("");
+			}
+			bool CallEvaluator(const T& word, const bool dryRun) const {
+				if (dryRun)
+					return nullResult_;
+				return evaluator_(word);
+			}
+			bool EvaluateToken(const TokenT& token, const bool dryRun) const
 			{
 				if (token.IsWord())
-					return evaluator_(token.word());
+					return CallEvaluator(token.word(), dryRun);
 				else if (token.IsParent())
 					return Evaluate(token.subTokensCopy());
 				else if (token.IsOperator())
@@ -419,18 +458,7 @@ namespace Ambiesoft {
 				makeThrow(Throw_Unknow);
 				return false;
 			}
-			bool EvaluateAnd(const TokenT& left, const TokenT& right) const
-			{
-				return EvaluateToken(left) && EvaluateToken(right);
-			}
-			bool EvaluateOr(const TokenT& left, const TokenT& right) const
-			{
-				return EvaluateToken(left) || EvaluateToken(right);
-			}
-			void makeThrow(ThrowType) const {
-				throw std::exception();
-			}
-			bool Evaluate(TokenVectorT& tv) const {
+			bool Evaluate(TokenVectorT& tv, const bool dryRun = false) const {
 				if (tv.empty())
 					return nullResult_;
 
@@ -454,22 +482,22 @@ namespace Ambiesoft {
 				{
 					if (tv[0].IsWord())
 					{
-						return evaluator_(tv[0].word());
+						return CallEvaluator(tv[0].word(), dryRun);
 					}
 					if (tv[0].IsParent())
 					{
 						// Todo: remove Copy by add const everywhere
 						TokenVectorT tokenVec = tv[0].subTokensCopy();
 						if (tokenVec.size() == 1)
-							return EvaluateToken(tokenVec[0]);
+							return EvaluateToken(tokenVec[0], dryRun);
 
 						assert(tokenVec.size() == 3);
 						assert(tokenVec[1].IsOperator());
 
 						if (tokenVec[1].IsAnd())
-							return EvaluateAnd(tokenVec[0], tokenVec[2]);
+							return EvaluateAnd(tokenVec[0], tokenVec[2], dryRun);
 						else if (tokenVec[1].IsOr())
-							return EvaluateOr(tokenVec[0], tokenVec[2]);
+							return EvaluateOr(tokenVec[0], tokenVec[2], dryRun);
 
 						makeThrow(Throw_Unknow);
 					}
@@ -485,7 +513,7 @@ namespace Ambiesoft {
 					TokenVectorT::iterator it1 = it - 1;
 					TokenVectorT::iterator it2 = it + 1;
 
-					if (EvaluateOr(*it1, *it2))
+					if (EvaluateOr(*it1, *it2, dryRun))
 					{
 						// true means no more evaluation needs
 						return true;
@@ -494,7 +522,11 @@ namespace Ambiesoft {
 				return false;
 			}
 			
-
+			EvaluatorT ResetEvaluator(EvaluatorT ev) {
+				EvaluatorT tmp = evaluator_;
+				evaluator_ = ev;
+				return tmp;
+			}
 		private:
 			// When no equations are provided like '', '()' and '(()())',
 			// this value is returned.
@@ -507,7 +539,7 @@ namespace Ambiesoft {
 			TokenVectorT tokens_;
 
 			// User defined evaluator.
-			std::function<bool(const T&)> evaluator_;
+			EvaluatorT evaluator_;
 
 			// Last added token type, set by Add* mothed, for
 			// check syntax.

@@ -1,10 +1,10 @@
 #define NOMINMAX
 
 // Basically gtest leaks, so turn it off
-//#ifndef NDEBUG
+#ifndef NDEBUG
 //// include only in DEBUG mode
-//#include <vld.h>
-//#endif
+#include <vld.h>
+#endif
 
 #include "../PragmaShowVersions.h"
 
