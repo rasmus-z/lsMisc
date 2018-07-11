@@ -3,3 +3,6 @@
 	url = https://github.com/google/googletest.git
 	ignore = dirty
 
+[submodule "lsMiscTest/gtest-parallel"]
+	path = lsMiscTest/gtest-parallel
+	url = https://github.com/google/gtest-parallel.git

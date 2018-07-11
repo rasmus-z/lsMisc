@@ -3,7 +3,7 @@
 // Basically gtest leaks, so turn it off
 #ifndef NDEBUG
 //// include only in DEBUG mode
-#include <vld.h>
+//#include <vld.h>
 #endif
 
 #include "../PragmaShowVersions.h"
