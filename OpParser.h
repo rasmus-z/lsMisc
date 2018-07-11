@@ -26,11 +26,14 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <list>
 #include <functional>
-
 
 namespace Ambiesoft {
     namespace Logic {
+
+		// TODO: Can I remove this?
+#define OpParserContainerType std::list
 
 		class OpParserError : public std::runtime_error
 		{
@@ -60,7 +63,7 @@ namespace Ambiesoft {
 		class Token
 		{
 			using TokenT = Token<T>;
-			using TokenVectorT = std::vector<TokenT>;
+			using TokenVectorT = OpParserContainerType<TokenT>; //std::vector<TokenT>;
 
 
 		public:
@@ -68,37 +71,52 @@ namespace Ambiesoft {
 				tt_(tt) {}
 			explicit Token(const T& word) :
 				tt_(TOKEN_WORD),
-				word_(word) {}
+				word_(new T(word))
+			{}
 			// rval
-			explicit Token(T&& word) :
-				tt_(std::move(TOKEN_WORD)),
-				word_(std::move(word)) {}
+			//explicit Token(T&& word) :
+			//	tt_(std::move(TOKEN_WORD)),
+			//	word_(std::move(word)) 
+			//{}
 
 			// Ctor for parent token which contains sub tokens
 			explicit Token(const TokenVectorT& v) :
 				tt_(TOKEN_PARENT),
-				subtokens_(v) {}
+				subtokens_(v) 
+			{}
 
 			// copy
 			explicit Token(const TokenT& that) :
 				tt_(that.tt_),
-				word_(that.word_),
+				//word_(that.word_),
 				subtokens_(that.subtokens_)
-			{}
+			{
+				if (that.word_)
+					word_ = new T(*that.word_);
+			}
 			
 			// rval copy
 			explicit Token(TokenT&& that) :
 				tt_(std::move(that.tt_)),
-				word_(std::move(that.word_)),
+				// word_(std::move(that.word_)),
 				subtokens_(std::move(that.subtokens_))
-			{}
+			{
+				word_ = that.word_;
+				that.word_ = nullptr;
+			}
 
+			// dtor
+			~Token()
+			{
+				delete word_;
+			}
 			// Equal Operator
 			TokenT& operator=(const TokenT& that) {
 				if (this != &that)
 				{
 					this->tt_ = that.tt_;
-					this->word_ = that.word_;
+					if(that.word_)
+						this->word_ = new T(*that.word_);
 					this->subtokens_ = that.subtokens_;
 				}
 				return *this;
@@ -108,7 +126,8 @@ namespace Ambiesoft {
 				if (this != &that)
 				{
 					this->tt_ = std::move(that.tt_);
-					this->word_ = std::move(that.word_);
+					this->word_ = that.word_;
+					that.word_ = nullptr;
 					this->subtokens_ = std::move(that.subtokens_);
 				}
 				return *this;
@@ -137,7 +156,9 @@ namespace Ambiesoft {
 			}
 
 			const T& word() const {
-				return word_;
+				assert(IsWord());
+				assert(word_ != nullptr);
+				return *word_;
 			}
 
 			const TokenVectorT& subTokens() const {
@@ -158,7 +179,7 @@ namespace Ambiesoft {
 
 			// User's operand.
 			// Much of copy will be performed on T.
-			T word_;
+			T* word_ = nullptr;
 
 			// When token type is Parent, this is set.
 			// All '()' and 'A AND B' will be subtoken.
@@ -170,7 +191,7 @@ namespace Ambiesoft {
 		{
 			using TokenT = Token<T>;
 			using OpParserT = OpParser<T, Args...>;
-			using TokenVectorT = std::vector<TokenT>;
+			using TokenVectorT = OpParserContainerType<TokenT>;
 			using EvaluatorT = std::function<bool(const T&, Args...)>;
 
 			enum ThrowType {
@@ -211,9 +232,10 @@ namespace Ambiesoft {
 			}
 
 			bool empty() const {
-				return !evaluator_ && tokens_.empty();
+				return tokens_.empty();
 			}
 			void AddBeginningParenthesis() {
+				dirty_ = true;
 				// 'A ( ...' is illegal.
 				// 'implicit: 'A AND ( ...' is legal
 				if (lastAddedTokenType_ == TOKEN_WORD)
@@ -236,6 +258,7 @@ namespace Ambiesoft {
 				tokens_.push_back(TokenT(lastAddedTokenType_=TOKEN_BEGINNING_PARENTHESIS));
 			}
 			void AddAnd() {
+				dirty_ = true;
 				// 'AND ...' with 'AND' is illegal.
 				// '( AND ...' is illegal.
 				if (lastAddedTokenType_ == TOKEN_NONE ||
@@ -247,6 +270,7 @@ namespace Ambiesoft {
 				tokens_.push_back(TokenT(lastAddedTokenType_ = TOKEN_AND));
 			}
 			void AddOr() {
+				dirty_ = true;
 				// 'OR ...' is illegal.
 				// implicit: 'AND OR ...' is still illegal.
 				if (lastAddedTokenType_ == TOKEN_NONE)
@@ -263,6 +287,7 @@ namespace Ambiesoft {
 				tokens_.push_back(TokenT(lastAddedTokenType_ = TOKEN_OR));
 			}
 			void AddEndingParenthesis() {
+				dirty_ = true;
 				// ') ...' is illegal.
 				// implicat: 'AND ) ...' is still illegal.
 				if (lastAddedTokenType_ == TOKEN_NONE)
@@ -278,6 +303,7 @@ namespace Ambiesoft {
 
 		private:
 			void PreAddWord() {
+				dirty_ = true;
 				// 'A A' is illegal
 				// implicit: 'A and A' is legal.
 				if (lastAddedTokenType_ == TOKEN_WORD)
@@ -290,24 +316,35 @@ namespace Ambiesoft {
 			}
 		public:
 			void AddWord(const T& word) {
+				dirty_ = true;
 				PreAddWord();
 				lastAddedTokenType_ = TOKEN_WORD;
 				tokens_.push_back(TokenT(word));
 			}
 			// rval
 			void AddWord(T&& word) {
+				dirty_ = true;
 				PreAddWord();
 				lastAddedTokenType_ = TOKEN_WORD;
 				tokens_.push_back(TokenT(std::move(word)));
 			}
 
 			bool Evaluate(Args... args) const {
-				TokenVectorT vTmp(tokens_);
-				return EvaluateInner(vTmp, false, args...);
+				if (dirty_)
+				{
+					parsedTokens_ = tokens_;
+				}
+				bool retval = EvaluateInner(parsedTokens_, false, args...);
+				dirty_ = false;
+				return retval;
 			}
 			void TryEvaluate(Args...args) const {
-				TokenVectorT vTmp(tokens_);
-				EvaluateInner(vTmp, true, args...);
+				if (dirty_)
+				{
+					parsedTokens_ = tokens_;
+				}
+				EvaluateInner(parsedTokens_, true, args...);
+				dirty_ = false;
 			}
 		private:
 			// remove paren
@@ -359,18 +396,24 @@ namespace Ambiesoft {
 					//
 					// itLastHit: begining of paren
 					// it: end of paren
-					TokenVectorT::iterator insideStart = itLastHit + 1;
-					TokenVectorT::iterator insideEnd = it - 1;
+					TokenVectorT::iterator insideStart = itLastHit;
+					++insideStart;
+
+					TokenVectorT::iterator insideEnd = it;
+					std::advance(insideEnd, -1);
 
 
 					TokenVectorT insideVecForToken(insideStart, insideEnd);
 					TokenT parentToken(insideVecForToken);
 
 					// now create new vector
-					TokenVectorT newVec(tv.begin(), insideStart - 1);
+					std::advance(insideStart, -1);
+					std::advance(insideEnd, 1);
+
+					TokenVectorT newVec(tv.begin(), insideStart);
 					if (!insideVecForToken.empty())
 						newVec.push_back(parentToken);
-					newVec.insert(newVec.end(), insideEnd + 1, tv.end());
+					newVec.insert(newVec.end(), insideEnd, tv.end());
 
 					// reset our vector
 					tv = newVec;
@@ -390,14 +433,19 @@ namespace Ambiesoft {
 				if (tv.size() == 1)
 					return false;
 
-				typename TokenVectorT::iterator it = tv.begin() + 1;
-				for (; it != tv.end(); it += 2)
+				typename TokenVectorT::iterator it = tv.begin();
+				++it;
+				for (; it != tv.end(); std::advance(it, 2))
 				{
 					if (it->IsAnd())
 					{
-						it1 = it - 1;
+						it1 = it;
+						--it1;
+
 						itOp = it;
-						it2 = it + 1;
+						
+						it2 = it;
+						++it2;
 						return true;
 					}
 				}
@@ -415,13 +463,17 @@ namespace Ambiesoft {
 					return;
 				}
 
-				TokenVectorT insideVecForToken(it1, it2 + 1);
+				TokenVectorT::iterator itTmp = it2;
+				++itTmp;
+				TokenVectorT insideVecForToken(it1,  itTmp);
 				TokenT parentToken(insideVecForToken);
 				// now create new vector
 
 				TokenVectorT newVec(tv.begin(), it1);
 				newVec.push_back(parentToken);
-				newVec.insert(newVec.end(), it2 + 1, tv.end());
+				itTmp = it2;
+				++itTmp;
+				newVec.insert(newVec.end(), itTmp, tv.end());
 
 				// reset our vector
 				tv = std::move(newVec);
@@ -480,45 +532,64 @@ namespace Ambiesoft {
 				// now, all vector is all connected with 'or' only or a single token.
 				if (tv.size() == 1)
 				{
-					if (tv[0].IsWord())
+					TokenT& firstTv = *tv.begin();
+					if (firstTv.IsWord())
 					{
-						return CallEvaluator(tv[0].word(), dryRun, args...);
+						return CallEvaluator(firstTv.word(), dryRun, args...);
 					}
-					if (tv[0].IsParent())
+					if (firstTv.IsParent())
 					{
 						// Todo: remove Copy by add const everywhere
-						TokenVectorT tokenVec = tv[0].subTokensCopy();
+						TokenVectorT tokenVec = firstTv.subTokensCopy();
+						TokenVectorT::iterator it = tokenVec.begin();
+						TokenT& t0 = *it;
+
 						if (tokenVec.size() == 1)
-							return EvaluateToken(tokenVec[0], dryRun, args...);
+							return EvaluateToken(t0, dryRun, args...);
+
+						TokenT& t1 = *(++it);
+
 
 						assert(tokenVec.size() == 3);
-						assert(tokenVec[1].IsOperator());
+						assert(t1.IsOperator());
 
-						if (tokenVec[1].IsAnd())
-							return EvaluateAnd(tokenVec[0], tokenVec[2], dryRun, args...);
-						else if (tokenVec[1].IsOr())
-							return EvaluateOr(tokenVec[0], tokenVec[2], dryRun, args...);
+						TokenT& t2 = *(++it);
+						if (t1.IsAnd())
+							return EvaluateAnd(t0, t2, dryRun, args...);
+						else if (t1.IsOr())
+							return EvaluateOr(t0, t2, dryRun, args...);
 
 						makeThrow(Throw_Unknow);
 					}
-					if (tv[0].IsOperator())
+					if (firstTv.IsOperator())
 						return nullResult_;
 
 					assert(false);
 					makeThrow(Throw_Unknow);
 				}
-				TokenVectorT::iterator it = tv.begin() + 1;
-				for (; it != tv.end(); it += 2)
-				{
-					TokenVectorT::iterator it1 = it - 1;
-					TokenVectorT::iterator it2 = it + 1;
 
+				TokenVectorT::iterator it = tv.begin();
+				// for (; it != tv.end(); it += 2)
+				do
+				{
+					//it1 = it - 1;
+					//it2 = it + 1;
+					TokenVectorT::iterator it1 = it;
+					++it;
+					
+					assert(it->IsOr());
+
+					++it;
+					TokenVectorT::iterator it2 = it;
+					
 					if (EvaluateOr(*it1, *it2, dryRun, args...))
 					{
 						// true means no more evaluation needs
 						return true;
 					}
-				}
+
+					++it;
+				} while (it != tv.end());
 				return false;
 			}
 
@@ -532,6 +603,13 @@ namespace Ambiesoft {
 				return !!evaluator_;
 			}
 		private:
+			// Hold dirty state,
+			// Optimize Consecutive Evaluate call.
+			mutable bool dirty_ = false;
+			
+			// Hold parsed tokens, culculated by Evaluate call, if dirty_.
+			mutable TokenVectorT parsedTokens_;
+
 			// When no equations are provided like '', '()' and '(()())',
 			// this value is returned.
 			// Initialized at ctor.

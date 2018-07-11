@@ -831,11 +831,11 @@ TEST(OpParser, Pod)
 		gCtorCount = 0;
 		OpParser<MyPod> opp(&MyPod::evaluate, false, true);
 		opp.AddWord(MyPod());
-		EXPECT_EQ(gCtorCount, 1);
+		EXPECT_LE(gCtorCount, 2);
 
 		gCtorCount = 0;
 		EXPECT_TRUE(opp.Evaluate());
-		EXPECT_EQ(gCtorCount, 1);
+		EXPECT_LE(gCtorCount, 3);
 	}
 	{
 		gCtorCount = 0;
@@ -854,7 +854,7 @@ TEST(OpParser, Pod)
 		OpParser<MyPod> opp(&MyPod::evaluate, false, true);
 		MyPod myp;
 		opp.AddWord(std::move(myp));
-		EXPECT_EQ(gCtorCount, 1);
+		EXPECT_LE(gCtorCount, 2);
 
 		gCtorCount = 0;
 		EXPECT_TRUE(opp.Evaluate());
@@ -869,7 +869,7 @@ TEST(OpParser, Pod)
 			opp.AddWord(MyPod());
 			opp.AddWord(MyPod());
 			opp.AddWord(MyPod());
-			EXPECT_GT(gCtorCount, 5);
+			EXPECT_GE(gCtorCount, 5);
 
 			gCtorCount = 0;
 			EXPECT_TRUE(opp.Evaluate());
@@ -976,5 +976,114 @@ TEST(OpParser, BasicWithMultiArg)
 		EXPECT_EQ(gd, 1);
 		EXPECT_STREQ(gs2.c_str(), "fff");
 		EXPECT_STREQ(wref.c_str(), L"wref");
+	}
+}
+
+TEST(OpParser, ConsecutiveCallEvaluate)
+{
+	{
+		gCtorCount = 0;
+		gAllocDAllocCounter = 0;
+		{
+			OpParser<MyPod> opp(&MyPod::evaluate, false, true);
+			opp.AddWord(MyPod());
+			opp.AddWord(MyPod());
+			opp.AddWord(MyPod());
+			EXPECT_GE(gCtorCount, 5);
+
+			gCtorCount = 0;
+			EXPECT_TRUE(opp.Evaluate());
+			EXPECT_GT(gCtorCount, 5);
+		}
+		EXPECT_EQ(gAllocDAllocCounter, 0);
+
+		gCtorCount = 0;
+		gAllocDAllocCounter = 0;
+		{
+			OpParser<MyPod> opp(&MyPod::evaluate, false, true);
+			opp.AddWord(MyPod());
+			opp.AddWord(MyPod());
+			opp.AddWord(MyPod());
+			EXPECT_GE(gCtorCount, 5);
+
+			gCtorCount = 0;
+			EXPECT_TRUE(opp.Evaluate());
+			EXPECT_GT(gCtorCount, 5);
+		}
+		EXPECT_EQ(gAllocDAllocCounter, 0);
+
+		gCtorCount = 0;
+		gAllocDAllocCounter = 0;
+		{
+			OpParser<MyPod> opp(&MyPod::evaluate, false, true);
+			opp.AddWord(MyPod());
+			opp.AddWord(MyPod());
+			opp.AddWord(MyPod());
+			EXPECT_GE(gCtorCount, 5);
+
+			gCtorCount = 0;
+			EXPECT_TRUE(opp.Evaluate());
+			EXPECT_GT(gCtorCount, 5);
+		}
+		EXPECT_EQ(gAllocDAllocCounter, 0);
+	}
+
+	{
+		OpParser<wstring> opp(myEvaluator, false, true);
+		// "" => False
+		opp.AddBeginningParenthesis();
+		opp.AddWord(L"false");
+		opp.AddOr();
+		opp.AddWord(L"true");
+		opp.AddEndingParenthesis();
+		// opp.AddAnd();
+		opp.AddBeginningParenthesis();
+		opp.AddWord(L"false");
+		opp.AddOr();
+		opp.AddBeginningParenthesis();
+		opp.AddWord(L"true");
+		// opp.AddAnd();
+		opp.AddWord(L"false");
+		opp.AddEndingParenthesis();
+		opp.AddEndingParenthesis();
+
+
+		gcalledWords.clear();
+		gcallcount = 0;
+		EXPECT_FALSE(opp.Evaluate());
+
+		EXPECT_EQ(gcallcount, 5);
+		EXPECT_EQ(gcalledWords.size(), (size_t)5);
+		EXPECT_STREQ(gcalledWords[0].c_str(), L"false");
+		EXPECT_STREQ(gcalledWords[1].c_str(), L"true");
+		EXPECT_STREQ(gcalledWords[2].c_str(), L"false");
+		EXPECT_STREQ(gcalledWords[3].c_str(), L"true");
+		EXPECT_STREQ(gcalledWords[4].c_str(), L"false");
+
+
+		gcalledWords.clear();
+		gcallcount = 0;
+		EXPECT_FALSE(opp.Evaluate());
+
+		EXPECT_EQ(gcallcount, 5);
+		EXPECT_EQ(gcalledWords.size(), (size_t)5);
+		EXPECT_STREQ(gcalledWords[0].c_str(), L"false");
+		EXPECT_STREQ(gcalledWords[1].c_str(), L"true");
+		EXPECT_STREQ(gcalledWords[2].c_str(), L"false");
+		EXPECT_STREQ(gcalledWords[3].c_str(), L"true");
+		EXPECT_STREQ(gcalledWords[4].c_str(), L"false");
+
+
+		gcalledWords.clear();
+		gcallcount = 0;
+		EXPECT_FALSE(opp.Evaluate());
+
+		EXPECT_EQ(gcallcount, 5);
+		EXPECT_EQ(gcalledWords.size(), (size_t)5);
+		EXPECT_STREQ(gcalledWords[0].c_str(), L"false");
+		EXPECT_STREQ(gcalledWords[1].c_str(), L"true");
+		EXPECT_STREQ(gcalledWords[2].c_str(), L"false");
+		EXPECT_STREQ(gcalledWords[3].c_str(), L"true");
+		EXPECT_STREQ(gcalledWords[4].c_str(), L"false");
 	}
 }

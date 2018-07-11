@@ -16,7 +16,7 @@ bool MyExited(int exitCode, int exitedCode)
 {
 	return exitCode == exitedCode;
 }
-TEST(GTestTest, DeathTest)
+TEST(DISABLED_GTestTest, DeathTest)
 {
 	int exitCode = 0;
 	EXPECT_EXIT(MyExit(true, 1), ::testing::ExitedWithCode(1), "this is my death test");
