@@ -62,15 +62,25 @@ namespace Ambiesoft {
 
         // http://blog.misterfoo.com/2010/07/process-priority-utility.html
         // these values determined by poking around in the debugger - use at your own risk!
-        const DWORD ProcessInformationMemoryPriority = 0x27;
-        const DWORD ProcessInformationIoPriority = 0x21;
+		#define ProcessInformationMemoryPriority			0x27
+		#define ProcessInformationIoPriority				0x21
 
-        const DWORD DefaultMemoryPriority = 5;
-        const DWORD LowMemoryPriority = 3;
+		#define CriticalIoPriority							4
+		#define HighIoPriority								3
+		#define	DefaultIoPriority							2
+		#define LowIoPriority								1
+		#define	VeryLowIoPriority							0
 
-        const DWORD DefaultIoPriority = 2;
-        const DWORD LowIoPriority = 1;
-        const DWORD VeryLowIoPriority = 0;
+
+		#define	DefaultMemoryPriority						5
+		#define MidumMemoryPriority							4
+		#define LowMemoryPriority							3
+		#define LowerMemoryPriority							2
+		#define LowestMemoryPriority						1
+		#define IdleMemoryPriority							0
+
+
+
 
 
         typedef NTSTATUS (NTAPI *FNNtSetInformationProcess)(
@@ -87,6 +97,7 @@ namespace Ambiesoft {
 		);
 		struct NTFuncs
 		{
+		private:
 			FNNtQueryInformationProcess fnNtQueryInformationProcess = NULL;
 			FNNtSetInformationProcess fnNtSetInformationProcess = NULL;
 			HMODULE hDLL_ = NULL;
@@ -108,6 +119,7 @@ namespace Ambiesoft {
 				if (hDLL_)
 					FreeLibrary(hDLL_);
 			}
+		public:
 			int GetPriority(HANDLE hProcess,
 				CPUPRIORITY* cpuPriority,
 				IOPRIORITY* ioPriority,
@@ -123,23 +135,43 @@ namespace Ambiesoft {
 					}
 					switch (dwPriortyClass)
 					{
-					case HIGH_PRIORITY_CLASS: *cpuPriority = CPU_HIGH; break;
-					case ABOVE_NORMAL_PRIORITY_CLASS: *cpuPriority = CPU_ABOVENORMAL; break;
-					case NORMAL_PRIORITY_CLASS: *cpuPriority = CPU_NORMAL; break;
-					case BELOW_NORMAL_PRIORITY_CLASS: *cpuPriority = CPU_BELOWNORMAL; break;
-					case IDLE_PRIORITY_CLASS: *cpuPriority = CPU_IDLE; break;
-					default: *cpuPriority = CPU_UNKNOWN; break;
+					case HIGH_PRIORITY_CLASS:			*cpuPriority = CPU_HIGH; break;
+					case ABOVE_NORMAL_PRIORITY_CLASS:	*cpuPriority = CPU_ABOVENORMAL; break;
+					case NORMAL_PRIORITY_CLASS:			*cpuPriority = CPU_NORMAL; break;
+					case BELOW_NORMAL_PRIORITY_CLASS:	*cpuPriority = CPU_BELOWNORMAL; break;
+					case IDLE_PRIORITY_CLASS:			*cpuPriority = CPU_IDLE; break;
+					default:							*cpuPriority = CPU_UNKNOWN; break;
 					}
 				}
 
+				ULONG nativeIOPriority = -1;
 				// TODO: implement
-				//if(ioPriority && fnNtQueryInformationProcess)
-				//{ 
-				//	fnNtQueryInformationProcess(hProcess,
-				//		)
-				//}
-				if (ioPriority)
-					*ioPriority = IO_UNKOWN;
+				if(ioPriority && fnNtQueryInformationProcess)
+				{ 
+					NTSTATUS ntStatus = fnNtQueryInformationProcess(hProcess,
+						(PROCESSINFOCLASS)ProcessInformationIoPriority,
+						&nativeIOPriority,
+						sizeof(nativeIOPriority),
+						NULL);
+					if (ntStatus != 0)
+					{
+						*ioPriority = IO_UNKOWN;
+						if (firsterr != 0)
+							firsterr = ntStatus;
+					}
+					else
+					{
+						switch (nativeIOPriority)
+						{
+						case CriticalIoPriority:	*ioPriority = IO_HIGH; break;
+						case HighIoPriority:		*ioPriority = IO_ABOVENORMAL; break;
+						case DefaultIoPriority:		*ioPriority = IO_NORMAL; break;
+						case LowIoPriority:			*ioPriority = IO_BELOWNORMAL; break;
+						case VeryLowIoPriority:		*ioPriority = IO_IDLE; break;
+						default:					*ioPriority = IO_UNKOWN; break;
+						}
+					}
+				}
 				if (memPriority)
 					*memPriority = MEMORY_UNKNOWN;
 				return firsterr;
@@ -152,42 +184,53 @@ namespace Ambiesoft {
                 DWORD dwProcessPriority = -1;
                 switch(cpuPriority)
                 {
-				case CPU_NONE: break;
-                case CPU_HIGH: dwProcessPriority = HIGH_PRIORITY_CLASS;break;
-                case CPU_ABOVENORMAL: dwProcessPriority = ABOVE_NORMAL_PRIORITY_CLASS;break;
-                case CPU_NORMAL:dwProcessPriority=NORMAL_PRIORITY_CLASS;break;
-                case CPU_BELOWNORMAL:dwProcessPriority=BELOW_NORMAL_PRIORITY_CLASS;break;
-                case CPU_IDLE:dwProcessPriority=IDLE_PRIORITY_CLASS;break;
+				case CPU_NONE:break;
+                case CPU_HIGH:			dwProcessPriority = HIGH_PRIORITY_CLASS;break;
+                case CPU_ABOVENORMAL:	dwProcessPriority = ABOVE_NORMAL_PRIORITY_CLASS;break;
+                case CPU_NORMAL:		dwProcessPriority = NORMAL_PRIORITY_CLASS;break;
+                case CPU_BELOWNORMAL:	dwProcessPriority = BELOW_NORMAL_PRIORITY_CLASS;break;
+                case CPU_IDLE:			dwProcessPriority = IDLE_PRIORITY_CLASS;break;
 				default:assert(false); break;
                 }
 
 
                 int firstError = 0;
-                if(!SetPriorityClass(hProcess, dwProcessPriority))
-                {
-                    DWORD dwLastError = GetLastError();
-//                    ss <<
-//                             "SetPriorityClass(" <<
-//                             dwProcessPriority <<
-//                             ") failed with " <<
-//                             dwLastError <<
-//                             ")" <<
-//                             std::endl;
-                    if(firstError==0)
-                        firstError = static_cast<int>(dwLastError);
-                }
+				if (dwProcessPriority != -1)
+				{
+					if (!SetPriorityClass(hProcess, dwProcessPriority))
+					{
+						DWORD dwLastError = GetLastError();
+						if (firstError == 0)
+							firstError = static_cast<int>(dwLastError);
+					}
+				}
 
                 ULONG nativeIOPriority = -1;
                 switch(ioPriority)
                 {
 				case IO_NONE:break;
-				case IO_HIGH:
-				case IO_ABOVENORMAL:
-                case IO_NORMAL: nativeIOPriority = DefaultIoPriority; break;
-                case IO_BELOWNORMAL:
-                case IO_IDLE: nativeIOPriority = VeryLowIoPriority; break;
+				case IO_HIGH:			nativeIOPriority =			CriticalIoPriority; break;
+				case IO_ABOVENORMAL:	nativeIOPriority =			HighIoPriority; break;
+                case IO_NORMAL:			nativeIOPriority =			DefaultIoPriority; break;
+                case IO_BELOWNORMAL:	nativeIOPriority =			LowIoPriority; break;
+                case IO_IDLE:			nativeIOPriority =			VeryLowIoPriority; break;
 				default:assert(false); break;
                 }
+				
+				if (nativeIOPriority != (ULONG)-1)
+				{
+					NTSTATUS ntStatus = fnNtSetInformationProcess(
+						hProcess,
+						ProcessInformationIoPriority,
+						&nativeIOPriority,
+						sizeof(nativeIOPriority));
+					if (ntStatus != 0)
+					{
+						if (firstError == 0)
+							firstError = static_cast<int>(ntStatus);
+					}
+				}
+
 
 				ULONG nativeMemoryPriority = -1;
 				switch (memPriority)
@@ -195,13 +238,13 @@ namespace Ambiesoft {
 				case MEMORY_NONE:break;
 				case MEMORY_HIGH:
 				case MEMORY_ABOVENORMAL:
-				case MEMORY_NORMAL:	nativeMemoryPriority = DefaultMemoryPriority;break;
+				case MEMORY_NORMAL:	nativeMemoryPriority = DefaultMemoryPriority; break;
 				case MEMORY_BELOWNORMAL:
-				case MEMORY_IDLE:nativeMemoryPriority = LowMemoryPriority;break;
+				case MEMORY_IDLE:nativeMemoryPriority = LowMemoryPriority; break;
 				default:assert(false); break;
 				}
 
-                if (fnNtSetInformationProcess)
+				if (fnNtSetInformationProcess)
                 {
                     if(nativeMemoryPriority != (ULONG)-1)
                     {
@@ -212,38 +255,6 @@ namespace Ambiesoft {
                                     sizeof(nativeMemoryPriority));
                         if(ntStatus != 0)
                         {
-//                            ss <<
-//                                      "NtSetInformationProcess(" <<
-//                                      ProcessInformationMemoryPriority <<
-//                                      "," <<
-//                                      nativeMemoryPriority <<
-//                                      ") failed with " <<
-//                                      ntStatus <<
-//                                      "." <<
-//                                      std::endl;
-                            if(firstError==0)
-                                firstError=static_cast<int>(ntStatus);
-                        }
-                    }
-
-                    if(nativeIOPriority != (ULONG)-1)
-                    {
-                        NTSTATUS ntStatus = fnNtSetInformationProcess(
-                                    hProcess,
-                                    ProcessInformationIoPriority,
-                                    &nativeIOPriority,
-                                    sizeof(nativeIOPriority));
-                        if(ntStatus != 0)
-                        {
-//                            ss <<
-//                                      "NtSetInformationProcess(" <<
-//                                      ProcessInformationIoPriority <<
-//                                      "," <<
-//                                      nativeIOPriority <<
-//                                      ") failed with " <<
-//                                      ntStatus <<
-//                                      "." <<
-//                                      std::endl;
                             if(firstError==0)
                                 firstError=static_cast<int>(ntStatus);
                         }
@@ -251,7 +262,13 @@ namespace Ambiesoft {
                 }
                 return firstError;
             }
-        } ;
+
+			static NTFuncs& GetInstance()
+			{
+				static NTFuncs theInst;
+				return theInst;
+			}
+        };  // struct NTFuncs
     } // anonymous namespace
 
 	int GetPriority(uint64_t  pid,
@@ -266,8 +283,8 @@ namespace Ambiesoft {
 			// ss << "Failed to OpenProcess(" << pid << ")." << std::endl;
 			return handle.lastError();
 		}
-		static NTFuncs stNTFuncs;
-		return stNTFuncs.GetPriority(
+		
+		return NTFuncs::GetInstance().GetPriority(
 			handle,
 			cpuPriority,
 			ioPriority,
@@ -286,8 +303,8 @@ namespace Ambiesoft {
             // ss << "Failed to OpenProcess(" << pid << ")." << std::endl;
             return handle.lastError();
         }
-        static NTFuncs stNTFuncs;
-        return stNTFuncs.SetPriority(
+        
+        return NTFuncs::GetInstance().SetPriority(
 			handle,
 			cpuPriority,
 			ioPriority,
