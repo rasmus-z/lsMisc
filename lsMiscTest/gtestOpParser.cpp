@@ -874,6 +874,12 @@ TEST(OpParser, Pod)
 			gCtorCount = 0;
 			EXPECT_TRUE(opp.Evaluate());
 			EXPECT_GT(gCtorCount, 5);
+
+			int ctorFirst = gCtorCount;
+			gCtorCount = 0;
+			EXPECT_TRUE(opp.Evaluate());
+			EXPECT_LE(gCtorCount, ctorFirst);
+
 		}
 		EXPECT_EQ(gAllocDAllocCounter, 0);
 	}
@@ -914,14 +920,6 @@ TEST(OpParser, Pod)
 		}
 		EXPECT_EQ(gAllocDAllocCounter, 0);
 	}
-
-	new int;
-	//opp.AddOr();
-	//opp.AddWord(MyPod());
-	//opp.AddOr();
-	//opp.AddWord(MyPod());
-
-
 }
 
 bool MyEvArgStringInt(const string& s, int i)

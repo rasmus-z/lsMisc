@@ -167,10 +167,10 @@ namespace Ambiesoft {
 			}
 
 			// TODO: Remove this in the future.
-			TokenVectorT subTokensCopy() const {
-				assert(IsParent());
-				return subtokens_;
-			}
+			//TokenVectorT subTokensCopy() const {
+			//	assert(IsParent());
+			//	return subtokens_;
+			//}
 
 		private:
 			// Constructed by ctor from user, or
@@ -301,20 +301,6 @@ namespace Ambiesoft {
 				tokens_.push_back(TokenT(lastAddedTokenType_ = TOKEN_ENDING_PARENTHESIS));
 			}
 
-		private:
-			void PreAddWord() {
-				dirty_ = true;
-				// 'A A' is illegal
-				// implicit: 'A and A' is legal.
-				if (lastAddedTokenType_ == TOKEN_WORD)
-				{
-					if (implicitAnd_)
-						AddAnd();
-					else
-						makeThrow(Throw_SysntaxErrorWord);
-				}
-			}
-		public:
 			void AddWord(const T& word) {
 				dirty_ = true;
 				PreAddWord();
@@ -333,35 +319,51 @@ namespace Ambiesoft {
 				if (dirty_)
 				{
 					parsedTokens_ = tokens_;
+					Parse(parsedTokens_);
+					dirty_ = false;
 				}
-				bool retval = EvaluateInner(parsedTokens_, false, args...);
-				dirty_ = false;
-				return retval;
+				return EvaluateInner(parsedTokens_, false, args...);
 			}
 			void TryEvaluate(Args...args) const {
 				if (dirty_)
 				{
 					parsedTokens_ = tokens_;
+					Parse(parsedTokens_);
+					dirty_ = false;
 				}
 				EvaluateInner(parsedTokens_, true, args...);
-				dirty_ = false;
 			}
 		private:
+			void PreAddWord() {
+				dirty_ = true;
+				// 'A A' is illegal
+				// implicit: 'A and A' is legal.
+				if (lastAddedTokenType_ == TOKEN_WORD)
+				{
+					if (implicitAnd_)
+						AddAnd();
+					else
+						makeThrow(Throw_SysntaxErrorWord);
+				}
+			}
+
 			// remove paren
-			void Unparen(TokenVectorT& tv) const
+			void UnParenthesis(TokenVectorT& tv) const
 			{
 				TokenVectorT::iterator it = tv.begin();
-				TokenVectorT::iterator itLastHit = tv.end();
+				TokenVectorT::iterator itLastOpeningParen = tv.end();
 				bool found = false;
+
+				// Find inner-most paren pair
 				for (; it != tv.end(); ++it)
 				{
 					if (it->IsBeginParen())
 					{
-						itLastHit = it;
+						itLastOpeningParen = it;
 					}
 					else if (it->IsEndParen())
 					{
-						if (itLastHit == tv.end())
+						if (itLastOpeningParen == tv.end())
 						{
 							// not found start paren
 							makeThrow(Throw_SysntaxErrorMismatchedParenthesis);
@@ -376,7 +378,7 @@ namespace Ambiesoft {
 				{
 					// no ending paren found
 
-					if (itLastHit != tv.end())
+					if (itLastOpeningParen != tv.end())
 					{
 						// but starting paren found
 						makeThrow(Throw_SysntaxErrorMismatchedParenthesis);
@@ -396,7 +398,7 @@ namespace Ambiesoft {
 					//
 					// itLastHit: begining of paren
 					// it: end of paren
-					TokenVectorT::iterator insideStart = itLastHit;
+					TokenVectorT::iterator insideStart = itLastOpeningParen;
 					++insideStart;
 
 					TokenVectorT::iterator insideEnd = it;
@@ -416,10 +418,10 @@ namespace Ambiesoft {
 					newVec.insert(newVec.end(), insideEnd, tv.end());
 
 					// reset our vector
-					tv = newVec;
+					tv = std::move(newVec);
 
 					// dont know whether it's liner
-					Unparen(tv);
+					UnParenthesis(tv);
 				}
 			}
 			bool FindAndTripet(typename TokenVectorT::iterator& it1,
@@ -503,84 +505,105 @@ namespace Ambiesoft {
 				if (token.IsWord())
 					return CallEvaluator(token.word(), dryRun, args...);
 				else if (token.IsParent())
-					return EvaluateInner(token.subTokensCopy(), dryRun, args...);
+					return EvaluateInner(token.subTokens(), dryRun, args...);
 				else if (token.IsOperator())
 					return nullResult_;
 
 				makeThrow(Throw_Unknow);
 				return false;
 			}
-			bool EvaluateInner(TokenVectorT& tv, const bool dryRun, Args...args) const {
+			void Parse(TokenVectorT& tv) const {
 				if (tv.empty())
-					return nullResult_;
+					return;
 
 				// make vector liner, or tree structure
-				Unparen(tv);
+				UnParenthesis(tv);
 
 				if (tv.empty())
 				{
 					// paren only
-					return nullResult_;
+					return;
 				}
-
 
 				// make vecotr Un-And, or make vector all connected with 'or'
 				UnAnd(tv);
 
 				assert((tv.size() % 2) == 1);
+			}
+			bool EvaluateInner(const TokenVectorT& tv, const bool dryRun, Args...args) const {
+				if (tv.empty())
+					return nullResult_;
 
-				// now, all vector is all connected with 'or' only or a single token.
+				// now, all vector is a single, triplet, or, connected only by 'or'.
 				if (tv.size() == 1)
 				{
-					TokenT& firstTv = *tv.begin();
-					if (firstTv.IsWord())
-					{
-						return CallEvaluator(firstTv.word(), dryRun, args...);
-					}
-					if (firstTv.IsParent())
-					{
-						// Todo: remove Copy by add const everywhere
-						TokenVectorT tokenVec = firstTv.subTokensCopy();
-						TokenVectorT::iterator it = tokenVec.begin();
-						TokenT& t0 = *it;
+					return EvaluateToken(*tv.begin(), dryRun, args...);
+					//TokenT& firstTv = *tv.begin();
+					//if (firstTv.IsWord())
+					//{
+					//	return CallEvaluator(firstTv.word(), dryRun, args...);
+					//}
+					//if (firstTv.IsParent())
+					//{
+					//	// Todo: remove Copy by add const everywhere
+					//	TokenVectorT tokenVec = firstTv.subTokensCopy();
+					//	TokenVectorT::iterator it = tokenVec.begin();
+					//	TokenT& t0 = *it;
 
-						if (tokenVec.size() == 1)
-							return EvaluateToken(t0, dryRun, args...);
+					//	if (tokenVec.size() == 1)
+					//		return EvaluateToken(t0, dryRun, args...);
 
-						TokenT& t1 = *(++it);
+					//	TokenT& t1 = *(++it);
 
 
-						assert(tokenVec.size() == 3);
-						assert(t1.IsOperator());
+					//	assert(tokenVec.size() == 3);
+					//	assert(t1.IsOperator());
 
-						TokenT& t2 = *(++it);
-						if (t1.IsAnd())
-							return EvaluateAnd(t0, t2, dryRun, args...);
-						else if (t1.IsOr())
-							return EvaluateOr(t0, t2, dryRun, args...);
+					//	TokenT& t2 = *(++it);
+					//	if (t1.IsAnd())
+					//		return EvaluateAnd(t0, t2, dryRun, args...);
+					//	else if (t1.IsOr())
+					//		return EvaluateOr(t0, t2, dryRun, args...);
 
-						makeThrow(Throw_Unknow);
-					}
-					if (firstTv.IsOperator())
-						return nullResult_;
+					//	makeThrow(Throw_Unknow);
+					//}
+					//if (firstTv.IsOperator())
+					//	return nullResult_;
 
-					assert(false);
+					//assert(false);
+					//makeThrow(Throw_Unknow);
+				}
+				else if (tv.size()==3)
+				{
+					TokenVectorT::const_iterator it = tv.begin();
+
+					TokenVectorT::const_iterator it1 = it++;
+					TokenVectorT::const_iterator itOp = it++;
+					TokenVectorT::const_iterator it2 = it++;
+
+					assert(itOp->IsOperator());
+
+					if (itOp->IsAnd())
+						return EvaluateAnd(*it1, *it2, dryRun, args...);
+					else if (itOp->IsOr())
+						return EvaluateOr(*it1, *it2, dryRun, args...);
+
 					makeThrow(Throw_Unknow);
 				}
 
-				TokenVectorT::iterator it = tv.begin();
-				// for (; it != tv.end(); it += 2)
+				// Now all are connected by 'or'.
+				TokenVectorT::const_iterator it = tv.begin();
 				do
 				{
 					//it1 = it - 1;
 					//it2 = it + 1;
-					TokenVectorT::iterator it1 = it;
+					TokenVectorT::const_iterator it1 = it;
 					++it;
 					
 					assert(it->IsOr());
 
 					++it;
-					TokenVectorT::iterator it2 = it;
+					TokenVectorT::const_iterator it2 = it;
 					
 					if (EvaluateOr(*it1, *it2, dryRun, args...))
 					{
@@ -605,7 +628,7 @@ namespace Ambiesoft {
 		private:
 			// Hold dirty state,
 			// Optimize Consecutive Evaluate call.
-			mutable bool dirty_ = false;
+			mutable bool dirty_ = true;
 			
 			// Hold parsed tokens, culculated by Evaluate call, if dirty_.
 			mutable TokenVectorT parsedTokens_;
