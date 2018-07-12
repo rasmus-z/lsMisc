@@ -82,12 +82,11 @@ static int setpriorityStuff(id_t pid,
         prio=19;
         break;
     default:
-        error = "Invalid CPU Priority";
-        return false;
+        break;
     }
-    std::stringstream ss;
 
-    bool failed = false;
+
+
     int firstError = 0;
     int err = setpriority(PRIO_PROCESS, pid, prio);
     if(err != 0)
@@ -99,7 +98,7 @@ static int setpriorityStuff(id_t pid,
 //              err <<
 //              "." <<
 //              std::endl;
-        failed = true;
+
         if(firstError==0)
             firstError=err;
     }
@@ -136,23 +135,22 @@ static int setpriorityStuff(id_t pid,
 //                      err <<
 //                      "." <<
 //                      std::endl;
-            failed = true;
+
             if(firstError==0)
                 firstError=err;
         }
     }
-    error = ss.str();
-    return !failed;
+    return firstError;
 }
-int SetProirity(void* pid,
+int SetProirity(uint64_t  pid,
                  CPUPRIORITY cpuPriority,
-                 IOPRIORITY ioPriority)
+                 IOPRIORITY ioPriority,
+                 MEMORYPRIORITY)
 {
     id_t pidid = (long)pid;
     return setpriorityStuff(pidid,
                        cpuPriority,
-                       ioPriority,
-                       error);
+                       ioPriority);
 }
 
 
