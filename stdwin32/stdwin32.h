@@ -62,7 +62,7 @@ namespace stdwin32 {
 		DWORD size = 64;
 		for (;;)
 		{
-			p = (ST::traits_type::char_type*)realloc(p, size * sizeof(ST::traits_type::char_type));
+			p = (typename ST::traits_type::char_type*)realloc(p, size * sizeof(ST::traits_type::char_type));
 			if (StdCharTraits<ST::traits_type::char_type>::ssGetModuleFileName(hInst, p, size) < size)
 				break;
 

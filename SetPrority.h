@@ -28,15 +28,21 @@
 namespace Ambiesoft {
 
 enum CPUPRIORITY : int {
-    CPU_NONE,
-    CPU_HIGH,
+	CPU_UNKNOWN = -100,
+    
+	CPU_NONE = 0,
+    
+	CPU_HIGH,
     CPU_ABOVENORMAL,
     CPU_NORMAL,
     CPU_BELOWNORMAL,
     CPU_IDLE,
 };
 enum IOPRIORITY : int {
-	IO_NONE,
+	IO_UNKOWN = -100,
+	
+	IO_NONE = 0,
+
 	IO_HIGH,
 	IO_ABOVENORMAL,
 	IO_NORMAL,
@@ -44,7 +50,10 @@ enum IOPRIORITY : int {
 	IO_IDLE,
 };
 enum MEMORYPRIORITY : int {
-	MEMORY_NONE,
+	MEMORY_UNKNOWN = -100,
+	
+	MEMORY_NONE = 0,
+	
 	MEMORY_HIGH,
 	MEMORY_ABOVENORMAL,
 	MEMORY_NORMAL,
@@ -52,9 +61,12 @@ enum MEMORYPRIORITY : int {
 	MEMORY_IDLE,
 };
 
-bool SetProirity(uint64_t  pid,
+int GetPriority(uint64_t  pid,
+	CPUPRIORITY* cpuPriority,
+	IOPRIORITY* ioPriority,
+	MEMORYPRIORITY* memPriority); 
+int SetProirity(uint64_t  pid,
                  CPUPRIORITY cpuPriority,
                  IOPRIORITY ioPriority,
-				 MEMORYPRIORITY memPriority,
-                 std::string& error);
+                 MEMORYPRIORITY memPriority);
 }

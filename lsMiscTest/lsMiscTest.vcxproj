@@ -305,6 +305,7 @@
     <ClCompile Include="..\SetClipboardText.cpp" />
     <ClCompile Include="..\SetCSIDLtoEnv.cpp" />
     <ClCompile Include="..\SetFileOntoClipboard.cpp" />
+    <ClCompile Include="..\SetPrority_win.cpp" />
     <ClCompile Include="..\SHMoveFile.cpp" />
     <ClCompile Include="..\showballoon.cpp" />
     <ClCompile Include="..\SkipSpace.cpp" />
@@ -344,6 +345,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="gtestSetPriority.cpp" />
     <ClCompile Include="gtestUtf8toUtf16.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="gtestCommandLineParser.cpp" />
@@ -459,6 +461,7 @@
     <ClInclude Include="..\SetClipboardText.h" />
     <ClInclude Include="..\SetCSIDLtoEnv.h" />
     <ClInclude Include="..\SetFileOntoClipboard.h" />
+    <ClInclude Include="..\SetPrority.h" />
     <ClInclude Include="..\SHMoveFile.h" />
     <ClInclude Include="..\showballoon.h" />
     <ClInclude Include="..\SkipSpace.h" />

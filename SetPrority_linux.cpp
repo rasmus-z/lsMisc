@@ -27,7 +27,7 @@
 #include <sys/time.h>
 #include <sys/resource.h>
 
-#include <sstream>
+
 
 #include "SetPrority.h"
 
@@ -59,10 +59,9 @@ enum {
 #define IOPRIO_PRIO_VALUE(class, data)	(((class) << IOPRIO_CLASS_SHIFT) | data)
 
 
-static bool setpriorityStuff(id_t pid,
+static int setpriorityStuff(id_t pid,
                  CPUPRIORITY cpuPriority,
-                 IOPRIORITY ioPriority,
-                 std::string& error)
+                 IOPRIORITY ioPriority)
 {
     int prio = -1;
     switch(cpuPriority)
@@ -89,17 +88,20 @@ static bool setpriorityStuff(id_t pid,
     std::stringstream ss;
 
     bool failed = false;
+    int firstError = 0;
     int err = setpriority(PRIO_PROCESS, pid, prio);
     if(err != 0)
     {
-        ss <<
-              "setpriority(" <<
-              prio <<
-              ") failed with " <<
-              err <<
-              "." <<
-              std::endl;
+//        ss <<
+//              "setpriority(" <<
+//              prio <<
+//              ") failed with " <<
+//              err <<
+//              "." <<
+//              std::endl;
         failed = true;
+        if(firstError==0)
+            firstError=err;
     }
 
     int ioprioclass = IOPRIO_CLASS_NONE;
@@ -126,23 +128,25 @@ static bool setpriorityStuff(id_t pid,
         err = ioprio_set(IOPRIO_WHO_PROCESS, pid, iopriovalue);
         if(err != 0)
         {
+//            failed = true;
+//            ss <<
+//                      "ioprio_set(" <<
+//                      ioprioclass <<
+//                      ") failed with " <<
+//                      err <<
+//                      "." <<
+//                      std::endl;
             failed = true;
-            ss <<
-                      "ioprio_set(" <<
-                      ioprioclass <<
-                      ") failed with " <<
-                      err <<
-                      "." <<
-                      std::endl;
+            if(firstError==0)
+                firstError=err;
         }
     }
     error = ss.str();
     return !failed;
 }
-bool SetProirity(void* pid,
+int SetProirity(void* pid,
                  CPUPRIORITY cpuPriority,
-                 IOPRIORITY ioPriority,
-                 std::string& error)
+                 IOPRIORITY ioPriority)
 {
     id_t pidid = (long)pid;
     return setpriorityStuff(pidid,

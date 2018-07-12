@@ -352,6 +352,10 @@
     <ClCompile Include="gtestGtest.cpp">
       <Filter>GTest Files</Filter>
     </ClCompile>
+    <ClCompile Include="gtestSetPriority.cpp">
+      <Filter>GTest Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SetPrority_win.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\CenterWindow.h">
@@ -696,6 +700,7 @@
     <ClInclude Include="resource.h">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="..\SetPrority.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Test Files">

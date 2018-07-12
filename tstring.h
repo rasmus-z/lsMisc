@@ -32,8 +32,10 @@
 	typedef std::wstring tstring;
 	typedef std::wifstream tifstream;
 	typedef std::wofstream tofstream;
-	inline std::wostream& tcoutfunc() { return std::wcout; }
-	#define tcout tcoutfunc()
+        inline std::wostream& tcoutfunc() { return std::wcout; }
+        #define tcout tcoutfunc()
+        inline std::wostream& tcerrfunc() { return std::wcerr; }
+        #define tcerr tcerrfunc()
 #else
 	typedef std::string tstring;
 	typedef std::ifstream tifstream;
