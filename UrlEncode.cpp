@@ -39,6 +39,7 @@
 #include <ctype.h>
 
 #include <string>
+#include <memory>
 
 #ifdef _DEBUG
 #include <cassert>
@@ -147,7 +148,14 @@ char *UrlEncode(const unsigned char *pstr, size_t size)
 
 	return buf;
 }
-std::wstring UrlEncodeW(const wchar_t *pstr)
+std::string UrlEncodeStd(const unsigned char *pstr, size_t size)
+{
+	std::unique_ptr<char, void(*)(void*)> pEncoded(UrlEncode(pstr, size), free);
+	if (!pEncoded)
+		return std::string();
+	return pEncoded.get();
+}
+std::wstring UrlEncodeWstd(const wchar_t *pstr)
 {
 	std::wstring ret;
 	if (pstr == NULL || pstr[0] == 0)
@@ -272,7 +280,7 @@ static void checkmoji()
 #endif
 
 
-std::wstring UrlDecodeW(const char* penc)
+std::wstring UrlDecodeWstd(const char* penc)
 {
 	std::wstring ret;
 	BYTE* p8 = UrlDecode(penc);
@@ -281,7 +289,7 @@ std::wstring UrlDecodeW(const char* penc)
 	return ret;
 }
 
-std::wstring UrlDecodeW(const std::wstring& wenc)
+std::wstring UrlDecodeWstd(const std::wstring& wenc)
 {
 	BYTE* p8 = UTF16toUTF8(wenc.c_str());
 	stlsoft::scoped_handle<void*> ma(p8, free);

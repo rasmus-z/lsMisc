@@ -50,7 +50,7 @@ namespace Ambiesoft {
 
 	wstring Utf8UrlDecode(const wstring& ws)
 	{
-		return UrlDecodeW(ws);
+		return UrlDecodeWstd(ws);
 	}
 
 

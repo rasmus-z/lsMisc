@@ -101,15 +101,21 @@ void testStlMutex();
 void testOpenedFiles();
 void testExpandPath();
 
+struct CBeforeMain
+{
+	CBeforeMain()
+	{
+#ifdef _DEBUG
+		_CrtSetDbgFlag(
+			_CRTDBG_ALLOC_MEM_DF |
+			_CRTDBG_LEAK_CHECK_DF |
+			_CRTDBG_CHECK_ALWAYS_DF |
+			_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG));
+#endif
+	}
+} gBeforeMain;
 int main()
 {
-#ifdef _DEBUG
-	_CrtSetDbgFlag(
-		_CRTDBG_ALLOC_MEM_DF		|
-		_CRTDBG_LEAK_CHECK_DF		| 
-		_CRTDBG_CHECK_ALWAYS_DF		|
-		_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG));
-#endif
 	mysandbox();
 
 	testing::InitGoogleTest(&__argc, __argv);
