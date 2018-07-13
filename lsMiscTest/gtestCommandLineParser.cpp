@@ -2,7 +2,12 @@
 #include <tchar.h>
 #include <iostream>
 #include <sstream>
+
+#include <stdint.h>
+
 #include <gtest/gtest.h>
+
+#include "../UrlEncode.h"
 #include "../CommandLineParser.h"
 
 
@@ -213,4 +218,108 @@ TEST(CommandLineParser, Int)
 
 		EXPECT_EQ(intval, -1);
 	}
+}
+
+TEST(CommandLineParser, Dicregate)
+{
+	wchar_t* argv[] = {
+		L"exe.exe",
+		L"-page",
+		L"http://example.com/",
+		L"-url",
+		L"http://example.com/my%20file.zip",
+		L"-hostwnd",
+		L"12345",
+		L"-hostpid",
+		L"54321",
+		L"-did",
+		L"333",
+		L"-size",
+		L"333333333333333333",
+		L"-lng",
+		L"ja",
+		NULL
+	};
+	size_t argc = _countof(argv) - 1;
+
+	CCommandLineParser parser;
+	COption page(L"-page", ExactCount::Exact_1);
+	parser.AddOption(&page);
+
+	COption url(L"-url", ExactCount::Exact_1);
+	parser.AddOption(&url);
+
+	//COption target(L"-target",1);
+	//parser.AddOption(&target);
+
+	COption hosthwnd(L"-hostwnd", ExactCount::Exact_1);
+	parser.AddOption(&hosthwnd);
+
+	COption hostpid(L"-hostpid", ExactCount::Exact_1);
+	parser.AddOption(&hostpid);
+
+	COption did(L"-did", ExactCount::Exact_1);
+	parser.AddOption(&did);
+
+	COption size(L"-size", ExactCount::Exact_1);
+	parser.AddOption(&size);
+
+	COption lang(L"-lang", ExactCount::Exact_1);
+	parser.AddOption(&lang);
+
+	parser.Parse(argc, argv);
+
+
+	if (!page.hadOption() || !page.hadValue())
+	{
+		AfxMessageBox(L"No page");
+		return ;
+	}
+
+	if (!url.hadOption() || !url.hadValue())
+	{
+		AfxMessageBox(L"No URL");
+		return ;
+	}
+
+	//if (!target.hadOption() || !target.hadValue())
+	//{
+	//	AfxMessageBox(L"No Target");
+	//	return FALSE;
+	//}
+
+	if (!hosthwnd.hadOption() || !hosthwnd.hadValue())
+	{
+		AfxMessageBox(L"No host");
+		return ;
+	}
+	if (!hostpid.hadOption() || !hostpid.hadValue())
+	{
+		AfxMessageBox(L"No host");
+		return ;
+	}
+
+	if (!did.hadOption() || !did.hadValue())
+	{
+		AfxMessageBox(L"No did");
+		return ;
+	}
+
+	if (!size.hadOption() || !size.hadValue())
+	{
+		AfxMessageBox(L"No size");
+		return ;
+	}
+
+
+	EXPECT_EQ((HWND)(int64_t)_wtol(hosthwnd.getFirstValue().c_str()), (HWND)(int64_t)(12345));
+
+	
+	EXPECT_EQ(_wtoi64(size.getFirstValue().c_str()) , 333333333333333333LL);
+
+	DWORD dwHostPID = _wtol(hostpid.getFirstValue().c_str());
+	EXPECT_EQ(54321, dwHostPID);
+
+	EXPECT_STREQ(UrlDecodeWstd(page.getFirstValue()).c_str(), L"http://example.com/");
+	EXPECT_STREQ(UrlDecodeWstd(url.getFirstValue()).c_str(), L"http://example.com/my file.zip");
 }

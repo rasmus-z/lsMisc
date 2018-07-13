@@ -358,6 +358,7 @@
     <ClCompile Include="..\SetPrority_win.cpp">
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
+    <ClCompile Include="testIncludeWithoutOtherHeader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\CenterWindow.h">
