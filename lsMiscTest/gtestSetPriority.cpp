@@ -91,7 +91,51 @@ TEST(SetPriority, IO)
 		NULL);
 	EXPECT_EQ(err, 0);
 	EXPECT_EQ(ioPriorityOrig, ioPriority);
+}
+
+TEST(SetPriority, Memory)
+{
+	DWORD id = GetCurrentProcessId();
+	int err;
+	MEMORYPRIORITY memPriorityOrig;
+
+	// Get Current IO Priority
+	err = Ambiesoft::GetPriority(id,
+		NULL,
+		NULL,
+		&memPriorityOrig);
+	EXPECT_EQ(err, 0);
+	EXPECT_NE(memPriorityOrig, MEMORY_NONE);
 
 
+	// Set Memory as Idle and check
+	err = Ambiesoft::SetProirity(id,
+		CPUPRIORITY::CPU_NONE,
+		IOPRIORITY::IO_NONE,
+		MEMORYPRIORITY::MEMORY_IDLE);
+	EXPECT_EQ(err, 0);
 
+	MEMORYPRIORITY memPriority;
+	err = Ambiesoft::GetPriority(id,
+		NULL,
+		NULL,
+		&memPriority);
+	EXPECT_EQ(err, 0);
+	EXPECT_EQ(memPriority, MEMORY_IDLE);
+
+
+	// Set back IO andcheck
+	err = Ambiesoft::SetProirity(id,
+		CPUPRIORITY::CPU_NONE,
+		IOPRIORITY::IO_NONE,
+		memPriorityOrig);
+	EXPECT_EQ(err, 0);
+
+	err = Ambiesoft::GetPriority(id,
+		NULL,
+		NULL,
+		&memPriority);
+
+	EXPECT_EQ(err, 0);
+	EXPECT_EQ(memPriorityOrig, memPriority);
 }

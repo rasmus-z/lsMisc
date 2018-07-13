@@ -29,17 +29,23 @@
 #include <iostream>
 
 #ifdef UNICODE
+	typedef wchar_t tchar;
 	typedef std::wstring tstring;
+	typedef std::wstringstream tstringstream;
 	typedef std::wifstream tifstream;
 	typedef std::wofstream tofstream;
-        inline std::wostream& tcoutfunc() { return std::wcout; }
-        #define tcout tcoutfunc()
-        inline std::wostream& tcerrfunc() { return std::wcerr; }
-        #define tcerr tcerrfunc()
+    inline std::wostream& tcoutfunc() { return std::wcout; }
+    #define tcout tcoutfunc()
+    inline std::wostream& tcerrfunc() { return std::wcerr; }
+    #define tcerr tcerrfunc()
 #else
+	typedef char tchar;
 	typedef std::string tstring;
+	typedef std::stringstream tstringstream;
 	typedef std::ifstream tifstream;
 	typedef std::ofstream tofstream;
 	inline std::ostream& tcoutfunc() { return std::cout; }
 	#define tcout tcoutfunc()
+	inline std::ostream& tcerrfunc() { return std::cerr; }
+	#define tcerr tcerrfunc()
 #endif

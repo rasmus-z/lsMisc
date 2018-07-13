@@ -40,7 +40,7 @@ enum CPUPRIORITY : int {
     CPU_IDLE,
 };
 enum IOPRIORITY : int {
-	IO_UNKOWN = -100,
+	IO_UNKNOWN = -100,
 	
 	IO_NONE = 0,
 
