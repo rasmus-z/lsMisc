@@ -226,7 +226,7 @@ namespace Ambiesoft {
 
 
                 int firstError = 0;
-				if (dwProcessPriority != -1)
+                if (dwProcessPriority != (DWORD)-1)
 				{
 					if (!SetPriorityClass(hProcess, dwProcessPriority))
 					{
