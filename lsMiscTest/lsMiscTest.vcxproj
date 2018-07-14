@@ -335,6 +335,7 @@
     <ClCompile Include="..\WritePrivateProfileInt.cpp" />
     <ClCompile Include="..\WritePrivateProfileWString.cpp" />
     <ClCompile Include="..\XBrowseForFolder.cpp" />
+    <ClCompile Include="gtestStdwin32.cpp" />
     <ClCompile Include="gtestStdosd.cpp" />
     <ClCompile Include="gtestGtest.cpp" />
     <ClCompile Include="gtestChangeFilenamable.cpp" />

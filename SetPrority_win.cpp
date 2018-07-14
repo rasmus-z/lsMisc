@@ -119,7 +119,7 @@ namespace Ambiesoft {
 				if (hDLL_)
 					FreeLibrary(hDLL_);
 			}
-			int InvalidParam(WORD w) {
+			int InvalidReternValue(WORD w) {
 				return MAKE_HRESULT(1, 832, w);
 			}
 
@@ -153,27 +153,34 @@ namespace Ambiesoft {
 					// TODO: implement
 					if (ioPriority && fnNtQueryInformationProcess)
 					{
-						NTSTATUS ntStatus = fnNtQueryInformationProcess(hProcess,
-							(PROCESSINFOCLASS)ProcessInformationIoPriority,
-							&nativeIOPriority,
-							sizeof(nativeIOPriority),
-							NULL);
-						if (ntStatus != 0)
+						if (!fnNtQueryInformationProcess)
 						{
 							*ioPriority = IO_UNKNOWN;
-							if (firsterr != 0)
-								firsterr = ntStatus;
 						}
 						else
 						{
-							switch (nativeIOPriority)
+							NTSTATUS ntStatus = fnNtQueryInformationProcess(hProcess,
+								(PROCESSINFOCLASS)ProcessInformationIoPriority,
+								&nativeIOPriority,
+								sizeof(nativeIOPriority),
+								NULL);
+							if (ntStatus != 0)
 							{
-							case CriticalIoPriority:	*ioPriority = IO_HIGH; break;
-							case HighIoPriority:		*ioPriority = IO_ABOVENORMAL; break;
-							case DefaultIoPriority:		*ioPriority = IO_NORMAL; break;
-							case LowIoPriority:			*ioPriority = IO_BELOWNORMAL; break;
-							case VeryLowIoPriority:		*ioPriority = IO_IDLE; break;
-							default:					*ioPriority = IO_UNKNOWN; break;
+								*ioPriority = IO_UNKNOWN;
+								if (firsterr != 0)
+									firsterr = ntStatus;
+							}
+							else
+							{
+								switch (nativeIOPriority)
+								{
+								case CriticalIoPriority:	*ioPriority = IO_HIGH; break;
+								case HighIoPriority:		*ioPriority = IO_ABOVENORMAL; break;
+								case DefaultIoPriority:		*ioPriority = IO_NORMAL; break;
+								case LowIoPriority:			*ioPriority = IO_BELOWNORMAL; break;
+								case VeryLowIoPriority:		*ioPriority = IO_IDLE; break;
+								default:					*ioPriority = IO_UNKNOWN; break;
+								}
 							}
 						}
 					}
@@ -182,29 +189,36 @@ namespace Ambiesoft {
 				{
 					ULONG nativeMemPriority = -1;
 					// TODO: implement
-					if (memPriority && fnNtQueryInformationProcess)
+					if (memPriority)
 					{
-						NTSTATUS ntStatus = fnNtQueryInformationProcess(hProcess,
-							(PROCESSINFOCLASS)ProcessInformationMemoryPriority,
-							&nativeMemPriority,
-							sizeof(nativeMemPriority),
-							NULL);
-						if (ntStatus != 0)
+						if (!fnNtQueryInformationProcess)
 						{
 							*memPriority = MEMORY_UNKNOWN;
-							if (firsterr != 0)
-								firsterr = ntStatus;
 						}
 						else
 						{
-							switch (nativeMemPriority)
+							NTSTATUS ntStatus = fnNtQueryInformationProcess(hProcess,
+								(PROCESSINFOCLASS)ProcessInformationMemoryPriority,
+								&nativeMemPriority,
+								sizeof(nativeMemPriority),
+								NULL);
+							if (ntStatus != 0)
 							{
-							case DefaultMemoryPriority:		*memPriority = MEMORY_HIGH; break;
-							case MidumMemoryPriority:		*memPriority = MEMORY_ABOVENORMAL; break;
-							case LowMemoryPriority:			*memPriority = MEMORY_NORMAL; break;
-							case LowerMemoryPriority:		*memPriority = MEMORY_BELOWNORMAL; break;
-							case LowestMemoryPriority:		*memPriority = MEMORY_IDLE; break;
-							default:						*memPriority = MEMORY_UNKNOWN; break;
+								*memPriority = MEMORY_UNKNOWN;
+								if (firsterr != 0)
+									firsterr = ntStatus;
+							}
+							else
+							{
+								switch (nativeMemPriority)
+								{
+								case DefaultMemoryPriority:		*memPriority = MEMORY_HIGH; break;
+								case MidumMemoryPriority:		*memPriority = MEMORY_ABOVENORMAL; break;
+								case LowMemoryPriority:			*memPriority = MEMORY_NORMAL; break;
+								case LowerMemoryPriority:		*memPriority = MEMORY_BELOWNORMAL; break;
+								case LowestMemoryPriority:		*memPriority = MEMORY_IDLE; break;
+								default:						*memPriority = MEMORY_UNKNOWN; break;
+								}
 							}
 						}
 					}
@@ -225,7 +239,7 @@ namespace Ambiesoft {
 				case CPU_NORMAL:		dwProcessPriority = NORMAL_PRIORITY_CLASS; break;
 				case CPU_BELOWNORMAL:	dwProcessPriority = BELOW_NORMAL_PRIORITY_CLASS; break;
 				case CPU_IDLE:			dwProcessPriority = IDLE_PRIORITY_CLASS; break;
-				default: assert(false); return InvalidParam(-1); break;
+				default: assert(false); return InvalidReternValue(-1); break;
 				}
 
 
@@ -250,20 +264,28 @@ namespace Ambiesoft {
 					case IO_NORMAL:			nativeIOPriority = DefaultIoPriority; break;
 					case IO_BELOWNORMAL:	nativeIOPriority = LowIoPriority; break;
 					case IO_IDLE:			nativeIOPriority = VeryLowIoPriority; break;
-					default: assert(false); return InvalidParam(-1); break;
+					default: assert(false); return InvalidReternValue(1); break;
 					}
 
 					if (nativeIOPriority != (ULONG)-1)
 					{
-						NTSTATUS ntStatus = fnNtSetInformationProcess(
-							hProcess,
-							ProcessInformationIoPriority,
-							&nativeIOPriority,
-							sizeof(nativeIOPriority));
-						if (ntStatus != 0)
+						if (!fnNtSetInformationProcess)
 						{
 							if (firstError == 0)
-								firstError = static_cast<int>(ntStatus);
+								firstError = InvalidReternValue(2);
+						}
+						else
+						{
+							NTSTATUS ntStatus = fnNtSetInformationProcess(
+								hProcess,
+								ProcessInformationIoPriority,
+								&nativeIOPriority,
+								sizeof(nativeIOPriority));
+							if (ntStatus != 0)
+							{
+								if (firstError == 0)
+									firstError = static_cast<int>(ntStatus);
+							}
 						}
 					}
 				}
@@ -278,12 +300,17 @@ namespace Ambiesoft {
 					case MEMORY_NORMAL:			nativeMemoryPriority = LowMemoryPriority; break;
 					case MEMORY_BELOWNORMAL:	nativeMemoryPriority = LowerMemoryPriority; break;
 					case MEMORY_IDLE:			nativeMemoryPriority = LowestMemoryPriority; break;
-					default: assert(false); return InvalidParam(-1); break;
+					default: assert(false); return InvalidReternValue(-1); break;
 					}
 
-					if (fnNtSetInformationProcess)
+					if (nativeMemoryPriority != (ULONG)-1)
 					{
-						if (nativeMemoryPriority != (ULONG)-1)
+						if (!fnNtSetInformationProcess)
+						{
+							if (firstError == 0)
+								firstError = InvalidReternValue(2);
+						}
+						else
 						{
 							NTSTATUS ntStatus = fnNtSetInformationProcess(
 								hProcess,
