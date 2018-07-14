@@ -131,14 +131,6 @@ namespace stdwin32 {
 
 
 
-	bool isTdigitA(const std::string& str);
-	bool isTdigitW(const std::wstring& str);
-#ifdef UNICODE
-#define isTdigit isTdigitW
-#else
-#define isTdigit isTdigitA
-#endif
-
 	
 	
 	std::wstring stdGetCurrentDirectory();
@@ -250,9 +242,9 @@ namespace stdwin32 {
 
 
 
-	std::vector<std::wstring> split_string(const std::wstring& str,
+	std::vector<std::wstring> stdSplitString(const std::wstring& str,
 		const std::wstring& delimiter);
-	std::vector<std::wstring> split_string_toline(const std::wstring& str);
+	std::vector<std::wstring> stdSplitStringToLine(const std::wstring& str);
 
 
 

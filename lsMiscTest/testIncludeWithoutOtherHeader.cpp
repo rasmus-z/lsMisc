@@ -123,4 +123,5 @@
 //#include "../WritePrivateProfileInt.h"
 //#include "../WritePrivateProfileWString.h"
 //#include "../XBrowseForFolder.h"
-//"
+
+#include "../stdosd/stdosd.h"

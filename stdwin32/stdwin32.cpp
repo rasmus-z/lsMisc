@@ -404,31 +404,6 @@ namespace stdwin32 {
 
 
 
-	bool isTdigit(const string& str)
-	{
-		if (str.size() == 0)
-			return false;
-
-		for (string::const_iterator it = str.begin(); it != str.end(); ++it)
-		{
-			if (!isdigit(*it))
-				return false;
-		}
-		return true;
-	}
-	bool isTdigit(const wstring& str)
-	{
-		if (str.size() == 0)
-			return false;
-
-		for (wstring::const_iterator it = str.begin(); it != str.end(); ++it)
-		{
-			if (!isdigit(*it))
-				return false;
-		}
-		return true;
-	}
-
 
 	std::wstring stdGetCurrentDirectory()
 	{
@@ -898,7 +873,7 @@ namespace stdwin32 {
 	}
 
 	// https://stackoverflow.com/a/13172514
-	std::vector<std::wstring> split_string(const std::wstring& str,
+	std::vector<std::wstring> stdSplitString(const std::wstring& str,
 		const std::wstring& delimiter)
 	{
 		std::vector<std::wstring> strings;
@@ -916,12 +891,12 @@ namespace stdwin32 {
 
 		return strings;
 	}
-	std::vector<std::wstring> split_string_toline(const std::wstring& str)
+	std::vector<std::wstring> stdSplitStringToLine(const std::wstring& str)
 	{
 		wstring t = StdStringReplaceW(StdStringReplaceW(str, L"\r\n", L"\n"),
 			L"\r", L"\n");
 
-		return split_string(t, L"\n");
+		return stdSplitString(t, L"\n");
 	}
 
 
