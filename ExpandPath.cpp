@@ -32,12 +32,15 @@
 #include <sstream>
 
 
-#include "ExpandPath.h"
-#include "stdwin32\stdwin32.h"
 
+#include "stdosd/stdosd.h"
+#include "stdwin32/stdwin32.h"
+
+#include "ExpandPath.h"
 
 using namespace std;
 using namespace stdwin32;
+using namespace Ambiesoft::stdosd;
 
 namespace Ambiesoft{
 
@@ -117,11 +120,11 @@ namespace Ambiesoft{
 		if (path.empty())
 			return false;
 
-		wstring tmp = StdStringReplaceW(path, L"/", L"\\");
+		wstring tmp = stdStringReplace(path, L"/", L"\\");
 		wstring orthPath;
 		do
 		{
-			orthPath = StdStringReplaceW(tmp, L"\\\\", L"\\");
+			orthPath = stdStringReplace(tmp, L"\\\\", L"\\");
 		} while (tmp != orthPath);
 
 		bool endwithbs = ends_with(orthPath, L"\\");

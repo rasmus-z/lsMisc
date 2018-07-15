@@ -26,13 +26,17 @@
 #include <string>
 #include <time.h>
 #include "stdwin32/stdwin32.h"
+#include "../stdosd/stdosd.h"
 
 #include "tstring.h"
 
 #include "CLogger.h"
 
+
+
 namespace Ambiesoft {
 
+	using namespace Ambiesoft::stdosd;
 	using namespace stdwin32;
 	using namespace std;
 

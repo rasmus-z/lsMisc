@@ -1,29 +1,9 @@
-#include "stdafx.h"
+//#include "stdafx.h"
 
-
-
-#include <windows.h>
-#include <tchar.h>
-#include <TlHelp32.h>
-
-#include <string>
-#include <vector>
 #include <memory>
 
-#pragma comment(lib,"Shell32.lib")
-#pragma comment(lib,"Advapi32.lib")
 
-#if _MSC_VER > 1200
-#include "gtest/gtest.h"
-#endif
-
-#include "../tstring.h"
-#include "../IsFileExists.h"
-#include "../ChangeFilenamable.h"
-#include "../PathUtil.h"
-#include "../OpenedFiles.h"
-
-#include <stlsoft/smartptr/scoped_handle.hpp>
+#include <gtest/gtest.h>
 
 using namespace std;
 
@@ -128,9 +108,9 @@ int main()
 
 
 
-	BOOL b = IsFileExists(_T("c:\\T\\aaa.txt"));
-	b = IsFileExistsA("c:\\T\\bbb.txt");
-	b = IsFileExistsW(L"c:\\T\\ccc");
-	return 0;
+	//BOOL b = IsFileExists(_T("c:\\T\\aaa.txt"));
+	//b = IsFileExistsA("c:\\T\\bbb.txt");
+	//b = IsFileExistsW(L"c:\\T\\ccc");
+    return gret;
 }
 

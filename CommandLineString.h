@@ -135,72 +135,41 @@ namespace Ambiesoft {
 		return false;
 	}
 
-    char* GetCommandLineT(char *)
+	static inline char* GetCommandLineT(char *)
     {
         return GetCommandLineA();
     }
-    wchar_t* GetCommandLineT(wchar_t*)
+	static inline wchar_t* GetCommandLineT(wchar_t*)
     {
         return GetCommandLineW();
     }
-    template<class E>
+
+	//static inline bool myStrEqual(const char* left, const char* right)
+	//{
+	//	return strcmp(left, right) == 0;
+	//}
+	//static inline bool myStrEqual(const wchar_t* left, const wchar_t* right)
+	//{
+	//	return wcscmp(left, right) == 0;
+	//}
+
+
+	template<class E>
 	class CCommandLineStringBase
 	{
-		const E* p_;
-		std::vector<size_t> offsets_;
+		typedef typename CCommandLineStringBase<E> CommandLineStringType;
 		typedef std::basic_string<E> myS;
 		typedef typename std::vector<std::basic_string<E> > myVS;
 		typedef typename std::vector<std::basic_string<E> >::iterator myVSIterator;
 		typedef typename std::char_traits<E> myTr;
 
+		const E* p_;
+		std::vector<size_t> offsets_;
+
 		std::vector<std::basic_string<E> > args_;
-
-	
-//		E* getNext(E* p, bool& inQ)
-//		{
-//			if (!*p)
-//			{
-//				return p;
-//			}
-//
-//			if (!inQ)
-//				return skipWS(p);
-//		}
-
-//		bool loopOUTQ(E*& p)
-//		{
-//			++p;
-//			if (isDQ(*p))
-//			{
-//				// start DQ
-//				return true;
-//			}
-//
-//			// continue outQ
-//			return false;
-//		}
-//		bool loopINQ(E*& p)
-//		{
-//			if (isDQ(*p))
-//			{
-//				if (isDQ(*(p + 1)))
-//				{
-//					// doule DQ
-//					p += 2;
-//					return false; // continue INQ
-//				}
-//				else
-//				{
-//					// quote ends
-//					p++;
-//					return true;
-//				}
-//			}
-//		}
 	
 		void init(const E* pCommandLine)
 		{
-			
 			size_t clLen = myTr::length(pCommandLine);
 			p_ = new E[clLen+1];
 			myTr::copy((E*)p_, pCommandLine, clLen+1);
@@ -323,9 +292,43 @@ namespace Ambiesoft {
 		CCommandLineStringBase(const myS& s) :
 			CCommandLineStringBase(s.c_str()) {}
 
+		CCommandLineStringBase(int argc, const E* const * const argv) {
+			myS s;
+			for (int i = 0; i < argc; ++i)
+			{
+				// args_.push_back(argv[i]);
+				if (myContainSpace(argv[i]))
+					s += myEncloseDQ(argv[i]);
+				else
+					s += argv[i];
+
+				if ((i + 1) != argc)
+					s = myAddSpace(s);
+			}
+			init(s.c_str());
+		}
+
 		~CCommandLineStringBase()
 		{
 			delete[] (E*)p_;
+		}
+
+		bool operator==(const CommandLineStringType& that) const {
+			if (this == &that)
+				return true;
+
+			return
+				offsets_ == that.offsets_ &&
+				args_ == that.args_ &&
+				myTr::length(p_) == myTr::length(that.p_) &&
+				myTr::compare(p_, that.p_, myTr::length(p_))==0;
+				//myStrEqual(p_, that.p_);
+		}
+		bool operator!=(const CommandLineStringType& that) const {
+			return !(*this == that);
+		}
+		bool SyntaxEqual(const CommandLineStringType& that) const {
+			return args_ == that.args_;
 		}
 		int getIndex(const E* p) const
 		{

@@ -368,6 +368,7 @@
     <ClCompile Include="gtestStdwin32.cpp">
       <Filter>GTest Files</Filter>
     </ClCompile>
+    <ClCompile Include="prepare_vc.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\CenterWindow.h">

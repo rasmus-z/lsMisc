@@ -47,19 +47,24 @@ protected:
 
 	}
 };
-TEST_F(FileOperationTest, MoveFile) {
+TEST_F(FileOperationTest, MoveFileTest) {
 	ASSERT_TRUE(mystring == L"aaa");
 
-	wstring s1 = L"C:\\T\\";
-	s1 += uuidgen();
+	wstring testRoot = L"C:\\T\\";
+	testRoot += uuidgen();
+
+	// Create file
 	wofstream myfile;
-	myfile.open(s1.c_str());
+	myfile.open(testRoot.c_str());
 	myfile << L"aaa";
 	myfile.close();
-	LPCWSTR p1 = s1.c_str();
+
+	// Move XXX -> New.txt
+	LPCWSTR p1 = testRoot.c_str();
 	LPCWSTR p2 = L"C:\\T\\New.txt";
 	EXPECT_EQ(SHMoveFile(p2, p1), 0);
 	EXPECT_EQ(SHMoveFile(p1, p2), 0);
+
 
 	LPCWSTR p3 = L"C:\\T\\New1.txt";
 	LPCWSTR p4 = L"C:\\T\\New2.txt";
@@ -111,10 +116,10 @@ TEST_F(FileOperationTest, MoveFile) {
 	wsD.push_back(p4);
 	EXPECT_TRUE(SHCopyFile(wsD, wsS, FOF_NO_UI) == 0);
 }
-TEST_F(FileOperationTest, CopyFile) {
+TEST_F(FileOperationTest, CopyFileTest) {
 	EXPECT_TRUE(true);
 }
-TEST_F(FileOperationTest, DeleteFile) {
+TEST_F(FileOperationTest, DeleteFileTest) {
 	EXPECT_TRUE(true);
 }
 //void testSHMoveFile()

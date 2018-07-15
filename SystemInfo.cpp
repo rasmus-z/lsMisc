@@ -31,7 +31,8 @@
 #include <tchar.h>
 #include "SystemInfo.h"
 
-#include "stdwin32\stdwin32.h"
+// #include "stdwin32\stdwin32.h"
+#include "stdosd/stdosd.h"
 
 //#ifndef WINNT
 //#error You need Windows NT to use this source code. Define WINNT!
@@ -659,7 +660,8 @@ namespace zoltan_csizmadia {
 			GetProcessId(handle, dwId);
 
 			// str.Format( _T("PID: 0x%X"), dwId );
-			str = stdwin32::string_format(_T("PID: 0x%X"), dwId);
+			// str = stdwin32::string_format(_T("PID: 0x%X"), dwId);
+			str = Ambiesoft::stdosd::stdFormat(_T("PID: 0x%X"), dwId);
 
 			ret = TRUE;
 			goto cleanup;
@@ -669,7 +671,8 @@ namespace zoltan_csizmadia {
 			GetThreadId(handle, dwId);
 
 			// str.Format( _T("TID: 0x%X") , dwId );
-			str = stdwin32::string_format(_T("TID: 0x%X"), dwId);
+			// str = stdwin32::string_format(_T("TID: 0x%X"), dwId);
+			str = Ambiesoft::stdosd::stdFormat(_T("PID: 0x%X"), dwId);
 
 			ret = TRUE;
 			goto cleanup;
@@ -763,7 +766,8 @@ namespace zoltan_csizmadia {
 		h; strPath; remoteProcessId;
 
 		// strPath.Format( _T("%d"), remoteProcessId );
-		strPath = stdwin32::string_format(_T("%d"), remoteProcessId);
+		// strPath = stdwin32::string_format(_T("%d"), remoteProcessId);
+		strPath = Ambiesoft::stdosd::stdFormat(_T("%d"), remoteProcessId);
 
 		return TRUE;
 	}

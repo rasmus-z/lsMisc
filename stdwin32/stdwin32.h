@@ -95,28 +95,29 @@ namespace stdwin32 {
 	std::wstring stdGetParentDirectory(const std::wstring& path, bool bAddBackslach=false);
 	std::wstring stdGetParentDirectory(LPCWSTR pPath, bool bAddBackslach=false);
 	
-	std::wstring stdGetFileName(const std::wstring& full);
-	std::wstring stdGetFileName(LPCWSTR pFull);
+	//std::wstring stdGetFileName(const std::wstring& full);
+	//std::wstring stdGetFileName(LPCWSTR pFull);
 
-	std::wstring stdGetFileNameWitoutExtension(LPCWSTR pPath);
-	std::wstring stdGetFileNameWitoutExtension(const std::wstring& w);
+	//std::wstring stdGetFileNameWitoutExtension(LPCWSTR pPath);
+	//std::wstring stdGetFileNameWitoutExtension(const std::wstring& w);
 
-	std::wstring stdGetFileExtension(LPCWSTR pPath);
-	std::wstring stdGetFileExtension(const std::wstring& w);
+	// move to osd
+	//std::wstring stdGetFileExtension(LPCWSTR pPath);
+	//std::wstring stdGetFileExtension(const std::wstring& w);
 
 	std::vector<std::wstring> stdSplitSCedPath(LPCWSTR pPath);
 	
 
 
-#ifndef __cplusplus_cli
-	std::string string_formatA(const std::string fmt, ...);
-	std::wstring string_formatW(const std::wstring fmt, ...);
-#ifdef UNICODE
-	#define string_format string_formatW
-#else
-	#define string_format string_formatA
-#endif
-#endif // __cplusplus_cli
+//#ifndef __cplusplus_cli
+//	std::string string_formatA(const std::string fmt, ...);
+//	std::wstring string_formatW(const std::wstring fmt, ...);
+//#ifdef UNICODE
+//	#define string_format string_formatW
+//#else
+//	#define string_format string_formatA
+//#endif
+//#endif // __cplusplus_cli
 
 
 	std::string trimA(const std::string& str,
@@ -242,21 +243,21 @@ namespace stdwin32 {
 
 
 
-	std::vector<std::wstring> stdSplitString(const std::wstring& str,
-		const std::wstring& delimiter);
-	std::vector<std::wstring> stdSplitStringToLine(const std::wstring& str);
+	//std::vector<std::wstring> stdSplitString(const std::wstring& str,
+	//	const std::wstring& delimiter);
+	// std::vector<std::wstring> stdSplitStringToLine(const std::wstring& str);
 
 
 
 
-	std::wstring StdStringReplaceW(std::wstring str, const std::wstring& from, const std::wstring& to);
-	std::string  StdStringReplaceA(std::string str, const std::string& from, const std::string& to);
+	//std::wstring StdStringReplaceW(std::wstring str, const std::wstring& from, const std::wstring& to);
+	//std::string  StdStringReplaceA(std::string str, const std::string& from, const std::string& to);
 
-#ifdef UNICODE
-#define StdStringReplace StdStringReplaceW
-#else
-#define StdStringReplace StdStringReplaceA
-#endif
+//#ifdef UNICODE
+//#define StdStringReplace StdStringReplaceW
+//#else
+//#define StdStringReplace StdStringReplaceA
+//#endif
 
 
 

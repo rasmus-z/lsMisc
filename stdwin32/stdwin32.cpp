@@ -218,49 +218,38 @@ namespace stdwin32 {
 		return ret;
 	}
 
-	std::wstring stdGetFileName(const std::wstring& full)
-	{
-		return stdGetFileName(full.c_str());
-	}
-	std::wstring stdGetFileName(LPCWSTR pFull)
-	{
-		WCHAR* p = _wcsdup(pFull);
-		std::wstring ret = PathFindFileNameW(p);
-		free((void*)p);
-		return ret;
-	}
+	//std::wstring stdGetFileName(const std::wstring& full)
+	//{
+	//	return stdGetFileName(full.c_str());
+	//}
+	//std::wstring stdGetFileName(LPCWSTR pFull)
+	//{
+	//	WCHAR* p = _wcsdup(pFull);
+	//	std::wstring ret = PathFindFileNameW(p);
+	//	free((void*)p);
+	//	return ret;
+	//}
 	
 	
-	std::wstring stdGetFileNameWitoutExtension(LPCWSTR pPath)
-	{
-		std::wstring filename = stdGetFileName(pPath);
-		WCHAR* p = _wcsdup(filename.c_str());
-		WCHAR* pExt = PathFindExtensionW(p);
-		if (pExt)
-		{
-			*pExt = 0;
-		}
-		std::wstring ret(p);
-		free((void*)p);
-		return ret;
-	}
-	std::wstring stdGetFileNameWitoutExtension(const std::wstring& w)
-	{
-		return stdGetFileNameWitoutExtension(w.c_str());
-	}
+	//std::wstring stdGetFileNameWitoutExtension(LPCWSTR pPath)
+	//{
+	//	std::wstring filename = stdGetFileName(pPath);
+	//	WCHAR* p = _wcsdup(filename.c_str());
+	//	WCHAR* pExt = PathFindExtensionW(p);
+	//	if (pExt)
+	//	{
+	//		*pExt = 0;
+	//	}
+	//	std::wstring ret(p);
+	//	free((void*)p);
+	//	return ret;
+	//}
+	//std::wstring stdGetFileNameWitoutExtension(const std::wstring& w)
+	//{
+	//	return stdGetFileNameWitoutExtension(w.c_str());
+	//}
 
-	std::wstring stdGetFileExtension(LPCWSTR pPath)
-	{
-		WCHAR* pExt = PathFindExtensionW(pPath);
-		if (!pExt)
-			return std::wstring();
 
-		return pExt;
-	}
-	std::wstring stdGetFileExtension(const std::wstring& w)
-	{
-		return stdGetFileExtension(w.c_str());
-	}
 
 
 	std::vector<std::wstring> stdSplitSCedPath(LPCWSTR pPath)
@@ -318,60 +307,6 @@ namespace stdwin32 {
 		return ret;
 	}
 
-#ifndef __cplusplus_cli
-	std::string string_formatA(const std::string fmt, ...)
-	{
-		int size = ((int)fmt.size()) * 2 + 50;   // Use a rubric appropriate for your code
-		std::string str;
-		va_list ap;
-		while (1) {     // Maximum two passes on a POSIX system...
-			str.resize(size);
-			va_start(ap, fmt);
-
-#if _MSC_VER <= 1400
-			int n = _vsnprintf((char *)str.data(), size, fmt.c_str(), ap);
-#else
-			int n = _vsnprintf_s((char *)str.data(), size, size - 1, fmt.c_str(), ap);
-#endif	
-			va_end(ap);
-			if (n > -1 && n < size) {  // Everything worked
-				str.resize(n);
-				return str;
-			}
-			if (n > -1)  // Needed size returned
-				size = n + 1;   // For null char
-			else
-				size *= 2;      // Guess at a larger size (OS specific)
-		}
-		return str;
-	}
-	std::wstring string_formatW(const std::wstring fmt, ...)
-	{
-		int size = ((int)fmt.size()) * 2 + 50;   // Use a rubric appropriate for your code
-		std::wstring str;
-		va_list ap;
-		while (1) {     // Maximum two passes on a POSIX system...
-			str.resize(size);
-			va_start(ap, fmt);
-
-#if _MSC_VER <= 1400
-			int n = _vsnwprintf((WCHAR *)str.data(), size, fmt.c_str(), ap);
-#else
-			int n = _vsnwprintf_s((WCHAR *)str.data(), size, size - 1, fmt.c_str(), ap);
-#endif
-			va_end(ap);
-			if (n > -1 && n < size) {  // Everything worked
-				str.resize(n);
-				return str;
-			}
-			if (n > -1)  // Needed size returned
-				size = n + 1;   // For null char
-			else
-				size *= 2;      // Guess at a larger size (OS specific)
-		}
-		return str;
-	}
-#endif __cplusplus_cli
 
 
 
@@ -872,56 +807,9 @@ namespace stdwin32 {
 		return stdToWstring(s.c_str());
 	}
 
-	// https://stackoverflow.com/a/13172514
-	std::vector<std::wstring> stdSplitString(const std::wstring& str,
-		const std::wstring& delimiter)
-	{
-		std::vector<std::wstring> strings;
-
-		std::wstring::size_type pos = 0;
-		std::wstring::size_type prev = 0;
-		while ((pos = str.find(delimiter, prev)) != std::wstring::npos)
-		{
-			strings.push_back(str.substr(prev, pos - prev));
-			prev = pos + 1;
-		}
-
-		// To get the last substring (or only, if delimiter is not found)
-		strings.push_back(str.substr(prev));
-
-		return strings;
-	}
-	std::vector<std::wstring> stdSplitStringToLine(const std::wstring& str)
-	{
-		wstring t = StdStringReplaceW(StdStringReplaceW(str, L"\r\n", L"\n"),
-			L"\r", L"\n");
-
-		return stdSplitString(t, L"\n");
-	}
 
 
-	std::wstring StdStringReplaceW(std::wstring str, const std::wstring& from, const std::wstring& to)
-	{
-		size_t start_pos = 0;
-		while ((start_pos = str.find(from, start_pos)) != std::string::npos)
-		{
-			str.replace(start_pos, from.length(), to);
-			start_pos += to.length(); // Handles case where 'to' is a substring of 'from'
-		}
-		return str;
-	}
 
-	std::string StdStringReplaceA(std::string str, const std::string& from, const std::string& to)
-	{
-		size_t start_pos = 0;
-		while ((start_pos = str.find(from, start_pos)) != std::string::npos)
-		{
-			str.replace(start_pos, from.length(), to);
-			start_pos += to.length();
-		}
-		return str;
-	}
-	
 	std::wstring stdGetFirstLine(const std::wstring& str)
 	{
 		size_t rpos = str.find(L"\r");

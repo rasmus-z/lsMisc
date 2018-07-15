@@ -78,3 +78,48 @@ TEST(CommandLineString, subStringComplex)
 	EXPECT_STREQ(cls.subString(5).c_str(), L"aaa\"bbb\" ");
 	EXPECT_STREQ(cls.subString(6).c_str(), L"");
 }
+
+TEST(CommandLineString, ArgcArgv)
+{
+	LPWSTR pC1;
+	pC1 = L"aaa.exe \"aaa bbb\" aa fff feee aaa\"bbb\" ";
+
+	{
+		CCommandLineString cms1(pC1);
+		CCommandLineString cms2(pC1);
+		EXPECT_EQ(cms1, cms2);
+	}
+	{
+		CCommandLineString cms1(pC1);
+
+		int nArg;
+		LPWSTR* pArgv = CommandLineToArgvW(pC1, &nArg);
+		CCommandLineString cms2(nArg, pArgv);
+
+		EXPECT_NE(cms1, cms2);
+		EXPECT_TRUE(cms1.SyntaxEqual(cms2));
+	}
+
+	{
+		wchar_t* argv[] = {
+			L"exe.exe",
+			L"-h",
+			L"-b",
+			L"-path",
+			L"c:\\aaa\ttt bbb\aa",
+			L"file1.txt",
+			L"file2.txt",
+			L"file3.txt",
+			L"space file.txt",
+			NULL
+		};
+
+		int argc = _countof(argv) - 1;
+		CCommandLineString cms(argc, argv);
+		EXPECT_EQ(cms.getCount(), argc);
+		for (int i = 0; i < argc; ++i)
+		{
+			EXPECT_STREQ(cms.getArg(i).c_str(), argv[i]);
+		}
+	}
+}

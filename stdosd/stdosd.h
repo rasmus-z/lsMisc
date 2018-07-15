@@ -23,13 +23,89 @@
 
 #pragma once
 
-//#include <vector>
+#include <vector>
 #include <string>
-//#include <windows.h>
+
+#include <cstdio>
+#include <cstdarg>
 
 namespace Ambiesoft {
 	namespace stdosd {
 
+#if _MSC_VER <= 1800  // less than or equal to VC2013 ( or VC12 )
+#define STDOSD_CONSTEXPR const
+#else
+#define STDOSD_CONSTEXPR const constexpr
+#endif
+
+		template<typename C>
+		struct stdLiterals
+		{
+			// static STDOSD_CONSTEXPR C period = '.';
+		};
+		template<>
+		struct stdLiterals<char>
+		{
+			static STDOSD_CONSTEXPR char period = '.';
+			static STDOSD_CONSTEXPR char N0 = '0';
+			static STDOSD_CONSTEXPR char N1 = '1';
+			static STDOSD_CONSTEXPR char N2 = '2';
+			static STDOSD_CONSTEXPR char N3 = '3';
+			static STDOSD_CONSTEXPR char N4 = '4';
+			static STDOSD_CONSTEXPR char N5 = '5';
+			static STDOSD_CONSTEXPR char N6 = '6';
+			static STDOSD_CONSTEXPR char N7 = '7';
+			static STDOSD_CONSTEXPR char N8 = '8';
+			static STDOSD_CONSTEXPR char N9 = '9';
+
+			static STDOSD_CONSTEXPR char* pathSeparators() {
+				return "/\\";
+			}
+			static STDOSD_CONSTEXPR char* nulString() {
+				return "";
+			}
+			static STDOSD_CONSTEXPR char* CR() {
+				return "\r";
+			}
+			static STDOSD_CONSTEXPR char* LF() {
+				return (const char*)"\n";
+			}
+			static STDOSD_CONSTEXPR char* CRLF() {
+				return "\r\n";
+			}
+		};
+		template<>
+		struct stdLiterals<wchar_t>
+		{
+			static STDOSD_CONSTEXPR wchar_t period = L'.';
+			static STDOSD_CONSTEXPR wchar_t N0 = L'0';
+			static STDOSD_CONSTEXPR wchar_t N1 = L'1';
+			static STDOSD_CONSTEXPR wchar_t N2 = L'2';
+			static STDOSD_CONSTEXPR wchar_t N3 = L'3';
+			static STDOSD_CONSTEXPR wchar_t N4 = L'4';
+			static STDOSD_CONSTEXPR wchar_t N5 = L'5';
+			static STDOSD_CONSTEXPR wchar_t N6 = L'6';
+			static STDOSD_CONSTEXPR wchar_t N7 = L'7';
+			static STDOSD_CONSTEXPR wchar_t N8 = L'8';
+			static STDOSD_CONSTEXPR wchar_t N9 = L'9';
+
+			static STDOSD_CONSTEXPR wchar_t* pathSeparators() {
+				return L"/\\";
+			}
+			static STDOSD_CONSTEXPR wchar_t* nulString() {
+				return L"";
+			}			
+			static STDOSD_CONSTEXPR wchar_t* CR() {
+				return L"\r";
+			}
+			static STDOSD_CONSTEXPR wchar_t* LF() {
+				return L"\n";
+			}
+			static STDOSD_CONSTEXPR wchar_t* CRLF() {
+				return L"\r\n";
+			}
+
+		};
 		template<typename C>
 		inline bool isEmptyString(const C* str, size_t len) {
 			return (len == 0 || !str || str[0] == 0);
@@ -58,7 +134,7 @@ namespace Ambiesoft {
 			if (isEmptyString(str, len))
 				return false;
 
-			if (len == -1)
+			if (len == (size_t)-1)
 				len = getCharLength(str);
 
 			for (size_t i = 0; i < len; ++i)
@@ -83,11 +159,11 @@ namespace Ambiesoft {
 
 		inline bool isTdigit(char c)
 		{
-			return isdigit(c);
+			return !!isdigit(c);
 		}
 		inline bool isTdigit(wchar_t c)
 		{
-			return iswdigit(c);
+			return !!iswdigit(c);
 		}
 		template<typename C>
 		inline bool stdIsTdigit(const C* str, size_t len = -1)
@@ -95,7 +171,7 @@ namespace Ambiesoft {
 			if (isEmptyString(str, len))
 				return false;
 
-			if (len == -1)
+			if (len == (size_t)-1)
 				len = getCharLength(str);
 
 			for (size_t i = 0; i < len; ++i)
@@ -114,6 +190,276 @@ namespace Ambiesoft {
 			return stdIsTdigit(s.c_str(), s.size());
 		}
 
+	
+
+		inline const wchar_t* getRChar(const wchar_t* p, wchar_t c)
+		{
+			return wcsrchr(p, c);
+		}
+		inline const char* getRChar(const char* p, char c)
+		{
+			return strrchr(p, c);
+		}
+
+		template<typename C>
+		inline const C* getOneofRChar(const C* pOriginal, const C* pOneof)
+		{
+			const C* pRet = nullptr;
+			// const C* pOriginal = pOneof;
+			for (const C* pC = pOneof; *pC; ++pC)
+			{
+				const C* pT = getRChar(pOriginal, *pC);
+				if (pT)
+					++pT;
+				if (pT > pRet)
+					pRet = pT;
+			}
+			return pRet;
+		}
+
+		template<typename C>
+		inline const C* stdGetFileName(const C* pPath)
+		{
+			if (!pPath)
+				return nullptr;
+			const C* pSeparator = getOneofRChar(pPath, stdLiterals<C>::pathSeparators());
+			if (!pSeparator)
+				return pPath;
+
+			return pSeparator;
+		}
+		inline std::string stdGetFileName(const std::string& w)
+		{
+			return stdGetFileName(w.c_str());
+		}
+		inline std::wstring stdGetFileName(const std::wstring& w)
+		{
+			return stdGetFileName(w.c_str());
+		}
+
+		template<typename C>
+		inline const C* stdGetFileExtension(const C* pPath)
+		{
+			if (!pPath)
+				return nullptr;
+
+			const C* pFilename = stdGetFileName(pPath);
+			if (!pFilename)
+				return nullptr;
+
+			const C* pExt = getRChar(pFilename, stdLiterals<C>::period);
+			if (!pExt)
+				return stdLiterals<C>::nulString();
+
+			return pExt;
+		}
+		inline std::string stdGetFileExtension(const std::string& w)
+		{
+			return stdGetFileExtension(w.c_str());
+		}
+		inline std::wstring stdGetFileExtension(const std::wstring& w)
+		{
+			return stdGetFileExtension(w.c_str());
+		}
+
+
+		template<typename C>
+		inline std::basic_string<C, std::char_traits<C>, std::allocator<C>> 
+			stdGetFileNameWitoutExtension(const C* pPath)
+		{
+			if (!pPath)
+				return std::basic_string<C, std::char_traits<C>, std::allocator<C>>();
+
+			const C* pFilename = stdGetFileName(pPath);
+			if (!pFilename)
+				return std::basic_string<C, std::char_traits<C>, std::allocator<C>>();
+
+			const C* pExt = getRChar(pFilename, stdLiterals<C>::period);
+			if (!pExt)
+				return pFilename;
+
+			std::basic_string<C, std::char_traits<C>, std::allocator<C>> ret;
+			size_t len = pExt - pFilename;
+			ret.assign(pFilename, len);
+			return ret;
+		}
+		inline std::string stdGetFileNameWitoutExtension(const std::string& w)
+		{
+			return stdGetFileNameWitoutExtension(w.c_str());
+		}
+		inline std::wstring stdGetFileNameWitoutExtension(const std::wstring& w)
+		{
+			return stdGetFileNameWitoutExtension(w.c_str());
+		}
+
+
+
+		template<typename StringType>
+		inline StringType stdStringReplaceHelper(
+			StringType str,
+			const StringType& from,
+			const StringType& to)
+		{
+			size_t start_pos = 0;
+			while ((start_pos = str.find(from, start_pos)) != StringType::npos)
+			{
+				str.replace(start_pos, from.length(), to);
+				start_pos += to.length(); // Handles case where 'to' is a substring of 'from'
+			}
+			return str;
+		}
+		inline std::string stdStringReplace(
+			std::string str,
+			const std::string& from,
+			const std::string& to)
+		{
+			return stdStringReplaceHelper(str, from, to);
+		}
+		inline std::wstring stdStringReplace(
+			std::wstring str,
+			const std::wstring& from,
+			const std::wstring& to)
+		{
+			return stdStringReplaceHelper(str, from, to);
+		}
+
+
+
+
+		// https://stackoverflow.com/a/13172514
+		template<typename StringType>
+		inline std::vector<StringType> stdSplitStringHelper(
+			const StringType& str,
+			const StringType& delimiter)
+		{
+			std::vector<StringType> strings;
+
+			size_t pos = 0;
+			size_t prev = 0;
+			while ((pos = str.find(delimiter, prev)) != StringType::npos)
+			{
+				strings.push_back(str.substr(prev, pos - prev));
+				prev = pos + 1;
+			}
+
+			// To get the last substring (or only, if delimiter is not found)
+			strings.push_back(str.substr(prev));
+
+			return strings;
+		}
+		inline std::vector<std::string> stdSplitString(
+			const std::string& str,
+			const std::string& delimiter)
+		{
+			return stdSplitStringHelper(str, delimiter);
+		}
+		inline std::vector<std::wstring> stdSplitString(
+			const std::wstring& str,
+			const std::wstring& delimiter)
+		{
+			return stdSplitStringHelper(str, delimiter);
+		}
+
+
+		template<typename StringType>
+		inline std::vector<StringType> stdSplitStringToLineHelper(const StringType& str)
+		{
+			using C = typename StringType::traits_type::char_type;
+
+			StringType t = stdStringReplace(
+				stdStringReplace(
+					str,
+					stdLiterals<C>::CRLF(),
+					stdLiterals<C>::LF()),
+				stdLiterals<C>::CR(),
+				stdLiterals<C>::LF());
+
+			return stdSplitString(t, stdLiterals<C>::LF());
+		}
+		inline std::vector<std::string> stdSplitStringToLine(const std::string& str)
+		{
+			return stdSplitStringToLineHelper(str);
+		}
+		inline std::vector<std::wstring> stdSplitStringToLine(const std::wstring& str)
+		{
+			return stdSplitStringToLineHelper(str);
+		}
+
+
+#ifndef __cplusplus_cli
+		inline int stdSprintF(char *buffer,
+							  size_t sizeOfBuffer,
+							  size_t count,
+							  const char *format,
+							  va_list argptr)
+		{
+#if defined(__GUNC__) || defined(__MINGW32__)
+			// (void)count;
+			return vsnprintf_s(buffer, sizeOfBuffer, count, format, argptr);
+#elif _WIN32
+#if _MSC_VER <= 1400
+			int n = _vsnwprintf((wchar_t *)str.data(), size, fmt.c_str(), ap);
+#else
+			return _vsnprintf_s(buffer,sizeOfBuffer,count,format,argptr);
+#endif // _WIN32
+#endif // __GUNC__
+		}
+		inline int stdSprintF(wchar_t *buffer,
+							  size_t sizeOfBuffer,
+							  size_t count,
+							  const wchar_t *format,
+							  va_list argptr)
+		{
+#if defined(__GUNC__) || defined(__MINGW32__)
+			(void)count;
+			return vswprintf_s(buffer, sizeOfBuffer, format, argptr);
+#elif _WIN32
+#if _MSC_VER <= 1400
+			int n = _vsnwprintf((wchar_t *)str.data(), size, fmt.c_str(), ap);
+#else
+			return _vsnwprintf_s(buffer,sizeOfBuffer,count,format,argptr);
+#endif // _WIN32
+#endif // __GUNC__
+		}
+
+
+		template<typename StringType>
+		inline StringType stdFormatHelper(const StringType fmt, ...)
+		{
+			using C = typename StringType::traits_type::char_type;
+
+			int size = ((int)fmt.size()) * 2 + 50;   // Use a rubric appropriate for your code
+			StringType str;
+			va_list ap;
+			while (1) {     // Maximum two passes on a POSIX system...
+				str.resize(size);
+				va_start(ap, fmt);
+
+				int n = stdSprintF((C *)str.data(), size, size - 1, fmt.c_str(), ap);
+
+				va_end(ap);
+				if (n > -1 && n < size) {  // Everything worked
+					str.resize(n);
+					return str;
+				}
+				if (n > -1)  // Needed size returned
+					size = n + 1;   // For null char
+				else
+					size *= 2;      // Guess at a larger size (OS specific)
+			}
+			return str;
+		}
+		template<typename... ARGS>
+		inline std::string stdFormat(const std::string& fmt, ARGS... args)
+		{
+			return stdFormatHelper(fmt, args...);
+		}
+		template<typename... ARGS>
+		inline std::wstring stdFormat(const std::wstring& fmt, ARGS... args)
+		{
+			return stdFormatHelper(fmt, args...);
+		}
+#endif // __cplusplus_cli
 
 	}
 }
