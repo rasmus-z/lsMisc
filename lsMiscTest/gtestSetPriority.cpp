@@ -3,10 +3,10 @@
 #include <string>
 #include <gtest/gtest.h>
 
-#include "../SetPrority.h"
+#include "../stdosd/SetPrority.h"
 
 using namespace std;
-using namespace Ambiesoft;
+using namespace Ambiesoft::stdosd::Process;
 
 TEST(SetPriority, Cpu)
 {
@@ -17,30 +17,30 @@ TEST(SetPriority, Cpu)
 	CPUPRIORITY cpuPriority = CPU_NONE;
 	IOPRIORITY ioPriority;
 	MEMORYPRIORITY memPriority;
-	err = Ambiesoft::GetPriority(id,
+	err = GetPriority(id,
 		&cpuPriorityOrig,
 		&ioPriority,
 		&memPriority);
 	EXPECT_EQ(err, 0);
 	EXPECT_NE(cpuPriorityOrig, CPU_NONE);
 
-	err = Ambiesoft::SetProirity(id,
+	err = SetProirity(id,
 		CPUPRIORITY::CPU_ABOVENORMAL,
 		IOPRIORITY::IO_NONE,
 		MEMORYPRIORITY::MEMORY_NONE);
 	EXPECT_EQ(err, 0);
-	err = Ambiesoft::GetPriority(id,
+	err = GetPriority(id,
 		&cpuPriority,
 		&ioPriority,
 		&memPriority);
 	EXPECT_EQ(cpuPriority, CPU_ABOVENORMAL);
 
-	err = Ambiesoft::SetProirity(id,
+	err = SetProirity(id,
 		cpuPriorityOrig,
 		IOPRIORITY::IO_NONE,
 		MEMORYPRIORITY::MEMORY_NONE);
 	EXPECT_EQ(err, 0);
-	err = Ambiesoft::GetPriority(id,
+	err = GetPriority(id,
 		&cpuPriority,
 		&ioPriority,
 		&memPriority);
@@ -54,7 +54,7 @@ TEST(SetPriority, IO)
 	IOPRIORITY ioPriorityOrig;
 
 	// Get Current IO Priority
-	err = Ambiesoft::GetPriority(id,
+	err = GetPriority(id,
 		NULL,
 		&ioPriorityOrig,
 		NULL);
@@ -63,14 +63,14 @@ TEST(SetPriority, IO)
 
 
 	// Set IO as Idle and check
-	err = Ambiesoft::SetProirity(id,
+	err = SetProirity(id,
 		CPUPRIORITY::CPU_NONE,
 		IOPRIORITY::IO_IDLE,
 		MEMORYPRIORITY::MEMORY_NONE);
 	EXPECT_EQ(err, 0);
 
 	IOPRIORITY ioPriority;
-	err = Ambiesoft::GetPriority(id,
+	err = GetPriority(id,
 		NULL,
 		&ioPriority,
 		NULL);
@@ -79,13 +79,13 @@ TEST(SetPriority, IO)
 
 	
 	// Set back IO andcheck
-	err = Ambiesoft::SetProirity(id,
+	err = SetProirity(id,
 		CPUPRIORITY::CPU_NONE,
 		ioPriorityOrig,
 		MEMORYPRIORITY::MEMORY_NONE);
 	EXPECT_EQ(err, 0);
 
-	err = Ambiesoft::GetPriority(id,
+	err = GetPriority(id,
 		NULL,
 		&ioPriority,
 		NULL);
@@ -100,7 +100,7 @@ TEST(SetPriority, Memory)
 	MEMORYPRIORITY memPriorityOrig;
 
 	// Get Current IO Priority
-	err = Ambiesoft::GetPriority(id,
+	err = GetPriority(id,
 		NULL,
 		NULL,
 		&memPriorityOrig);
@@ -109,14 +109,14 @@ TEST(SetPriority, Memory)
 
 
 	// Set Memory as Idle and check
-	err = Ambiesoft::SetProirity(id,
+	err = SetProirity(id,
 		CPUPRIORITY::CPU_NONE,
 		IOPRIORITY::IO_NONE,
 		MEMORYPRIORITY::MEMORY_IDLE);
 	EXPECT_EQ(err, 0);
 
 	MEMORYPRIORITY memPriority;
-	err = Ambiesoft::GetPriority(id,
+	err = GetPriority(id,
 		NULL,
 		NULL,
 		&memPriority);
@@ -125,13 +125,13 @@ TEST(SetPriority, Memory)
 
 
 	// Set back IO andcheck
-	err = Ambiesoft::SetProirity(id,
+	err = SetProirity(id,
 		CPUPRIORITY::CPU_NONE,
 		IOPRIORITY::IO_NONE,
 		memPriorityOrig);
 	EXPECT_EQ(err, 0);
 
-	err = Ambiesoft::GetPriority(id,
+	err = GetPriority(id,
 		NULL,
 		NULL,
 		&memPriority);
@@ -146,26 +146,26 @@ TEST(SetPriority, SetInvalidValue)
 	int err = 0;
 #ifndef NDEBUG
 	// DEBUG
-	EXPECT_DEATH(Ambiesoft::SetProirity(id,
+	EXPECT_DEATH(SetProirity(id,
 		(CPUPRIORITY)55555,
 		(IOPRIORITY)55555,
 		(MEMORYPRIORITY)55555), "");
 
 	// When process id invalid, it will not die in Debug mode
-	err = Ambiesoft::SetProirity(0xFFFFFFFE,
+	err = SetProirity(0xFFFFFFFE,
 		(CPUPRIORITY)55555,
 		(IOPRIORITY)55555,
 		(MEMORYPRIORITY)55555);
 	EXPECT_NE(err, 0);
 #else
 	// Release
-	err = Ambiesoft::SetProirity(id,
+	err = SetProirity(id,
 		(CPUPRIORITY)55555,
 		(IOPRIORITY)55555,
 		(MEMORYPRIORITY)55555);
 	EXPECT_NE(err, 0);
 
-	err = Ambiesoft::SetProirity(0xFFFFFFFE,
+	err = SetProirity(0xFFFFFFFE,
 		(CPUPRIORITY)55555,
 		(IOPRIORITY)55555,
 		(MEMORYPRIORITY)55555);
@@ -181,7 +181,7 @@ TEST(SetPriority, GetAll)
 	MEMORYPRIORITY memPriority = MEMORY_NONE;
 
 	// Get Current IO Priority
-	err = Ambiesoft::GetPriority(id,
+	err = GetPriority(id,
 		&cpuPriority,
 		&ioPriority,
 		&memPriority);

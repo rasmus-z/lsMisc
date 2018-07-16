@@ -27,47 +27,51 @@
 #include <stdint.h>
 
 namespace Ambiesoft {
+	namespace stdosd {
+		namespace Process {
 
-enum CPUPRIORITY : int {
-	CPU_UNKNOWN = -100,
-    
-	CPU_NONE = 0,
-    
-	CPU_HIGH,
-    CPU_ABOVENORMAL,
-    CPU_NORMAL,
-    CPU_BELOWNORMAL,
-    CPU_IDLE,
-};
-enum IOPRIORITY : int {
-	IO_UNKNOWN = -100,
-	
-	IO_NONE = 0,
+			enum CPUPRIORITY : int {
+				CPU_UNKNOWN = -100,
 
-	IO_HIGH,
-	IO_ABOVENORMAL,
-	IO_NORMAL,
-	IO_BELOWNORMAL,
-	IO_IDLE,
-};
-enum MEMORYPRIORITY : int {
-	MEMORY_UNKNOWN = -100,
-	
-	MEMORY_NONE = 0,
-	
-	MEMORY_HIGH,
-	MEMORY_ABOVENORMAL,
-	MEMORY_NORMAL,
-	MEMORY_BELOWNORMAL,
-	MEMORY_IDLE,
-};
+				CPU_NONE = 0,
 
-int GetPriority(uint64_t  pid,
-	CPUPRIORITY* cpuPriority,
-	IOPRIORITY* ioPriority,
-	MEMORYPRIORITY* memPriority); 
-int SetProirity(uint64_t  pid,
-                 CPUPRIORITY cpuPriority,
-                 IOPRIORITY ioPriority,
-                 MEMORYPRIORITY memPriority);
+				CPU_HIGH,
+				CPU_ABOVENORMAL,
+				CPU_NORMAL,
+				CPU_BELOWNORMAL,
+				CPU_IDLE,
+			};
+			enum IOPRIORITY : int {
+				IO_UNKNOWN = -100,
+
+				IO_NONE = 0,
+
+				IO_HIGH,
+				IO_ABOVENORMAL,
+				IO_NORMAL,
+				IO_BELOWNORMAL,
+				IO_IDLE,
+			};
+			enum MEMORYPRIORITY : int {
+				MEMORY_UNKNOWN = -100,
+
+				MEMORY_NONE = 0,
+
+				MEMORY_HIGH,
+				MEMORY_ABOVENORMAL,
+				MEMORY_NORMAL,
+				MEMORY_BELOWNORMAL,
+				MEMORY_IDLE,
+			};
+
+			int GetPriority(uint64_t  pid,
+				CPUPRIORITY* cpuPriority,
+				IOPRIORITY* ioPriority,
+				MEMORYPRIORITY* memPriority);
+			int SetProirity(uint64_t  pid,
+				CPUPRIORITY cpuPriority,
+				IOPRIORITY ioPriority,
+				MEMORYPRIORITY memPriority);
+		}
+	}
 }

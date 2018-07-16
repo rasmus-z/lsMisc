@@ -352,9 +352,6 @@
     <ClCompile Include="gtestSetPriority.cpp">
       <Filter>GTest Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\SetPrority_win.cpp">
-      <Filter>lsMisc\2 Source</Filter>
-    </ClCompile>
     <ClCompile Include="testIncludeWithoutOtherHeader.cpp" />
     <ClCompile Include="gtestStdosd.cpp">
       <Filter>GTest Files</Filter>
@@ -369,6 +366,9 @@
       <Filter>GTest Files</Filter>
     </ClCompile>
     <ClCompile Include="prepare_vc.cpp" />
+    <ClCompile Include="..\stdosd\SetPrority_win.cpp">
+      <Filter>lsMisc\2 Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\CenterWindow.h">
@@ -710,14 +710,14 @@
     <ClInclude Include="resource.h">
       <Filter>Header</Filter>
     </ClInclude>
-    <ClInclude Include="..\SetPrority.h">
-      <Filter>lsMisc\1 Header</Filter>
-    </ClInclude>
     <ClInclude Include="..\stdosd\stdosd.h">
       <Filter>stdosd</Filter>
     </ClInclude>
     <ClInclude Include="..\stdwin32\stdwin32.h">
       <Filter>stdwin32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\stdosd\SetPrority.h">
+      <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
