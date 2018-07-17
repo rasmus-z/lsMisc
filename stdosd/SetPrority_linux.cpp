@@ -31,7 +31,12 @@
 
 #include "SetPrority.h"
 
+
 namespace Ambiesoft {
+namespace stdosd {
+namespace Process {
+
+
 
 static inline int ioprio_set(int which, int who, int ioprio)
 {
@@ -60,8 +65,8 @@ enum {
 
 
 static int setpriorityStuff(id_t pid,
-                 CPUPRIORITY cpuPriority,
-                 IOPRIORITY ioPriority)
+                            CPUPRIORITY cpuPriority,
+                            IOPRIORITY ioPriority)
 {
     int prio = -1;
     switch(cpuPriority)
@@ -91,13 +96,13 @@ static int setpriorityStuff(id_t pid,
     int err = setpriority(PRIO_PROCESS, pid, prio);
     if(err != 0)
     {
-//        ss <<
-//              "setpriority(" <<
-//              prio <<
-//              ") failed with " <<
-//              err <<
-//              "." <<
-//              std::endl;
+        //        ss <<
+        //              "setpriority(" <<
+        //              prio <<
+        //              ") failed with " <<
+        //              err <<
+        //              "." <<
+        //              std::endl;
 
         if(firstError==0)
             firstError=err;
@@ -127,14 +132,14 @@ static int setpriorityStuff(id_t pid,
         err = ioprio_set(IOPRIO_WHO_PROCESS, pid, iopriovalue);
         if(err != 0)
         {
-//            failed = true;
-//            ss <<
-//                      "ioprio_set(" <<
-//                      ioprioclass <<
-//                      ") failed with " <<
-//                      err <<
-//                      "." <<
-//                      std::endl;
+            //            failed = true;
+            //            ss <<
+            //                      "ioprio_set(" <<
+            //                      ioprioclass <<
+            //                      ") failed with " <<
+            //                      err <<
+            //                      "." <<
+            //                      std::endl;
 
             if(firstError==0)
                 firstError=err;
@@ -143,16 +148,16 @@ static int setpriorityStuff(id_t pid,
     return firstError;
 }
 int SetProirity(uint64_t  pid,
-                 CPUPRIORITY cpuPriority,
-                 IOPRIORITY ioPriority,
-                 MEMORYPRIORITY)
+                CPUPRIORITY cpuPriority,
+                IOPRIORITY ioPriority,
+                MEMORYPRIORITY)
 {
     id_t pidid = (long)pid;
     return setpriorityStuff(pidid,
-                       cpuPriority,
-                       ioPriority);
+                            cpuPriority,
+                            ioPriority);
 }
 
 
 
-}  // namespace Ambiesoft
+}  } } // namespace Ambiesoft
