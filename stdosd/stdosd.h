@@ -116,7 +116,12 @@ namespace Ambiesoft {
 		inline size_t getCharLength(const wchar_t* p) {
 			return wcslen(p);
 		}
-
+		inline bool isCharEqual(const char* left, const char* right, bool ignoreCase=false) {
+			return ignoreCase ? _strcmpi(left,right)==0 : strcmp(left, right) == 0;
+		}
+		inline bool isCharEqual(const wchar_t* left, const wchar_t* right, bool ignoreCase = false) {
+			return ignoreCase ? _wcsicmp(left,right)==0 : wcscmp(left, right) == 0;
+		}
 
 
 
@@ -460,6 +465,55 @@ namespace Ambiesoft {
 			return stdFormatHelper(fmt, args...);
 		}
 #endif // __cplusplus_cli
+
+
+
+
+
+
+
+
+		//template<typename ST>
+		//inline bool hasEnding(ST const& fullString, ST const& ending) {
+		//	if (fullString.length() >= ending.length()) {
+		//		return (0 == fullString.compare(fullString.length() - ending.length(), ending.length(), ending));
+		//	}
+		//	return false;
+		//}
+		template<typename C>
+		inline bool hasEnding(const C* fullString, const C* ending, 
+			size_t fullLen = -1, size_t endLen = -1,
+			bool ignoreCase = false) {
+			if (fullString == nullptr)
+				return false;
+			
+			if (ending == nullptr || ending[0] == 0)
+				return true;
+
+			if (fullLen == (size_t)-1)
+				fullLen = getCharLength(fullString);
+			if (endLen == (size_t)-1)
+				endLen = getCharLength(ending);
+
+			if (fullLen < endLen)
+				return false;
+			
+			const C* pFullStartPos = fullString + (fullLen - endLen);
+			return isCharEqual(pFullStartPos, ending, ignoreCase);
+		}
+		//	bool hasEndingA (std::string const &fullString, std::string const &ending);
+		//	bool hasEndingW (std::wstring const &fullString, std::wstring const &ending);
+		//#ifdef UNICODE
+		//	#define hasEnding hasEndingW
+		//#else
+		//	#define hasEnding hasEndingA
+		//#endif
+		template<typename C>
+		inline bool hasEndingI(const C* fullString, const C* ending,
+			size_t fullLen = -1, size_t endLen = -1) {
+			return hasEnding(fullString, ending,
+				fullLen, endLen, true);
+		}
 
 	}
 }

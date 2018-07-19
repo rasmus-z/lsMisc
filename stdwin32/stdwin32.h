@@ -75,13 +75,22 @@ namespace stdwin32 {
 		return ret;
 	}
 
-	#define stdGetModuleFileNameA stdGetModuleFileNameTmplate<std::string>
-	#define stdGetModuleFileNameW stdGetModuleFileNameTmplate<std::wstring>
-	#ifdef UNICODE
-		#define stdGetModuleFileName stdGetModuleFileNameW
-	#else
-		#define stdGetModuleFileName stdGetModuleFileNameA
-	#endif
+	inline std::string stdGetModuleFileNameA() {
+		return stdGetModuleFileNameTmplate<std::string>();
+	}
+	inline std::wstring stdGetModuleFileNameW() {
+		return stdGetModuleFileNameTmplate<std::wstring>();
+	}
+#ifdef UNICODE
+	inline std::wstring stdGetModuleFileName() {
+		return stdGetModuleFileNameW();
+	}
+#else
+	inline std::wstring stdGetModuleFileName() {
+		return stdGetModuleFileNameA();
+	}
+}
+#endif
 
 
 
@@ -138,22 +147,17 @@ namespace stdwin32 {
 
 
 
-	bool hasEndingA (std::string const &fullString, std::string const &ending);
-	bool hasEndingW (std::wstring const &fullString, std::wstring const &ending);
-#ifdef UNICODE
-	#define hasEnding hasEndingW
-#else
-	#define hasEnding hasEndingA
-#endif
 
 
-	bool hasEndingIA (std::string const &fullString, std::string const &ending);
-	bool hasEndingIW (std::wstring const &fullString, std::wstring const &ending);
-#ifdef UNICODE
-	#define hasEndingI hasEndingIW
-#else
-	#define hasEndingI hasEndingIA
-#endif
+
+
+//	bool hasEndingIA (std::string const &fullString, std::string const &ending);
+//	bool hasEndingIW (std::wstring const &fullString, std::wstring const &ending);
+//#ifdef UNICODE
+//	#define hasEndingI hasEndingIW
+//#else
+//	#define hasEndingI hasEndingIA
+//#endif
 
 
 

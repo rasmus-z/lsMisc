@@ -212,3 +212,51 @@ TEST(stdosd, FormatW)
     s = stdFormat(L"%s%d%s", L"---",100,L"---");
     EXPECT_STREQ(s.c_str(), L"---100---");
 }
+TEST(stdosd, hasEndingTest)
+{
+	EXPECT_FALSE(hasEnding((char*)nullptr, (char*)nullptr));
+	EXPECT_FALSE(hasEnding((char*)nullptr, ""));
+	EXPECT_TRUE(hasEnding("", (char*)nullptr));
+	EXPECT_TRUE(hasEnding("", ""));
+	EXPECT_FALSE(hasEnding("", "A"));
+
+	EXPECT_TRUE(hasEnding("12345", "5"));
+	EXPECT_TRUE(hasEnding("12345", "45"));
+	EXPECT_TRUE(hasEnding("12345", "345"));
+	EXPECT_TRUE(hasEnding("12345", "2345"));
+	EXPECT_TRUE(hasEnding("12345", "12345"));
+
+	EXPECT_TRUE(hasEnding(L"12345", L"5"));
+	EXPECT_TRUE(hasEnding(L"12345", L"45"));
+	EXPECT_TRUE(hasEnding(L"12345", L"345"));
+	EXPECT_TRUE(hasEnding(L"12345", L"2345"));
+	EXPECT_TRUE(hasEnding(L"12345", L"12345"));
+
+
+	EXPECT_FALSE(hasEnding("12345", "1"));
+	EXPECT_FALSE(hasEnding("12345", "12"));
+	EXPECT_FALSE(hasEnding("12345", "123"));
+
+
+	EXPECT_FALSE(hasEnding("abcdef", "F"));
+	EXPECT_FALSE(hasEnding("abcdef", "eF"));
+	EXPECT_FALSE(hasEnding("abcdef", "DEF"));
+	EXPECT_FALSE(hasEnding("abcdef", "AbcDef"));
+
+	EXPECT_TRUE(hasEndingI("abcdef", "F"));
+	EXPECT_TRUE(hasEndingI("abcdef", "eF"));
+	EXPECT_TRUE(hasEndingI("abcdef", "DEF"));
+	EXPECT_TRUE(hasEndingI("abcdef", "AbcDef"));
+
+
+	EXPECT_FALSE(hasEnding(L"abcdef", L"F"));
+	EXPECT_FALSE(hasEnding(L"abcdef", L"eF"));
+	EXPECT_FALSE(hasEnding(L"abcdef", L"DEF"));
+	EXPECT_FALSE(hasEnding(L"abcdef", L"AbcDef"));
+
+	EXPECT_TRUE(hasEndingI(L"abcdef", L"F"));
+	EXPECT_TRUE(hasEndingI(L"abcdef", L"eF"));
+	EXPECT_TRUE(hasEndingI(L"abcdef", L"DEF"));
+	EXPECT_TRUE(hasEndingI(L"abcdef", L"AbcDef"));
+
+}

@@ -352,22 +352,22 @@ namespace stdwin32 {
 	}
 
 
-	bool hasEndingA(std::string const &fullString, std::string const &ending) {
-		if (fullString.length() >= ending.length()) {
-			return (0 == fullString.compare(fullString.length() - ending.length(), ending.length(), ending));
-		}
-		else {
-			return false;
-		}
-	}
-	bool hasEndingW(std::wstring const &fullString, std::wstring const &ending) {
-		if (fullString.length() >= ending.length()) {
-			return (0 == fullString.compare(fullString.length() - ending.length(), ending.length(), ending));
-		}
-		else {
-			return false;
-		}
-	}
+	//bool hasEndingA(std::string const &fullString, std::string const &ending) {
+	//	if (fullString.length() >= ending.length()) {
+	//		return (0 == fullString.compare(fullString.length() - ending.length(), ending.length(), ending));
+	//	}
+	//	else {
+	//		return false;
+	//	}
+	//}
+	//bool hasEndingW(std::wstring const &fullString, std::wstring const &ending) {
+	//	if (fullString.length() >= ending.length()) {
+	//		return (0 == fullString.compare(fullString.length() - ending.length(), ending.length(), ending));
+	//	}
+	//	else {
+	//		return false;
+	//	}
+	//}
 
 
 
@@ -395,25 +395,25 @@ namespace stdwin32 {
 
 
 
+	// moved to stdosd
+	//bool hasEndingIA(std::string const &fullString, std::string const &ending) {
+	//	std::string fullI(fullString);
+	//	std::transform(fullI.begin(), fullI.end(), fullI.begin(), ::tolower);
 
-	bool hasEndingIA(std::string const &fullString, std::string const &ending) {
-		std::string fullI(fullString);
-		std::transform(fullI.begin(), fullI.end(), fullI.begin(), ::tolower);
+	//	std::string endI(ending);
+	//	std::transform(endI.begin(), endI.end(), endI.begin(), ::tolower);
 
-		std::string endI(ending);
-		std::transform(endI.begin(), endI.end(), endI.begin(), ::tolower);
+	//	return hasEndingA(fullI, endI);
+	//}
+	//bool hasEndingIW(std::wstring const &fullString, std::wstring const &ending) {
+	//	std::wstring fullI(fullString);
+	//	std::transform(fullI.begin(), fullI.end(), fullI.begin(), ::towlower);
 
-		return hasEndingA(fullI, endI);
-	}
-	bool hasEndingIW(std::wstring const &fullString, std::wstring const &ending) {
-		std::wstring fullI(fullString);
-		std::transform(fullI.begin(), fullI.end(), fullI.begin(), ::towlower);
+	//	std::wstring endI(ending);
+	//	std::transform(endI.begin(), endI.end(), endI.begin(), ::towlower);
 
-		std::wstring endI(ending);
-		std::transform(endI.begin(), endI.end(), endI.begin(), ::towlower);
-
-		return hasEndingW(fullI, endI);
-	}
+	//	return hasEndingW(fullI, endI);
+	//}
 
 
 	std::string stdItoA(int i) {

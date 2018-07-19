@@ -43,7 +43,7 @@
 #include <algorithm>
 #include <vector>
 #include <iostream>
-
+#include <memory>
 
 // In lsMiscTest directory, run the following command
 // git submodule init
