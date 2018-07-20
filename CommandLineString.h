@@ -90,6 +90,9 @@ namespace Ambiesoft {
 
 	static const char* nextP(const char* p)
 	{
+		// not assume double null
+		if (*p == 0)
+			return p;
 #ifdef _WIN32
 		return CharNextA(p);
 #else
@@ -98,18 +101,32 @@ namespace Ambiesoft {
 	}
 	static const wchar_t* nextP(const wchar_t* p)
 	{
+		// not assume double null
+		if (*p == 0)
+			return p;
+
 		++p;
 		return p;
 	}
 
-	static inline bool isDQ(char c) 
+	static inline bool isDQ(char c)
 	{
 		return c == '"';
 	}
-	static inline bool isDQ(wchar_t c) 
+	static inline bool isDQ(wchar_t c)
 	{
 		return c == L'"';
 	}
+
+	static inline bool 	isEsc(char c)
+	{
+		return c == '\\';
+	}
+	static inline bool 	isEsc(wchar_t c)
+	{
+		return c == L'\\';
+	}
+
 
     static void GetModuleFileNameT(char* p)
     {
@@ -182,6 +199,7 @@ namespace Ambiesoft {
 				return;
 
 			bool inDQ = false;
+
             // E c = 0;
 			const E* pStart = p;
 
@@ -227,7 +245,14 @@ namespace Ambiesoft {
 				else
 				{
 					// inDQ
-					if (isDQ(*p))
+
+					bool isEscDQ = isEsc(*p) && isDQ(*(p + 1));
+					if (isEscDQ)
+					{
+						p = nextP(p);
+					}
+
+					if (isDQ(*p) && !isEscDQ)
 					{
 						if (isDQ(*(p + 1)))
 						{
