@@ -123,3 +123,16 @@ TEST(CommandLineString, ArgcArgv)
 		}
 	}
 }
+
+TEST(CommandLineString, DQinsideDQ)
+{
+	LPWSTR pC1;
+	pC1 = L"aaa.exe \"-DCR_CLANG_REVISION=\\\"336424-1\\\"\"";
+	EXPECT_TRUE(isSameResult(pC1));
+
+	pC1 = L"aaa.exe \"-DCR_CLANG_REVISION=\\\"336424-1\\\"";
+	EXPECT_TRUE(isSameResult(pC1));
+
+	pC1 = L"aaa.exe \"-DCR_CLANG_REVISION=\\\"336424-1\\";
+	EXPECT_TRUE(isSameResult(pC1));
+}
