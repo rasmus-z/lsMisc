@@ -23,21 +23,24 @@
 
 #pragma once
 
-enum WaitProcessType {
-	WaitProcess_None,
-	WaitProcess_InputIdle,
-	WaitProcess_Complete,
-};
+namespace Ambiesoft {
 
-BOOL CreateProcessCommon(LPCTSTR pApp,
-	LPCTSTR pArg = NULL,
-	BOOL bHide = FALSE,
-	DWORD* pdwLastError = NULL,
-	WaitProcessType wpt = WaitProcess_None,
-	DWORD dwMaxWait = INFINITE,
-	HANDLE* phProcess = NULL,
-	DWORD* pdwProcessID = NULL,
-	HANDLE* phThread = NULL,
-	DWORD* pdwThreadID = NULL,
-	BOOL bSuspend = FALSE);
+	enum WaitProcessType {
+		WaitProcess_None,
+		WaitProcess_InputIdle,
+		WaitProcess_Complete,
+	};
 
+	BOOL CreateProcessCommon(LPCTSTR pApp,
+		LPCTSTR pArg = NULL,
+		BOOL bHide = FALSE,
+		DWORD* pdwLastError = NULL,
+		WaitProcessType wpt = WaitProcess_None,
+		DWORD dwMaxWait = INFINITE,
+		HANDLE* phProcess = NULL,
+		DWORD* pdwProcessID = NULL,
+		HANDLE* phThread = NULL,
+		DWORD* pdwThreadID = NULL,
+		BOOL bSuspend = FALSE);
+
+}
