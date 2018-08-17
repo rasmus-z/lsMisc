@@ -212,6 +212,7 @@ TEST(stdosd, FormatW)
     s = stdFormat(L"%s%d%s", L"---",100,L"---");
     EXPECT_STREQ(s.c_str(), L"---100---");
 }
+
 TEST(stdosd, hasEndingTest)
 {
 	EXPECT_FALSE(hasEnding((char*)nullptr, (char*)nullptr));
@@ -258,5 +259,56 @@ TEST(stdosd, hasEndingTest)
 	EXPECT_TRUE(hasEndingI(L"abcdef", L"eF"));
 	EXPECT_TRUE(hasEndingI(L"abcdef", L"DEF"));
 	EXPECT_TRUE(hasEndingI(L"abcdef", L"AbcDef"));
+
+
+	EXPECT_FALSE(hasEnding(string("abcdef"), string("deF")));
+	EXPECT_TRUE(hasEndingI(string("abcdef"), string("deF")));
+
+	EXPECT_FALSE(hasEnding(wstring(L"abcdef"), wstring(L"deF")));
+	EXPECT_TRUE(hasEndingI(wstring(L"abcdef"), wstring(L"deF")));
+}
+
+TEST(stdosd, hasStartingTest)
+{
+	EXPECT_TRUE(hasStarting("abcdef", "a"));
+	EXPECT_TRUE(hasStarting("abcdef", "ab"));
+	EXPECT_FALSE(hasStarting("abcdef", "A"));
+	EXPECT_FALSE(hasStarting("abcdef", "aB"));
+
+	EXPECT_TRUE(hasStartingI("abcdef", "a"));
+	EXPECT_TRUE(hasStartingI("abcdef", "ab"));
+	EXPECT_TRUE(hasStartingI("abcdef", "A"));
+	EXPECT_TRUE(hasStartingI("abcdef", "aB"));
+
+	EXPECT_TRUE(hasStarting("abcdef", "abcdef"));
+	EXPECT_FALSE(hasStarting("abcdef", "abcdefa"));
+
+
+	EXPECT_TRUE(hasStarting(string("abcdef"), string("a")));
+	EXPECT_TRUE(hasStarting(string("abcdef"), string("ab")));
+	EXPECT_FALSE(hasStarting(string("abcdef"), string("A")));
+	EXPECT_FALSE(hasStarting(string("abcdef"), string("aB")));
+
+	EXPECT_TRUE(hasStartingI(string("abcdef"), string("a")));
+	EXPECT_TRUE(hasStartingI(string("abcdef"), string("ab")));
+	EXPECT_TRUE(hasStartingI(string("abcdef"), string("A")));
+	EXPECT_TRUE(hasStartingI(string("abcdef"), string("aB")));
+
+	EXPECT_TRUE(hasStarting(wstring(L"abcdef"), wstring(L"a")));
+	EXPECT_TRUE(hasStarting(wstring(L"abcdef"), wstring(L"ab")));
+	EXPECT_FALSE(hasStarting(wstring(L"abcdef"), wstring(L"A")));
+	EXPECT_FALSE(hasStarting(wstring(L"abcdef"), wstring(L"aB")));
+
+	EXPECT_TRUE(hasStartingI(wstring(L"abcdef"), wstring(L"a")));
+	EXPECT_TRUE(hasStartingI(wstring(L"abcdef"), wstring(L"ab")));
+	EXPECT_TRUE(hasStartingI(wstring(L"abcdef"), wstring(L"A")));
+	EXPECT_TRUE(hasStartingI(wstring(L"abcdef"), wstring(L"aB")));
+
+
+	EXPECT_TRUE(hasStarting(string("abcdef"), string("abcdef")));
+	EXPECT_FALSE(hasStarting(string("abcdef"), string("abcdefa")));
+
+	EXPECT_TRUE(hasStarting(wstring(L"abcdef"), wstring(L"abcdef")));
+	EXPECT_FALSE(hasStarting(wstring(L"abcdef"), wstring(L"abcdefa")));
 
 }

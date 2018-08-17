@@ -22,7 +22,7 @@
 //SUCH DAMAGE.
 
 
-#include "stdafx.h"
+#include "StdAfx.h"
 
 
 #include "stdosd.h"

@@ -123,6 +123,13 @@ namespace Ambiesoft {
 			return ignoreCase ? _wcsicmp(left,right)==0 : wcscmp(left, right) == 0;
 		}
 
+		inline bool isCharEqualN(const char* left, const char* right, size_t len, bool ignoreCase = false) {
+			return ignoreCase ? _strnicmp(left, right, len) == 0 : strncmp(left, right, len) == 0;
+		}
+		inline bool isCharEqualN(const wchar_t* left, const wchar_t* right, size_t len, bool ignoreCase = false) {
+			return ignoreCase ? _wcsnicmp(left, right, len) == 0 : wcsncmp(left, right, len) == 0;
+		}
+
 
 
 		inline bool isAsciiDigit(char c) {
@@ -473,13 +480,6 @@ namespace Ambiesoft {
 
 
 
-		//template<typename ST>
-		//inline bool hasEnding(ST const& fullString, ST const& ending) {
-		//	if (fullString.length() >= ending.length()) {
-		//		return (0 == fullString.compare(fullString.length() - ending.length(), ending.length(), ending));
-		//	}
-		//	return false;
-		//}
 		template<typename C>
 		inline bool hasEnding(const C* fullString, const C* ending, 
 			size_t fullLen = -1, size_t endLen = -1,
@@ -501,18 +501,103 @@ namespace Ambiesoft {
 			const C* pFullStartPos = fullString + (fullLen - endLen);
 			return isCharEqual(pFullStartPos, ending, ignoreCase);
 		}
-		//	bool hasEndingA (std::string const &fullString, std::string const &ending);
-		//	bool hasEndingW (std::wstring const &fullString, std::wstring const &ending);
-		//#ifdef UNICODE
-		//	#define hasEnding hasEndingW
-		//#else
-		//	#define hasEnding hasEndingA
-		//#endif
 		template<typename C>
 		inline bool hasEndingI(const C* fullString, const C* ending,
 			size_t fullLen = -1, size_t endLen = -1) {
 			return hasEnding(fullString, ending,
 				fullLen, endLen, true);
+		}
+		inline bool hasEnding(const std::string& fullString, const std::string& ending) {
+			return hasEnding(
+				fullString.c_str(),
+				ending.c_str(),
+				fullString.size(),
+				ending.size()
+			);
+		}
+		inline bool hasEndingI(const std::string& fullString, const std::string& ending) {
+			return hasEndingI(
+				fullString.c_str(),
+				ending.c_str(),
+				fullString.size(),
+				ending.size()
+			);
+		}
+		inline bool hasEnding(const std::wstring& fullString, const std::wstring& ending) {
+			return hasEnding(
+				fullString.c_str(),
+				ending.c_str(),
+				fullString.size(),
+				ending.size()
+			);
+		}
+		inline bool hasEndingI(const std::wstring& fullString, const std::wstring& ending) {
+			return hasEndingI(
+				fullString.c_str(),
+				ending.c_str(),
+				fullString.size(),
+				ending.size()
+			);
+		}
+
+
+		template<typename C>
+		inline bool hasStarting(const C* fullString, const C* starting,
+			size_t fullLen = -1, size_t startLen = -1,
+			bool ignoreCase = false) {
+			if (fullString == nullptr)
+				return false;
+
+			if (starting == nullptr || starting[0] == 0)
+				return true;
+
+			if (fullLen == (size_t)-1)
+				fullLen = getCharLength(fullString);
+			if (startLen == (size_t)-1)
+				startLen = getCharLength(starting);
+
+			if (fullLen < startLen)
+				return false;
+
+			return isCharEqualN(fullString, starting, startLen, ignoreCase);
+		}
+		template<typename C>
+		inline bool hasStartingI(const C* fullString, const C* starting,
+			size_t fullLen = -1, size_t startLen = -1) {
+			return hasStarting(fullString, starting,
+				fullLen, startLen, true);
+		}
+		inline bool hasStarting(const std::string& fullString, const std::string& starting) {
+			return hasStarting(
+				fullString.c_str(),
+				starting.c_str(),
+				fullString.size(),
+				starting.size()
+			);
+		}
+		inline bool hasStartingI(const std::string& fullString, const std::string& starting) {
+			return hasStartingI(
+				fullString.c_str(),
+				starting.c_str(),
+				fullString.size(),
+				starting.size()
+			);
+		}
+		inline bool hasStarting(const std::wstring& fullString, const std::wstring& starting) {
+			return hasStarting(
+				fullString.c_str(),
+				starting.c_str(),
+				fullString.size(),
+				starting.size()
+			);
+		}
+		inline bool hasStartingI(const std::wstring& fullString, const std::wstring& starting) {
+			return hasStartingI(
+				fullString.c_str(),
+				starting.c_str(),
+				fullString.size(),
+				starting.size()
+			);
 		}
 
 	}
