@@ -600,5 +600,9 @@ namespace Ambiesoft {
 			);
 		}
 
+
+		std::wstring stdGetFullPathName(const std::wstring& ws);
+
+		std::wstring resolveLink(const std::wstring& fullstring);
 	}
 }

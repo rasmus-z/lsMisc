@@ -693,31 +693,7 @@ namespace stdwin32 {
 
 
 
-	std::wstring stdGetFullPathName(LPCWSTR pPath)
-	{
-		std::wstring ret;
-		if (pPath == NULL || pPath[0] == 0)
-			return ret;
 
-		DWORD dwReqChar = GetFullPathNameW(pPath, 0, NULL, NULL);
-		wchar_t* pBuffer = new wchar_t[dwReqChar];
-		pBuffer[0] = 0;
-		DWORD retChar = GetFullPathNameW(pPath, dwReqChar, pBuffer, NULL);
-		if (retChar > dwReqChar)
-		{
-			delete[] pBuffer;
-			return ret;
-		}
-
-		ret = pBuffer;
-		delete[] pBuffer;
-
-		return ret;
-	}
-	std::wstring stdGetFullPathName(const std::wstring& ws)
-	{
-		return stdGetFullPathName(ws.c_str());
-	}
 
 
 

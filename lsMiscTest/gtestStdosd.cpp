@@ -312,3 +312,21 @@ TEST(stdosd, hasStartingTest)
 	EXPECT_FALSE(hasStarting(wstring(L"abcdef"), wstring(L"abcdefa")));
 
 }
+
+TEST(stdosd, resolveLinkTest)
+{
+	EXPECT_TRUE(L"Z:\\From\\LegacyPrograms\\T\\aaa.rtf" ==
+		resolveLink(L"C:\\LegacyPrograms\\T\\aaa.rtf"));
+
+	// not existent
+	EXPECT_TRUE(L"Z:\\From\\LegacyPrograms\\T\\aaabbb.rtf" ==
+		resolveLink(L"C:\\LegacyPrograms\\T\\aaabbb.rtf"));
+
+	EXPECT_TRUE(L"Z:\\From\\LegacyPrograms\\T\\aaabbb.rtf" ==
+		resolveLink(L"Z:\\From\\LegacyPrograms\\T\\aaabbb.rtf"));
+
+	EXPECT_TRUE(L"\\\\Thexp\\Share\\T\\aaa.pdf" ==
+		resolveLink(L"\\\\Thexp\\Share\\T\\aaa.pdf"));
+
+
+}

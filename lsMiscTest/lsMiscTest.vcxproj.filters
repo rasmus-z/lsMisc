@@ -369,6 +369,9 @@
     <ClCompile Include="..\stdosd\SetPrority_win.cpp">
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\stdosd\stdosd_win.cpp">
+      <Filter>stdosd</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\CenterWindow.h">

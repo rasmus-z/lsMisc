@@ -318,6 +318,7 @@
     <ClCompile Include="..\StartProcess.cpp" />
     <ClCompile Include="..\stdosd\SetPrority_win.cpp" />
     <ClCompile Include="..\stdosd\stdosd.cpp" />
+    <ClCompile Include="..\stdosd\stdosd_win.cpp" />
     <ClCompile Include="..\stdwin32\stdwin32.cpp" />
     <ClCompile Include="..\stringEndwith.cpp" />
     <ClCompile Include="..\SystemInfo.cpp">
