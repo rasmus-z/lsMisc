@@ -58,7 +58,7 @@ namespace stdwin32 {
 	template<typename ST>
 	ST stdGetModuleFileNameTmplate(HINSTANCE hInst = NULL)
 	{
-		ST::traits_type::char_type* p = NULL;
+		typename ST::traits_type::char_type* p = NULL;
 		DWORD size = 64;
 		for (;;)
 		{
