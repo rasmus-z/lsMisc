@@ -51,4 +51,6 @@ std::wstring UrlDecodeWstd(const char* penc);
 std::wstring UrlDecodeWstd(const std::wstring& wenc);
 
 
+std::wstring Utf8UrlEncode(const std::wstring& input);
+
 } // namespace

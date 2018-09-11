@@ -45,7 +45,7 @@
 #include <cassert>
 #endif
 
-#include <stlsoft/smartptr/scoped_handle.hpp>
+// #include <stlsoft/smartptr/scoped_handle.hpp>
 
 #include "UTF16toUTF8.h"
 #include "UrlEncode.h"
@@ -131,7 +131,7 @@ char *UrlEncode(const unsigned char *pstr, size_t size)
 	pbuf = buf = (char *)malloc(size * 3 + 1);
 
 	while (size--) {
-		if ((*pstr >0 && isalnum(*pstr)) || *pstr == '-' || *pstr == '_' || *pstr == '.' || *pstr == '~') {
+		if (( (*pstr & 0x80)==0 && isalnum(*pstr)) || *pstr == '-' || *pstr == '_' || *pstr == '.' || *pstr == '~') {
 			*pbuf++ = *pstr;
 		}
 		else if (*pstr == ' ') {
@@ -161,13 +161,15 @@ std::wstring UrlEncodeWstd(const wchar_t *pstr)
 	if (pstr == NULL || pstr[0] == 0)
 		return ret;
 
-	BYTE* p8 = UTF16toUTF8(pstr);
-	stlsoft::scoped_handle<void*> ma(p8, free);
+	//BYTE* p8 = UTF16toUTF8(pstr);
+	//stlsoft::scoped_handle<void*> ma(p8, free);
+	std::unique_ptr<BYTE, void(*)(void*)> p8(UTF16toUTF8(pstr), free);
 
-	char* pRet8 = UrlEncode(p8);
-	stlsoft::scoped_handle<void*> ma2(pRet8, free);
+	//char* pRet8 = UrlEncode(p8);
+	//stlsoft::scoped_handle<void*> ma2(pRet8, free);
+	std::unique_ptr<char, void(*)(void*)> pRet8(UrlEncode(p8.get()), free);
 
-	UTF8toUTF16((BYTE*)pRet8, ret);
+	UTF8toUTF16((BYTE*)pRet8.get(), ret);
 	return ret;
 }
 
@@ -283,23 +285,40 @@ static void checkmoji()
 std::wstring UrlDecodeWstd(const char* penc)
 {
 	std::wstring ret;
-	BYTE* p8 = UrlDecode(penc);
-	stlsoft::scoped_handle<void*> ma(p8, free);
-	UTF8toUTF16(p8, ret);
+	//BYTE* p8 = UrlDecode(penc);
+	//stlsoft::scoped_handle<void*> ma(p8, free);
+	std::unique_ptr<BYTE, void(*)(void*)> p8(UrlDecode(penc), free);
+
+	UTF8toUTF16(p8.get(), ret);
 	return ret;
 }
 
 std::wstring UrlDecodeWstd(const std::wstring& wenc)
 {
-	BYTE* p8 = UTF16toUTF8(wenc.c_str());
-	stlsoft::scoped_handle<void*> ma(p8, free);
+	//BYTE* p8 = UTF16toUTF8(wenc.c_str());
+	//stlsoft::scoped_handle<void*> ma(p8, free);
+	std::unique_ptr<BYTE, void(*)(void*)> p8(UTF16toUTF8(wenc.c_str()), free);
 
-	BYTE* p8dec = UrlDecode((LPCSTR)p8);
-	stlsoft::scoped_handle<void*> map8dec(p8dec, free);
+	//BYTE* p8dec = UrlDecode((LPCSTR)p8);
+	//stlsoft::scoped_handle<void*> map8dec(p8dec, free);
+	std::unique_ptr<BYTE, void(*)(void*)> p8dec(UrlDecode((LPCSTR)p8.get()), free);
 
 	std::wstring ret;
-	UTF8toUTF16(p8dec, ret);
+	UTF8toUTF16(p8dec.get(), ret);
 	return ret;
 }
+
+
+wstring Utf8UrlEncode(const wstring& input)
+{
+	unique_ptr<BYTE, void(*)(void*)> p8(UTF16toUTF8(input.c_str()), free);
+	unique_ptr<char, void(*)(void*)> p8u(UrlEncode(p8.get()), free);
+
+	wstring ret;
+	UTF8toUTF16((LPBYTE)p8u.get(), ret);
+	
+	return ret;
+}
+
 
 } // namespace
