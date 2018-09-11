@@ -567,7 +567,7 @@ namespace Ambiesoft {
 		{
 			init();
 			options_ = options;
-			argcountflag_ = ArgCount_Zero;
+			argcountflag_ = ArgCount::ArgCount_Zero;
 		}
 		~BasicOption()
 		{
