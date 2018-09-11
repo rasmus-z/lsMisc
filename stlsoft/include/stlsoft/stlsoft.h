@@ -683,6 +683,8 @@
 #  define STLSOFT_COMPILER_VERSION_STRING       "Visual C++ 2017 (1913)"
 # elif (_MSC_VER == 1914)
 #  define STLSOFT_COMPILER_VERSION_STRING       "Visual C++ 2017 (1914)"
+# elif (_MSC_VER == 1915)
+#  define STLSOFT_COMPILER_VERSION_STRING       "Visual C++ 2017 (1915)"
 # else /* ? _MSC_VER */
 #  error Currently only versions 5.0, 6.0, 7.0, 7.1, 8.0, 9.0, 10.0, 11.0, and 12.0 of the Visual C++ compiler are supported by the STLSoft libraries
 # endif /* _MSC_VER */
