@@ -313,20 +313,33 @@ TEST(stdosd, hasStartingTest)
 
 }
 
+// https://code.i-harness.com/ja/q/c2eb3f
+#ifdef _WIN32
+#include <io.h> 
+#define access    _access_s
+#else
+#include <unistd.h>
+#endif
+bool FileExists(const std::string &Filename)
+{
+	return access(Filename.c_str(), 0) == 0;
+}
+
 TEST(stdosd, resolveLinkTest)
 {
-	EXPECT_TRUE(L"Z:\\From\\LegacyPrograms\\T\\aaa.rtf" ==
-		resolveLink(L"C:\\LegacyPrograms\\T\\aaa.rtf"));
+	if (FileExists("C:\\LegacyPrograms\\T\\aaa.rtf"))
+	{
+		EXPECT_TRUE(L"Z:\\From\\LegacyPrograms\\T\\aaa.rtf" ==
+			resolveLink(L"C:\\LegacyPrograms\\T\\aaa.rtf"));
 
-	// not existent
-	EXPECT_TRUE(L"Z:\\From\\LegacyPrograms\\T\\aaabbb.rtf" ==
-		resolveLink(L"C:\\LegacyPrograms\\T\\aaabbb.rtf"));
+		// not existent
+		EXPECT_TRUE(L"Z:\\From\\LegacyPrograms\\T\\aaabbb.rtf" ==
+			resolveLink(L"C:\\LegacyPrograms\\T\\aaabbb.rtf"));
 
-	EXPECT_TRUE(L"Z:\\From\\LegacyPrograms\\T\\aaabbb.rtf" ==
-		resolveLink(L"Z:\\From\\LegacyPrograms\\T\\aaabbb.rtf"));
+		EXPECT_TRUE(L"Z:\\From\\LegacyPrograms\\T\\aaabbb.rtf" ==
+			resolveLink(L"Z:\\From\\LegacyPrograms\\T\\aaabbb.rtf"));
 
-	EXPECT_TRUE(L"\\\\Thexp\\Share\\T\\aaa.pdf" ==
-		resolveLink(L"\\\\Thexp\\Share\\T\\aaa.pdf"));
-
-
+		EXPECT_TRUE(L"\\\\Thexp\\Share\\T\\aaa.pdf" ==
+			resolveLink(L"\\\\Thexp\\Share\\T\\aaa.pdf"));
+	}
 }
