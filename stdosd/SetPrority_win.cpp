@@ -51,7 +51,7 @@ namespace Ambiesoft {
 							CloseHandle(h_);
 					}
 					operator bool() const {
-						return h_ != NULL;
+                        return h_ != nullptr;
 					}
 					DWORD lastError() const {
 						return dwLastError_;
@@ -99,9 +99,9 @@ namespace Ambiesoft {
 				struct NTFuncs
 				{
 				private:
-					FNNtQueryInformationProcess fnNtQueryInformationProcess = NULL;
-					FNNtSetInformationProcess fnNtSetInformationProcess = NULL;
-					HMODULE hDLL_ = NULL;
+                    FNNtQueryInformationProcess fnNtQueryInformationProcess = nullptr;
+                    FNNtSetInformationProcess fnNtSetInformationProcess = nullptr;
+                    HMODULE hDLL_ = nullptr;
 					NTFuncs()
 					{
 						hDLL_ = LoadLibrary(L"ntdll.dll");
