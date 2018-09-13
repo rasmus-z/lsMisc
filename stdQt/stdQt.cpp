@@ -22,6 +22,10 @@ QString pathCombine(const QString& path1, const QString& path2)
 
     return rstrip(path1, '/') + '/' + rstrip(path2, '/');
 }
+QString pathCombine(const QString& path1, const QString& path2, const QString& path3)
+{
+    return pathCombine(pathCombine(path1,path2),path3);
+}
 
 QString normalizeDir(const QString& dir)
 {
