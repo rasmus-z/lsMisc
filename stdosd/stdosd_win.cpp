@@ -24,6 +24,9 @@
 
 #include "StdAfx.h"
 #include <Windows.h>
+#include <Shlwapi.h>
+#pragma comment(lib, "Shlwapi.lib")
+
 #include <winioctl.h>
 #include <regex>
 
