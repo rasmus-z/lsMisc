@@ -29,33 +29,47 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <memory>
 
 #include "tstring.h"
 
 #include "GetFilesInfo.h"
-BOOL GetFilesInfoW(LPCWSTR pDirectory, FILESINFOW& ret)
-{
-	LPTSTR pD = (LPTSTR)malloc( (lstrlen(pDirectory)+4)*sizeof(TCHAR));
-	lstrcpy(pD, pDirectory);
-	PathAddBackslash(pD);
-	lstrcat(pD, L"*.*");
 
-	myWIN32_FIND_DATA wfd;
-	HANDLE hFind = FindFirstFile ( pD, &wfd);
-	if(hFind == INVALID_HANDLE_VALUE )
-		return FALSE;
-	
-	ret.directry_ = pDirectory;
-	do
+namespace Ambiesoft {
+
+	BOOL GetFilesInfoW(LPCWSTR pDirectory, FILESINFOW& ret)
 	{
-		if (wfd.cFileName[0] != L'.')
+		wchar_t szBuff[MAX_PATH];
+		if (pDirectory == nullptr || pDirectory[0] == 0)
+			return FALSE;
+		if (lstrlen(pDirectory) > (MAX_PATH - 6))
+			return FALSE;
+
+		lstrcpy(szBuff, pDirectory);
+		PathAddBackslash(szBuff);
+		lstrcat(szBuff, L"*.*");
+
+		myWIN32_FIND_DATA wfd;
+		std::unique_ptr<void, void(*)(void*)> hFind(
+			FindFirstFile(szBuff, &wfd),
+			[](void* h) 
+			{ 
+				if(h != INVALID_HANDLE_VALUE)
+					FindClose(h); 
+			});
+		if (hFind.get() == INVALID_HANDLE_VALUE)
+			return FALSE;
+
+		ret.directry_ = pDirectory;
+		do
 		{
-			ret.wfds_.push_back(wfd);
-		}
-	} while(FindNextFile (hFind, &wfd));
-	FindClose (hFind);
+			if (wfd.cFileName[0] != L'.')
+			{
+				ret.wfds_.push_back(wfd);
+			}
+		} while (FindNextFile(hFind.get(), &wfd));
+		
+		return TRUE;
+	}
 
-	free(pD);
-	return TRUE;
 }
-
