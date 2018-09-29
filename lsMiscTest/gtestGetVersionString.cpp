@@ -10,6 +10,7 @@
 
 using namespace std;
 using namespace stdwin32;
+using namespace Ambiesoft;
 
 TEST(GetVersionString, Explorer)
 {
