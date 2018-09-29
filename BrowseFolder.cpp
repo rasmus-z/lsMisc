@@ -74,7 +74,7 @@ _COM_SMARTPTR_TYPEDEF(IFileDialog, __uuidof(IFileDialog));
 
 static IShellItemPtr getShellItemFromPath(LPWSTR pPath)
 {
-	typedef HRESULT (*fnSHCreateItemFromParsingName)(
+	typedef HRESULT  (STDAPICALLTYPE*fnSHCreateItemFromParsingName)(
 		PCWSTR   pszPath,
 		IBindCtx *pbc,
 		REFIID   riid,
