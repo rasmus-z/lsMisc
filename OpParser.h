@@ -54,7 +54,7 @@ namespace Ambiesoft {
 				TOKEN_OR,
 				TOKEN_AND,
 
-				TOKEN_WORD,
+                                TOKEN_PREDICATOR,
 
 				TOKEN_PARENT,
 			};
@@ -70,15 +70,10 @@ namespace Ambiesoft {
 		public:
 			explicit Token(TokenType tt) :
 				tt_(tt) {}
-			explicit Token(const T& word) :
-				tt_(TOKEN_WORD),
-				word_(new T(word))
+                        explicit Token(const T& predicator) :
+                                tt_(TOKEN_PREDICATOR),
+                                predicator_(new T(predicator))
 			{}
-			// rval
-			//explicit Token(T&& word) :
-			//	tt_(std::move(TOKEN_WORD)),
-			//	word_(std::move(word)) 
-			//{}
 
 			// Ctor for parent token which contains sub tokens
 			explicit Token(const TokenVectorT& v) :
@@ -89,35 +84,33 @@ namespace Ambiesoft {
 			// copy
 			explicit Token(const TokenT& that) :
 				tt_(that.tt_),
-				//word_(that.word_),
 				subtokens_(that.subtokens_)
 			{
-				if (that.word_)
-					word_ = new T(*that.word_);
+                                if (that.predicator_)
+                                        predicator_ = new T(*that.predicator_);
 			}
 			
 			// rval copy
 			explicit Token(TokenT&& that) :
 				tt_(std::move(that.tt_)),
-				// word_(std::move(that.word_)),
 				subtokens_(std::move(that.subtokens_))
 			{
-				word_ = that.word_;
-				that.word_ = nullptr;
+                                predicator_ = that.predicator_;
+                                that.predicator_ = nullptr;
 			}
 
 			// dtor
 			~Token()
 			{
-				delete word_;
+                                delete predicator_;
 			}
 			// Equal Operator
 			TokenT& operator=(const TokenT& that) {
 				if (this != &that)
 				{
 					this->tt_ = that.tt_;
-					if(that.word_)
-						this->word_ = new T(*that.word_);
+                                        if(that.predicator_)
+                                                this->predicator_ = new T(*that.predicator_);
 					this->subtokens_ = that.subtokens_;
 				}
 				return *this;
@@ -127,8 +120,8 @@ namespace Ambiesoft {
 				if (this != &that)
 				{
 					this->tt_ = std::move(that.tt_);
-					this->word_ = that.word_;
-					that.word_ = nullptr;
+                                        this->predicator_ = that.predicator_;
+                                        that.predicator_ = nullptr;
 					this->subtokens_ = std::move(that.subtokens_);
 				}
 				return *this;
@@ -149,17 +142,17 @@ namespace Ambiesoft {
 			bool IsEndParen() const {
 				return tt_ == TOKEN_ENDING_PARENTHESIS;
 			}
-			bool IsWord() const {
-				return tt_ == TOKEN_WORD;
+                        bool IsPredicator() const {
+                                return tt_ == TOKEN_PREDICATOR;
 			}
 			bool IsParent() const {
 				return tt_ == TOKEN_PARENT;
 			}
 
-			const T& word() const {
-				assert(IsWord());
-				assert(word_ != nullptr);
-				return *word_;
+                        const T& predicator() const {
+                                assert(IsPredicator());
+                                assert(predicator_ != nullptr);
+                                return *predicator_;
 			}
 
 			const TokenVectorT& subTokens() const {
@@ -195,9 +188,9 @@ namespace Ambiesoft {
 			// while evaluating, it will become Parent.
 			TokenType tt_;
 
-			// User's operand.
+                        // User's predicator.
 			// Much of copy will be performed on T.
-			T* word_ = nullptr;
+                        T* predicator_ = nullptr;
 
 			// When token type is Parent, this is set.
 			// All '()' and 'A AND B' will be subtoken.
@@ -225,7 +218,7 @@ namespace Ambiesoft {
 				Throw_SysntaxErrorAnd,
 				Throw_SysntaxErrorOr,
 				Throw_SysntaxErrorEndingParenthesis,
-				Throw_SysntaxErrorWord,
+                                Throw_SysntaxErrorPredicator,
 
 				Throw_SysntaxErrorMismatchedParenthesis,
 			};
@@ -263,7 +256,7 @@ namespace Ambiesoft {
 				dirty_ = true;
 				// 'A ( ...' is illegal.
 				// 'implicit: 'A AND ( ...' is legal
-				if (lastAddedTokenType_ == TOKEN_WORD)
+                                if (lastAddedTokenType_ == TOKEN_PREDICATOR)
 				{
 					if (implicitAnd_)
 						AddAnd();
@@ -331,18 +324,18 @@ namespace Ambiesoft {
 				dirty_ = true;
 			}
 
-			void AddWord(const T& word) {
+                        void AddPredicator(const T& predicator) {
 				dirty_ = true;
-				PreAddWord();
-				lastAddedTokenType_ = TOKEN_WORD;
-				tokens_.push_back(TokenT(word));
+                                PreAddPredicator();
+                                lastAddedTokenType_ = TOKEN_PREDICATOR;
+                                tokens_.push_back(TokenT(predicator));
 			}
 			// rval
-			void AddWord(T&& word) {
+                        void AddPredicator(T&& predicator) {
 				dirty_ = true;
-				PreAddWord();
-				lastAddedTokenType_ = TOKEN_WORD;
-				tokens_.push_back(TokenT(std::move(word)));
+                                PreAddPredicator();
+                                lastAddedTokenType_ = TOKEN_PREDICATOR;
+                                tokens_.push_back(TokenT(std::move(predicator)));
 			}
 
 			bool Evaluate(Args... args) const {
@@ -372,16 +365,16 @@ namespace Ambiesoft {
 				for (const TokenT& token : tokens_)
 					token.clearResult();
 			}
-			void PreAddWord() {
+                        void PreAddPredicator() {
 				dirty_ = true;
 				// 'A A' is illegal
 				// implicit: 'A and A' is legal.
-				if (lastAddedTokenType_ == TOKEN_WORD)
+                                if (lastAddedTokenType_ == TOKEN_PREDICATOR)
 				{
 					if (implicitAnd_)
 						AddAnd();
 					else
-						makeThrow(Throw_SysntaxErrorWord);
+                                                makeThrow(Throw_SysntaxErrorPredicator);
 				}
 			}
 
@@ -533,19 +526,19 @@ namespace Ambiesoft {
 			void makeThrow(ThrowType) const {
 				throw OpParserError("");
 			}
-			bool CallEvaluator(const T& word, const bool dryRun, Args...args) const {
+                        bool CallEvaluator(const T& predicator, const bool dryRun, Args...args) const {
 				if (dryRun)
 					return nullResult_;
-				return evaluator_(word, args...);
+                                return evaluator_(predicator, args...);
 			}
 			bool EvaluateToken(const TokenT& token, const bool dryRun, Args...args) const
 			{
-				if (token.IsWord())
+                                if (token.IsPredicator())
 				{
 					// cache result
 					if (token.hasResult())
 						return token.result();
-					bool ret = CallEvaluator(token.word(), dryRun, args...);
+                                        bool ret = CallEvaluator(token.predicator(), dryRun, args...);
 					token.setResult(ret);
 					return ret;
 				}
@@ -583,40 +576,6 @@ namespace Ambiesoft {
 				if (tv.size() == 1)
 				{
 					return EvaluateToken(*tv.begin(), dryRun, args...);
-					//TokenT& firstTv = *tv.begin();
-					//if (firstTv.IsWord())
-					//{
-					//	return CallEvaluator(firstTv.word(), dryRun, args...);
-					//}
-					//if (firstTv.IsParent())
-					//{
-					//	// Todo: remove Copy by add const everywhere
-					//	TokenVectorT tokenVec = firstTv.subTokensCopy();
-					//	TokenVectorT::iterator it = tokenVec.begin();
-					//	TokenT& t0 = *it;
-
-					//	if (tokenVec.size() == 1)
-					//		return EvaluateToken(t0, dryRun, args...);
-
-					//	TokenT& t1 = *(++it);
-
-
-					//	assert(tokenVec.size() == 3);
-					//	assert(t1.IsOperator());
-
-					//	TokenT& t2 = *(++it);
-					//	if (t1.IsAnd())
-					//		return EvaluateAnd(t0, t2, dryRun, args...);
-					//	else if (t1.IsOr())
-					//		return EvaluateOr(t0, t2, dryRun, args...);
-
-					//	makeThrow(Throw_Unknow);
-					//}
-					//if (firstTv.IsOperator())
-					//	return nullResult_;
-
-					//assert(false);
-					//makeThrow(Throw_Unknow);
 				}
 				else if (tv.size()==3)
 				{
