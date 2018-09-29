@@ -235,11 +235,10 @@ namespace Ambiesoft {
 	{
 		for (size_t i = startindex; i < saPaths.size(); ++i)
 		{
-			// CString tmp;
 			wstring dupParent;
 			if (myPathIsChildIncluded(left.c_str(), saPaths[i].c_str(), &dupParent))
 			{
-				common = dupParent.c_str();
+				common = dupParent;
 				hitindex = i;
 				return true;
 			}
