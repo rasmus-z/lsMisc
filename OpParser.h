@@ -28,6 +28,7 @@
 #include <vector>
 #include <list>
 #include <functional>
+#include <cassert>
 
 namespace Ambiesoft {
     namespace Logic {

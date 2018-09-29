@@ -67,7 +67,7 @@ namespace Ambiesoft {
 	//server/			should be treated as root
 	//server/folder		should not be treated as root
 	//server/folder/aaa	should not be treated as root
-	BOOL myPathIsRoot(LPCTSTR pPathorg)
+	BOOL myPathIsRoot(LPCWSTR pPathorg)
 	{
 		if (!pPathorg || pPathorg[0] == 0)
 			return FALSE;
@@ -125,14 +125,14 @@ namespace Ambiesoft {
 		return ret;
 	}
 
-	static BOOL IsBothEmptyOrNULL(LPCTSTR p1, LPCTSTR p2)
+	static BOOL IsBothEmptyOrNULL(LPCWSTR p1, LPCWSTR p2)
 	{
 		if (p1 == NULL || p1[0] == 0)
 			return p2 == NULL || p2[0] == 0;
 		return FALSE;
 	}
 
-	int myPathGetComponentCount(LPCTSTR p)
+	int myPathGetComponentCount(LPCWSTR p)
 	{
 		LPCTSTR pT = p;
 		int i = 0;
@@ -142,7 +142,7 @@ namespace Ambiesoft {
 		}
 		return i;
 	}
-	BOOL myPathSameDepth(LPCTSTR p1org, LPCTSTR p2org)
+	BOOL myPathSameDepth(LPCWSTR p1org, LPCWSTR p2org)
 	{
 		return myPathGetComponentCount(p1org) == myPathGetComponentCount(p2org);
 		//if (IsBothEmptyOrNULL(p1org, p2org))
@@ -161,11 +161,11 @@ namespace Ambiesoft {
 		//return FALSE;
 	}
 
-	BOOL myPathIsSame(LPCTSTR p1, LPCTSTR p2)
+	BOOL myPathIsSame(LPCWSTR p1, LPCWSTR p2)
 	{
 		return lstrcmpi(p1, p2) == 0;
 	}
-	BOOL myPathIsChildIncluded(LPCTSTR p1org, LPCTSTR p2org, std::wstring* pDupPath)
+	BOOL myPathIsChildIncluded(LPCWSTR p1org, LPCWSTR p2org, std::wstring* pDupPath)
 	{
 		// http://d.hatena.ne.jp/s-kita/20101206/1291651401#PathCommonPrefix
 		TCHAR lpCommonPrefix[MAX_PATH]; lpCommonPrefix[0] = 0;

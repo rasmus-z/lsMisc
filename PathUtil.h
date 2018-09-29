@@ -25,10 +25,10 @@
 #include <string>
 #include <vector>
 namespace Ambiesoft {
-	BOOL myPathIsRoot(LPCTSTR pPath);
-	BOOL IsBothEmptyOrNULL(LPCTSTR p1, LPCTSTR p2);
-	BOOL myPathSameDepth(LPCTSTR p1, LPCTSTR p2);
-	BOOL myPathIsChildIncluded(LPCTSTR p1, LPCTSTR p2, std::wstring* pDupPath = NULL);
+	BOOL myPathIsRoot(LPCWSTR pPath);
+	BOOL IsBothEmptyOrNULL(LPCWSTR p1, LPCWSTR p2);
+	BOOL myPathSameDepth(LPCWSTR p1, LPCWSTR p2);
+	BOOL myPathIsChildIncluded(LPCWSTR p1, LPCWSTR p2, std::wstring* pDupPath = NULL);
 
 
 	bool checkDupPaths(const std::vector<std::wstring>& saPaths,
