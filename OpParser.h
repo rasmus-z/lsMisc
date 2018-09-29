@@ -173,6 +173,23 @@ namespace Ambiesoft {
 			//	return subtokens_;
 			//}
 
+			bool hasResult() const {
+				return result_ != RESULT_UNKNOWN;
+			}
+			bool result() const {
+				assert(hasResult());
+				return result_ == RESULT_TRUE ? true : false;
+			}
+			void setResult(bool b) const {
+				result_ = b ? RESULT_TRUE : RESULT_FALSE;
+			}
+			void clearResult() const {
+				result_ = RESULT_UNKNOWN;
+				if (IsParent()) {
+					for (const TokenT& token : subtokens_)
+						token.clearResult();
+				}
+			}
 		private:
 			// Constructed by ctor from user, or
 			// while evaluating, it will become Parent.
@@ -185,6 +202,13 @@ namespace Ambiesoft {
 			// When token type is Parent, this is set.
 			// All '()' and 'A AND B' will be subtoken.
 			TokenVectorT subtokens_;
+
+			// Result of calling evaluate
+			mutable enum {
+				RESULT_UNKNOWN,
+				RESULT_TRUE,
+				RESULT_FALSE,
+			} result_ = RESULT_UNKNOWN;
 		};
 
 		template<typename T, typename... Args>
@@ -302,6 +326,11 @@ namespace Ambiesoft {
 				tokens_.push_back(TokenT(lastAddedTokenType_ = TOKEN_ENDING_PARENTHESIS));
 			}
 
+			// TODO: Add Not
+			void AddNot() {
+				dirty_ = true;
+			}
+
 			void AddWord(const T& word) {
 				dirty_ = true;
 				PreAddWord();
@@ -317,6 +346,7 @@ namespace Ambiesoft {
 			}
 
 			bool Evaluate(Args... args) const {
+				clearResults();
 				if (dirty_)
 				{
 					parsedTokens_ = tokens_;
@@ -326,6 +356,7 @@ namespace Ambiesoft {
 				return EvaluateInner(parsedTokens_, false, args...);
 			}
 			void TryEvaluate(Args...args) const {
+				clearResults();
 				if (dirty_)
 				{
 					parsedTokens_ = tokens_;
@@ -335,6 +366,12 @@ namespace Ambiesoft {
 				EvaluateInner(parsedTokens_, true, args...);
 			}
 		private:
+			void clearResults() const {
+				for (const TokenT& token : parsedTokens_)
+					token.clearResult();
+				for (const TokenT& token : tokens_)
+					token.clearResult();
+			}
 			void PreAddWord() {
 				dirty_ = true;
 				// 'A A' is illegal
@@ -504,7 +541,14 @@ namespace Ambiesoft {
 			bool EvaluateToken(const TokenT& token, const bool dryRun, Args...args) const
 			{
 				if (token.IsWord())
-					return CallEvaluator(token.word(), dryRun, args...);
+				{
+					// cache result
+					if (token.hasResult())
+						return token.result();
+					bool ret = CallEvaluator(token.word(), dryRun, args...);
+					token.setResult(ret);
+					return ret;
+				}
 				else if (token.IsParent())
 					return EvaluateInner(token.subTokens(), dryRun, args...);
 				else if (token.IsOperator())
@@ -593,27 +637,27 @@ namespace Ambiesoft {
 				}
 
 				// Now all are connected by 'or'.
-				TokenVectorT::const_iterator it = tv.begin();
-				do
+				for(TokenVectorT::const_iterator it = tv.begin();;)
 				{
-					//it1 = it - 1;
-					//it2 = it + 1;
 					TokenVectorT::const_iterator it1 = it;
+					assert(!it1->IsOr());
+
 					++it;
-					
+					if (it == tv.end())
+						break;
+
 					assert(it->IsOr());
 
 					++it;
 					TokenVectorT::const_iterator it2 = it;
-					
+					assert(!it2->IsOr());
+
 					if (EvaluateOr(*it1, *it2, dryRun, args...))
 					{
 						// true means no more evaluation needs
 						return true;
 					}
-
-					++it;
-				} while (it != tv.end());
+				}
 				return false;
 			}
 

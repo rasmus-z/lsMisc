@@ -18,6 +18,14 @@ namespace {
 			return true;
 		return false;
 	}
+	bool myReverseEvaluator(const wstring& word)
+	{
+		gcalledWords.push_back(word);
+		++gcallcount;
+		if (word != L"true")
+			return true;
+		return false;
+	}
 }
 
 TEST(OpParser, Null)
@@ -278,6 +286,20 @@ TEST(OpParser, BasicParenOr)
 
 		EXPECT_FALSE(opp.Evaluate());
 		EXPECT_EQ(gcallcount, 2);
+	}
+	{
+		gcallcount = 0;
+		OpParser<wstring> opp(myEvaluator);
+		opp.AddBeginningParenthesis();
+		opp.AddWord(L"false");
+		opp.AddOr();
+		opp.AddWord(L"false");
+		opp.AddOr();
+		opp.AddWord(L"false");
+		opp.AddEndingParenthesis();
+
+		EXPECT_FALSE(opp.Evaluate());
+		EXPECT_EQ(gcallcount, 3);
 	}
 }
 TEST(OpParser, BasicMultiParen)
@@ -1083,5 +1105,29 @@ TEST(OpParser, ConsecutiveCallEvaluate)
 		EXPECT_STREQ(gcalledWords[2].c_str(), L"false");
 		EXPECT_STREQ(gcalledWords[3].c_str(), L"true");
 		EXPECT_STREQ(gcalledWords[4].c_str(), L"false");
+	}
+}
+
+
+TEST(OpParser, ResettingEvaluator)
+{
+	{
+		gcallcount = 0;
+		OpParser<wstring> opp(myEvaluator);
+		opp.AddBeginningParenthesis();
+		opp.AddWord(L"false");
+		opp.AddOr();
+		opp.AddWord(L"false");
+		opp.AddOr();
+		opp.AddWord(L"false");
+		opp.AddEndingParenthesis();
+
+		EXPECT_FALSE(opp.Evaluate());
+		EXPECT_EQ(gcallcount, 3);
+
+		gcallcount = 0;
+		opp.ResetEvaluator(myReverseEvaluator);
+		EXPECT_TRUE(opp.Evaluate());
+		EXPECT_EQ(gcallcount, 1);
 	}
 }
