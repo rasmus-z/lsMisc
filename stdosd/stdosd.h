@@ -96,7 +96,7 @@ namespace Ambiesoft {
 			}
 			static STDOSD_CONSTEXPR wchar_t* nulString() {
 				return L"";
-			}			
+			}
 			static STDOSD_CONSTEXPR wchar_t* CR() {
 				return L"\r";
 			}
@@ -113,24 +113,53 @@ namespace Ambiesoft {
 			return (len == 0 || !str || str[0] == 0);
 		}
 		inline size_t getCharLength(const char* p) {
-                        return std::strlen(p);
+			return std::strlen(p);
 		}
 		inline size_t getCharLength(const wchar_t* p) {
 			return wcslen(p);
 		}
+
+#ifdef _MSC_VER
+		static int myStrCaseCmp(const char* left, const char* right) {
+			return _strcmpi(left, right);
+		}
+		static int myStrCaseCmpW(const wchar_t* left, const wchar_t* right) {
+			return _wcsicmp(left, right);
+		}
+		static int myStrNCaseCmp(const char* left, const char* right, size_t len) {
+			return _strnicmp(left, right, len);
+		}
+		static int myStrNCaseCmpW(const wchar_t* left, const wchar_t* right, size_t len) {
+			return _wcsnicmp(left, right, len);
+		}
+#else
+		static int myStrCaseCmp(const char* left, const char* right) {
+			return strcasecmp(left, right);
+		}
+		static int myStrCaseCmpW(const wchar_t* left, const wchar_t* right) {
+			return wcscasecmp(left, right);
+		}
+		static int myStrNCaseCmp(const char* left, const char* right, size_t len) {
+			return strncasecmp(left, right, len);
+		}
+		static int myStrNCaseCmpW(const wchar_t* left, const wchar_t* right, size_t len) {
+			return wcsncasecmp(left, right, len);
+		}
+#endif
+
 		inline bool isCharEqual(const char* left, const char* right, bool ignoreCase=false) {
-                    // Linux GNU C dose not have _strcmpi
-                        return ignoreCase ? strcasecmp(left,right)==0 : strcmp(left, right) == 0;
+			// Linux GNU C dose not have _strcmpi
+			return ignoreCase ? myStrCaseCmp(left,right)==0 : strcmp(left, right) == 0;
 		}
 		inline bool isCharEqual(const wchar_t* left, const wchar_t* right, bool ignoreCase = false) {
-                        return ignoreCase ? wcscasecmp(left,right)==0 : wcscmp(left, right) == 0;
+			return ignoreCase ? myStrCaseCmpW(left,right)==0 : wcscmp(left, right) == 0;
 		}
 
 		inline bool isCharEqualN(const char* left, const char* right, size_t len, bool ignoreCase = false) {
-                        return ignoreCase ? strncasecmp(left, right, len) == 0 : strncmp(left, right, len) == 0;
+			return ignoreCase ? myStrNCaseCmp(left, right, len) == 0 : strncmp(left, right, len) == 0;
 		}
 		inline bool isCharEqualN(const wchar_t* left, const wchar_t* right, size_t len, bool ignoreCase = false) {
-                        return ignoreCase ? wcsncasecmp(left, right, len) == 0 : wcsncmp(left, right, len) == 0;
+			return ignoreCase ? myStrNCaseCmpW(left, right, len) == 0 : wcsncmp(left, right, len) == 0;
 		}
 
 

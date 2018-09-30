@@ -314,8 +314,7 @@
     </ClCompile>
     <ClCompile Include="..\sqliteserialize.cpp" />
     <ClCompile Include="..\StartProcess.cpp" />
-    <ClCompile Include="..\stdosd\PathUtil_win.cpp" />
-    <ClCompile Include="..\stdosd\ResolveLink_win.cpp">
+    <ClCompile Include="..\stdosd\PathUtil_win.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
@@ -411,7 +410,12 @@
     <ClCompile Include="testOpenedFiles.cpp" />
     <ClCompile Include="gtestI18N.cpp" />
     <ClCompile Include="testOSTraits.cpp" />
-    <ClCompile Include="gtestPathUtil_win.cpp" />
+    <ClCompile Include="gtestPathUtil_win.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="gtestRevealFolder.cpp" />
     <ClCompile Include="gtestSHMoveFile.cpp" />
     <ClCompile Include="gtestShowBalloon.cpp" />
@@ -512,7 +516,6 @@
     <ClInclude Include="..\sqliteserialize.h" />
     <ClInclude Include="..\StartProcess.h" />
     <ClInclude Include="..\stdosd\PathUtil.h" />
-    <ClInclude Include="..\stdosd\ResolveLink.h" />
     <ClInclude Include="..\stdosd\SetPrority.h" />
     <ClInclude Include="..\stdosd\stdosd.h" />
     <ClInclude Include="..\stdwin32\stdwin32.h" />

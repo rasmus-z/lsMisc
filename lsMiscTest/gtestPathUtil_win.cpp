@@ -12,7 +12,7 @@
 
 #include "debug.h"
 
-using namespace Ambiesoft;
+using namespace Ambiesoft::stdosd;
 
 TEST(PathUtil, IsRoot)
 {

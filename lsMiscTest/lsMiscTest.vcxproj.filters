@@ -363,9 +363,6 @@
     <ClCompile Include="..\stdosd\stdosd_win.cpp">
       <Filter>stdosd</Filter>
     </ClCompile>
-    <ClCompile Include="..\stdosd\ResolveLink_win.cpp">
-      <Filter>stdosd</Filter>
-    </ClCompile>
     <ClCompile Include="..\stdosd\PathUtil_win.cpp">
       <Filter>stdosd</Filter>
     </ClCompile>
@@ -715,9 +712,6 @@
     </ClInclude>
     <ClInclude Include="..\stdosd\SetPrority.h">
       <Filter>lsMisc\1 Header</Filter>
-    </ClInclude>
-    <ClInclude Include="..\stdosd\ResolveLink.h">
-      <Filter>stdosd</Filter>
     </ClInclude>
     <ClInclude Include="..\stdosd\PathUtil.h">
       <Filter>stdosd</Filter>
