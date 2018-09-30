@@ -41,7 +41,12 @@ namespace Ambiesoft {
 		public:
 			OpParserError(char const* const message) :
 				std::runtime_error(message) {}
-		
+            virtual ~OpParserError() {}
+
+//            virtual const char* what() const {
+//                return std::runtime_error::what();
+//            }
+
 		};
 
 		namespace {
@@ -228,6 +233,7 @@ namespace Ambiesoft {
 				*(const_cast<bool*>(&implicitAnd_)) = that.implicitAnd_;
 				evaluator_ = that.evaluator_;
 				tokens_ = that.tokens_;
+                parsedTokens_ = that.parsedTokens_;
 				lastAddedTokenType_ = that.lastAddedTokenType_;
 			}
 		public:
@@ -239,7 +245,7 @@ namespace Ambiesoft {
 				nullResult_(nullResult),
 				implicitAnd_(implicitAnd){}
 		
-			explicit OpParser(const OpParserT& that) {
+            OpParser(const OpParserT& that) {
 				overMe(that);
 			}
 			const OpParserT& operator=(const OpParserT& that) {
@@ -381,8 +387,8 @@ namespace Ambiesoft {
 			// remove paren
 			void UnParenthesis(TokenVectorT& tv) const
 			{
-				TokenVectorT::iterator it = tv.begin();
-				TokenVectorT::iterator itLastOpeningParen = tv.end();
+                typename TokenVectorT::iterator it = tv.begin();
+                typename TokenVectorT::iterator itLastOpeningParen = tv.end();
 				bool found = false;
 
 				// Find inner-most paren pair
@@ -429,10 +435,10 @@ namespace Ambiesoft {
 					//
 					// itLastHit: begining of paren
 					// it: end of paren
-					TokenVectorT::iterator insideStart = itLastOpeningParen;
+                    typename TokenVectorT::iterator insideStart = itLastOpeningParen;
 					++insideStart;
 
-					TokenVectorT::iterator insideEnd = it;
+                    typename TokenVectorT::iterator insideEnd = it;
 					std::advance(insideEnd, -1);
 
 
@@ -458,7 +464,7 @@ namespace Ambiesoft {
 			bool FindAndTripet(typename TokenVectorT::iterator& it1,
 				typename TokenVectorT::iterator& itOp,
 				typename TokenVectorT::iterator& it2,
-				typename TokenVectorT& tv) const
+                TokenVectorT& tv) const
 			{
 				// already liner
 				assert((tv.size() % 2) == 1);
@@ -489,14 +495,14 @@ namespace Ambiesoft {
 				// already liner
 				assert((tv.size() % 2) == 1);
 
-				TokenVectorT::iterator it1, itOp, it2;
+                typename TokenVectorT::iterator it1, itOp, it2;
 				if (!FindAndTripet(it1, itOp, it2, tv))
 				{
 					// no more 'and'
 					return;
 				}
 
-				TokenVectorT::iterator itTmp = it2;
+                typename TokenVectorT::iterator itTmp = it2;
 				++itTmp;
 				TokenVectorT insideVecForToken(it1,  itTmp);
 				TokenT parentToken(insideVecForToken);
@@ -579,11 +585,11 @@ namespace Ambiesoft {
 				}
 				else if (tv.size()==3)
 				{
-					TokenVectorT::const_iterator it = tv.begin();
+                    typename TokenVectorT::const_iterator it = tv.begin();
 
-					TokenVectorT::const_iterator it1 = it++;
-					TokenVectorT::const_iterator itOp = it++;
-					TokenVectorT::const_iterator it2 = it++;
+                    typename TokenVectorT::const_iterator it1 = it++;
+                    typename TokenVectorT::const_iterator itOp = it++;
+                    typename TokenVectorT::const_iterator it2 = it++;
 
 					assert(itOp->IsOperator());
 
@@ -596,9 +602,9 @@ namespace Ambiesoft {
 				}
 
 				// Now all are connected by 'or'.
-				for(TokenVectorT::const_iterator it = tv.begin();;)
+                for(typename TokenVectorT::const_iterator it = tv.begin();;)
 				{
-					TokenVectorT::const_iterator it1 = it;
+                    typename TokenVectorT::const_iterator it1 = it;
 					assert(!it1->IsOr());
 
 					++it;
@@ -608,7 +614,7 @@ namespace Ambiesoft {
 					assert(it->IsOr());
 
 					++it;
-					TokenVectorT::const_iterator it2 = it;
+                    typename TokenVectorT::const_iterator it2 = it;
 					assert(!it2->IsOr());
 
 					if (EvaluateOr(*it1, *it2, dryRun, args...))
@@ -630,6 +636,9 @@ namespace Ambiesoft {
 				return !!evaluator_;
 			}
 		private:
+            // User defined evaluator.
+            EvaluatorT evaluator_;
+
 			// Hold dirty state,
 			// Optimize Consecutive Evaluate call.
 			mutable bool dirty_ = true;
@@ -647,8 +656,6 @@ namespace Ambiesoft {
 			// The main tokens
 			TokenVectorT tokens_;
 
-			// User defined evaluator.
-			EvaluatorT evaluator_;
 
 			// Last added token type, set by Add* mothed, for
 			// check syntax.

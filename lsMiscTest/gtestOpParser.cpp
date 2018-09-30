@@ -1,8 +1,9 @@
-#include "stdafx.h"
+// #include "stdafx.h"
 
+#include <memory>
 #include <gtest/gtest.h>
 
-#include "../OpParser.h"
+#include "../stdosd/OpParser.h"
 
 using namespace Ambiesoft::Logic;
 using namespace std;
@@ -759,6 +760,7 @@ TEST(OpParser, UnmatchedParenthesisError)
 
 int gCtorCount;
 int gAllocDAllocCounter;
+
 struct MyPod
 {
 	char* p_ = nullptr;
@@ -989,7 +991,8 @@ TEST(OpParser, BasicWithMultiArg)
 
 		double dd = 1;
 		wstring wref;
-		EXPECT_FALSE(opp.Evaluate(0, dd, string("fff"), wref));
+        string fff = "fff";
+        EXPECT_FALSE(opp.Evaluate(0, dd, fff, wref));
 
 		EXPECT_STREQ(gs.c_str(), "1");
 		EXPECT_EQ(gi, 0);
@@ -1130,4 +1133,57 @@ TEST(OpParser, ResettingEvaluator)
 		EXPECT_TRUE(opp.Evaluate());
 		EXPECT_EQ(gcallcount, 1);
 	}
+}
+
+TEST(OpParser, CopyEvaluator)
+{
+    {
+        gcallcount = 0;
+        OpParser<wstring> opp(myEvaluator);
+        opp.AddBeginningParenthesis();
+        opp.AddPredicator(L"false");
+        opp.AddOr();
+        opp.AddPredicator(L"false");
+        opp.AddOr();
+        opp.AddPredicator(L"false");
+        opp.AddEndingParenthesis();
+
+        EXPECT_FALSE(opp.Evaluate());
+        EXPECT_EQ(gcallcount, 3);
+
+        gcallcount = 0;
+        OpParser<wstring> opp2;
+        opp2 = opp;
+        EXPECT_FALSE(opp2.Evaluate());
+        EXPECT_EQ(gcallcount, 3);
+    }
+
+    {
+        OpParser<string, int, double&, string&, wstring&> oppa(&MyEvArgStringIntDouble, false, true);
+        OpParser<string, int, double&, string&, wstring&> opp;
+        opp = oppa;
+        opp.AddPredicator("1");
+
+        double dd = 1;
+        wstring wref;
+        string fff = "fff";
+        EXPECT_FALSE(opp.Evaluate(0, dd, fff, wref));
+
+        EXPECT_STREQ(gs.c_str(), "1");
+        EXPECT_EQ(gi, 0);
+        EXPECT_EQ(gd, 1);
+        EXPECT_STREQ(gs2.c_str(), "fff");
+        EXPECT_STREQ(wref.c_str(), L"wref");
+
+        OpParser<string, int, double&, string&, wstring&> opp2(opp);
+        EXPECT_FALSE(opp.Evaluate(0, dd, fff, wref));
+
+        EXPECT_STREQ(gs.c_str(), "1");
+        EXPECT_EQ(gi, 0);
+        EXPECT_EQ(gd, 1);
+        EXPECT_STREQ(gs2.c_str(), "fff");
+        EXPECT_STREQ(wref.c_str(), L"wref");
+
+    }
+
 }

@@ -300,7 +300,6 @@
     <ClCompile Include="..\Registory.cpp" />
     <ClCompile Include="..\RemoveLastInValidURLChar.cpp" />
     <ClCompile Include="..\ReplaceFileHelper.cpp" />
-    <ClCompile Include="..\ResolveLink.cpp" />
     <ClCompile Include="..\RevealFolder.cpp" />
     <ClCompile Include="..\SetClipboardText.cpp" />
     <ClCompile Include="..\SetCSIDLtoEnv.cpp" />
@@ -316,9 +315,25 @@
     </ClCompile>
     <ClCompile Include="..\sqliteserialize.cpp" />
     <ClCompile Include="..\StartProcess.cpp" />
+    <ClCompile Include="..\stdosd\ResolveLink_win.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="..\stdosd\SetPrority_win.cpp" />
-    <ClCompile Include="..\stdosd\stdosd.cpp" />
-    <ClCompile Include="..\stdosd\stdosd_win.cpp" />
+    <ClCompile Include="..\stdosd\stdosd.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\stdosd\stdosd_win.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="..\stdwin32\stdwin32.cpp" />
     <ClCompile Include="..\stringEndwith.cpp" />
     <ClCompile Include="..\SystemInfo.cpp">
@@ -345,7 +360,12 @@
     </ClCompile>
     <ClCompile Include="gtestGtest.cpp" />
     <ClCompile Include="gtestChangeFilenamable.cpp" />
-    <ClCompile Include="gtestOpParser.cpp" />
+    <ClCompile Include="gtestOpParser.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="gtestGetProcessList.cpp" />
     <ClCompile Include="debug.cpp" />
     <ClCompile Include="googletest\googletest\src\gtest-all.cc">
@@ -482,7 +502,6 @@
     <ClInclude Include="..\Registory.h" />
     <ClInclude Include="..\RemoveLastInValidURLChar.h" />
     <ClInclude Include="..\ReplaceFileHelper.h" />
-    <ClInclude Include="..\ResolveLink.h" />
     <ClInclude Include="..\RevealFolder.h" />
     <ClInclude Include="..\SetClipboardText.h" />
     <ClInclude Include="..\SetCSIDLtoEnv.h" />
@@ -493,6 +512,7 @@
     <ClInclude Include="..\sqlite3.h" />
     <ClInclude Include="..\sqliteserialize.h" />
     <ClInclude Include="..\StartProcess.h" />
+    <ClInclude Include="..\stdosd\ResolveLink.h" />
     <ClInclude Include="..\stdosd\SetPrority.h" />
     <ClInclude Include="..\stdosd\stdosd.h" />
     <ClInclude Include="..\stdwin32\stdwin32.h" />

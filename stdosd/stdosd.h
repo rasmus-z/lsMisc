@@ -28,6 +28,8 @@
 
 #include <cstdio>
 #include <cstdarg>
+#include <cstdlib>
+#include <cstring>
 
 namespace Ambiesoft {
 	namespace stdosd {
@@ -111,7 +113,7 @@ namespace Ambiesoft {
 			return (len == 0 || !str || str[0] == 0);
 		}
 		inline size_t getCharLength(const char* p) {
-			return strlen(p);
+                        return std::strlen(p);
 		}
 		inline size_t getCharLength(const wchar_t* p) {
 			return wcslen(p);

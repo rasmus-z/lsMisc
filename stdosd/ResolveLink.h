@@ -21,4 +21,9 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
+namespace Ambiesoft {
+namespace stdosd {
+
 BOOL ResolveLink(LPCTSTR lpszFileIn, HWND hWnd, LPTSTR target);
+
+}}

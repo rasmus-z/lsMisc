@@ -206,9 +206,6 @@
     <ClCompile Include="..\ReplaceFileHelper.cpp">
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
-    <ClCompile Include="..\ResolveLink.cpp">
-      <Filter>lsMisc\2 Source</Filter>
-    </ClCompile>
     <ClCompile Include="..\SetClipboardText.cpp">
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
@@ -370,6 +367,9 @@
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
     <ClCompile Include="..\stdosd\stdosd_win.cpp">
+      <Filter>stdosd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\stdosd\ResolveLink_win.cpp">
       <Filter>stdosd</Filter>
     </ClCompile>
   </ItemGroup>
@@ -599,9 +599,6 @@
     <ClInclude Include="..\ReplaceFileHelper.h">
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
-    <ClInclude Include="..\ResolveLink.h">
-      <Filter>lsMisc\1 Header</Filter>
-    </ClInclude>
     <ClInclude Include="..\SetClipboardText.h">
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
@@ -721,6 +718,9 @@
     </ClInclude>
     <ClInclude Include="..\stdosd\SetPrority.h">
       <Filter>lsMisc\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\stdosd\ResolveLink.h">
+      <Filter>stdosd</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
