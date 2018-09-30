@@ -26,9 +26,6 @@
     <ClCompile Include="..\OpenCommon.cpp">
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
-    <ClCompile Include="..\PathUtil.cpp">
-      <Filter>lsMisc\2 Source</Filter>
-    </ClCompile>
     <ClCompile Include="..\SHMoveFile.cpp">
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
@@ -309,9 +306,6 @@
     <ClCompile Include="gtestUrlEncode.cpp">
       <Filter>GTest Files</Filter>
     </ClCompile>
-    <ClCompile Include="gtestPathUtil.cpp">
-      <Filter>GTest Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\GetProcessList.cpp">
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
@@ -372,6 +366,12 @@
     <ClCompile Include="..\stdosd\ResolveLink_win.cpp">
       <Filter>stdosd</Filter>
     </ClCompile>
+    <ClCompile Include="..\stdosd\PathUtil_win.cpp">
+      <Filter>stdosd</Filter>
+    </ClCompile>
+    <ClCompile Include="gtestPathUtil_win.cpp">
+      <Filter>GTest Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\CenterWindow.h">
@@ -405,9 +405,6 @@
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
     <ClInclude Include="..\SHMoveFile.h">
-      <Filter>lsMisc\1 Header</Filter>
-    </ClInclude>
-    <ClInclude Include="..\PathUtil.h">
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
     <ClInclude Include="..\I18N.h">
@@ -720,6 +717,9 @@
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
     <ClInclude Include="..\stdosd\ResolveLink.h">
+      <Filter>stdosd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\stdosd\PathUtil.h">
       <Filter>stdosd</Filter>
     </ClInclude>
   </ItemGroup>

@@ -294,7 +294,6 @@
     <ClCompile Include="..\myStrStrI.cpp" />
     <ClCompile Include="..\OpenCommon.cpp" />
     <ClCompile Include="..\OpenedFiles.cpp" />
-    <ClCompile Include="..\PathUtil.cpp" />
     <ClCompile Include="..\PragmaShowVersions.cpp" />
     <ClCompile Include="..\GetProcessList.cpp" />
     <ClCompile Include="..\Registory.cpp" />
@@ -315,6 +314,7 @@
     </ClCompile>
     <ClCompile Include="..\sqliteserialize.cpp" />
     <ClCompile Include="..\StartProcess.cpp" />
+    <ClCompile Include="..\stdosd\PathUtil_win.cpp" />
     <ClCompile Include="..\stdosd\ResolveLink_win.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
@@ -411,7 +411,7 @@
     <ClCompile Include="testOpenedFiles.cpp" />
     <ClCompile Include="gtestI18N.cpp" />
     <ClCompile Include="testOSTraits.cpp" />
-    <ClCompile Include="gtestPathUtil.cpp" />
+    <ClCompile Include="gtestPathUtil_win.cpp" />
     <ClCompile Include="gtestRevealFolder.cpp" />
     <ClCompile Include="gtestSHMoveFile.cpp" />
     <ClCompile Include="gtestShowBalloon.cpp" />
@@ -496,7 +496,6 @@
     <ClInclude Include="..\OpenCommon.h" />
     <ClInclude Include="..\OpenedFiles.h" />
     <ClInclude Include="..\os_traits.h" />
-    <ClInclude Include="..\PathUtil.h" />
     <ClInclude Include="..\PragmaShowVersions.h" />
     <ClInclude Include="..\GetProcessList.h" />
     <ClInclude Include="..\Registory.h" />
@@ -512,6 +511,7 @@
     <ClInclude Include="..\sqlite3.h" />
     <ClInclude Include="..\sqliteserialize.h" />
     <ClInclude Include="..\StartProcess.h" />
+    <ClInclude Include="..\stdosd\PathUtil.h" />
     <ClInclude Include="..\stdosd\ResolveLink.h" />
     <ClInclude Include="..\stdosd\SetPrority.h" />
     <ClInclude Include="..\stdosd\stdosd.h" />

@@ -31,11 +31,11 @@
 #include <ShlObj.h>
 #include <ShlGuid.h>
 
-#include "PathUtil.h"
+// #include "PathUtil.h"
 #include "MFCHelper.h"
 
 using namespace std;
-using namespace Ambiesoft;
+// using namespace Ambiesoft;
 
 CString GetFavoritesFolder()
 {

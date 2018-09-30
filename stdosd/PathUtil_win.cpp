@@ -21,7 +21,7 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
-#include "stdafx.h"
+// #include "stdafx.h"
 
 
 #ifndef _WINDOWS_
@@ -51,10 +51,11 @@
 #include <algorithm>
 #endif
 
-#ifndef STLSOFT_INCL_STLSOFT_SMARTPTR_HPP_SCOPED_HANDLE
-#pragma message("including scoped_handel.hpp")
-#include <stlsoft/smartptr/scoped_handle.hpp>
-#endif
+//#ifndef STLSOFT_INCL_STLSOFT_SMARTPTR_HPP_SCOPED_HANDLE
+//#pragma message("including scoped_handel.hpp")
+//#include <stlsoft/smartptr/scoped_handle.hpp>
+//#endif
+#include <memory>
 
 #include "PathUtil.h"
 
@@ -67,7 +68,7 @@ namespace Ambiesoft {
 	//server/			should be treated as root
 	//server/folder		should not be treated as root
 	//server/folder/aaa	should not be treated as root
-	BOOL myPathIsRoot(LPCWSTR pPathorg)
+	BOOL IsPathRoot(const wchar_t* pPathorg)
 	{
 		if (!pPathorg || pPathorg[0] == 0)
 			return FALSE;
@@ -78,10 +79,10 @@ namespace Ambiesoft {
 			LPTSTR pT;
 			if (GetFullPathName(pPathorg, _countof(szT), szT, &pT) > _countof(szT))
 				return FALSE;
-			return myPathIsRoot(szT);
+			return IsPathRoot(szT);
 		}
-		LPWSTR pPath = NULL;
-		LPWSTR pPathFree = NULL;
+        LPWSTR pPath = nullptr;
+        LPWSTR pPathFree = nullptr;
 		BOOL ret = FALSE;
 		do
 		{
@@ -97,7 +98,7 @@ namespace Ambiesoft {
 			}
 			else
 			{
-				pPath = (LPWSTR)pPathorg;
+                pPath = (LPWSTR)pPathorg;
 			}
 
 
@@ -125,14 +126,14 @@ namespace Ambiesoft {
 		return ret;
 	}
 
-	static BOOL IsBothEmptyOrNULL(LPCWSTR p1, LPCWSTR p2)
+	static BOOL IsBothEmptyOrNULL(const wchar_t* p1, const wchar_t* p2)
 	{
 		if (p1 == NULL || p1[0] == 0)
 			return p2 == NULL || p2[0] == 0;
 		return FALSE;
 	}
 
-	int myPathGetComponentCount(LPCWSTR p)
+	int myPathGetComponentCount(const wchar_t* p)
 	{
 		LPCTSTR pT = p;
 		int i = 0;
@@ -142,46 +143,30 @@ namespace Ambiesoft {
 		}
 		return i;
 	}
-	BOOL myPathSameDepth(LPCWSTR p1org, LPCWSTR p2org)
+	BOOL IsSamePathDepth(const wchar_t* p1org, const wchar_t* p2org)
 	{
 		return myPathGetComponentCount(p1org) == myPathGetComponentCount(p2org);
-		//if (IsBothEmptyOrNULL(p1org, p2org))
-		//	return TRUE;
-
-		//LPTSTR p1 = _tcsdup(p1org);
-		//LPTSTR p2 = _tcsdup(p2org);
-
-		//PathMakePretty(p1);
-		//PathMakePretty(p2);
-
-		//PathRemoveBackslash(p1);
-		//PathRemoveBackslash(p2);
-
-
-		//return FALSE;
 	}
 
-	BOOL myPathIsSame(LPCWSTR p1, LPCWSTR p2)
+	BOOL IsPathSame(const wchar_t* p1, const wchar_t* p2)
 	{
 		return lstrcmpi(p1, p2) == 0;
 	}
-	BOOL myPathIsChildIncluded(LPCWSTR p1org, LPCWSTR p2org, std::wstring* pDupPath)
+	BOOL IsPathChildIncluded(const wchar_t* p1org, const wchar_t* p2org, std::wstring* pDupPath)
 	{
 		// http://d.hatena.ne.jp/s-kita/20101206/1291651401#PathCommonPrefix
 		TCHAR lpCommonPrefix[MAX_PATH]; lpCommonPrefix[0] = 0;
 		int nCommonPrefixCharcters;
 
-		LPTSTR p1 = _tcsdup(p1org);
-		stlsoft::scoped_handle<void*> ma1(p1, free);
-		LPTSTR p2 = _tcsdup(p2org);
-		stlsoft::scoped_handle<void*> ma2(p2, free);
+		unique_ptr<wchar_t> p1(_tcsdup(p1org));
+		unique_ptr<wchar_t> p2(_tcsdup(p2org));
 
-		PathRemoveBackslash(p1);
-		PathRemoveBackslash(p2);
+		PathRemoveBackslash(p1.get());
+		PathRemoveBackslash(p2.get());
 
-		wstring w1 = p1;
+		wstring w1 = p1.get();
 		replace(w1.begin(), w1.end(), L'/', L'\\');
-		wstring w2 = p2;
+		wstring w2 = p2.get();
 		replace(w2.begin(), w2.end(), L'/', L'\\');
 
 		TCHAR szT1[MAX_PATH * 2];
@@ -204,17 +189,12 @@ namespace Ambiesoft {
 			return FALSE;
 		}
 
-		//if (myPathIsRoot(lpCommonPrefix))
-		//{
-		//	return FALSE;
-		//}
-
-		if (!myPathIsSame(szT1, lpCommonPrefix) && !myPathIsSame(szT2, lpCommonPrefix))
+		if (!IsPathSame(szT1, lpCommonPrefix) && !IsPathSame(szT2, lpCommonPrefix))
 		{
 			return FALSE;
 		}
 
-		if (myPathSameDepth(szT1, szT2))
+		if (IsSamePathDepth(szT1, szT2))
 		{
 			return FALSE;
 		}
@@ -236,7 +216,7 @@ namespace Ambiesoft {
 		for (size_t i = startindex; i < saPaths.size(); ++i)
 		{
 			wstring dupParent;
-			if (myPathIsChildIncluded(left.c_str(), saPaths[i].c_str(), &dupParent))
+			if (IsPathChildIncluded(left.c_str(), saPaths[i].c_str(), &dupParent))
 			{
 				common = dupParent;
 				hitindex = i;
