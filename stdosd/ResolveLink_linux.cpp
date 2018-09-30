@@ -21,12 +21,12 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
-#include "stdafx.h"
+
 
 
 #include "ResolveLink.h"
 
-BOOL ResolveLink(LPCTSTR lpszFileIn, HWND hWnd, LPTSTR target)
+bool ResolveLink(const wchar_t* lpszFileIn, HWND hWnd, LPTSTR target)
 {
     // NOT IMPLEMENTED
 }

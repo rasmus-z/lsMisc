@@ -94,11 +94,12 @@ struct CBeforeMain
 #endif
 	}
 } gBeforeMain;
-int main()
+
+int main(int argc, char* argv[])
 {
 	mysandbox();
 
-	testing::InitGoogleTest(&__argc, __argv);
+    testing::InitGoogleTest(&argc, argv);
 	int gret = RUN_ALL_TESTS();
 
 	

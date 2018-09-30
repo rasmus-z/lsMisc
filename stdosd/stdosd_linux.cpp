@@ -21,9 +21,50 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
+
+// #include "StdAfx.h"
+#include <regex>
+#include <cassert>
+
+#include "stdosd.h"
+
 namespace Ambiesoft {
-namespace stdosd {
+	namespace stdosd {
+		using namespace std;
 
-bool ResolveLink(LPCTSTR lpszFileIn, HWND hWnd, LPTSTR target);
+		namespace {
+            std::wstring stdGetFullPathName(const wchar_t* pPath)
+			{
+                // not implemented
+                assert(false);
+                return std::wstring();
+			}
 
-}}
+			std::vector<std::wstring> splitdir(const std::wstring& input, const std::wstring& regex) {
+				// passing -1 as the submatch index parameter performs splitting
+				std::wregex re(regex);
+				std::wsregex_token_iterator
+					first{ input.begin(), input.end(), re, -1 },
+					last;
+				return { first, last };
+			}
+
+			wstring resolveSingleDir(const wstring& input)
+			{
+                // not implemented
+                assert(false);
+                return std::wstring();
+			}
+		}
+		std::wstring stdGetFullPathName(const std::wstring& ws)
+		{
+			return stdGetFullPathName(ws.c_str());
+		}
+		std::wstring resolveLink(const std::wstring& instring)
+		{
+            // not implemented
+            assert(false);
+            return std::wstring();
+		}
+	}
+}

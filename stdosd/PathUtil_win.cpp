@@ -64,26 +64,26 @@ using namespace std;
 
 #pragma comment(lib,"shlwapi.lib")
 
-namespace Ambiesoft {
+namespace Ambiesoft { namespace stdosd {
 	//server/			should be treated as root
 	//server/folder		should not be treated as root
 	//server/folder/aaa	should not be treated as root
-	BOOL IsPathRoot(const wchar_t* pPathorg)
+    bool IsPathRoot(const wchar_t* pPathorg)
 	{
 		if (!pPathorg || pPathorg[0] == 0)
-			return FALSE;
+            return false;
 
 		if (PathIsRelative(pPathorg))
 		{
 			TCHAR szT[MAX_PATH * 2];
 			LPTSTR pT;
 			if (GetFullPathName(pPathorg, _countof(szT), szT, &pT) > _countof(szT))
-				return FALSE;
+                return false;
 			return IsPathRoot(szT);
 		}
         LPWSTR pPath = nullptr;
         LPWSTR pPathFree = nullptr;
-		BOOL ret = FALSE;
+        bool ret = false;
 		do
 		{
 			if (pPathorg[wcslen(pPathorg) - 1] != L'\\')
@@ -109,28 +109,28 @@ namespace Ambiesoft {
 			}
 			if (PathIsUNCServer(pPath))
 			{
-				ret = TRUE;
+                ret = true;
 				break;
 			}
 
 			if (PathIsUNCServerShare(pPath))
 			{
-				ret = TRUE;
+                ret = true;
 				break;
 			}
 
-			ret = FALSE;
-		} while (false);
+            ret = false;
+        } while (false);
 
 		free(pPathFree);
 		return ret;
 	}
 
-	static BOOL IsBothEmptyOrNULL(const wchar_t* p1, const wchar_t* p2)
+    static bool IsBothEmptyOrNULL(const wchar_t* p1, const wchar_t* p2)
 	{
 		if (p1 == NULL || p1[0] == 0)
 			return p2 == NULL || p2[0] == 0;
-		return FALSE;
+        return false;
 	}
 
 	int myPathGetComponentCount(const wchar_t* p)
@@ -143,16 +143,16 @@ namespace Ambiesoft {
 		}
 		return i;
 	}
-	BOOL IsSamePathDepth(const wchar_t* p1org, const wchar_t* p2org)
+    bool IsSamePathDepth(const wchar_t* p1org, const wchar_t* p2org)
 	{
 		return myPathGetComponentCount(p1org) == myPathGetComponentCount(p2org);
 	}
 
-	BOOL IsPathSame(const wchar_t* p1, const wchar_t* p2)
+    bool IsPathSame(const wchar_t* p1, const wchar_t* p2)
 	{
 		return lstrcmpi(p1, p2) == 0;
 	}
-	BOOL IsPathChildIncluded(const wchar_t* p1org, const wchar_t* p2org, std::wstring* pDupPath)
+    bool IsPathChildIncluded(const wchar_t* p1org, const wchar_t* p2org, std::wstring* pDupPath)
 	{
 		// http://d.hatena.ne.jp/s-kita/20101206/1291651401#PathCommonPrefix
 		TCHAR lpCommonPrefix[MAX_PATH]; lpCommonPrefix[0] = 0;
@@ -172,41 +172,41 @@ namespace Ambiesoft {
 		TCHAR szT1[MAX_PATH * 2];
 		TCHAR szT2[MAX_PATH * 2];
 		if (ExpandEnvironmentStrings(w1.c_str(), szT1, _countof(szT1)) > _countof(szT1))
-			return FALSE;
+            return false;
 		if (ExpandEnvironmentStrings(w2.c_str(), szT2, _countof(szT2)) > _countof(szT2))
-			return FALSE;
+            return false;
 
 		w1 = szT1;
 		w2 = szT2;
 		if (!PathCanonicalize(szT1, w1.c_str()))
-			return FALSE;
+            return false;
 		if (!PathCanonicalize(szT2, w2.c_str()))
-			return FALSE;
+            return false;
 
 		nCommonPrefixCharcters = PathCommonPrefix(szT1, szT2, lpCommonPrefix);
 		if (nCommonPrefixCharcters < 1)
 		{
-			return FALSE;
+            return false;
 		}
 
 		if (!IsPathSame(szT1, lpCommonPrefix) && !IsPathSame(szT2, lpCommonPrefix))
 		{
-			return FALSE;
+            return false;
 		}
 
 		if (IsSamePathDepth(szT1, szT2))
 		{
-			return FALSE;
+            return false;
 		}
 
 		if (pDupPath)
 			*pDupPath = lpCommonPrefix;
 
-		return TRUE;
+        return true;
 	}
 
 
-	static bool HasDupPaths(
+    static bool HasDupPaths(
 		const wstring& left, 
 		const vector<wstring>& saPaths, 
 		size_t startindex,
@@ -220,13 +220,13 @@ namespace Ambiesoft {
 			{
 				common = dupParent;
 				hitindex = i;
-				return true;
+                return true;
 			}
 		}
-		return false;
+        return false;
 	}
 
-	bool checkDupPaths(const vector<wstring>& saPaths, 
+    bool checkDupPaths(const vector<wstring>& saPaths,
 		wstring& left,
 		wstring& right,
 		wstring& common)
@@ -239,9 +239,9 @@ namespace Ambiesoft {
 			{
 				left = tmpleft;
 				right = saPaths[hitindex];
-				return false;
+                return false;
 			}
 		}
-		return true;
+        return true;
 	}
-}
+}}

@@ -14,19 +14,20 @@ SOURCES += \
     gtestStdosd.cpp \
     gtestOpParser.cpp \
     ../stdosd/stdosd.cpp \
-    ../stdosd/stdosd_win.cpp \
-    gtestOpParser.cpp \
-    gtestPathUtil_win.cpp \
+
+
 
 
 HEADERS += \
     ../stdosd/OpParser.h \
-    ../stdosd/ResolveLink.h \
-    ../stdosd/PathUtil.h
+    ../stdosd/PathUtil.h \
+    ../stdosd/stdosd.h
 
 win32 {
-   SOURCES += ../stdosd/ResolveLink_win.cpp \
-	../stdosd/PathUtil_win.cpp
+   SOURCES += \
+        ../stdosd/PathUtil_win.cpp \
+        gtestPathUtil_win.cpp \
+        ../stdosd/stdosd_win.cpp \
 
     win32-g++ {
         LIBS += -lOle32 -lShlwapi -luuid
@@ -36,5 +37,11 @@ win32 {
     }
 }
 linux-g++ {
-    SOURCES += ../stdosd/ResolveLink_linux.cpp
+    SOURCES += \
+        ../stdosd/PathUtil_linux.cpp \
+        gtestPathUtil_linux.cpp \
+        ../stdosd/stdosd_linux.cpp \
+
+    LIBS += -lpthread
+
 }

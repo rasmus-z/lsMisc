@@ -24,15 +24,15 @@
 #pragma once
 #include <string>
 #include <vector>
-namespace Ambiesoft {
-	BOOL IsPathRoot(const wchar_t* pPath);
-	BOOL IsBothEmptyOrNULL(const wchar_t* p1, const wchar_t* p2);
-	BOOL IsSamePathDepth(const wchar_t* p1, const wchar_t* p2);
-	BOOL IsPathChildIncluded(const wchar_t* p1, const wchar_t* p2, std::wstring* pDupPath = NULL);
+namespace Ambiesoft { namespace stdosd {
+    bool IsPathRoot(const wchar_t* pPath);
+    bool IsBothEmptyOrNULL(const wchar_t* p1, const wchar_t* p2);
+    bool IsSamePathDepth(const wchar_t* p1, const wchar_t* p2);
+    bool IsPathChildIncluded(const wchar_t* p1, const wchar_t* p2, std::wstring* pDupPath = NULL);
 
 
 	bool checkDupPaths(const std::vector<std::wstring>& saPaths,
 		std::wstring& left,
 		std::wstring& right,
 		std::wstring& common);
-}
+} }

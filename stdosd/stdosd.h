@@ -119,17 +119,18 @@ namespace Ambiesoft {
 			return wcslen(p);
 		}
 		inline bool isCharEqual(const char* left, const char* right, bool ignoreCase=false) {
-			return ignoreCase ? _strcmpi(left,right)==0 : strcmp(left, right) == 0;
+                    // Linux GNU C dose not have _strcmpi
+                        return ignoreCase ? strcasecmp(left,right)==0 : strcmp(left, right) == 0;
 		}
 		inline bool isCharEqual(const wchar_t* left, const wchar_t* right, bool ignoreCase = false) {
-			return ignoreCase ? _wcsicmp(left,right)==0 : wcscmp(left, right) == 0;
+                        return ignoreCase ? wcscasecmp(left,right)==0 : wcscmp(left, right) == 0;
 		}
 
 		inline bool isCharEqualN(const char* left, const char* right, size_t len, bool ignoreCase = false) {
-			return ignoreCase ? _strnicmp(left, right, len) == 0 : strncmp(left, right, len) == 0;
+                        return ignoreCase ? strncasecmp(left, right, len) == 0 : strncmp(left, right, len) == 0;
 		}
 		inline bool isCharEqualN(const wchar_t* left, const wchar_t* right, size_t len, bool ignoreCase = false) {
-			return ignoreCase ? _wcsnicmp(left, right, len) == 0 : wcsncmp(left, right, len) == 0;
+                        return ignoreCase ? wcsncasecmp(left, right, len) == 0 : wcsncmp(left, right, len) == 0;
 		}
 
 
@@ -177,7 +178,11 @@ namespace Ambiesoft {
 		}
 		inline bool isTdigit(wchar_t c)
 		{
+#ifdef __GNUC__
+                    return !!isdigit(static_cast<char>(c));
+#else
 			return !!iswdigit(c);
+#endif
 		}
 		template<typename C>
 		inline bool stdIsTdigit(const C* str, size_t len = -1)
