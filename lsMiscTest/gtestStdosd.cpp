@@ -13,9 +13,10 @@ using namespace std;
 TEST(stdosd, stdIsDigit)
 {
 	// "１２３"
-	// UTF16-LE
-	wchar_t zenNum[] = { 0xFF11,0xFF12,0xFF13,0x00 };
-	EXPECT_TRUE(stdIsAsciiDigit(L"123"));
+    const wchar_t* zenNum = L"１２３";
+    // const char16_t* t16 = u"１２３";
+
+    EXPECT_TRUE(stdIsAsciiDigit(L"123"));
 	EXPECT_TRUE(stdIsAsciiDigit("0993"));
 	EXPECT_TRUE(stdIsAsciiDigit(wstring(L"123")));
 	EXPECT_TRUE(stdIsAsciiDigit(string("09")));
@@ -26,8 +27,14 @@ TEST(stdosd, stdIsDigit)
 	EXPECT_TRUE(stdIsTdigit("0993"));
 	EXPECT_TRUE(stdIsTdigit(wstring(L"123")));
 	EXPECT_TRUE(stdIsTdigit(string("09")));
-	EXPECT_TRUE(stdIsTdigit(zenNum));
-	EXPECT_TRUE(stdIsTdigit(wstring(zenNum)));
+#ifdef _MSC_VER
+    EXPECT_TRUE(stdIsTdigit(zenNum));
+    EXPECT_TRUE(stdIsTdigit(wstring(zenNum)));
+#else
+    EXPECT_TRUE(!stdIsTdigit(zenNum));
+    EXPECT_TRUE(!stdIsTdigit(wstring(zenNum)));
+#endif
+    // EXPECT_TRUE(stdIsTdigit(t16));
 }
 
 TEST(stdosd, GetFileName)
@@ -209,7 +216,7 @@ TEST(stdosd, FormatW)
     s = stdFormat(L"%d", 100);
     EXPECT_STREQ(s.c_str(), L"100");
 
-    s = stdFormat(L"%s%d%s", L"---",100,L"---");
+    s = stdFormat(L"%ls%d%ls", L"---",100,L"---");
     EXPECT_STREQ(s.c_str(), L"---100---");
 }
 

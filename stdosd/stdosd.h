@@ -30,6 +30,7 @@
 #include <cstdarg>
 #include <cstdlib>
 #include <cstring>
+#include <wctype.h>
 
 namespace Ambiesoft {
 	namespace stdosd {
@@ -207,11 +208,7 @@ namespace Ambiesoft {
 		}
 		inline bool isTdigit(wchar_t c)
 		{
-#ifdef __GNUC__
-                    return !!isdigit(static_cast<char>(c));
-#else
 			return !!iswdigit(c);
-#endif
 		}
 		template<typename C>
 		inline bool stdIsTdigit(const C* str, size_t len = -1)
@@ -401,12 +398,18 @@ namespace Ambiesoft {
 		{
 			return stdSplitStringHelper(str, delimiter);
 		}
-		inline std::vector<std::wstring> stdSplitString(
-			const std::wstring& str,
-			const std::wstring& delimiter)
-		{
-			return stdSplitStringHelper(str, delimiter);
-		}
+        inline std::vector<std::wstring> stdSplitString(
+            const std::wstring& str,
+            const std::wstring& delimiter)
+        {
+            return stdSplitStringHelper(str, delimiter);
+        }
+        inline std::vector<std::u16string> stdSplitString(
+            const std::u16string& str,
+            const std::u16string& delimiter)
+        {
+            return stdSplitStringHelper(str, delimiter);
+        }
 
 
 		template<typename StringType>
@@ -441,9 +444,13 @@ namespace Ambiesoft {
 							  const char *format,
 							  va_list argptr)
 		{
-#if defined(__GUNC__) || defined(__MINGW32__)
-			// (void)count;
-			return vsnprintf_s(buffer, sizeOfBuffer, count, format, argptr);
+#if defined(__MINGW32__)
+
+            // (void)count;
+            return vsnprintf_s(buffer, sizeOfBuffer, count, format, argptr);
+#elif defined(__GNUC__)
+            return vsnprintf(buffer, sizeOfBuffer, format, argptr);
+
 #elif _WIN32
 #if _MSC_VER <= 1400
 			int n = _vsnwprintf((wchar_t *)str.data(), size, fmt.c_str(), ap);
@@ -458,9 +465,12 @@ namespace Ambiesoft {
 							  const wchar_t *format,
 							  va_list argptr)
 		{
-#if defined(__GUNC__) || defined(__MINGW32__)
-			(void)count;
-			return vswprintf_s(buffer, sizeOfBuffer, format, argptr);
+#if defined(__MINGW32__)
+            (void)count;
+            return vswprintf_s(buffer, sizeOfBuffer, format, argptr);
+#elif defined(__GNUC__)
+            return vswprintf(buffer,sizeOfBuffer,format,argptr);
+
 #elif _WIN32
 #if _MSC_VER <= 1400
 			int n = _vsnwprintf((wchar_t *)str.data(), size, fmt.c_str(), ap);

@@ -25,14 +25,14 @@
 #include <string>
 #include <vector>
 namespace Ambiesoft { namespace stdosd {
-    bool IsPathRoot(const wchar_t* pPath);
-    bool IsBothEmptyOrNULL(const wchar_t* p1, const wchar_t* p2);
-    bool IsSamePathDepth(const wchar_t* p1, const wchar_t* p2);
-    bool IsPathChildIncluded(const wchar_t* p1, const wchar_t* p2, std::wstring* pDupPath = NULL);
+    bool IsPathRoot(const char16_t* pPath);
+    bool IsBothEmptyOrNULL(const char16_t* p1, const char16_t* p2);
+    bool IsSamePathDepth(const char16_t* p1, const char16_t* p2);
+    bool IsPathChildIncluded(const char16_t* p1, const char16_t* p2, std::u16string* pDupPath = NULL);
+    std::u16string stdPathCanonicalize(const char16_t* pPath);
 
-
-	bool checkDupPaths(const std::vector<std::wstring>& saPaths,
-		std::wstring& left,
-		std::wstring& right,
-		std::wstring& common);
+    bool checkDupPaths(const std::vector<std::u16string>& saPaths,
+        std::u16string& left,
+        std::u16string& right,
+        std::u16string& common);
 } }
