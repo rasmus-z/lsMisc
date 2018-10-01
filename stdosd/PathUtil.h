@@ -47,6 +47,8 @@ bool checkDupPaths(const std::vector<std::wstring>& saPaths,
     std::wstring& left,
     std::wstring& right,
     std::wstring& common);
+#else
+    std::u16string stdPathCanonicalize(const char16_t* pPath);
 #endif
 
 } }
