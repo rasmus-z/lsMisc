@@ -27,7 +27,7 @@ TEST(stdosd, stdIsDigit)
 	EXPECT_TRUE(stdIsTdigit("0993"));
 	EXPECT_TRUE(stdIsTdigit(wstring(L"123")));
 	EXPECT_TRUE(stdIsTdigit(string("09")));
-#ifdef _MSC_VER
+#if defined(_MSC_VER) || defined(__MINGW32__)
     EXPECT_TRUE(stdIsTdigit(zenNum));
     EXPECT_TRUE(stdIsTdigit(wstring(zenNum)));
 #else

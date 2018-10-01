@@ -120,7 +120,7 @@ namespace Ambiesoft {
 			return wcslen(p);
 		}
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER) || defined(__MINGW32__)
 		static int myStrCaseCmp(const char* left, const char* right) {
 			return _strcmpi(left, right);
 		}

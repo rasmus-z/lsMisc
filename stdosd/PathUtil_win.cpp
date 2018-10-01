@@ -65,21 +65,28 @@ using namespace std;
 #pragma comment(lib,"shlwapi.lib")
 
 namespace Ambiesoft { namespace stdosd {
-	//server/			should be treated as root
+    static inline const wchar_t* toWc(const char16_t* p) {
+        return (const wchar_t*)p;
+    }
+    static inline const char16_t* to16c(const wchar_t* p) {
+        return (const char16_t*)p;
+    }
+
+    //server/			should be treated as root
 	//server/folder		should not be treated as root
 	//server/folder/aaa	should not be treated as root
-    bool IsPathRoot(const char16_t* pPathorg)
-	{
+    bool IsPathRoot(const wchar_t* pPathorg)
+    {
 		if (!pPathorg || pPathorg[0] == 0)
             return false;
 
-		if (PathIsRelative(pPathorg))
+        if (PathIsRelative(pPathorg))
 		{
-			TCHAR szT[MAX_PATH * 2];
-			LPTSTR pT;
-			if (GetFullPathName(pPathorg, _countof(szT), szT, &pT) > _countof(szT))
+            TCHAR szT[MAX_PATH * 2];
+            LPTSTR pT;
+            if (GetFullPathName(pPathorg, _countof(szT), szT, &pT) > _countof(szT))
                 return false;
-			return IsPathRoot(szT);
+            return IsPathRoot(szT);
 		}
         LPWSTR pPath = nullptr;
         LPWSTR pPathFree = nullptr;
@@ -125,15 +132,20 @@ namespace Ambiesoft { namespace stdosd {
 		free(pPathFree);
 		return ret;
 	}
+    bool IsPathRoot(const char16_t* pPathorg)
+    {
+        return IsPathRoot(toWc(pPathorg));
+    }
 
-    static bool IsBothEmptyOrNULL(const char16_t* p1, const char16_t* p2)
+
+    bool IsBothEmptyOrNULL(const char16_t* p1, const char16_t* p2)
 	{
 		if (p1 == NULL || p1[0] == 0)
 			return p2 == NULL || p2[0] == 0;
         return false;
 	}
 
-    int myPathGetComponentCount(const char16_t* p)
+    int myPathGetComponentCount(const wchar_t* p)
 	{
 		LPCTSTR pT = p;
 		int i = 0;
@@ -143,30 +155,43 @@ namespace Ambiesoft { namespace stdosd {
 		}
 		return i;
 	}
-    bool IsSamePathDepth(const char16_t* p1org, const char16_t* p2org)
-	{
-		return myPathGetComponentCount(p1org) == myPathGetComponentCount(p2org);
-	}
+    int myPathGetComponentCount(const char16_t* p)
+    {
+        return myPathGetComponentCount(toWc(p));
+    }
 
+    bool IsSamePathDepth(const wchar_t* p1org, const wchar_t* p2org)
+    {
+        return myPathGetComponentCount(p1org) == myPathGetComponentCount(p2org);
+    }
+    bool IsSamePathDepth(const char16_t* p1org, const char16_t* p2org)
+    {
+        return IsSamePathDepth(toWc(p1org), toWc(p2org));
+    }
+
+    bool IsPathSame(const wchar_t* p1, const wchar_t* p2)
+    {
+        return lstrcmpi(p1, p2) == 0;
+    }
     bool IsPathSame(const char16_t* p1, const char16_t* p2)
-	{
-		return lstrcmpi(p1, p2) == 0;
-	}
-    bool IsPathChildIncluded(const char16_t* p1org, const char16_t* p2org, std::u16string* pDupPath)
+    {
+        return IsPathSame(toWc(p1), toWc(p2));
+    }
+    bool IsPathChildIncluded(const wchar_t* p1org, const wchar_t* p2org, std::wstring* pDupPath)
 	{
 		// http://d.hatena.ne.jp/s-kita/20101206/1291651401#PathCommonPrefix
 		TCHAR lpCommonPrefix[MAX_PATH]; lpCommonPrefix[0] = 0;
 		int nCommonPrefixCharcters;
 
-        unique_ptr<char16_t> p1(_tcsdup(p1org));
-        unique_ptr<char16_t> p2(_tcsdup(p2org));
+        unique_ptr<wchar_t> p1(_tcsdup(p1org));
+        unique_ptr<wchar_t> p2(_tcsdup(p2org));
 
 		PathRemoveBackslash(p1.get());
 		PathRemoveBackslash(p2.get());
 
-        u16string w1 = p1.get();
+        wstring w1 = p1.get();
         replace(w1.begin(), w1.end(), u'/', u'\\');
-        u16string w2 = p2.get();
+        wstring w2 = p2.get();
         replace(w2.begin(), w2.end(), u'/', u'\\');
 
 		TCHAR szT1[MAX_PATH * 2];
@@ -204,6 +229,10 @@ namespace Ambiesoft { namespace stdosd {
 
         return true;
 	}
+    bool IsPathChildIncluded(const char16_t* p1org, const char16_t* p2org, std::u16string* pDupPath)
+    {
+        return IsPathChildIncluded(toWc(p1org), toWc(p2org), (wstring*)pDupPath);
+    }
 
 
     static bool HasDupPaths(

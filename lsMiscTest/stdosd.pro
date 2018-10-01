@@ -24,19 +24,23 @@ HEADERS += \
     ../stdosd/stdosd.h
 
 win32 {
+	message( "win32 sources and libs" )
    SOURCES += \
         ../stdosd/PathUtil_win.cpp \
         gtestPathUtil_win.cpp \
         ../stdosd/stdosd_win.cpp \
 
     win32-g++ {
+		message( "win32-g++ libs" )
         LIBS += -lOle32 -lShlwapi -luuid
     }
     win32-msvc* {
+		message( "win32-msvc* libs" )
         LIBS += Ole32.lib Shlwapi.lib uuid.lib
     }
 }
 linux-g++ {
+	message( "linux-g++ sources and libs" )
     SOURCES += \
         ../stdosd/PathUtil_linux.cpp \
         gtestPathUtil_linux.cpp \

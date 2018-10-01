@@ -16,18 +16,18 @@ using namespace Ambiesoft::stdosd;
 
 TEST(PathUtil, IsRoot)
 {
-	EXPECT_TRUE(IsPathRoot(L"C:"));
-	EXPECT_TRUE(IsPathRoot(L"C:\\"));
-	EXPECT_TRUE(!IsPathRoot(L"C:\\a"));
-	EXPECT_TRUE(IsPathRoot(L"\\\\"));
-	EXPECT_TRUE(IsPathRoot(L"\\\\thexp"));
-	EXPECT_TRUE(!IsPathRoot(L"\\\\thexp\\a"));
-	EXPECT_TRUE(!IsPathRoot(L"\\\\thexp\\a\\b"));
-	EXPECT_TRUE(!IsPathRoot(L""));
-	EXPECT_TRUE(!IsPathRoot(L".."));
-	EXPECT_TRUE(IsPathRoot(L"../../../../../../../../../../../../../../../../../../../../../"));
+    EXPECT_TRUE(IsPathRoot(L"C:"));
+    EXPECT_TRUE(IsPathRoot(L"C:\\"));
+    EXPECT_TRUE(!IsPathRoot(L"C:\\a"));
+    EXPECT_TRUE(IsPathRoot(L"\\\\"));
+    EXPECT_TRUE(IsPathRoot(L"\\\\thexp"));
+    EXPECT_TRUE(!IsPathRoot(L"\\\\thexp\\a"));
+    EXPECT_TRUE(!IsPathRoot(L"\\\\thexp\\a\\b"));
+    EXPECT_TRUE(!IsPathRoot(L""));
+    EXPECT_TRUE(!IsPathRoot(L".."));
+    EXPECT_TRUE(IsPathRoot(L"../../../../../../../../../../../../../../../../../../../../../"));
 
-	EXPECT_TRUE(!IsPathRoot(L"/afwefwea/fjweo/fwejo"));
+    EXPECT_TRUE(!IsPathRoot(L"/afwefwea/fjweo/fwejo"));
 }
 
 TEST(PathUtil, IsChild)
