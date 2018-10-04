@@ -93,7 +93,7 @@ namespace Ambiesoft { namespace stdosd {
         bool ret = false;
 		do
 		{
-            if (pPathorg[wcslen(pPathorg) - 1] != u'\\')
+            if (pPathorg[wcslen(pPathorg) - 1] != L'\\')
 			{
 				size_t wordsize = (wcslen(pPathorg) + 1 + 1);
 				size_t bytesize = wordsize * sizeof(WCHAR);
@@ -111,7 +111,7 @@ namespace Ambiesoft { namespace stdosd {
 
 			if (!PathIsUNC(pPath))
 			{
-				ret = PathIsRoot(pPath);
+				ret = !!PathIsRoot(pPath);
 				break;
 			}
 			if (PathIsUNCServer(pPath))
@@ -190,9 +190,9 @@ namespace Ambiesoft { namespace stdosd {
 		PathRemoveBackslash(p2.get());
 
         wstring w1 = p1.get();
-        replace(w1.begin(), w1.end(), u'/', u'\\');
+        replace(w1.begin(), w1.end(), L'/', L'\\');
         wstring w2 = p2.get();
-        replace(w2.begin(), w2.end(), u'/', u'\\');
+        replace(w2.begin(), w2.end(), L'/', L'\\');
 
 		TCHAR szT1[MAX_PATH * 2];
 		TCHAR szT2[MAX_PATH * 2];
@@ -235,42 +235,79 @@ namespace Ambiesoft { namespace stdosd {
     }
 
 
-    static bool HasDupPaths(
-        const u16string& left,
-        const vector<u16string>& saPaths,
+	static bool HasDupPaths(
+		const u16string& left,
+		const vector<u16string>& saPaths,
 		size_t startindex,
 		size_t& hitindex,
-        u16string& common)
+		u16string& common)
 	{
 		for (size_t i = startindex; i < saPaths.size(); ++i)
 		{
-            u16string dupParent;
+			u16string dupParent;
 			if (IsPathChildIncluded(left.c_str(), saPaths[i].c_str(), &dupParent))
 			{
 				common = dupParent;
 				hitindex = i;
-                return true;
+				return true;
 			}
 		}
-        return false;
+		return false;
+	}
+	static bool HasDupPaths(
+		const wstring& left,
+		const vector<wstring>& saPaths,
+		size_t startindex,
+		size_t& hitindex,
+		wstring& common)
+	{
+		for (size_t i = startindex; i < saPaths.size(); ++i)
+		{
+			wstring dupParent;
+			if (IsPathChildIncluded(left.c_str(), saPaths[i].c_str(), &dupParent))
+			{
+				common = dupParent;
+				hitindex = i;
+				return true;
+			}
+		}
+		return false;
 	}
 
-    bool checkDupPaths(const vector<u16string>& saPaths,
-        u16string& left,
-        u16string& right,
-        u16string& common)
+	bool checkDupPaths(const vector<u16string>& saPaths,
+		u16string& left,
+		u16string& right,
+		u16string& common)
 	{
 		for (size_t i = 0; i < saPaths.size(); ++i)
 		{
-            u16string tmpleft = saPaths[i];
+			u16string tmpleft = saPaths[i];
 			size_t hitindex = 0;
 			if (HasDupPaths(tmpleft, saPaths, i + 1, hitindex, common))
 			{
 				left = tmpleft;
 				right = saPaths[hitindex];
-                return false;
+				return false;
 			}
 		}
-        return true;
+		return true;
+	}
+	bool checkDupPaths(const vector<wstring>& saPaths,
+		wstring& left,
+		wstring& right,
+		wstring& common)
+	{
+		for (size_t i = 0; i < saPaths.size(); ++i)
+		{
+			wstring tmpleft = saPaths[i];
+			size_t hitindex = 0;
+			if (HasDupPaths(tmpleft, saPaths, i + 1, hitindex, common))
+			{
+				left = tmpleft;
+				right = saPaths[hitindex];
+				return false;
+			}
+		}
+		return true;
 	}
 }}

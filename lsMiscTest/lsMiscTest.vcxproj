@@ -423,7 +423,6 @@
     <ClCompile Include="gtestUrlEncode.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\OpParser.h" />
     <ClInclude Include="..\AddBaseElement.h" />
     <ClInclude Include="..\AddCharset.h" />
     <ClInclude Include="..\AnyCloser.h" />
@@ -515,6 +514,7 @@
     <ClInclude Include="..\sqlite3.h" />
     <ClInclude Include="..\sqliteserialize.h" />
     <ClInclude Include="..\StartProcess.h" />
+    <ClInclude Include="..\stdosd\OpParser.h" />
     <ClInclude Include="..\stdosd\PathUtil.h" />
     <ClInclude Include="..\stdosd\SetPrority.h" />
     <ClInclude Include="..\stdosd\stdosd.h" />

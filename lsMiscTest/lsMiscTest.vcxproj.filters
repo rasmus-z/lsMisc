@@ -692,9 +692,6 @@
     <ClInclude Include="..\GetWindowTstring.h">
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
-    <ClInclude Include="..\OpParser.h">
-      <Filter>lsMisc\1 Header</Filter>
-    </ClInclude>
     <ClInclude Include="debug.h">
       <Filter>Header</Filter>
     </ClInclude>
@@ -714,6 +711,9 @@
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
     <ClInclude Include="..\stdosd\PathUtil.h">
+      <Filter>stdosd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\stdosd\OpParser.h">
       <Filter>stdosd</Filter>
     </ClInclude>
   </ItemGroup>

@@ -31,7 +31,7 @@
 #include <cassert>
 
 namespace Ambiesoft {
-    namespace Logic {
+	namespace Logic {
 
 		// TODO: Can I remove this?
 #define OpParserContainerType std::list
@@ -41,29 +41,30 @@ namespace Ambiesoft {
 		public:
 			OpParserError(char const* const message) :
 				std::runtime_error(message) {}
-            virtual ~OpParserError() {}
+			virtual ~OpParserError() {}
 
-//            virtual const char* what() const {
-//                return std::runtime_error::what();
-//            }
+			//            virtual const char* what() const {
+			//                return std::runtime_error::what();
+			//            }
 
 		};
 
-		namespace {
-			enum TokenType
-			{
-				TOKEN_NONE,
 
-				TOKEN_BEGINNING_PARENTHESIS,
-				TOKEN_ENDING_PARENTHESIS,
-				TOKEN_OR,
-				TOKEN_AND,
+		enum class OpParserTokenType
+		{
+			TOKEN_NONE,
 
-                                TOKEN_PREDICATOR,
+			TOKEN_BEGINNING_PARENTHESIS,
+			TOKEN_ENDING_PARENTHESIS,
+			TOKEN_OR,
+			TOKEN_AND,
 
-				TOKEN_PARENT,
-			};
-		}
+
+			TOKEN_PREDICATOR,
+
+			TOKEN_PARENT,
+		};
+
 
 		template<typename T>
 		class Token
@@ -73,17 +74,17 @@ namespace Ambiesoft {
 
 
 		public:
-			explicit Token(TokenType tt) :
+			explicit Token(OpParserTokenType tt) :
 				tt_(tt) {}
-                        explicit Token(const T& predicator) :
-                                tt_(TOKEN_PREDICATOR),
-                                predicator_(new T(predicator))
+			explicit Token(const T& predicator) :
+				tt_(OpParserTokenType::TOKEN_PREDICATOR),
+				predicator_(new T(predicator))
 			{}
 
 			// Ctor for parent token which contains sub tokens
 			explicit Token(const TokenVectorT& v) :
-				tt_(TOKEN_PARENT),
-				subtokens_(v) 
+				tt_(OpParserTokenType::TOKEN_PARENT),
+				subtokens_(v)
 			{}
 
 			// copy
@@ -91,31 +92,31 @@ namespace Ambiesoft {
 				tt_(that.tt_),
 				subtokens_(that.subtokens_)
 			{
-                                if (that.predicator_)
-                                        predicator_ = new T(*that.predicator_);
+				if (that.predicator_)
+					predicator_ = new T(*that.predicator_);
 			}
-			
+
 			// rval copy
 			explicit Token(TokenT&& that) :
 				tt_(std::move(that.tt_)),
 				subtokens_(std::move(that.subtokens_))
 			{
-                                predicator_ = that.predicator_;
-                                that.predicator_ = nullptr;
+				predicator_ = that.predicator_;
+				that.predicator_ = nullptr;
 			}
 
 			// dtor
 			~Token()
 			{
-                                delete predicator_;
+				delete predicator_;
 			}
 			// Equal Operator
 			TokenT& operator=(const TokenT& that) {
 				if (this != &that)
 				{
 					this->tt_ = that.tt_;
-                                        if(that.predicator_)
-                                                this->predicator_ = new T(*that.predicator_);
+					if (that.predicator_)
+						this->predicator_ = new T(*that.predicator_);
 					this->subtokens_ = that.subtokens_;
 				}
 				return *this;
@@ -125,39 +126,39 @@ namespace Ambiesoft {
 				if (this != &that)
 				{
 					this->tt_ = std::move(that.tt_);
-                                        this->predicator_ = that.predicator_;
-                                        that.predicator_ = nullptr;
+					this->predicator_ = that.predicator_;
+					that.predicator_ = nullptr;
 					this->subtokens_ = std::move(that.subtokens_);
 				}
 				return *this;
 			}
 
 			bool IsOperator() const {
-				return tt_ == TOKEN_AND || tt_ == TOKEN_OR;
+				return tt_ == OpParserTokenType::TOKEN_AND || tt_ == OpParserTokenType::TOKEN_OR;
 			}
 			bool IsAnd() const {
-				return tt_ == TOKEN_AND;
+				return tt_ == OpParserTokenType::TOKEN_AND;
 			}
 			bool IsOr() const {
-				return tt_ == TOKEN_OR;
+				return tt_ == OpParserTokenType::TOKEN_OR;
 			}
 			bool IsBeginParen() const {
-				return tt_ == TOKEN_BEGINNING_PARENTHESIS;
+				return tt_ == OpParserTokenType::TOKEN_BEGINNING_PARENTHESIS;
 			}
 			bool IsEndParen() const {
-				return tt_ == TOKEN_ENDING_PARENTHESIS;
+				return tt_ == OpParserTokenType::TOKEN_ENDING_PARENTHESIS;
 			}
-                        bool IsPredicator() const {
-                                return tt_ == TOKEN_PREDICATOR;
+			bool IsPredicator() const {
+				return tt_ == OpParserTokenType::TOKEN_PREDICATOR;
 			}
 			bool IsParent() const {
-				return tt_ == TOKEN_PARENT;
+				return tt_ == OpParserTokenType::TOKEN_PARENT;
 			}
 
-                        const T& predicator() const {
-                                assert(IsPredicator());
-                                assert(predicator_ != nullptr);
-                                return *predicator_;
+			const T& predicator() const {
+				assert(IsPredicator());
+				assert(predicator_ != nullptr);
+				return *predicator_;
 			}
 
 			const TokenVectorT& subTokens() const {
@@ -191,11 +192,11 @@ namespace Ambiesoft {
 		private:
 			// Constructed by ctor from user, or
 			// while evaluating, it will become Parent.
-			TokenType tt_;
+			OpParserTokenType tt_;
 
-                        // User's predicator.
+			// User's predicator.
 			// Much of copy will be performed on T.
-                        T* predicator_ = nullptr;
+			T* predicator_ = nullptr;
 
 			// When token type is Parent, this is set.
 			// All '()' and 'A AND B' will be subtoken.
@@ -223,7 +224,7 @@ namespace Ambiesoft {
 				Throw_SysntaxErrorAnd,
 				Throw_SysntaxErrorOr,
 				Throw_SysntaxErrorEndingParenthesis,
-                                Throw_SysntaxErrorPredicator,
+				Throw_SysntaxErrorPredicator,
 
 				Throw_SysntaxErrorMismatchedParenthesis,
 			};
@@ -233,7 +234,7 @@ namespace Ambiesoft {
 				*(const_cast<bool*>(&implicitAnd_)) = that.implicitAnd_;
 				evaluator_ = that.evaluator_;
 				tokens_ = that.tokens_;
-                parsedTokens_ = that.parsedTokens_;
+				parsedTokens_ = that.parsedTokens_;
 				lastAddedTokenType_ = that.lastAddedTokenType_;
 			}
 		public:
@@ -243,9 +244,9 @@ namespace Ambiesoft {
 				bool implicitAnd = false) :
 				evaluator_(evaluator),
 				nullResult_(nullResult),
-				implicitAnd_(implicitAnd){}
-		
-            OpParser(const OpParserT& that) {
+				implicitAnd_(implicitAnd) {}
+
+			OpParser(const OpParserT& that) {
 				overMe(that);
 			}
 			const OpParserT& operator=(const OpParserT& that) {
@@ -262,7 +263,7 @@ namespace Ambiesoft {
 				dirty_ = true;
 				// 'A ( ...' is illegal.
 				// 'implicit: 'A AND ( ...' is legal
-                                if (lastAddedTokenType_ == TOKEN_PREDICATOR)
+				if (lastAddedTokenType_ == OpParserTokenType::TOKEN_PREDICATOR)
 				{
 					if (implicitAnd_)
 						AddAnd();
@@ -271,58 +272,58 @@ namespace Ambiesoft {
 				}
 				// ') (' is illegal.
 				// implicit: ') and (' is legal.
-				if(lastAddedTokenType_ == TOKEN_ENDING_PARENTHESIS)
-				{ 
+				if (lastAddedTokenType_ == OpParserTokenType::TOKEN_ENDING_PARENTHESIS)
+				{
 					if (implicitAnd_)
 						AddAnd();
 					else
 						makeThrow(Throw_SysntaxErrorBeginningParenthesis);
 				}
 
-				tokens_.push_back(TokenT(lastAddedTokenType_=TOKEN_BEGINNING_PARENTHESIS));
+				tokens_.push_back(TokenT(lastAddedTokenType_ = OpParserTokenType::TOKEN_BEGINNING_PARENTHESIS));
 			}
 			void AddAnd() {
 				dirty_ = true;
 				// 'AND ...' with 'AND' is illegal.
 				// '( AND ...' is illegal.
-				if (lastAddedTokenType_ == TOKEN_NONE ||
-					lastAddedTokenType_ == TOKEN_BEGINNING_PARENTHESIS)
+				if (lastAddedTokenType_ == OpParserTokenType::TOKEN_NONE ||
+					lastAddedTokenType_ == OpParserTokenType::TOKEN_BEGINNING_PARENTHESIS)
 				{
 					makeThrow(Throw_SysntaxErrorAnd);
 				}
 
-				tokens_.push_back(TokenT(lastAddedTokenType_ = TOKEN_AND));
+				tokens_.push_back(TokenT(lastAddedTokenType_ = OpParserTokenType::TOKEN_AND));
 			}
 			void AddOr() {
 				dirty_ = true;
 				// 'OR ...' is illegal.
 				// implicit: 'AND OR ...' is still illegal.
-				if (lastAddedTokenType_ == TOKEN_NONE)
+				if (lastAddedTokenType_ == OpParserTokenType::TOKEN_NONE)
 				{
 					makeThrow(Throw_SysntaxErrorOr);
 				}
-				
+
 				// '( OR ...' is illegal.
 				// '( AND OR ...' is still illegal.
-				if(lastAddedTokenType_ == TOKEN_BEGINNING_PARENTHESIS)
+				if (lastAddedTokenType_ == OpParserTokenType::TOKEN_BEGINNING_PARENTHESIS)
 				{
 					makeThrow(Throw_SysntaxErrorOr);
 				}
-				tokens_.push_back(TokenT(lastAddedTokenType_ = TOKEN_OR));
+				tokens_.push_back(TokenT(lastAddedTokenType_ = OpParserTokenType::TOKEN_OR));
 			}
 			void AddEndingParenthesis() {
 				dirty_ = true;
 				// ') ...' is illegal.
 				// implicat: 'AND ) ...' is still illegal.
-				if (lastAddedTokenType_ == TOKEN_NONE)
+				if (lastAddedTokenType_ == OpParserTokenType::TOKEN_NONE)
 					makeThrow(Throw_SysntaxErrorEndingParenthesis);
 
 				// 'AND )' is illegal.
 				// implicit: 'AND AND )' is illegal.
-				if (lastAddedTokenType_ == TOKEN_AND)
+				if (lastAddedTokenType_ == OpParserTokenType::TOKEN_AND)
 					makeThrow(Throw_SysntaxErrorEndingParenthesis);
 
-				tokens_.push_back(TokenT(lastAddedTokenType_ = TOKEN_ENDING_PARENTHESIS));
+				tokens_.push_back(TokenT(lastAddedTokenType_ = OpParserTokenType::TOKEN_ENDING_PARENTHESIS));
 			}
 
 			// TODO: Add Not
@@ -330,18 +331,18 @@ namespace Ambiesoft {
 				dirty_ = true;
 			}
 
-                        void AddPredicator(const T& predicator) {
+			void AddPredicator(const T& predicator) {
 				dirty_ = true;
-                                PreAddPredicator();
-                                lastAddedTokenType_ = TOKEN_PREDICATOR;
-                                tokens_.push_back(TokenT(predicator));
+				PreAddPredicator();
+				lastAddedTokenType_ = OpParserTokenType::TOKEN_PREDICATOR;
+				tokens_.push_back(TokenT(predicator));
 			}
 			// rval
-                        void AddPredicator(T&& predicator) {
+			void AddPredicator(T&& predicator) {
 				dirty_ = true;
-                                PreAddPredicator();
-                                lastAddedTokenType_ = TOKEN_PREDICATOR;
-                                tokens_.push_back(TokenT(std::move(predicator)));
+				PreAddPredicator();
+				lastAddedTokenType_ = OpParserTokenType::TOKEN_PREDICATOR;
+				tokens_.push_back(TokenT(std::move(predicator)));
 			}
 
 			bool Evaluate(Args... args) const {
@@ -371,24 +372,24 @@ namespace Ambiesoft {
 				for (const TokenT& token : tokens_)
 					token.clearResult();
 			}
-                        void PreAddPredicator() {
+			void PreAddPredicator() {
 				dirty_ = true;
 				// 'A A' is illegal
 				// implicit: 'A and A' is legal.
-                                if (lastAddedTokenType_ == TOKEN_PREDICATOR)
+				if (lastAddedTokenType_ == OpParserTokenType::TOKEN_PREDICATOR)
 				{
 					if (implicitAnd_)
 						AddAnd();
 					else
-                                                makeThrow(Throw_SysntaxErrorPredicator);
+						makeThrow(Throw_SysntaxErrorPredicator);
 				}
 			}
 
 			// remove paren
 			void UnParenthesis(TokenVectorT& tv) const
 			{
-                typename TokenVectorT::iterator it = tv.begin();
-                typename TokenVectorT::iterator itLastOpeningParen = tv.end();
+				typename TokenVectorT::iterator it = tv.begin();
+				typename TokenVectorT::iterator itLastOpeningParen = tv.end();
 				bool found = false;
 
 				// Find inner-most paren pair
@@ -420,7 +421,7 @@ namespace Ambiesoft {
 						// but starting paren found
 						makeThrow(Throw_SysntaxErrorMismatchedParenthesis);
 					}
-					
+
 					// now tokes are liner
 					return;
 				}
@@ -435,10 +436,10 @@ namespace Ambiesoft {
 					//
 					// itLastHit: begining of paren
 					// it: end of paren
-                    typename TokenVectorT::iterator insideStart = itLastOpeningParen;
+					typename TokenVectorT::iterator insideStart = itLastOpeningParen;
 					++insideStart;
 
-                    typename TokenVectorT::iterator insideEnd = it;
+					typename TokenVectorT::iterator insideEnd = it;
 					std::advance(insideEnd, -1);
 
 
@@ -464,7 +465,7 @@ namespace Ambiesoft {
 			bool FindAndTripet(typename TokenVectorT::iterator& it1,
 				typename TokenVectorT::iterator& itOp,
 				typename TokenVectorT::iterator& it2,
-                TokenVectorT& tv) const
+				TokenVectorT& tv) const
 			{
 				// already liner
 				assert((tv.size() % 2) == 1);
@@ -482,7 +483,7 @@ namespace Ambiesoft {
 						--it1;
 
 						itOp = it;
-						
+
 						it2 = it;
 						++it2;
 						return true;
@@ -495,16 +496,16 @@ namespace Ambiesoft {
 				// already liner
 				assert((tv.size() % 2) == 1);
 
-                typename TokenVectorT::iterator it1, itOp, it2;
+				typename TokenVectorT::iterator it1, itOp, it2;
 				if (!FindAndTripet(it1, itOp, it2, tv))
 				{
 					// no more 'and'
 					return;
 				}
 
-                typename TokenVectorT::iterator itTmp = it2;
+				typename TokenVectorT::iterator itTmp = it2;
 				++itTmp;
-				TokenVectorT insideVecForToken(it1,  itTmp);
+				TokenVectorT insideVecForToken(it1, itTmp);
 				TokenT parentToken(insideVecForToken);
 				// now create new vector
 
@@ -520,31 +521,31 @@ namespace Ambiesoft {
 				// dont know whether it's liner
 				UnAnd(tv);
 			}
-		
+
 			bool EvaluateAnd(const TokenT& left, const TokenT& right, const bool dryRun, Args...args) const
 			{
-				return EvaluateToken(left,dryRun, args...) && EvaluateToken(right,dryRun, args...);
+				return EvaluateToken(left, dryRun, args...) && EvaluateToken(right, dryRun, args...);
 			}
 			bool EvaluateOr(const TokenT& left, const TokenT& right, const bool dryRun, Args...args) const
 			{
-				return EvaluateToken(left,dryRun, args...) || EvaluateToken(right,dryRun, args...);
+				return EvaluateToken(left, dryRun, args...) || EvaluateToken(right, dryRun, args...);
 			}
 			void makeThrow(ThrowType) const {
 				throw OpParserError("");
 			}
-                        bool CallEvaluator(const T& predicator, const bool dryRun, Args...args) const {
+			bool CallEvaluator(const T& predicator, const bool dryRun, Args...args) const {
 				if (dryRun)
 					return nullResult_;
-                                return evaluator_(predicator, args...);
+				return evaluator_(predicator, args...);
 			}
 			bool EvaluateToken(const TokenT& token, const bool dryRun, Args...args) const
 			{
-                                if (token.IsPredicator())
+				if (token.IsPredicator())
 				{
 					// cache result
 					if (token.hasResult())
 						return token.result();
-                                        bool ret = CallEvaluator(token.predicator(), dryRun, args...);
+					bool ret = CallEvaluator(token.predicator(), dryRun, args...);
 					token.setResult(ret);
 					return ret;
 				}
@@ -583,13 +584,13 @@ namespace Ambiesoft {
 				{
 					return EvaluateToken(*tv.begin(), dryRun, args...);
 				}
-				else if (tv.size()==3)
+				else if (tv.size() == 3)
 				{
-                    typename TokenVectorT::const_iterator it = tv.begin();
+					typename TokenVectorT::const_iterator it = tv.begin();
 
-                    typename TokenVectorT::const_iterator it1 = it++;
-                    typename TokenVectorT::const_iterator itOp = it++;
-                    typename TokenVectorT::const_iterator it2 = it++;
+					typename TokenVectorT::const_iterator it1 = it++;
+					typename TokenVectorT::const_iterator itOp = it++;
+					typename TokenVectorT::const_iterator it2 = it++;
 
 					assert(itOp->IsOperator());
 
@@ -602,9 +603,9 @@ namespace Ambiesoft {
 				}
 
 				// Now all are connected by 'or'.
-                for(typename TokenVectorT::const_iterator it = tv.begin();;)
+				for (typename TokenVectorT::const_iterator it = tv.begin();;)
 				{
-                    typename TokenVectorT::const_iterator it1 = it;
+					typename TokenVectorT::const_iterator it1 = it;
 					assert(!it1->IsOr());
 
 					++it;
@@ -614,7 +615,7 @@ namespace Ambiesoft {
 					assert(it->IsOr());
 
 					++it;
-                    typename TokenVectorT::const_iterator it2 = it;
+					typename TokenVectorT::const_iterator it2 = it;
 					assert(!it2->IsOr());
 
 					if (EvaluateOr(*it1, *it2, dryRun, args...))
@@ -636,13 +637,13 @@ namespace Ambiesoft {
 				return !!evaluator_;
 			}
 		private:
-            // User defined evaluator.
-            EvaluatorT evaluator_;
+			// User defined evaluator.
+			EvaluatorT evaluator_;
 
 			// Hold dirty state,
 			// Optimize Consecutive Evaluate call.
 			mutable bool dirty_ = true;
-			
+
 			// Hold parsed tokens, culculated by Evaluate call, if dirty_.
 			mutable TokenVectorT parsedTokens_;
 
@@ -659,7 +660,7 @@ namespace Ambiesoft {
 
 			// Last added token type, set by Add* mothed, for
 			// check syntax.
-			TokenType lastAddedTokenType_ = TokenType::TOKEN_NONE;
+			OpParserTokenType lastAddedTokenType_ = OpParserTokenType::TOKEN_NONE;
 		};
 
 	} // namespace OpParser
