@@ -23,6 +23,10 @@
 
 #include "stdafx.h"
 
+#ifndef NOMINMAX
+#error "NOMINMAX must not be defined"
+#endif
+
 #include <windows.h>
 #include <tchar.h>
 #include <Shobjidl.h>

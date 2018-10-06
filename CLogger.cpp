@@ -26,7 +26,7 @@
 #include <string>
 #include <time.h>
 #include "stdwin32/stdwin32.h"
-#include "../stdosd/stdosd.h"
+#include "stdosd/stdosd.h"
 
 #include "tstring.h"
 
