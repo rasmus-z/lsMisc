@@ -101,6 +101,7 @@
 #endif
 #endif // __cplusplus_cli
 
+#include "../stdosd/stdosd.h"
 
 #include "stdwin32.h"
 
@@ -130,93 +131,93 @@ namespace stdwin32 {
 	//	return ret;
 	//}
 
-	bool stdIsFullPath(LPCWSTR pD, bool allownetwork)
-	{
-		if (!pD || pD[0] == 0)
-			return false;
+	//bool stdIsFullPath(LPCWSTR pD, bool allownetwork)
+	//{
+	//	if (!pD || pD[0] == 0)
+	//		return false;
 
-		if (pD[0] == L'/')
-			return true;
+	//	if (pD[0] == L'/')
+	//		return true;
 
-		if (!((L'a' <= pD[0] && pD[0] < +L'z') ||
-			(L'A' <= pD[0] && pD[0] < +L'Z')))
-		{
-			if(!allownetwork)
-				return FALSE;
+	//	if (!((L'a' <= pD[0] && pD[0] < +L'z') ||
+	//		(L'A' <= pD[0] && pD[0] < +L'Z')))
+	//	{
+	//		if(!allownetwork)
+	//			return FALSE;
 
-			if (pD[1] == 0)
-				return false;
+	//		if (pD[1] == 0)
+	//			return false;
 
-			if (!(pD[0] == L'\\' && pD[1] == L'\\'))
-				return false;
+	//		if (!(pD[0] == L'\\' && pD[1] == L'\\'))
+	//			return false;
 
-			return pD[2] != 0;
-		}
+	//		return pD[2] != 0;
+	//	}
 
-		if (pD[1] == L':')
-			return true;
+	//	if (pD[1] == L':')
+	//		return true;
 
-		return false;
-	}
+	//	return false;
+	//}
 
-	std::wstring stdCombinePath(const std::wstring& d1, const std::wstring& d2)
-	{
-		return stdCombinePath(d1.c_str(), d2.c_str());
-	}
+	//std::wstring stdCombinePath(const std::wstring& d1, const std::wstring& d2)
+	//{
+	//	return stdCombinePath(d1.c_str(), d2.c_str());
+	//}
 
-	std::wstring stdCombinePath(LPCWSTR pD1, LPCWSTR pD2)
-	{
-		if (!pD1 || !pD1[0])
-			return pD2;
+	//std::wstring stdCombinePath(LPCWSTR pD1, LPCWSTR pD2)
+	//{
+	//	if (!pD1 || !pD1[0])
+	//		return pD2;
 
-		if (!pD2 || !pD2[0])
-			return pD1;
+	//	if (!pD2 || !pD2[0])
+	//		return pD1;
 
-		if (stdIsFullPath(pD2))
-			return pD2;
+	//	if (Ambiesoft::stdosd:: stdIsFullPath(pD2))
+	//		return pD2;
 
-		std::wstring ret = pD1;
-		std::wstring::iterator it = ret.end();
-		--it;
-		if (*it != L'\\')
-			ret += L'\\';
+	//	std::wstring ret = pD1;
+	//	std::wstring::iterator it = ret.end();
+	//	--it;
+	//	if (*it != L'\\')
+	//		ret += L'\\';
 
-		ret += pD2;
-		return ret;
-	}
+	//	ret += pD2;
+	//	return ret;
+	//}
 
 
-	std::wstring stdGetParentDirectory(const std::wstring& path, bool bAddBackslach)
-	{
-		return stdGetParentDirectory(path.c_str(), bAddBackslach);
-	}
-	std::wstring stdGetParentDirectory(LPCWSTR pPath, bool bAddBackslach)
-	{
-		if (!pPath || pPath[0] == 0)
-			return Nil;
+	//std::wstring stdGetParentDirectory(const std::wstring& path, bool bAddBackslach)
+	//{
+	//	return stdGetParentDirectory(path.c_str(), bAddBackslach);
+	//}
+	//std::wstring stdGetParentDirectory(LPCWSTR pPath, bool bAddBackslach)
+	//{
+	//	if (!pPath || pPath[0] == 0)
+	//		return Nil;
 
-		LPWSTR p = _wcsdup(pPath);
+	//	LPWSTR p = _wcsdup(pPath);
 
-		size_t len = wcslen(p);
-		if (p[len - 1] == L'\\')
-			p[len - 1] = 0;
+	//	size_t len = wcslen(p);
+	//	if (p[len - 1] == L'\\')
+	//		p[len - 1] = 0;
 
-		LPWSTR pT = wcsrchr(p, L'\\');
-		if (!pT)
-		{
-			free(p);
-			return Nil;
-		}
+	//	LPWSTR pT = wcsrchr(p, L'\\');
+	//	if (!pT)
+	//	{
+	//		free(p);
+	//		return Nil;
+	//	}
 
-		if (!bAddBackslach)
-			*pT = 0;
-		else
-			*(pT + 1) = 0;
+	//	if (!bAddBackslach)
+	//		*pT = 0;
+	//	else
+	//		*(pT + 1) = 0;
 
-		std::wstring ret(p);
-		free(p);
-		return ret;
-	}
+	//	std::wstring ret(p);
+	//	free(p);
+	//	return ret;
+	//}
 
 	//std::wstring stdGetFileName(const std::wstring& full)
 	//{

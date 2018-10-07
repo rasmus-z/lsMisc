@@ -86,24 +86,23 @@ namespace stdwin32 {
 		return stdGetModuleFileNameW();
 	}
 #else
-	inline std::wstring stdGetModuleFileName() {
+	inline std::string stdGetModuleFileName() {
 		return stdGetModuleFileNameA();
 	}
-}
 #endif
 
 
 
 
-	bool stdIsFullPath(LPCWSTR pD, bool allownetwork = true);
+	// bool stdIsFullPath(LPCWSTR pD, bool allownetwork = true);
 
 
-	std::wstring stdCombinePath(LPCWSTR pD1, LPCWSTR pD2);
-	std::wstring stdCombinePath(const std::wstring& d1, const std::wstring& d2);
-	
-	std::wstring stdGetParentDirectory(const std::wstring& path, bool bAddBackslach=false);
-	std::wstring stdGetParentDirectory(LPCWSTR pPath, bool bAddBackslach=false);
-	
+	//std::wstring stdCombinePath(LPCWSTR pD1, LPCWSTR pD2);
+	//std::wstring stdCombinePath(const std::wstring& d1, const std::wstring& d2);
+
+	//std::wstring stdGetParentDirectory(const std::wstring& path, bool bAddBackslach=false);
+	//std::wstring stdGetParentDirectory(LPCWSTR pPath, bool bAddBackslach=false);
+
 	//std::wstring stdGetFileName(const std::wstring& full);
 	//std::wstring stdGetFileName(LPCWSTR pFull);
 
@@ -115,34 +114,34 @@ namespace stdwin32 {
 	//std::wstring stdGetFileExtension(const std::wstring& w);
 
 	std::vector<std::wstring> stdSplitSCedPath(LPCWSTR pPath);
-	
 
 
-//#ifndef __cplusplus_cli
-//	std::string string_formatA(const std::string fmt, ...);
-//	std::wstring string_formatW(const std::wstring fmt, ...);
-//#ifdef UNICODE
-//	#define string_format string_formatW
-//#else
-//	#define string_format string_formatA
-//#endif
-//#endif // __cplusplus_cli
+
+	//#ifndef __cplusplus_cli
+	//	std::string string_formatA(const std::string fmt, ...);
+	//	std::wstring string_formatW(const std::wstring fmt, ...);
+	//#ifdef UNICODE
+	//	#define string_format string_formatW
+	//#else
+	//	#define string_format string_formatA
+	//#endif
+	//#endif // __cplusplus_cli
 
 
 	std::string trimA(const std::string& str,
-					 const std::string& whitespace = " \t\r\n");
+		const std::string& whitespace = " \t\r\n");
 	std::wstring trimW(const std::wstring& str,
-					 const std::wstring& whitespace = L" \t\r\n");
+		const std::wstring& whitespace = L" \t\r\n");
 #ifdef UNICODE
-	#define trim trimW
+#define trim trimW
 #else
-	#define trim trimA
+#define trim trimA
 #endif
 
 
 
-	
-	
+
+
 	std::wstring stdGetCurrentDirectory();
 
 
@@ -151,22 +150,22 @@ namespace stdwin32 {
 
 
 
-//	bool hasEndingIA (std::string const &fullString, std::string const &ending);
-//	bool hasEndingIW (std::wstring const &fullString, std::wstring const &ending);
-//#ifdef UNICODE
-//	#define hasEndingI hasEndingIW
-//#else
-//	#define hasEndingI hasEndingIA
-//#endif
+	//	bool hasEndingIA (std::string const &fullString, std::string const &ending);
+	//	bool hasEndingIW (std::wstring const &fullString, std::wstring const &ending);
+	//#ifdef UNICODE
+	//	#define hasEndingI hasEndingIW
+	//#else
+	//	#define hasEndingI hasEndingIA
+	//#endif
 
 
 
 	std::string stdItoA(int i);
 	std::wstring stdItoW(int i);
 #ifdef UNICODE
-	#define stdItoT stdItoW
+#define stdItoT stdItoW
 #else
-	#define stdItoT stdItoA
+#define stdItoT stdItoA
 #endif
 
 
@@ -174,36 +173,36 @@ namespace stdwin32 {
 	std::string stdItoA64(__int64 i);
 	std::wstring stdItoW64(__int64 i);
 #ifdef UNICODE
-	#define stdItoT64 stdItoW64
+#define stdItoT64 stdItoW64
 #else
-	#define stdItoT64 stdItoA
+#define stdItoT64 stdItoA
 #endif
 
 
 	std::string stdExpandEnvironmentStringsA(LPCSTR pStr);
 	std::wstring stdExpandEnvironmentStringsW(LPCWSTR pStr);
 #ifdef UNICODE
-	#define stdExpandEnvironmentStrings stdExpandEnvironmentStringsW
+#define stdExpandEnvironmentStrings stdExpandEnvironmentStringsW
 #else
-	#define stdExpandEnvironmentStrings stdExpandEnvironmentStringsA
+#define stdExpandEnvironmentStrings stdExpandEnvironmentStringsA
 #endif
 
 
 
 	std::wstring stdGetEnvironmentVariableW(LPCWSTR pStr);
 #ifdef UNICODE
-	#define stdGetEnvironmentVariable stdGetEnvironmentVariableW
+#define stdGetEnvironmentVariable stdGetEnvironmentVariableW
 #else
-	#define stdGetEnvironmentVariable stdGetEnvironmentVariableA
+#define stdGetEnvironmentVariable stdGetEnvironmentVariableA
 #endif
 
 
 
-	bool stdGetUnittedSizeW(LPCWSTR pStr, int& nSign, __int64& lResult, int* pUnit=NULL);
+	bool stdGetUnittedSizeW(LPCWSTR pStr, int& nSign, __int64& lResult, int* pUnit = NULL);
 #ifdef UNICODE
-	#define stdGetUnittedSize stdGetUnittedSizeW
+#define stdGetUnittedSize stdGetUnittedSizeW
 #else
-	#define stdGetUnittedSize stdGetUnittedSizeA
+#define stdGetUnittedSize stdGetUnittedSizeA
 #endif
 
 
@@ -257,11 +256,11 @@ namespace stdwin32 {
 	//std::wstring StdStringReplaceW(std::wstring str, const std::wstring& from, const std::wstring& to);
 	//std::string  StdStringReplaceA(std::string str, const std::string& from, const std::string& to);
 
-//#ifdef UNICODE
-//#define StdStringReplace StdStringReplaceW
-//#else
-//#define StdStringReplace StdStringReplaceA
-//#endif
+	//#ifdef UNICODE
+	//#define StdStringReplace StdStringReplaceW
+	//#else
+	//#define StdStringReplace StdStringReplaceA
+	//#endif
 
 
 
@@ -272,5 +271,6 @@ namespace stdwin32 {
 
 
 	std::wstring stdApplyDQ(const std::wstring& ws);
-}
 
+
+}

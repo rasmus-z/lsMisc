@@ -18,6 +18,9 @@ using namespace stdwin32;
 #include "../I18N.h"
 using namespace Ambiesoft;
 
+#include "../stdosd/stdosd.h"
+using namespace Ambiesoft::stdosd;
+
 using namespace std;
 
 

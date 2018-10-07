@@ -35,10 +35,25 @@
 namespace Ambiesoft {
 	namespace stdosd {
 
+
+#define STDOSD_WCHARLITERAL_INNER(x) L ## x
+#define STDOSD_WCHARLITERAL(x) STDOSD_WCHARLITERAL_INNER(x)
+
 #if _MSC_VER <= 1800  // less than or equal to VC2013 ( or VC12 )
 #define STDOSD_CONSTEXPR const
 #else
 #define STDOSD_CONSTEXPR const constexpr
+#endif
+
+
+#if defined(_MSC_VER) || defined(__MINGW32__)
+#define STDOSD_DEFAULTSEPARATOR "\\"
+#define STDOSD_PATHSEPARATORS "/\\"
+#define STDOSD_NEWLINE "\r\n"
+#else
+#define STDOSD_DEFAULTSEPARATOR "/"
+#define STDOSD_PATHSEPARATORS "/"
+#define STDOSD_NEWLINE "\n"
 #endif
 
 		template<typename C>
@@ -61,8 +76,20 @@ namespace Ambiesoft {
 			static STDOSD_CONSTEXPR char N8 = '8';
 			static STDOSD_CONSTEXPR char N9 = '9';
 
+			static STDOSD_CONSTEXPR char Na = 'a';
+			static STDOSD_CONSTEXPR char Nz = 'z';
+			static STDOSD_CONSTEXPR char NA = 'A';
+			static STDOSD_CONSTEXPR char NZ = 'Z';
+
+			static STDOSD_CONSTEXPR char NSlash = '/';
+			static STDOSD_CONSTEXPR char NBackSlash = '\\';
+			static STDOSD_CONSTEXPR char NColon = ':';
+
+			static STDOSD_CONSTEXPR char* defaultSeparator() {
+				return STDOSD_DEFAULTSEPARATOR;
+			}
 			static STDOSD_CONSTEXPR char* pathSeparators() {
-				return "/\\";
+				return STDOSD_PATHSEPARATORS;
 			}
 			static STDOSD_CONSTEXPR char* nulString() {
 				return "";
@@ -92,6 +119,18 @@ namespace Ambiesoft {
 			static STDOSD_CONSTEXPR wchar_t N8 = L'8';
 			static STDOSD_CONSTEXPR wchar_t N9 = L'9';
 
+			static STDOSD_CONSTEXPR wchar_t Na = L'a';
+			static STDOSD_CONSTEXPR wchar_t Nz = L'z';
+			static STDOSD_CONSTEXPR wchar_t NA = L'A';
+			static STDOSD_CONSTEXPR wchar_t NZ = L'Z';
+
+			static STDOSD_CONSTEXPR wchar_t NSlash = L'/';
+			static STDOSD_CONSTEXPR wchar_t NBackSlash = L'\\';
+			static STDOSD_CONSTEXPR wchar_t NColon = L':';
+
+			static STDOSD_CONSTEXPR wchar_t* defaultSeparator() {
+				return STDOSD_WCHARLITERAL(STDOSD_DEFAULTSEPARATOR);
+			}
 			static STDOSD_CONSTEXPR wchar_t* pathSeparators() {
 				return L"/\\";
 			}
@@ -282,6 +321,8 @@ namespace Ambiesoft {
 			return stdGetFileName(w.c_str());
 		}
 
+
+
 		template<typename C>
 		inline const C* stdGetFileExtension(const C* pPath)
 		{
@@ -335,6 +376,140 @@ namespace Ambiesoft {
 		inline std::wstring stdGetFileNameWitoutExtension(const std::wstring& w)
 		{
 			return stdGetFileNameWitoutExtension(w.c_str());
+		}
+
+
+
+
+		template<typename C>
+		inline bool isEndwithSeparator(const std::basic_string<C, std::char_traits<C>, std::allocator<C>>& s)
+		{
+			if (s.empty())
+				return false;
+
+			C lastChar = s[s.length() - 1];
+			for (const C* p = stdLiterals<C>::pathSeparators(); *p; ++p)
+			{
+				if (lastChar == *p)
+					return true;
+			}
+			return false;
+		}
+
+		template<typename C>
+		inline std::basic_string<C, std::char_traits<C>, std::allocator<C>>
+			stdGetParentDirectory(const C* pPath, bool bAddSeparator = false)
+		{
+			using mys = std::basic_string<C, std::char_traits<C>, std::allocator<C>>;
+
+			if (!pPath || pPath[0] == 0)
+				return mys();
+
+			
+
+			mys s(pPath);
+			size_t len = s.size();
+			if (isEndwithSeparator(s))
+			{
+				s = s.substr(0, len - 1);
+			}
+
+			const C* pStart = s.c_str();
+			const C* pSeparator = getOneofRChar(s.c_str(), stdLiterals<C>::pathSeparators());
+			if (!pSeparator)
+			{
+				return mys();
+			}
+
+			if (!bAddSeparator)
+				s.assign(pStart, pSeparator - 1);
+			else
+				s.assign(pStart, pSeparator);
+
+			return s;
+		}
+		inline std::string stdGetParentDirectory(const std::string& w, bool bAddSeparator = false)
+		{
+			return stdGetParentDirectory(w.c_str(), bAddSeparator);
+		}
+		inline std::wstring stdGetParentDirectory(const std::wstring& w, bool bAddSeparator = false)
+		{
+			return stdGetParentDirectory(w.c_str(), bAddSeparator);
+		}
+
+
+
+
+		// TODO: test with Linux
+		template<typename C>
+		bool stdIsFullPath(const C* pD, bool allownetwork)
+		{
+			if (!pD || pD[0] == 0)
+				return false;
+
+			if (pD[0] == stdLiterals<C>::NSlash)
+				return true;
+
+			
+			if (!((stdLiterals<C>::Na <= pD[0] && pD[0] <= stdLiterals<C>::Nz) ||
+				(stdLiterals<C>::NA <= pD[0] && pD[0] <= stdLiterals<C>::NZ)))
+			{
+				if (!allownetwork)
+					return false;
+
+				if (pD[1] == 0)
+					return false;
+				
+				if (!(pD[0] == stdLiterals<C>::NBackSlash && pD[1] == stdLiterals<C>::NBackSlash))
+					return false;
+
+				return pD[2] != 0;
+			}
+
+			if (pD[1] == stdLiterals<C>::NColon)
+				return true;
+
+			return false;
+		}
+		inline bool stdIsFullPath(const std::string& w, bool allownetwork = true)
+		{
+			return stdIsFullPath(w.c_str(), allownetwork);
+		}
+		inline bool stdIsFullPath(const std::wstring& w, bool allownetwork = true)
+		{
+			return stdIsFullPath(w.c_str(), allownetwork);
+		}
+
+
+
+		template<typename C>
+		inline std::basic_string<C, std::char_traits<C>, std::allocator<C>>
+		stdCombinePath(const C* pD1, const C* pD2)
+		{
+			using myS = std::basic_string<C, std::char_traits<C>, std::allocator<C>>;
+			if (!pD1 || !pD1[0])
+				return pD2;
+
+			if (!pD2 || !pD2[0])
+				return pD1;
+
+			if (stdIsFullPath(pD2))
+				return pD2;
+
+			myS ret = pD1;
+			if (!isEndwithSeparator(ret))
+				ret += stdLiterals<C>::defaultSeparator(); // '\\'; // TODO to make this template
+
+			ret += pD2;
+			return ret;
+		}
+		inline std::wstring stdCombinePath(const std::wstring& d1, const std::wstring& d2)
+		{
+			return stdCombinePath(d1.c_str(), d2.c_str());
+		}
+		inline std::string stdCombinePath(const std::string& d1, const std::string& d2)
+		{
+			return stdCombinePath(d1.c_str(), d2.c_str());
 		}
 
 

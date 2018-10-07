@@ -350,3 +350,63 @@ TEST(stdosd, resolveLinkTest)
 			resolveLink(L"\\\\Thexp\\Share\\T\\aaa.pdf"));
 	}
 }
+
+TEST(stdosd, GetParentDirectoryText)
+{
+	EXPECT_TRUE(
+		stdGetParentDirectory(
+			L"Z:\\From\\LegacyPrograms\\T\\aaa.rtf"
+		) ==
+			L"Z:\\From\\LegacyPrograms\\T");
+
+	EXPECT_TRUE(
+		stdGetParentDirectory(
+			L"Z:\\From\\LegacyPrograms\\T\\aaa.rtf", true
+		) ==
+			L"Z:\\From\\LegacyPrograms\\T\\");
+
+	EXPECT_TRUE(
+		stdGetParentDirectory(
+			L"", true
+		) ==
+			L"");
+
+	EXPECT_TRUE(
+		stdGetParentDirectory(
+			L"aaa", true
+		) ==
+			L"");
+
+	EXPECT_TRUE(
+		stdGetParentDirectory(
+			L"Z:\\From\\LegacyPrograms\\T\\"
+		) ==
+			L"Z:\\From\\LegacyPrograms");
+
+}
+
+TEST(stdosd, IsFullPathTest)
+{
+	EXPECT_TRUE(stdIsFullPath(L"Z:\\From\\LegacyPrograms\\T\\aaa.rtf"));
+	EXPECT_TRUE(stdIsFullPath(L"/a/b/c"));
+	EXPECT_TRUE(stdIsFullPath(L"\\\\ttt\\aaa"));
+
+	EXPECT_TRUE(!stdIsFullPath<char>((const char*)nullptr,false));
+	EXPECT_TRUE(!stdIsFullPath(""));
+	EXPECT_TRUE(!stdIsFullPath("."));
+	EXPECT_TRUE(!stdIsFullPath("aaa"));
+
+}
+
+
+TEST(stdosd, CombinePathTest)
+{
+	EXPECT_TRUE(
+		stdCombinePath(
+			L"Z:\\From\\LegacyPrograms\\T\\", L"aaa.txt"
+		) ==
+			L"Z:\\From\\LegacyPrograms\\T\\aaa.txt");
+	EXPECT_STREQ(stdCombinePath(L"aaa", L"bbb").c_str(), L"aaa\\bbb");
+	EXPECT_STREQ(stdCombinePath(L"z:\\aaa", L"bbb").c_str(), L"z:\\aaa\\bbb");
+
+}

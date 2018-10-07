@@ -102,13 +102,13 @@ namespace Ambiesoft {
 			{
 				wstring result;
 
-				DWORD dwFA = GetFileAttributes(input.c_str());
+				DWORD dwFA = GetFileAttributesW(input.c_str());
 				if (dwFA == 0xFFFFFFFF)
 					return input;
 				if ((dwFA & FILE_ATTRIBUTE_REPARSE_POINT) == 0)
 					return input;
 
-				HANDLE handle = CreateFile(input.c_str(),
+				HANDLE handle = CreateFileW(input.c_str(),
 					FILE_READ_EA,
 					FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
 					0,
@@ -168,7 +168,7 @@ namespace Ambiesoft {
 			//	return instring;
 			//}
 
-			if (PathIsUNC(full.c_str()))
+			if (PathIsUNCW(full.c_str()))
 				return instring;
 
 			vector<wstring> dirs = splitdir(full, L"\\\\");
