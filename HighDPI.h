@@ -28,4 +28,10 @@
 namespace Ambiesoft {
 
 	void InitHighDPISupport();
+	BOOL SystemParamInfoHighDPISupportA(
+		HWND hWnd,
+		UINT uiAction,
+		UINT uiParam,
+		PVOID pvParam,
+		UINT fWinIni);
 }

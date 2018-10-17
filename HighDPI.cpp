@@ -59,6 +59,17 @@ namespace Ambiesoft {
 	typedef BOOL (WINAPI* fnSetProcessDPIAware)(VOID);
 	static fnSetProcessDPIAware mySetProcessDPIAware;
 
+	typedef BOOL (WINAPI* fnSystemParametersInfoForDpi)(
+		UINT uiAction,
+		UINT uiParam,
+		PVOID pvParam,
+		UINT fWinIni,
+		UINT dpi);
+	static fnSystemParametersInfoForDpi mySystemParametersInfoForDpi;
+
+	typedef UINT (WINAPI* fnGetDpiFromDpiAwarenessContext)(void*);
+	static fnGetDpiFromDpiAwarenessContext myGetDpiFromDpiAwarenessContext;
+
 	static void prepareFunctions()
 	{
 		mySetThreadDpiAwarenessContext =
@@ -84,6 +95,14 @@ namespace Ambiesoft {
 		mySetProcessDPIAware =
 			(fnSetProcessDPIAware)GetProcAddress(
 			ghUser32, "SetProcessDPIAware");
+
+		mySystemParametersInfoForDpi = 
+			(fnSystemParametersInfoForDpi)GetProcAddress(
+			ghUser32, "SystemParametersInfoForDpi");
+
+		myGetDpiFromDpiAwarenessContext =
+			(fnGetDpiFromDpiAwarenessContext)GetProcAddress(
+			ghUser32, "GetDpiFromDpiAwarenessContext");
 	}
 
 	static UINT getWindowsDPI(HWND hWnd)
@@ -93,7 +112,8 @@ namespace Ambiesoft {
 		if (!myGetAwarenessFromDpiAwarenessContext || !myGetThreadDpiAwarenessContext)
 			return uDpi;
 
-		UINT dpiAwareness = myGetAwarenessFromDpiAwarenessContext(myGetThreadDpiAwarenessContext());
+		void* threadcontext = myGetThreadDpiAwarenessContext();
+		UINT dpiAwareness = myGetAwarenessFromDpiAwarenessContext(threadcontext);
 		
 		switch (dpiAwareness)
 		{
@@ -104,7 +124,16 @@ namespace Ambiesoft {
 
 			// Scale the window to the monitor DPI
 		case myDPI_AWARENESS_PER_MONITOR_AWARE:
-			uDpi = myGetDpiForWindow(hWnd);
+			if(IsWindow(hWnd))
+			{
+				if(myGetDpiForWindow)
+					uDpi = myGetDpiForWindow(hWnd);
+			}
+			else
+			{
+				if(myGetDpiFromDpiAwarenessContext)
+					uDpi = myGetDpiFromDpiAwarenessContext(threadcontext);
+			}
 			break;
 		}
 		return uDpi;
@@ -164,5 +193,19 @@ namespace Ambiesoft {
 		{
 			mySetProcessDPIAware();
 		}
+	}
+
+	BOOL SystemParamInfoHighDPISupportA(
+		HWND hWnd,
+		UINT uiAction,
+		UINT uiParam,
+		PVOID pvParam,
+		UINT fWinIni)
+	{
+		if(!mySystemParametersInfoForDpi)
+			return SystemParametersInfoA(uiAction, uiParam, pvParam, fWinIni);
+
+		UINT dpi = getWindowsDPI(hWnd);
+		return mySystemParametersInfoForDpi(uiAction, uiParam, pvParam, fWinIni, dpi);
 	}
 }
