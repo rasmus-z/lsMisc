@@ -133,7 +133,7 @@ namespace Ambiesoft {
 
 			rcWindow.right = rcWindow.left + MulDiv(width, dpi, 96);
 			rcWindow.bottom = rcWindow.top + MulDiv(height, dpi, 96);
-			SetWindowPos(pMsg->hwnd, nullptr, 
+			SetWindowPos(pMsg->hwnd, NULL, 
 				rcWindow.right, rcWindow.top, 
 				rcWindow.right - rcWindow.left, 
 				rcWindow.bottom - rcWindow.top, 
