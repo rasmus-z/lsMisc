@@ -56,13 +56,15 @@ namespace Ambiesoft {
 	typedef UINT(WINAPI* fnGetDpiForWindow)(HWND hwnd);
 	static fnGetDpiForWindow myGetDpiForWindow;
 
+	typedef BOOL (WINAPI* fnSetProcessDPIAware)(VOID);
+	static fnSetProcessDPIAware mySetProcessDPIAware;
+
 	static void prepareFunctions()
 	{
 		mySetThreadDpiAwarenessContext =
 			(fnSetThreadDpiAwarenessContext)GetProcAddress(
 			ghUser32, "SetThreadDpiAwarenessContext");
 
-		
 		myGetThreadDpiAwarenessContext =
 			(fnGetThreadDpiAwarenessContext)GetProcAddress(
 			ghUser32, "GetThreadDpiAwarenessContext");
@@ -78,7 +80,12 @@ namespace Ambiesoft {
 		myGetDpiForWindow =
 			(fnGetDpiForWindow)GetProcAddress(
 			ghUser32, "GetDpiForWindow");
+
+		mySetProcessDPIAware =
+			(fnSetProcessDPIAware)GetProcAddress(
+			ghUser32, "SetProcessDPIAware");
 	}
+
 	static UINT getWindowsDPI(HWND hWnd)
 	{
 		UINT uDpi = 96;
@@ -151,9 +158,11 @@ namespace Ambiesoft {
 		{
 			// DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2
 			mySetThreadDpiAwarenessContext((void*)-4);
+			gHook = SetWindowsHookExA(WH_GETMESSAGE, GetMsgProc, (HMODULE)&__ImageBase, GetCurrentThreadId());
 		}
-		
-		gHook = SetWindowsHookExA(WH_GETMESSAGE, GetMsgProc, (HMODULE)&__ImageBase, GetCurrentThreadId());
-
+		else if (mySetProcessDPIAware)
+		{
+			mySetProcessDPIAware();
+		}
 	}
 }
