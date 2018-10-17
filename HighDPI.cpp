@@ -56,10 +56,10 @@ namespace Ambiesoft {
 	typedef UINT(WINAPI* fnGetDpiForWindow)(HWND hwnd);
 	static fnGetDpiForWindow myGetDpiForWindow;
 
-	typedef BOOL (WINAPI* fnSetProcessDPIAware)(VOID);
+	typedef BOOL(WINAPI* fnSetProcessDPIAware)(VOID);
 	static fnSetProcessDPIAware mySetProcessDPIAware;
 
-	typedef BOOL (WINAPI* fnSystemParametersInfoForDpi)(
+	typedef BOOL(WINAPI* fnSystemParametersInfoForDpi)(
 		UINT uiAction,
 		UINT uiParam,
 		PVOID pvParam,
@@ -67,45 +67,55 @@ namespace Ambiesoft {
 		UINT dpi);
 	static fnSystemParametersInfoForDpi mySystemParametersInfoForDpi;
 
-	typedef UINT (WINAPI* fnGetDpiFromDpiAwarenessContext)(void*);
+	typedef UINT(WINAPI* fnGetDpiFromDpiAwarenessContext)(void*);
 	static fnGetDpiFromDpiAwarenessContext myGetDpiFromDpiAwarenessContext;
+
+	typedef int (WINAPI* fnGetSystemMetricsForDpi)(
+		int  nIndex,
+		UINT dpi
+		);
+	static fnGetSystemMetricsForDpi myGetSystemMetricsForDpi;
 
 	static void prepareFunctions()
 	{
 		mySetThreadDpiAwarenessContext =
 			(fnSetThreadDpiAwarenessContext)GetProcAddress(
-			ghUser32, "SetThreadDpiAwarenessContext");
+				ghUser32, "SetThreadDpiAwarenessContext");
 
 		myGetThreadDpiAwarenessContext =
 			(fnGetThreadDpiAwarenessContext)GetProcAddress(
-			ghUser32, "GetThreadDpiAwarenessContext");
+				ghUser32, "GetThreadDpiAwarenessContext");
 
 		myGetAwarenessFromDpiAwarenessContext =
 			(fnGetAwarenessFromDpiAwarenessContext)GetProcAddress(
-			ghUser32, "GetAwarenessFromDpiAwarenessContext");
+				ghUser32, "GetAwarenessFromDpiAwarenessContext");
 
 		myGetDpiForSystem =
 			(fnGetDpiForSystem)GetProcAddress(
-			ghUser32, "GetDpiForSystem");
+				ghUser32, "GetDpiForSystem");
 
 		myGetDpiForWindow =
 			(fnGetDpiForWindow)GetProcAddress(
-			ghUser32, "GetDpiForWindow");
+				ghUser32, "GetDpiForWindow");
 
 		mySetProcessDPIAware =
 			(fnSetProcessDPIAware)GetProcAddress(
-			ghUser32, "SetProcessDPIAware");
+				ghUser32, "SetProcessDPIAware");
 
-		mySystemParametersInfoForDpi = 
+		mySystemParametersInfoForDpi =
 			(fnSystemParametersInfoForDpi)GetProcAddress(
-			ghUser32, "SystemParametersInfoForDpi");
+				ghUser32, "SystemParametersInfoForDpi");
 
 		myGetDpiFromDpiAwarenessContext =
 			(fnGetDpiFromDpiAwarenessContext)GetProcAddress(
-			ghUser32, "GetDpiFromDpiAwarenessContext");
+				ghUser32, "GetDpiFromDpiAwarenessContext");
+
+		myGetSystemMetricsForDpi =
+			(fnGetSystemMetricsForDpi)GetProcAddress(
+				ghUser32, "GetSystemMetricsForDpi");
 	}
 
-	static UINT getWindowsDPI(HWND hWnd)
+	UINT GetWindowDPIHighDPISupport(HWND hWnd)
 	{
 		UINT uDpi = 96;
 
@@ -114,7 +124,7 @@ namespace Ambiesoft {
 
 		void* threadcontext = myGetThreadDpiAwarenessContext();
 		UINT dpiAwareness = myGetAwarenessFromDpiAwarenessContext(threadcontext);
-		
+
 		switch (dpiAwareness)
 		{
 			// Scale the window to the system DPI
@@ -124,53 +134,65 @@ namespace Ambiesoft {
 
 			// Scale the window to the monitor DPI
 		case myDPI_AWARENESS_PER_MONITOR_AWARE:
-			if(IsWindow(hWnd))
+			if (IsWindow(hWnd))
 			{
-				if(myGetDpiForWindow)
+				if (myGetDpiForWindow)
 					uDpi = myGetDpiForWindow(hWnd);
 			}
 			else
 			{
-				if(myGetDpiFromDpiAwarenessContext)
+				if (myGetDpiFromDpiAwarenessContext)
+				{
 					uDpi = myGetDpiFromDpiAwarenessContext(threadcontext);
+					if (uDpi == 0)
+					{
+						if (!myGetDpiForSystem)
+							uDpi = 96;
+						else
+							uDpi = myGetDpiForSystem();
+					}
+				}
 			}
 			break;
 		}
 		return uDpi;
 	}
 
-	static HHOOK gHook;
-	static LRESULT CALLBACK GetMsgProc(
-		int    code,
-		WPARAM wParam,
-		LPARAM lParam
-		)
-	{
-		if (code < 0 || code != HC_ACTION || wParam==PM_NOREMOVE)
-		{
-			return CallNextHookEx(gHook, code, wParam, lParam);
-		}
+	//static HHOOK gHook;
+	//static LRESULT CALLBACK CallWndProc(
+	//	int    code,
+	//	WPARAM wParam,
+	//	LPARAM lParam
+	//	)
+	//{
+	//	if (code != HC_ACTION)
+	//	{
+	//		return CallNextHookEx(gHook, code, wParam, lParam);
+	//	}
 
-		MSG* pMsg = reinterpret_cast<MSG*>(lParam);
-		if (pMsg->message == WM_DPICHANGED)
-		{
-			UINT dpi = getWindowsDPI(pMsg->hwnd);
-			RECT rcWindow = {};
-			GetWindowRect(pMsg->hwnd, &rcWindow);
-			LONG width = rcWindow.right - rcWindow.left;
-			LONG height = rcWindow.bottom - rcWindow.top;
+	//	// MSG* pMsg = reinterpret_cast<MSG*>(lParam);
+	//	CWPSTRUCT *p = reinterpret_cast<PCWPSTRUCT>(lParam);
+	//	UINT m = p->message;
+	//	HWND h = p->hwnd;
+	//	if (m == WM_DPICHANGED || m ==WM_CREATE)
+	//	{
+	//		UINT dpi = getWindowDPI(h);
+	//		RECT rcWindow = {};
+	//		GetWindowRect(h, &rcWindow);
+	//		LONG width = rcWindow.right - rcWindow.left;
+	//		LONG height = rcWindow.bottom - rcWindow.top;
 
-			rcWindow.right = rcWindow.left + MulDiv(width, dpi, 96);
-			rcWindow.bottom = rcWindow.top + MulDiv(height, dpi, 96);
-			SetWindowPos(pMsg->hwnd, NULL, 
-				rcWindow.right, rcWindow.top, 
-				rcWindow.right - rcWindow.left, 
-				rcWindow.bottom - rcWindow.top, 
-				SWP_NOZORDER | SWP_NOACTIVATE);
-		}
+	//		rcWindow.right = rcWindow.left + MulDiv(width, dpi, 96);
+	//		rcWindow.bottom = rcWindow.top + MulDiv(height, dpi, 96);
+	//		SetWindowPos(h, NULL, 
+	//			rcWindow.right, rcWindow.top, 
+	//			rcWindow.right - rcWindow.left, 
+	//			rcWindow.bottom - rcWindow.top, 
+	//			SWP_NOZORDER | SWP_NOACTIVATE);
+	//	}
 
-		return CallNextHookEx(gHook, code, wParam, lParam);
-	}
+	//	return CallNextHookEx(gHook, code, wParam, lParam);
+	//}
 
 	void InitHighDPISupport()
 	{
@@ -187,7 +209,11 @@ namespace Ambiesoft {
 		{
 			// DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2
 			mySetThreadDpiAwarenessContext((void*)-4);
-			gHook = SetWindowsHookExA(WH_GETMESSAGE, GetMsgProc, (HMODULE)&__ImageBase, GetCurrentThreadId());
+			//gHook = SetWindowsHookExA(
+			//	WH_CALLWNDPROC,
+			//	CallWndProc,
+			//	(HMODULE)&__ImageBase, 
+			//	GetCurrentThreadId());
 		}
 		else if (mySetProcessDPIAware)
 		{
@@ -202,10 +228,49 @@ namespace Ambiesoft {
 		PVOID pvParam,
 		UINT fWinIni)
 	{
-		if(!mySystemParametersInfoForDpi)
+		if (!mySystemParametersInfoForDpi)
 			return SystemParametersInfoA(uiAction, uiParam, pvParam, fWinIni);
 
-		UINT dpi = getWindowsDPI(hWnd);
+		UINT dpi = GetWindowDPIHighDPISupport(hWnd);
 		return mySystemParametersInfoForDpi(uiAction, uiParam, pvParam, fWinIni, dpi);
+	}
+	BOOL SystemParamInfoHighDPISupportW(
+		HWND hWnd,
+		UINT uiAction,
+		UINT uiParam,
+		PVOID pvParam,
+		UINT fWinIni)
+	{
+		if (!mySystemParametersInfoForDpi)
+			return SystemParametersInfoW(uiAction, uiParam, pvParam, fWinIni);
+
+		UINT dpi = GetWindowDPIHighDPISupport(hWnd);
+		return mySystemParametersInfoForDpi(uiAction, uiParam, pvParam, fWinIni, dpi);
+	}
+
+	int GetSystemMetricsHighDPISupport(HWND hWnd, int nIndex)
+	{
+		if (!myGetSystemMetricsForDpi)
+			return GetSystemMetrics(nIndex);
+
+		UINT dpi = GetWindowDPIHighDPISupport(hWnd);
+		return myGetSystemMetricsForDpi(nIndex, dpi);
+	}
+
+	void AdjustWindowSizeHighDPISupport(HWND hWnd)
+	{
+		UINT dpi = GetWindowDPIHighDPISupport(hWnd);
+		RECT rcWindow = {};
+		GetWindowRect(hWnd, &rcWindow);
+		LONG width = rcWindow.right - rcWindow.left;
+		LONG height = rcWindow.bottom - rcWindow.top;
+
+		rcWindow.right = rcWindow.left + MulDiv(width, dpi, 96);
+		rcWindow.bottom = rcWindow.top + MulDiv(height, dpi, 96);
+		SetWindowPos(hWnd, NULL,
+			rcWindow.right, rcWindow.top,
+			rcWindow.right - rcWindow.left,
+			rcWindow.bottom - rcWindow.top,
+			SWP_NOZORDER | SWP_NOACTIVATE);
 	}
 }

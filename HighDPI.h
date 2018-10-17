@@ -34,4 +34,13 @@ namespace Ambiesoft {
 		UINT uiParam,
 		PVOID pvParam,
 		UINT fWinIni);
+	BOOL SystemParamInfoHighDPISupportW(
+		HWND hWnd,
+		UINT uiAction,
+		UINT uiParam,
+		PVOID pvParam,
+		UINT fWinIni);
+	int GetSystemMetricsHighDPISupport(HWND hWnd, int nIndex);
+	void AdjustWindowSizeHighDPISupport(HWND hWnd);
+	UINT GetWindowDPIHighDPISupport(HWND hWnd);
 }
