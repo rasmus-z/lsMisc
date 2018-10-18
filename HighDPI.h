@@ -27,7 +27,7 @@
 
 namespace Ambiesoft {
 
-	void InitHighDPISupport();
+	int InitHighDPISupport(bool bThread = false);
 	BOOL SystemParamInfoHighDPISupportA(
 		HWND hWnd,
 		UINT uiAction,

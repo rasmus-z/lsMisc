@@ -25,6 +25,8 @@
 #include <windows.h>
 #include "HighDPI.h"
 
+#pragma comment(lib, "user32.lib")
+
 EXTERN_C IMAGE_DOS_HEADER __ImageBase;
 
 #ifndef WM_DPICHANGED
@@ -194,18 +196,28 @@ namespace Ambiesoft {
 	//	return CallNextHookEx(gHook, code, wParam, lParam);
 	//}
 
-	void InitHighDPISupport()
+	enum {
+		InitRet_Success = 0,
+		InitRet_AlreadyInitialized = 1,
+		InitRet_LoadLibraryFailed = 2,
+		InitRet_ThreadOK = 3,
+		InitRet_ProcessOK = 4,
+		InitRet_NotAvailable = 5,
+	};
+	int InitHighDPISupport(bool bThread)
 	{
 		if (ghUser32)
-			return;
+			return InitRet_AlreadyInitialized;
 
 		ghUser32 = LoadLibraryA("user32.dll");
-		bool ret = false;
+		
 		if (!ghUser32)
-			return;
+			return InitRet_LoadLibraryFailed;
 
 		prepareFunctions();
-		if (mySetThreadDpiAwarenessContext)
+
+		int ret = InitRet_NotAvailable;
+		if (mySetThreadDpiAwarenessContext && bThread)
 		{
 			// DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2
 			mySetThreadDpiAwarenessContext((void*)-4);
@@ -214,11 +226,16 @@ namespace Ambiesoft {
 			//	CallWndProc,
 			//	(HMODULE)&__ImageBase, 
 			//	GetCurrentThreadId());
+
+			ret = InitRet_ThreadOK;
 		}
 		else if (mySetProcessDPIAware)
 		{
 			mySetProcessDPIAware();
+			ret = InitRet_ProcessOK;
 		}
+
+		return ret;
 	}
 
 	BOOL SystemParamInfoHighDPISupportA(
