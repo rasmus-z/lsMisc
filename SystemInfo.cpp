@@ -827,13 +827,14 @@ namespace zoltan_csizmadia {
 		// so if it times out we just kill this thread
 		GetFileNameThreadParam* p = (GetFileNameThreadParam*)pParam;
 
-		UCHAR lpBuffer[0x1000];
-		DWORD iob[2];
+		UCHAR lpBuffer[0x1000] = { 0 };
+		void* iob[2];
 
+		
 		p->rc = INtDll::NtQueryInformationFile(p->hFile, iob, lpBuffer, sizeof(lpBuffer), 9);
 
 		if (p->rc == 0)
-			*p->pName = (wchar_t*)lpBuffer;
+			*(p->pName) = (wchar_t*)lpBuffer;
 	}
 
 	BOOL SystemHandleInformation::GetFileName(HANDLE h, wstring& str, DWORD processId)
