@@ -29,6 +29,10 @@
 
 #include "WritePrivateProfileWString.h"
 
+#ifdef min
+#undef min
+#endif
+
 BOOL WritePrivateProfileWString(const TCHAR *lpszSection, const TCHAR *lpszKey, const TCHAR *lpszIn, const TCHAR *lpszFile)
 {
 	if(lpszIn==NULL)
