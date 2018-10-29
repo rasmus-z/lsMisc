@@ -40,9 +40,9 @@
 namespace Ambiesoft {
 namespace stdosd {
 
-BOOL ResolveLink(LPCTSTR lpszFileIn, HWND hWnd, LPTSTR target)
+bool ResolveLink(LPCTSTR lpszFileIn, HWND hWnd, LPTSTR target)
 {
-	BOOL retval = FALSE;
+	bool retval = FALSE;
 	if( SUCCEEDED(CoInitialize(NULL)) )
 	{
 		IShellLink* psl = NULL;
@@ -60,7 +60,7 @@ BOOL ResolveLink(LPCTSTR lpszFileIn, HWND hWnd, LPTSTR target)
 				if( MultiByteToWideChar(CP_ACP, 0, lpszFileIn, -1, pIn, nAllocLeng) == 0 )
 				{
 					delete[] pIn;
-					return FALSE;
+					return false;
 				}
 #endif
 				{
@@ -70,7 +70,7 @@ BOOL ResolveLink(LPCTSTR lpszFileIn, HWND hWnd, LPTSTR target)
 						{
 							if( SUCCEEDED(psl->GetPath(target, MAX_PATH, NULL, 0)) )
 							{
-								retval = TRUE;
+								retval = true;
 							}
 						}
 					}
