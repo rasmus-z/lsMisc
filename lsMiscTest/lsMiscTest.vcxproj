@@ -296,6 +296,7 @@
     <ClCompile Include="..\OpenedFiles.cpp" />
     <ClCompile Include="..\PragmaShowVersions.cpp" />
     <ClCompile Include="..\GetProcessList.cpp" />
+    <ClCompile Include="..\Profiler.cpp" />
     <ClCompile Include="..\Registory.cpp" />
     <ClCompile Include="..\RemoveLastInValidURLChar.cpp" />
     <ClCompile Include="..\ReplaceFileHelper.cpp" />
@@ -501,6 +502,7 @@
     <ClInclude Include="..\os_traits.h" />
     <ClInclude Include="..\PragmaShowVersions.h" />
     <ClInclude Include="..\GetProcessList.h" />
+    <ClInclude Include="..\Profiler.h" />
     <ClInclude Include="..\Registory.h" />
     <ClInclude Include="..\RemoveLastInValidURLChar.h" />
     <ClInclude Include="..\ReplaceFileHelper.h" />

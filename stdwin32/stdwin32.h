@@ -28,110 +28,111 @@
 #include <windows.h>
 // #include "../tstring.h"
 
-namespace stdwin32 {
+namespace Ambiesoft {
+	namespace stdwin32 {
 
-	template<typename T>
-	struct StdCharTraits
-	{
-		static DWORD ssGetModuleFileName(
-			HMODULE hModule,
-			T* lpFilename,
-			DWORD nSize
-			)
+		template<typename T>
+		struct StdCharTraits
 		{
-			return GetModuleFileNameA(hModule, lpFilename, nSize);
-		}
-	};
-	template<>
-	struct StdCharTraits<wchar_t>
-	{
-		static DWORD ssGetModuleFileName(
-			HMODULE hModule,
-			wchar_t* lpFilename,
-			DWORD nSize
-			)
+			static DWORD ssGetModuleFileName(
+				HMODULE hModule,
+				T* lpFilename,
+				DWORD nSize
+				)
+			{
+				return GetModuleFileNameA(hModule, lpFilename, nSize);
+			}
+		};
+		template<>
+		struct StdCharTraits<wchar_t>
 		{
-			return GetModuleFileNameW(hModule, lpFilename, nSize);
-		}
-	};
+			static DWORD ssGetModuleFileName(
+				HMODULE hModule,
+				wchar_t* lpFilename,
+				DWORD nSize
+				)
+			{
+				return GetModuleFileNameW(hModule, lpFilename, nSize);
+			}
+		};
 
-	template<typename ST>
-	ST stdGetModuleFileNameTmplate(HINSTANCE hInst = NULL)
-	{
-		typename ST::traits_type::char_type* p = NULL;
-		DWORD size = 64;
-		for (;;)
+		template<typename ST>
+		ST stdGetModuleFileNameTmplate(HINSTANCE hInst = NULL)
 		{
-			p = (typename ST::traits_type::char_type*)realloc(p, size * sizeof(ST::traits_type::char_type));
-			if (StdCharTraits<ST::traits_type::char_type>::ssGetModuleFileName(hInst, p, size) < size)
-				break;
+			typename ST::traits_type::char_type* p = NULL;
+			DWORD size = 64;
+			for (;;)
+			{
+				p = (typename ST::traits_type::char_type*)realloc(p, size * sizeof(ST::traits_type::char_type));
+				if (StdCharTraits<ST::traits_type::char_type>::ssGetModuleFileName(hInst, p, size) < size)
+					break;
 
-			// Make double the size of required memory
-			size *= 2;
+				// Make double the size of required memory
+				size *= 2;
+			}
+
+			ST ret = p;
+			free((void*)p);
+			return ret;
 		}
 
-		ST ret = p;
-		free((void*)p);
-		return ret;
-	}
-
-	inline std::string stdGetModuleFileNameA() {
-		return stdGetModuleFileNameTmplate<std::string>();
-	}
-	inline std::wstring stdGetModuleFileNameW() {
-		return stdGetModuleFileNameTmplate<std::wstring>();
-	}
+		inline std::string stdGetModuleFileNameA() {
+			return stdGetModuleFileNameTmplate<std::string>();
+		}
+		inline std::wstring stdGetModuleFileNameW() {
+			return stdGetModuleFileNameTmplate<std::wstring>();
+		}
 #ifdef UNICODE
-	inline std::wstring stdGetModuleFileName() {
-		return stdGetModuleFileNameW();
-	}
+		inline std::wstring stdGetModuleFileName() {
+			return stdGetModuleFileNameW();
+		}
 #else
-	inline std::string stdGetModuleFileName() {
-		return stdGetModuleFileNameA();
-	}
+		inline std::string stdGetModuleFileName() {
+			return stdGetModuleFileNameA();
+		}
 #endif
 
 
 
 
-	// bool stdIsFullPath(LPCWSTR pD, bool allownetwork = true);
+		// bool stdIsFullPath(LPCWSTR pD, bool allownetwork = true);
 
 
-	//std::wstring stdCombinePath(LPCWSTR pD1, LPCWSTR pD2);
-	//std::wstring stdCombinePath(const std::wstring& d1, const std::wstring& d2);
+		//std::wstring stdCombinePath(LPCWSTR pD1, LPCWSTR pD2);
+		//std::wstring stdCombinePath(const std::wstring& d1, const std::wstring& d2);
 
-	//std::wstring stdGetParentDirectory(const std::wstring& path, bool bAddBackslach=false);
-	//std::wstring stdGetParentDirectory(LPCWSTR pPath, bool bAddBackslach=false);
+		//std::wstring stdGetParentDirectory(const std::wstring& path, bool bAddBackslach=false);
+		//std::wstring stdGetParentDirectory(LPCWSTR pPath, bool bAddBackslach=false);
 
-	//std::wstring stdGetFileName(const std::wstring& full);
-	//std::wstring stdGetFileName(LPCWSTR pFull);
+		//std::wstring stdGetFileName(const std::wstring& full);
+		//std::wstring stdGetFileName(LPCWSTR pFull);
 
-	//std::wstring stdGetFileNameWitoutExtension(LPCWSTR pPath);
-	//std::wstring stdGetFileNameWitoutExtension(const std::wstring& w);
+		//std::wstring stdGetFileNameWitoutExtension(LPCWSTR pPath);
+		//std::wstring stdGetFileNameWitoutExtension(const std::wstring& w);
 
-	// move to osd
-	//std::wstring stdGetFileExtension(LPCWSTR pPath);
-	//std::wstring stdGetFileExtension(const std::wstring& w);
+		// move to osd
+		//std::wstring stdGetFileExtension(LPCWSTR pPath);
+		//std::wstring stdGetFileExtension(const std::wstring& w);
 
-	std::vector<std::wstring> stdSplitSCedPath(LPCWSTR pPath);
-
-
-
-	//#ifndef __cplusplus_cli
-	//	std::string string_formatA(const std::string fmt, ...);
-	//	std::wstring string_formatW(const std::wstring fmt, ...);
-	//#ifdef UNICODE
-	//	#define string_format string_formatW
-	//#else
-	//	#define string_format string_formatA
-	//#endif
-	//#endif // __cplusplus_cli
+		std::vector<std::wstring> stdSplitSCedPath(LPCWSTR pPath);
 
 
-	std::string trimA(const std::string& str,
-		const std::string& whitespace = " \t\r\n");
-	std::wstring trimW(const std::wstring& str,
-		const std::wstring& whitespace = L" \t\r\n");
+
+		//#ifndef __cplusplus_cli
+		//	std::string string_formatA(const std::string fmt, ...);
+		//	std::wstring string_formatW(const std::wstring fmt, ...);
+		//#ifdef UNICODE
+		//	#define string_format string_formatW
+		//#else
+		//	#define string_format string_formatA
+		//#endif
+		//#endif // __cplusplus_cli
+
+
+		std::string trimA(const std::string& str,
+			const std::string& whitespace = " \t\r\n");
+		std::wstring trimW(const std::wstring& str,
+			const std::wstring& whitespace = L" \t\r\n");
 #ifdef UNICODE
 #define trim trimW
 #else
@@ -142,7 +143,7 @@ namespace stdwin32 {
 
 
 
-	std::wstring stdGetCurrentDirectory();
+		std::wstring stdGetCurrentDirectory();
 
 
 
@@ -150,18 +151,18 @@ namespace stdwin32 {
 
 
 
-	//	bool hasEndingIA (std::string const &fullString, std::string const &ending);
-	//	bool hasEndingIW (std::wstring const &fullString, std::wstring const &ending);
-	//#ifdef UNICODE
-	//	#define hasEndingI hasEndingIW
-	//#else
-	//	#define hasEndingI hasEndingIA
-	//#endif
+		//	bool hasEndingIA (std::string const &fullString, std::string const &ending);
+		//	bool hasEndingIW (std::wstring const &fullString, std::wstring const &ending);
+		//#ifdef UNICODE
+		//	#define hasEndingI hasEndingIW
+		//#else
+		//	#define hasEndingI hasEndingIA
+		//#endif
 
 
 
-	std::string stdItoA(int i);
-	std::wstring stdItoW(int i);
+		std::string stdItoA(int i);
+		std::wstring stdItoW(int i);
 #ifdef UNICODE
 #define stdItoT stdItoW
 #else
@@ -170,8 +171,8 @@ namespace stdwin32 {
 
 
 
-	std::string stdItoA64(__int64 i);
-	std::wstring stdItoW64(__int64 i);
+		std::string stdItoA64(__int64 i);
+		std::wstring stdItoW64(__int64 i);
 #ifdef UNICODE
 #define stdItoT64 stdItoW64
 #else
@@ -179,8 +180,8 @@ namespace stdwin32 {
 #endif
 
 
-	std::string stdExpandEnvironmentStringsA(LPCSTR pStr);
-	std::wstring stdExpandEnvironmentStringsW(LPCWSTR pStr);
+		std::string stdExpandEnvironmentStringsA(LPCSTR pStr);
+		std::wstring stdExpandEnvironmentStringsW(LPCWSTR pStr);
 #ifdef UNICODE
 #define stdExpandEnvironmentStrings stdExpandEnvironmentStringsW
 #else
@@ -189,7 +190,7 @@ namespace stdwin32 {
 
 
 
-	std::wstring stdGetEnvironmentVariableW(LPCWSTR pStr);
+		std::wstring stdGetEnvironmentVariableW(LPCWSTR pStr);
 #ifdef UNICODE
 #define stdGetEnvironmentVariable stdGetEnvironmentVariableW
 #else
@@ -198,7 +199,7 @@ namespace stdwin32 {
 
 
 
-	bool stdGetUnittedSizeW(LPCWSTR pStr, int& nSign, __int64& lResult, int* pUnit = NULL);
+		bool stdGetUnittedSizeW(LPCWSTR pStr, int& nSign, __int64& lResult, int* pUnit = NULL);
 #ifdef UNICODE
 #define stdGetUnittedSize stdGetUnittedSizeW
 #else
@@ -207,7 +208,7 @@ namespace stdwin32 {
 
 
 
-	std::wstring stdSplitCommandLineW(int argc, int startargc, LPCWSTR* argv);
+		std::wstring stdSplitCommandLineW(int argc, int startargc, LPCWSTR* argv);
 #ifdef UNICODE
 #define stdSplitCommandLine stdSplitCommandLineW
 #else
@@ -215,62 +216,63 @@ namespace stdwin32 {
 #endif
 
 
-	std::wstring stdAddBackSlash(const std::wstring& d);
+		std::wstring stdAddBackSlash(const std::wstring& d);
 
 
-	// broken
-	// std::wstring stdEncodeUrl(const std::wstring& d);
-	// std::wstring stdEncodeUrl(LPCWSTR pData);
+		// broken
+		// std::wstring stdEncodeUrl(const std::wstring& d);
+		// std::wstring stdEncodeUrl(LPCWSTR pData);
 
 
 
 
-	//std::wstring stdGetFullPathName(LPCWSTR pPath);
-	//std::wstring stdGetFullPathName(const std::wstring& ws);
+		//std::wstring stdGetFullPathName(LPCWSTR pPath);
+		//std::wstring stdGetFullPathName(const std::wstring& ws);
 
 
 
 
 
 #ifdef __cplusplus_cli
-	std::wstring getStdWString(System::String^ s);
-	std::string getStdString(System::String^ s);
+		std::wstring getStdWString(System::String^ s);
+		std::string getStdString(System::String^ s);
 #endif // __cplusplus_cli
 
 
-	std::string stdToString(const wchar_t * pIN);
-	std::string stdToString(const std::wstring& ws);
+		std::string stdToString(const wchar_t * pIN);
+		std::string stdToString(const std::wstring& ws);
 
-	std::wstring stdToWstring(const char* pStr);
-	std::wstring stdToWstring(const std::string& s);
-
-
-
-	//std::vector<std::wstring> stdSplitString(const std::wstring& str,
-	//	const std::wstring& delimiter);
-	// std::vector<std::wstring> stdSplitStringToLine(const std::wstring& str);
+		std::wstring stdToWstring(const char* pStr);
+		std::wstring stdToWstring(const std::string& s);
 
 
 
-
-	//std::wstring StdStringReplaceW(std::wstring str, const std::wstring& from, const std::wstring& to);
-	//std::string  StdStringReplaceA(std::string str, const std::string& from, const std::string& to);
-
-	//#ifdef UNICODE
-	//#define StdStringReplace StdStringReplaceW
-	//#else
-	//#define StdStringReplace StdStringReplaceA
-	//#endif
+		//std::vector<std::wstring> stdSplitString(const std::wstring& str,
+		//	const std::wstring& delimiter);
+		// std::vector<std::wstring> stdSplitStringToLine(const std::wstring& str);
 
 
 
-	std::wstring stdGetFirstLine(const std::wstring& str);
 
-	std::wstring stdGetShortPath(const wchar_t* pIN);
-	std::wstring stdGetShortPath(const std::wstring& ws);
+		//std::wstring StdStringReplaceW(std::wstring str, const std::wstring& from, const std::wstring& to);
+		//std::string  StdStringReplaceA(std::string str, const std::string& from, const std::string& to);
+
+		//#ifdef UNICODE
+		//#define StdStringReplace StdStringReplaceW
+		//#else
+		//#define StdStringReplace StdStringReplaceA
+		//#endif
 
 
-	std::wstring stdApplyDQ(const std::wstring& ws);
+
+		std::wstring stdGetFirstLine(const std::wstring& str);
+
+		std::wstring stdGetShortPath(const wchar_t* pIN);
+		std::wstring stdGetShortPath(const std::wstring& ws);
 
 
+		std::wstring stdApplyDQ(const std::wstring& ws);
+
+
+	}
 }

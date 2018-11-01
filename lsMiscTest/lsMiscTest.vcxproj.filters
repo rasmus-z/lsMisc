@@ -369,6 +369,9 @@
     <ClCompile Include="gtestPathUtil_win.cpp">
       <Filter>GTest Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\Profiler.cpp">
+      <Filter>lsMisc</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\CenterWindow.h">
@@ -715,6 +718,9 @@
     </ClInclude>
     <ClInclude Include="..\stdosd\OpParser.h">
       <Filter>stdosd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Profiler.h">
+      <Filter>lsMisc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

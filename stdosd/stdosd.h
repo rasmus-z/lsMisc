@@ -612,6 +612,7 @@ namespace Ambiesoft {
 		}
 
 
+// varargs not supported under /clr
 #ifndef __cplusplus_cli
 		inline int stdSprintF(char *buffer,
 							  size_t sizeOfBuffer,
