@@ -8,7 +8,7 @@
 
 using namespace Ambiesoft::stdosd;
 using namespace std;
-using namespace stdwin32;
+using namespace Ambiesoft::stdwin32;
 
 TEST(GetProcessList, Basic)
 {

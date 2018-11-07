@@ -12,7 +12,7 @@
 #include <fstream>
 
 #include "../stdwin32/stdwin32.h"
-using namespace stdwin32;
+using namespace Ambiesoft::stdwin32;
 
 #include "../UTF16toUTF8.h"
 #include "../I18N.h"

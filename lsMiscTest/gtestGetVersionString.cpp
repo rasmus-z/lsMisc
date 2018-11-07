@@ -9,7 +9,7 @@
 #include "../GetVersionString.h"
 
 using namespace std;
-using namespace stdwin32;
+using namespace Ambiesoft::stdwin32;
 using namespace Ambiesoft;
 
 TEST(GetVersionString, Explorer)

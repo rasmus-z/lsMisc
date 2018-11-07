@@ -84,6 +84,8 @@ namespace Ambiesoft {
 			static STDOSD_CONSTEXPR char NSlash = '/';
 			static STDOSD_CONSTEXPR char NBackSlash = '\\';
 			static STDOSD_CONSTEXPR char NColon = ':';
+			static STDOSD_CONSTEXPR char NSpace = ' ';
+			static STDOSD_CONSTEXPR char NDoubleQuote = '"';
 
 			static STDOSD_CONSTEXPR char* defaultSeparator() {
 				return STDOSD_DEFAULTSEPARATOR;
@@ -127,6 +129,8 @@ namespace Ambiesoft {
 			static STDOSD_CONSTEXPR wchar_t NSlash = L'/';
 			static STDOSD_CONSTEXPR wchar_t NBackSlash = L'\\';
 			static STDOSD_CONSTEXPR wchar_t NColon = L':';
+			static STDOSD_CONSTEXPR wchar_t NSpace = L' ';
+			static STDOSD_CONSTEXPR wchar_t NDoubleQuote = L'"';
 
 			static STDOSD_CONSTEXPR wchar_t* defaultSeparator() {
 				return STDOSD_WCHARLITERAL(STDOSD_DEFAULTSEPARATOR);
@@ -826,5 +830,32 @@ namespace Ambiesoft {
 		std::wstring stdGetFullPathName(const std::wstring& ws);
 
 		std::wstring resolveLink(const std::wstring& fullstring);
+
+
+		template<typename C>
+		inline std::basic_string<C> stdAddDQIfNecessary(const C* fullString, size_t size = -1) {
+			if (size == -1)
+				size = getCharLength(fullString);
+
+			bool hasSpace = false;
+			for (size_t i = 0; i < size; ++i)
+			{
+				if (fullString[i] == stdLiterals<C>::NSpace)
+				{
+					hasSpace = true;
+				}
+			}
+
+			if (!hasSpace)
+				return fullString;
+
+			return std::basic_string<C>() + stdLiterals<C>::NDoubleQuote + fullString + stdLiterals<C>::NDoubleQuote;
+		}
+		inline std::string stdAddDQIfNecessary(const std::string& fullString) {
+			return stdAddDQIfNecessary(fullString.c_str(), fullString.size());
+		}
+		inline std::wstring stdAddDQIfNecessary(const std::wstring& fullString) {
+			return stdAddDQIfNecessary(fullString.c_str(), fullString.size());
+		}
 	}
 }

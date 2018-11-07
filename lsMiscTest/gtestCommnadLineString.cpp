@@ -79,6 +79,24 @@ TEST(CommandLineString, subStringComplex)
 	EXPECT_STREQ(cls.subString(6).c_str(), L"");
 }
 
+TEST(CommandLineString, subStringRemove)
+{
+	LPWSTR pC1;
+
+	{
+		pC1 = L"aaa.exe \"aaa bbb\" aa fff feee 12345";
+		CCommandLineString cls(pC1);
+		cls.remove(2, 3);  // remove 3 items from index 2
+		EXPECT_STREQ(L"aaa.exe \"aaa bbb\" 12345", cls.toString().c_str());
+	}
+	{
+		pC1 = L"aaa.exe \"aaa bbb\" aa fff feee '123 45'";
+		CCommandLineString cls(pC1);
+		cls.remove(2, 3);  // remove 3 items from index 2
+		EXPECT_STREQ(L"aaa.exe \"aaa bbb\" '123 45'", cls.toString().c_str());
+	}
+}
+
 TEST(CommandLineString, ArgcArgv)
 {
 	LPWSTR pC1;

@@ -8,7 +8,7 @@
 
 
 using namespace std;
-using namespace stdwin32;
+using namespace Ambiesoft::stdwin32;
 
 
 

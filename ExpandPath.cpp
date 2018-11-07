@@ -39,7 +39,7 @@
 #include "ExpandPath.h"
 
 using namespace std;
-using namespace stdwin32;
+using namespace Ambiesoft::stdwin32;
 using namespace Ambiesoft::stdosd;
 
 namespace Ambiesoft{
