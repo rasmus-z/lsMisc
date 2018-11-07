@@ -273,6 +273,6 @@ namespace Ambiesoft {
 
 		std::wstring stdApplyDQ(const std::wstring& ws);
 
-
+		std::wstring stdGetDlgItemText(HWND hDlg, UINT id);
 	}
 }

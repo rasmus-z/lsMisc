@@ -872,5 +872,19 @@ namespace Ambiesoft {
 			}
 			return ws;
 		}
+
+		std::wstring stdGetDlgItemText(HWND hDlg, UINT id)
+		{
+			int len = GetWindowTextLength(GetDlgItem(hDlg, id));
+			if (len <= 0)
+			{
+				return wstring();
+			}
+			LPTSTR pBuff = (LPTSTR)LocalAlloc(0, (len + 1)*sizeof(TCHAR));
+			GetWindowText(GetDlgItem(hDlg, id), pBuff, len + 1);
+			wstring ret(pBuff);
+			LocalFree(pBuff);
+			return ret;
+		}
 	} // namespace Ambiesoft
 } // namespace stdwin32
