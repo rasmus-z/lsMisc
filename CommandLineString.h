@@ -64,6 +64,13 @@ namespace Ambiesoft {
 	{
 		return s + L" ";
 	}
+	static inline std::wstring myAddDQIfNeccesary(const std::wstring s)
+	{
+		if (!myContainSpace(s))
+			return s;
+			
+		return myEncloseDQ(s);
+	}
 
 	static inline const char* skipWS(const char* p)
 	{
@@ -184,7 +191,8 @@ namespace Ambiesoft {
 		std::vector<size_t> offsets_;
 
 		std::vector<std::basic_string<E> > args_;
-	
+		bool dirty_ = false;
+
 		void init(const E* pCommandLine)
 		{
 			size_t clLen = myTr::length(pCommandLine);
@@ -373,16 +381,43 @@ namespace Ambiesoft {
 		myS operator[](int i) const {
 			return args_[i];
 		}
-        std::basic_string<E> subString(size_t index) const
+		void remove(int i, size_t size=1) {
+			assert(offsets_.size() == args_.size());
+			while (size > 0)
+			{
+				args_.erase(args_.begin() + i);
+				offsets_.erase(offsets_.begin() + i);
+				--size;
+			}
+			dirty_ = true;
+		}
+		myS subString(size_t index) const
 		{
-			if (offsets_.size() <= index)
-				return std::basic_string<E>();
+			if(dirty_)
+			{
+				myS ret;
+				for (size_t i =0; i<args_.size();++i)
+				{
+					ret += myAddDQIfNeccesary(args_[i]);
+					if ((i + 1) != args_.size())
+						ret = myAddSpace(ret);
+				}
+				return ret;
+			}
+			else
+			{
+				if (offsets_.size() <= index)
+					return std::basic_string<E>();
 
-			size_t ofs = offsets_[index];
-			std::basic_string<E> ret(&p_[ofs]);
-			const E* pTrimming = ret.c_str();
-			ret = skipWS(pTrimming);
-			return ret;
+				size_t ofs = offsets_[index];
+				std::basic_string<E> ret(&p_[ofs]);
+				const E* pTrimming = ret.c_str();
+				ret = skipWS(pTrimming);
+				return ret;
+			}
+		}
+		myS toString() const {
+			return subString(0);
 		}
 
 		static E** getCommandLineArg(const E* pCL, int* argc)
