@@ -401,7 +401,7 @@ namespace Ambiesoft {
 		}
 
 		template<typename C>
-		inline std::basic_string<C, std::char_traits<C>, std::allocator<C>>
+		inline std::basic_string<C, std::char_traits<C>, std::allocator<C> >
 			stdGetParentDirectory(const C* pPath, bool bAddSeparator = false)
 		{
 			using mys = std::basic_string<C, std::char_traits<C>, std::allocator<C>>;

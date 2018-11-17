@@ -101,7 +101,7 @@
 #endif
 #endif // __cplusplus_cli
 
-#include "../stdosd/stdosd.h"
+// #include "../stdosd/stdosd.h"
 
 #include "stdwin32.h"
 
@@ -880,8 +880,8 @@ namespace Ambiesoft {
 			{
 				return wstring();
 			}
-			LPTSTR pBuff = (LPTSTR)LocalAlloc(0, (len + 1)*sizeof(TCHAR));
-			GetWindowText(GetDlgItem(hDlg, id), pBuff, len + 1);
+			LPWSTR pBuff = (LPWSTR)LocalAlloc(0, (len + 1)*sizeof(TCHAR));
+			GetWindowTextW(GetDlgItem(hDlg, id), pBuff, len + 1);
 			wstring ret(pBuff);
 			LocalFree(pBuff);
 			return ret;
