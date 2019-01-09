@@ -744,14 +744,14 @@ namespace Ambiesoft {
 		}
 
 
-		std::wstring stdToWstring(const char* pStr)
+		static std::wstring toWstringCommon(const UINT codepage, const char* pStr)
 		{
 			if (pStr == NULL || pStr[0] == 0)
 				return std::wstring();
 
 			size_t cbLen = strlen(pStr) + 1;
 			int nReqSize = MultiByteToWideChar(
-				CP_ACP,
+				codepage,
 				0,
 				(const char*)pStr,
 				(int)cbLen,
@@ -763,7 +763,7 @@ namespace Ambiesoft {
 
 			LPWSTR pOut = (LPWSTR)malloc(nReqSize * sizeof(WCHAR));
 			int nRet = MultiByteToWideChar(
-				CP_ACP,
+				codepage,
 				0,
 				(const char*)pStr,
 				(int)cbLen,
@@ -780,9 +780,22 @@ namespace Ambiesoft {
 			free(pOut);
 			return ret;
 		}
+		std::wstring stdToWstring(const char* pStr)
+		{
+			return toWstringCommon(CP_ACP, pStr);
+		}
 		std::wstring stdToWstring(const std::string& s)
 		{
 			return stdToWstring(s.c_str());
+		}
+
+		std::wstring utf8ToWstring(const char* pStr)
+		{
+			return toWstringCommon(CP_UTF8, pStr);
+		}
+		std::wstring utf8ToWstring(const std::string& s)
+		{
+			return utf8ToWstring(s.c_str());
 		}
 
 

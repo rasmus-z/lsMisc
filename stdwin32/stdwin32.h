@@ -245,7 +245,8 @@ namespace Ambiesoft {
 		std::wstring stdToWstring(const char* pStr);
 		std::wstring stdToWstring(const std::string& s);
 
-
+		std::wstring utf8ToWstring(const char* pStr);
+		std::wstring utf8ToWstring(const std::string& s);
 
 		//std::vector<std::wstring> stdSplitString(const std::wstring& str,
 		//	const std::wstring& delimiter);
