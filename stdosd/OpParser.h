@@ -25,6 +25,8 @@
 
 #include <memory>
 #include <string>
+#include <iostream>
+#include <sstream>
 #include <vector>
 #include <list>
 #include <functional>
@@ -188,6 +190,23 @@ namespace Ambiesoft {
 					for (const TokenT& token : subtokens_)
 						token.clearResult();
 				}
+			}
+			std::string ToString() const {
+				switch (tt_)
+				{
+				case OpParserTokenType::TOKEN_BEGINNING_PARENTHESIS:		return "(";
+				case OpParserTokenType::TOKEN_ENDING_PARENTHESIS:			return ")";
+				case OpParserTokenType::TOKEN_OR:							return "or";
+				case OpParserTokenType::TOKEN_AND:							return "and";
+
+
+				case OpParserTokenType::TOKEN_PREDICATOR:					return predicator_->ToString();
+
+				default:
+				case OpParserTokenType::TOKEN_PARENT:
+					return std::string();
+				}
+				return std::string();
 			}
 		private:
 			// Constructed by ctor from user, or
@@ -365,6 +384,22 @@ namespace Ambiesoft {
 				}
 				EvaluateInner(parsedTokens_, true, args...);
 			}
+
+			std::string ToString() const {
+				std::vector<string> vs;
+				for (const TokenT& token : tokens_)
+				{
+					vs.emplace_back(token.ToString());
+				}
+
+				// https://stackoverflow.com/a/5689061
+				std::ostringstream imploded;
+				std::copy(vs.begin(), vs.end(),
+					std::ostream_iterator<std::string>(imploded, " "));
+
+				return imploded.str();
+			}
+
 		private:
 			void clearResults() const {
 				for (const TokenT& token : parsedTokens_)
