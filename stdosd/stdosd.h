@@ -843,6 +843,7 @@ namespace Ambiesoft {
 				if (fullString[i] == stdLiterals<C>::NSpace)
 				{
 					hasSpace = true;
+					break;
 				}
 			}
 
