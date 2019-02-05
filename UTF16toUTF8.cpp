@@ -151,6 +151,15 @@ string toStdString(const wstring& w)
 	free((void*)p);
 	return ret;
 }
+
+wstring toStdWstringFromUtf8(const string& s)
+{
+	wstring ret;
+	UTF8toUTF16((const LPBYTE)s.c_str(), ret);
+		
+	return ret;
+}
+
 #ifdef __cplusplus_cli  
 BYTE* UTF16toUTF8(System::String^ s)
 {

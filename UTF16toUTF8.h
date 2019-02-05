@@ -35,6 +35,8 @@ LPWSTR UTF8toUTF16(const LPBYTE pIN);
 bool UTF8toUTF16(const LPBYTE pIN, std::wstring& w);
 
 std::string toStdString(const std::wstring& w);
+std::wstring toStdWstringFromUtf8(const std::string& s);
+
 
 #ifdef __cplusplus_cli  
 BYTE* UTF16toUTF8(System::String^ s);
