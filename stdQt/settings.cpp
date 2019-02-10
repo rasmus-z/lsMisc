@@ -18,22 +18,20 @@
 
 #include <QApplication>
 #include <QDir>
-#include <QSqlDatabase>
 #include <QMap>
 #include <QList>
 
-#include "helper.h"
 #include "settings.h"
 
-
-void Settings::init()
+namespace AmbiesoftQt {
+void IniSettings::init()
 {
 
 }
-Settings::~Settings()
+IniSettings::~IniSettings()
 {
 }
-int Settings::valueInt(const QString& key, int defaultvalue)
+int IniSettings::valueInt(const QString& key, int defaultvalue)
 {
     QVariant v = s_.value(key);
     if(!v.isValid())
@@ -41,7 +39,7 @@ int Settings::valueInt(const QString& key, int defaultvalue)
 
     return v.toInt();
 }
-bool Settings::valueBool(const QString& key, bool defaultvalue)
+bool IniSettings::valueBool(const QString& key, bool defaultvalue)
 {
     QVariant v = s_.value(key);
     if(!v.isValid())
@@ -49,25 +47,28 @@ bool Settings::valueBool(const QString& key, bool defaultvalue)
 
     return v.toBool();
 }
-QString Settings::valueString(const QString& key, const QString& defaultvalue)
+QString IniSettings::valueString(const QString& key, const QString& defaultvalue)
 {
     QVariant v = s_.value(key);
     if(!v.isValid())
         return defaultvalue;
     return v.toString();
 }
-QStringList Settings::valueStringList(const QString& key)
+QStringList IniSettings::valueStringList(const QString& key)
 {
     QVariant v = s_.value(key);
     if(!v.isValid())
         return QStringList();
     return v.toStringList();
 }
-QVariant Settings::value(const QString& key)
+QVariant IniSettings::value(const QString& key, const QVariant &defaultValue)
 {
-    return s_.value(key);
+    return s_.value(key, defaultValue);
 }
-void Settings::setValue(const QString& key, const QVariant& v)
+void IniSettings::setValue(const QString& key, const QVariant& v)
 {
     s_.setValue(key,v);
 }
+
+
+}  // namespace AmbiesoftQt

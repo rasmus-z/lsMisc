@@ -20,35 +20,35 @@
 #define SETTINGS_H
 
 #include <QSettings>
-#include <QSqlDatabase>
 
-#include "consts.h"
-
-class Settings
+namespace AmbiesoftQt {
+class IniSettings
 {
 private:
     QSettings s_;
 
     void init();
 public:
-    Settings() : s_(QSettings::Format::IniFormat,
-                    QSettings::Scope::UserScope,
-                    Consts::ORGANIZATION,
-                    Consts::APPNAME)
+    IniSettings(const QString& organization,
+             const QString& appname) :
+        s_(QSettings::Format::IniFormat,
+           QSettings::Scope::UserScope,
+           organization,
+           appname)
     {
         init();
     }
-    Settings(const QString& inifile) : s_(inifile, QSettings::IniFormat)
+    IniSettings(const QString& inifile) : s_(inifile, QSettings::IniFormat)
     {
         init();
     }
-    ~Settings();
+    ~IniSettings();
 
     QString valueString(const QString& key, const QString& defaultvalue=QString());
     int valueInt(const QString& key, int defaultvalue=0);
     bool valueBool(const QString& key, bool defaultvalue=false);
     QStringList valueStringList(const QString& key);
-    QVariant value(const QString& key);
+    QVariant value(const QString& key, const QVariant &defaultValue = QVariant());
 
     QString fileName() const {
         return s_.fileName();
@@ -70,5 +70,5 @@ public:
     }
 
 };
-
+}  // namespace AmbiesoftQt {
 #endif // SETTINGS_H
