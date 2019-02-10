@@ -27,21 +27,14 @@ class IniSettings
 private:
     QSettings s_;
 
-    void init();
 public:
     IniSettings(const QString& organization,
              const QString& appname) :
         s_(QSettings::Format::IniFormat,
            QSettings::Scope::UserScope,
            organization,
-           appname)
-    {
-        init();
-    }
-    IniSettings(const QString& inifile) : s_(inifile, QSettings::IniFormat)
-    {
-        init();
-    }
+           appname) {}
+    IniSettings(const QString& inifile) : s_(inifile, QSettings::IniFormat) {}
     ~IniSettings();
 
     QString valueString(const QString& key, const QString& defaultvalue=QString());

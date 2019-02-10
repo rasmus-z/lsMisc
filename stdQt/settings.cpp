@@ -24,10 +24,7 @@
 #include "settings.h"
 
 namespace AmbiesoftQt {
-void IniSettings::init()
-{
 
-}
 IniSettings::~IniSettings()
 {
 }
