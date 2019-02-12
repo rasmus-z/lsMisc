@@ -1,6 +1,8 @@
 #include <QString>
 #include <QDir>
 
+namespace AmbiesoftQt {
+
 
 QString rstrip(const QString& str, QChar c)
 {
@@ -32,4 +34,37 @@ QString normalizeDir(const QString& dir)
     if (!dir.endsWith('/'))
         return dir + '/';
     return rstrip(dir, '/') + '/';
+}
+
+QString doublequoteIfNecessary(const QString& s)
+{
+    if (s.isEmpty())
+        return "\"\"";
+
+    if (s[0] == '\\')
+        return s;
+
+    if(s[0] == '"')
+        return s;
+
+    if (!s.contains(" ") && !s.contains(","))
+        return s;
+
+    return "\"" + s + "\"";
+}
+QString undoublequoteIfNecessary(QString s)
+{
+    if(s.isEmpty())
+        return s;
+    if(s[0] != '"')
+        return s;
+    if(!s.endsWith('"'))
+        return s;
+
+    s = s.right(s.length()-1);
+    s = s.left(s.length()-1);
+
+    return s;
+}
+
 }
