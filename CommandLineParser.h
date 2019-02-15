@@ -884,7 +884,7 @@ typedef BasicOption<std::string> COptionA;
 			for (typename OPTIONARRAY::const_iterator it = unknowns_.begin(); it != unknowns_.end(); ++it)
 			{
 				ret += it->getFirstOption();
-				if (!it->hadValue())
+				if (it->hadValue())
 				{
 					ret += _T(" ");
 					ret += it->getValueStrings();
