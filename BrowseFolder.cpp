@@ -138,7 +138,8 @@ static bool bfVista(HWND hWnd, LPCTSTR lpszTitle, LPTSTR pFolder, bool& handled)
 
 	if(pDefault != NULL)
 	{
-		spFileDialog->SetDefaultFolder(pDefault);
+		// spFileDialog->SetDefaultFolder(pDefault);
+		spFileDialog->SetFolder(pDefault);
 	}
 
 	bool ret;
