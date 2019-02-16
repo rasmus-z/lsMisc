@@ -24,21 +24,17 @@
 #pragma once
 #include "CreateWString.h"
 
-
-inline BOOL IsDirectoryW(LPCWSTR pDir)
+namespace Ambiesoft
 {
-	DWORD attr = GetFileAttributes(pDir);
-	return (attr != 0xFFFFFFFF) && ((attr & FILE_ATTRIBUTE_DIRECTORY) != 0);
-}
+	inline BOOL IsDirectory(LPCWSTR pDir)
+	{
+		DWORD attr = GetFileAttributes(pDir);
+		return (attr != 0xFFFFFFFF) && ((attr & FILE_ATTRIBUTE_DIRECTORY) != 0);
+	}
 
-inline BOOL IsDirectoryA(LPCSTR pDir)
-{
-	CREATEWSTRING(pDir);
-	return IsDirectoryW(pDirW);
+	inline BOOL IsDirectory(LPCSTR pDir)
+	{
+		CREATEWSTRING(pDir);
+		return IsDirectory(pDirW);
+	}
 }
-
-#ifdef UNICODE
-#define IsDirectory IsDirectoryW
-#else
-#define IsDirectory IsDirectoryA
-#endif
