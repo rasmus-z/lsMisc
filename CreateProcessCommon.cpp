@@ -24,7 +24,15 @@
 #include "stdafx.h"
 #include <windows.h>
 #include <tchar.h>
+
+#include <string>
+
+#include "stdosd/stdosd.h"
+
 #include "CreateProcessCommon.h"
+
+using namespace Ambiesoft::stdosd;
+using namespace std;
 
 namespace Ambiesoft {
 
@@ -45,39 +53,23 @@ namespace Ambiesoft {
 		LocalFree((HLOCAL)q);
 	}
 
-	static LPTSTR createcommandline(LPCTSTR a, LPCTSTR b)
+	static wstring createcommandline(wstring a, wstring b)
 	{
-		if (a == NULL && b == NULL)
-			return NULL;
+		if (a.empty() && b.empty())
+			return L"";
 
-		if (a == NULL)
-			a = L"";
-		if (b == NULL)
-			b = L"";
+		if (a.empty())
+			return b;
+		if (b.empty())
+			return a;
 
-		int lenA = (lstrlen(a)) * sizeof(TCHAR);
-		int lenB = (lstrlen(b)) * sizeof(TCHAR);
+		// both a and b exist
+		wstring ret;
+		ret += stdAddDQIfNecessary(a);
+		ret += L" ";
+		ret += b;
 
-
-		int len = 0;
-		if (lenA)
-			len += lenA + sizeof(TCHAR);
-		if (lenB)
-			len += lenB + sizeof(TCHAR);
-
-		LPTSTR q = (LPTSTR)LocalAlloc(LMEM_FIXED, len);
-		if (q == NULL)
-			return NULL;
-		*q = 0;
-		if (*a)
-		{
-			lstrcat(q, a);
-			if (*b)
-				lstrcat(q, L" ");
-		}
-		lstrcat(q, b);
-
-		return q;
+		return ret;
 	}
 
 	BOOL CreateProcessCommon(LPCTSTR pApp,
@@ -167,12 +159,16 @@ namespace Ambiesoft {
 		PROCESS_INFORMATION pi = { 0 };
 
 
-		// LPTSTR cl = createcommandline(pApp, pArg);
-		LPTSTR pArgTmp = _tcsdup(pArg);
+		wstring strTmp = createcommandline(pApp ? pApp : wstring(), pArg ? pArg : wstring());
+		//wstring strTmp = stdAddDQIfNecessary(pApp);
+		//strTmp += L" ";
+		//strTmp += pArg;
+
+		LPTSTR pArgTmp = _tcsdup(strTmp.c_str());
 		BOOL bRet = CreateProcess(
 			//LPCTSTR lpApplicationName, 
 			// 実行可能モジュールの名前、NULLでもいい
-			pApp,
+			NULL,
 
 			// LPTSTR lpCommandLine,
 			// コマンドラインの文字列、NULLでもいい
