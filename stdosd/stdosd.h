@@ -435,7 +435,7 @@ namespace Ambiesoft {
 				return pFilename;
 
 			std::basic_string<C, std::char_traits<C>, std::allocator<C>> ret;
-            int len = pExt - pFilename;
+            int len = (int)(pExt - pFilename);
             ret.assign(pFilename, static_cast<size_t>(len));
 			return ret;
 		}
