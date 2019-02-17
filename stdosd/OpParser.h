@@ -31,6 +31,8 @@
 #include <list>
 #include <functional>
 #include <cassert>
+#include <ostream>
+#include <iterator>
 
 namespace Ambiesoft {
 	namespace Logic {
@@ -386,7 +388,7 @@ namespace Ambiesoft {
 			}
 
 			std::string ToString() const {
-				std::vector<string> vs;
+                std::vector<std::string> vs;
 				for (const TokenT& token : tokens_)
 				{
 					vs.emplace_back(token.ToString());

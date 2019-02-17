@@ -451,7 +451,7 @@ TEST(OpParser, ComplexSingleWord)
 		// First, try with C++'s || and &&
 		gcalledWords.clear();
 		gcallcount = 0;
-		EXPECT_TRUE(myEvaluator(L"true") || myEvaluator(L"false") && myEvaluator(L"true"));
+        EXPECT_TRUE(myEvaluator(L"true") || (myEvaluator(L"false") && myEvaluator(L"true")));
 		EXPECT_EQ(gcallcount, 1);
 		EXPECT_EQ(gcalledWords.size(), (size_t)1);
 		EXPECT_STREQ(gcalledWords[0].c_str(), L"true");
@@ -477,7 +477,7 @@ TEST(OpParser, ComplexSingleWord)
 		// First, try with C++'s || and &&
 		gcalledWords.clear();
 		gcallcount = 0;
-		EXPECT_FALSE(myEvaluator(L"false") || myEvaluator(L"false") && myEvaluator(L"true"));
+        EXPECT_FALSE(myEvaluator(L"false") || (myEvaluator(L"false") && myEvaluator(L"true")));
 		EXPECT_EQ(gcallcount, 2);
 		EXPECT_EQ(gcalledWords.size(), (size_t)2);
 		EXPECT_STREQ(gcalledWords[0].c_str(), L"false");

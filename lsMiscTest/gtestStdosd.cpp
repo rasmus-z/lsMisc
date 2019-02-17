@@ -410,3 +410,17 @@ TEST(stdosd, CombinePathTest)
 	EXPECT_STREQ(stdCombinePath(L"z:\\aaa", L"bbb").c_str(), L"z:\\aaa\\bbb");
 
 }
+
+TEST(stdosd, IsSpaceTest)
+{
+	EXPECT_TRUE(stdIsAsciiSpace(' '));
+	EXPECT_TRUE(stdIsAsciiSpace(L' '));
+	
+	EXPECT_FALSE(stdIsAsciiSpace('e'));
+	EXPECT_FALSE(stdIsAsciiSpace(L'a'));
+	
+#if defined(CHAR16T_AVAILABLE)
+	EXPECT_TRUE(stdIsAsciiSpace(u' '));
+	EXPECT_FALSE(stdIsAsciiSpace(u'e'));
+#endif
+}

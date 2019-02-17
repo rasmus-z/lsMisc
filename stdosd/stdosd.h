@@ -39,11 +39,28 @@ namespace Ambiesoft {
 #define STDOSD_WCHARLITERAL_INNER(x) L ## x
 #define STDOSD_WCHARLITERAL(x) STDOSD_WCHARLITERAL_INNER(x)
 
-#if _MSC_VER <= 1800  // less than or equal to VC2013 ( or VC12 )
-#define STDOSD_CONSTEXPR const
-#else
-#define STDOSD_CONSTEXPR const constexpr
-#endif
+#define STDOSD_CHAR16TLITERAL_INNER(x) u ## x
+#define STDOSD_CHAR16TLITERAL(x) STDOSD_CHAR16TLITERAL_INNER(x)
+
+#if __GNUC__
+
+    #define STDOSD_CONSTEXPR const constexpr
+    #define CHAR16T_AVAILABLE
+
+#elif _WIN32 // not __GNUC__ but _WIN32
+
+    #if _MSC_VER <= 1800  // less than or equal to VC2013 ( or VC12 )
+    #define STDOSD_CONSTEXPR const
+    #else
+    #define STDOSD_CONSTEXPR const constexpr
+    #endif
+
+    #if _MSC_VER >= 1900
+    #define CHAR16T_AVAILABLE
+    #endif
+
+#endif // _WIN32 __GNUC__
+
 
 
 #if defined(_MSC_VER) || defined(__MINGW32__)
@@ -100,7 +117,7 @@ namespace Ambiesoft {
 				return "\r";
 			}
 			static STDOSD_CONSTEXPR char* LF() {
-				return (const char*)"\n";
+                return static_cast<const char*>("\n");
 			}
 			static STDOSD_CONSTEXPR char* CRLF() {
 				return "\r\n";
@@ -152,6 +169,55 @@ namespace Ambiesoft {
 			}
 
 		};
+#if defined(CHAR16T_AVAILABLE)
+		template<>
+		struct stdLiterals<char16_t>
+		{
+			static STDOSD_CONSTEXPR char16_t period = u'.';
+			static STDOSD_CONSTEXPR char16_t N0 = u'0';
+			static STDOSD_CONSTEXPR char16_t N1 = u'1';
+			static STDOSD_CONSTEXPR char16_t N2 = u'2';
+			static STDOSD_CONSTEXPR char16_t N3 = u'3';
+			static STDOSD_CONSTEXPR char16_t N4 = u'4';
+			static STDOSD_CONSTEXPR char16_t N5 = u'5';
+			static STDOSD_CONSTEXPR char16_t N6 = u'6';
+			static STDOSD_CONSTEXPR char16_t N7 = u'7';
+			static STDOSD_CONSTEXPR char16_t N8 = u'8';
+			static STDOSD_CONSTEXPR char16_t N9 = u'9';
+
+			static STDOSD_CONSTEXPR char16_t Na = u'a';
+			static STDOSD_CONSTEXPR char16_t Nz = u'z';
+			static STDOSD_CONSTEXPR char16_t NA = u'A';
+			static STDOSD_CONSTEXPR char16_t NZ = u'Z';
+
+			static STDOSD_CONSTEXPR char16_t NSlash = u'/';
+			static STDOSD_CONSTEXPR char16_t NBackSlash = u'\\';
+			static STDOSD_CONSTEXPR char16_t NColon = u':';
+			static STDOSD_CONSTEXPR char16_t NSpace = u' ';
+			static STDOSD_CONSTEXPR char16_t NDoubleQuote = u'"';
+
+			static STDOSD_CONSTEXPR char16_t* defaultSeparator() {
+				return STDOSD_CHAR16TLITERAL(STDOSD_DEFAULTSEPARATOR);
+			}
+			static STDOSD_CONSTEXPR char16_t* pathSeparators() {
+				return u"/\\";
+			}
+			static STDOSD_CONSTEXPR char16_t* nulString() {
+				return u"";
+			}
+			static STDOSD_CONSTEXPR char16_t* CR() {
+				return u"\r";
+			}
+			static STDOSD_CONSTEXPR char16_t* LF() {
+				return u"\n";
+			}
+			static STDOSD_CONSTEXPR char16_t* CRLF() {
+				return u"\r\n";
+			}
+		};
+#endif // #if defined(CHAR16T_AVAILABLE)
+
+		
 		template<typename C>
 		inline bool isEmptyString(const C* str, size_t len) {
 			return (len == 0 || !str || str[0] == 0);
@@ -222,7 +288,7 @@ namespace Ambiesoft {
 			if (isEmptyString(str, len))
 				return false;
 
-			if (len == (size_t)-1)
+            if (len == static_cast<size_t>(-1))
 				len = getCharLength(str);
 
 			for (size_t i = 0; i < len; ++i)
@@ -259,7 +325,7 @@ namespace Ambiesoft {
 			if (isEmptyString(str, len))
 				return false;
 
-			if (len == (size_t)-1)
+            if (len == static_cast<size_t>(-1))
 				len = getCharLength(str);
 
 			for (size_t i = 0; i < len; ++i)
@@ -369,8 +435,8 @@ namespace Ambiesoft {
 				return pFilename;
 
 			std::basic_string<C, std::char_traits<C>, std::allocator<C>> ret;
-			size_t len = pExt - pFilename;
-			ret.assign(pFilename, len);
+            int len = pExt - pFilename;
+            ret.assign(pFilename, static_cast<size_t>(len));
 			return ret;
 		}
 		inline std::string stdGetFileNameWitoutExtension(const std::string& w)
@@ -666,14 +732,14 @@ namespace Ambiesoft {
 		{
 			using C = typename StringType::traits_type::char_type;
 
-			int size = ((int)fmt.size()) * 2 + 50;   // Use a rubric appropriate for your code
+            int size = (static_cast<int>(fmt.size())) * 2 + 50;   // Use a rubric appropriate for your code
 			StringType str;
 			va_list ap;
 			while (1) {     // Maximum two passes on a POSIX system...
 				str.resize(size);
 				va_start(ap, fmt);
 
-				int n = stdSprintF((C *)str.data(), size, size - 1, fmt.c_str(), ap);
+                int n = stdSprintF(const_cast<C*>(str.data()), size, size - 1, fmt.c_str(), ap);
 
 				va_end(ap);
 				if (n > -1 && n < size) {  // Everything worked
@@ -716,9 +782,9 @@ namespace Ambiesoft {
 			if (ending == nullptr || ending[0] == 0)
 				return true;
 
-			if (fullLen == (size_t)-1)
+            if (fullLen == static_cast<size_t>(-1))
 				fullLen = getCharLength(fullString);
-			if (endLen == (size_t)-1)
+            if (endLen == static_cast<size_t>(-1))
 				endLen = getCharLength(ending);
 
 			if (fullLen < endLen)
@@ -777,9 +843,9 @@ namespace Ambiesoft {
 			if (starting == nullptr || starting[0] == 0)
 				return true;
 
-			if (fullLen == (size_t)-1)
+            if (fullLen == static_cast<size_t>(-1))
 				fullLen = getCharLength(fullString);
-			if (startLen == (size_t)-1)
+            if (startLen == static_cast<size_t>(-1))
 				startLen = getCharLength(starting);
 
 			if (fullLen < startLen)
@@ -833,8 +899,8 @@ namespace Ambiesoft {
 
 
 		template<typename C>
-		inline std::basic_string<C> stdAddDQIfNecessary(const C* fullString, size_t size = -1) {
-			if (size == -1)
+        inline std::basic_string<C> stdAddDQIfNecessary(const C* fullString, size_t size = static_cast<size_t>(-1)) {
+            if (size == static_cast<size_t>(-1))
 				size = getCharLength(fullString);
 
 			bool hasSpace = false;
@@ -858,5 +924,12 @@ namespace Ambiesoft {
 		inline std::wstring stdAddDQIfNecessary(const std::wstring& fullString) {
 			return stdAddDQIfNecessary(fullString.c_str(), fullString.size());
 		}
+
+
+		template<typename C>
+		inline bool stdIsAsciiSpace(const C c) {
+			return c == stdLiterals<C>::NSpace;
+		}
+
 	}
 }

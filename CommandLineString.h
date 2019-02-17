@@ -47,28 +47,55 @@ namespace Ambiesoft {
 		return iswspace(c) != 0;
 	}
 	
-	static inline bool myContainSpace(const std::wstring& s)
+	static inline bool myContainSpace(const std::string& s)
 	{
-		for (size_t i=0 ; i < s.size() ; ++i )
+		for (size_t i = 0; i < s.size(); ++i)
 		{
 			if (myIsSpace(s[i]))
 				return true;
 		}
 		return false;
 	}
+	static inline bool myContainSpace(const std::wstring& s)
+	{
+		for (size_t i = 0; i < s.size(); ++i)
+		{
+			if (myIsSpace(s[i]))
+				return true;
+		}
+		return false;
+	}
+
+	static inline std::string myEncloseDQ(const std::string& s)
+	{
+		return "\"" + s + "\"";
+	}
 	static inline std::wstring myEncloseDQ(const std::wstring& s)
 	{
 		return L"\"" + s + L"\"";
+	}
+
+	static inline std::string myAddSpace(const std::string& s)
+	{
+		return s + " ";
 	}
 	static inline std::wstring myAddSpace(const std::wstring& s)
 	{
 		return s + L" ";
 	}
+
+	static inline std::string myAddDQIfNeccesary(const std::string s)
+	{
+		if (!myContainSpace(s))
+			return s;
+
+		return myEncloseDQ(s);
+	}
 	static inline std::wstring myAddDQIfNeccesary(const std::wstring s)
 	{
 		if (!myContainSpace(s))
 			return s;
-			
+
 		return myEncloseDQ(s);
 	}
 

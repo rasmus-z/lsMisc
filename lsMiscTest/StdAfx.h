@@ -45,7 +45,7 @@
 #include <iostream>
 #include <memory>
 
-// In lsMiscTest directory, run the following command
+// In lsMisc directory, run the following command
 // git submodule init
 // git submodule update
 #include "gtest/gtest.h"
