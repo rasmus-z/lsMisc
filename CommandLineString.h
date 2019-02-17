@@ -30,6 +30,7 @@
 #include <cassert>
 
 // #include "os_traits.h"
+#include "CBool.h"
 
 #ifndef _countof
 #define _countof(t) (sizeof(t)/sizeof(t[0]))
@@ -218,7 +219,7 @@ namespace Ambiesoft {
 		std::vector<size_t> offsets_;
 
 		std::vector<std::basic_string<E> > args_;
-		bool dirty_ = false;
+		Ambiesoft::Cbool dirty_; // = false;
 
 		void init(const E* pCommandLine)
 		{

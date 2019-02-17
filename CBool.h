@@ -26,11 +26,11 @@
 namespace Ambiesoft {
 
 template<class T>
-class BasicType
+class CBoolBase
 {
 	T value_;
 public:
-	BasicType() : value_(0) {}
+	CBoolBase() : value_(T()) {}
 	operator T() const {
 		return value_;
 	}
@@ -41,24 +41,32 @@ public:
 	T* operator&() {
 		return &value_;
 	}
-};
-
-class CBool {
-	BOOL b_;
-public:
-	CBool() : b_(FALSE) {}
-	operator BOOL() const { return b_; }
-	CBool& operator=(BOOL b) {
-		b_ = b;
-		return *this;
-	}
-	BOOL* operator&() {
-		return &b_;
-	}
-	BOOL toggle() {
+	T toggle() {
 		b_ = !b_;
 		return b_;
 	}
 };
+
+typedef CBoolBase<bool> Cbool;
+typedef CBoolBase<BOOL> CBool;
+
+
+//class CBool {
+//	BOOL b_;
+//public:
+//	CBool() : b_(FALSE) {}
+//	operator BOOL() const { return b_; }
+//	CBool& operator=(BOOL b) {
+//		b_ = b;
+//		return *this;
+//	}
+//	BOOL* operator&() {
+//		return &b_;
+//	}
+//	BOOL toggle() {
+//		b_ = !b_;
+//		return b_;
+//	}
+//};
 
 }
