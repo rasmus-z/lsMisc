@@ -23,33 +23,35 @@
 
 #pragma once
 
-namespace Ambiesoft {
+namespace Ambiesoft { namespace stdosd {
 
 template<class T>
 class CBoolBase
 {
-	T value_;
+    T value_;
 public:
-	CBoolBase() : value_(T()) {}
-	operator T() const {
-		return value_;
-	}
-	const T& operator=(const T& value) {
-		value_=value;
-		return *this;
-	}
-	T* operator&() {
-		return &value_;
-	}
-	T toggle() {
-		b_ = !b_;
-		return b_;
-	}
+    CBoolBase() : value_(T()) {}
+    operator T() const {
+        return value_;
+    }
+    const T& operator=(const T& value) {
+        value_=value;
+        return *this;
+    }
+    T* operator&() {
+        return &value_;
+    }
+    T toggle() {
+        value_ = !value_;
+        return value_;
+    }
 };
 
 typedef CBoolBase<bool> Cbool;
-typedef CBoolBase<BOOL> CBool;
 
+#if _WIN32
+typedef CBoolBase<BOOL> CBool;
+#endif
 
 //class CBool {
 //	BOOL b_;
@@ -69,4 +71,5 @@ typedef CBoolBase<BOOL> CBool;
 //	}
 //};
 
-}
+
+}}

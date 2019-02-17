@@ -3,6 +3,7 @@
 #include <gtest/gtest.h>
 
 #include "../stdosd/stdosd.h"
+#include "../stdosd/CBool.h"
 
 
 using namespace Ambiesoft::stdosd;
@@ -49,10 +50,12 @@ TEST(stdosd, GetFileName)
 	EXPECT_EQ(stdGetFileName(string("S:/zzz/eee/ff fee/iii/fff.txt")), string("fff.txt"));
 	EXPECT_EQ(stdGetFileName(wstring(L"S:/zzz/eee/ff fee/iii/fff.txt")), wstring(L"fff.txt"));
 
+#if _WIN32
 	EXPECT_STREQ(stdGetFileName("S:/zzz/eee/ff fee/iii/\\fff.txt"), "fff.txt");
 	EXPECT_STREQ(stdGetFileName(L"S:/zzz/eee/ff fee/iii/\\fff.txt"), L"fff.txt");
 	EXPECT_EQ(stdGetFileName(string("S:/zzz/eee/ff fee/iii/\\fff.txt")), string("fff.txt"));
 	EXPECT_EQ(stdGetFileName(wstring(L"S:/zzz/eee/ff fee/iii/\\fff.txt")), wstring(L"fff.txt"));
+#endif
 
 	EXPECT_STREQ(stdGetFileName("S:/zzz/eee/ff fee/iii/\\/fff.txt"), "fff.txt");
 	EXPECT_STREQ(stdGetFileName(L"S:/zzz/eee/ff fee/iii/\\/fff.txt"), L"fff.txt");
@@ -406,9 +409,13 @@ TEST(stdosd, CombinePathTest)
 			L"Z:\\From\\LegacyPrograms\\T\\", L"aaa.txt"
 		) ==
 			L"Z:\\From\\LegacyPrograms\\T\\aaa.txt");
+#if _WIN32
 	EXPECT_STREQ(stdCombinePath(L"aaa", L"bbb").c_str(), L"aaa\\bbb");
 	EXPECT_STREQ(stdCombinePath(L"z:\\aaa", L"bbb").c_str(), L"z:\\aaa\\bbb");
-
+#else
+    EXPECT_STREQ(stdCombinePath(L"aaa", L"bbb").c_str(), L"aaa/bbb");
+    EXPECT_STREQ(stdCombinePath(L"z:\\aaa", L"bbb").c_str(), L"z:\\aaa/bbb");
+#endif
 }
 
 TEST(stdosd, IsSpaceTest)
@@ -423,4 +430,47 @@ TEST(stdosd, IsSpaceTest)
 	EXPECT_TRUE(stdIsAsciiSpace(u' '));
 	EXPECT_FALSE(stdIsAsciiSpace(u'e'));
 #endif
+}
+
+TEST(stdosd, CBoolTest)
+{
+    Cbool a;
+    EXPECT_FALSE(a);
+
+    a = true;
+    EXPECT_TRUE(a);
+
+    a.toggle();
+    EXPECT_FALSE(a);
+
+    a = true;
+    EXPECT_TRUE(a);
+    a = false;
+    EXPECT_FALSE(a);
+
+    a=true;
+    bool b=a;
+    EXPECT_TRUE(b);
+    a=false;
+    b=a;
+    EXPECT_FALSE(b);
+
+
+
+    CBoolBase<unsigned int> bi;
+    EXPECT_FALSE(bi);
+
+    bi = 1;
+    EXPECT_TRUE(bi);
+
+    bi = 3;
+    EXPECT_TRUE(bi);
+
+    bi.toggle();
+    EXPECT_FALSE(bi);
+    bi.toggle();
+    EXPECT_TRUE(bi);
+    bi.toggle();
+    EXPECT_FALSE(bi);
+
 }
