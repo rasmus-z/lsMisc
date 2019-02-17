@@ -30,7 +30,7 @@
 #include <cassert>
 
 // #include "os_traits.h"
-#include "CBool.h"
+#include "stdosd/CBool.h"
 
 #ifndef _countof
 #define _countof(t) (sizeof(t)/sizeof(t[0]))
