@@ -903,6 +903,13 @@ namespace Ambiesoft {
             if (size == static_cast<size_t>(-1))
 				size = getCharLength(fullString);
 
+			if (size == 0)
+				return fullString;
+
+			if (fullString[0] == stdLiterals<C>::NDoubleQuote &&
+				fullString[size - 1] == stdLiterals<C>::NDoubleQuote)
+				return fullString;
+
 			bool hasSpace = false;
 			for (size_t i = 0; i < size; ++i)
 			{

@@ -28,6 +28,7 @@
 #include <string>
 
 #include "stdosd/stdosd.h"
+#include "tstring.h"
 
 #include "CreateProcessCommon.h"
 
@@ -53,10 +54,10 @@ namespace Ambiesoft {
 		LocalFree((HLOCAL)q);
 	}
 
-	static wstring createcommandline(wstring a, wstring b)
+	static tstring createcommandline(tstring a, tstring b)
 	{
 		if (a.empty() && b.empty())
-			return L"";
+			return _T("");
 
 		if (a.empty())
 			return b;
@@ -64,9 +65,9 @@ namespace Ambiesoft {
 			return a;
 
 		// both a and b exist
-		wstring ret;
+		tstring ret;
 		ret += stdAddDQIfNecessary(a);
-		ret += L" ";
+		ret += _T(" ");
 		ret += b;
 
 		return ret;
@@ -159,7 +160,7 @@ namespace Ambiesoft {
 		PROCESS_INFORMATION pi = { 0 };
 
 
-		wstring strTmp = createcommandline(pApp ? pApp : wstring(), pArg ? pArg : wstring());
+		tstring strTmp = createcommandline(pApp ? pApp : tstring(), pArg ? pArg : tstring());
 		//wstring strTmp = stdAddDQIfNecessary(pApp);
 		//strTmp += L" ";
 		//strTmp += pArg;
