@@ -4,7 +4,7 @@
 
 #include "../stdosd/stdosd.h"
 #include "../stdosd/CBool.h"
-
+#include "../stdosd/CNativeValue.h"
 
 using namespace Ambiesoft::stdosd;
 using namespace std;
@@ -473,4 +473,19 @@ TEST(stdosd, CBoolTest)
     bi.toggle();
     EXPECT_FALSE(bi);
 
+}
+
+TEST(stdosd, CNativeValueTest)
+{
+	CInt ci;
+	EXPECT_TRUE(ci== 0);
+
+	ci = 100;
+	EXPECT_TRUE(ci == 100);
+
+	int t = ci;
+	EXPECT_TRUE(t == 100);
+
+	ci = ci + 100;
+	EXPECT_TRUE(ci == 200);
 }

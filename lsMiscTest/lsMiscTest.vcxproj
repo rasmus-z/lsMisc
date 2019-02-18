@@ -517,6 +517,8 @@
     <ClInclude Include="..\sqlite3.h" />
     <ClInclude Include="..\sqliteserialize.h" />
     <ClInclude Include="..\StartProcess.h" />
+    <ClInclude Include="..\stdosd\CBool.h" />
+    <ClInclude Include="..\stdosd\CNativeValue.h" />
     <ClInclude Include="..\stdosd\OpParser.h" />
     <ClInclude Include="..\stdosd\PathUtil.h" />
     <ClInclude Include="..\stdosd\SetPrority.h" />

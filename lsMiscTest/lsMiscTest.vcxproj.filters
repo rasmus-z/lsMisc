@@ -722,6 +722,12 @@
     <ClInclude Include="..\Profiler.h">
       <Filter>lsMisc</Filter>
     </ClInclude>
+    <ClInclude Include="..\stdosd\CBool.h">
+      <Filter>stdosd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\stdosd\CNativeValue.h">
+      <Filter>stdosd</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Test Files">

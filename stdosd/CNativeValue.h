@@ -23,13 +23,33 @@
 
 #pragma once
 
-class CInt {
-	int n_;
-public:
-	CInt() : n_(0) {}
-	operator int() { return n_; }
-	CInt& operator=(int n) {
-		n_ = n;
-		return *this;
+//class CInt {
+//	int n_;
+//public:
+//	CInt() : n_(0) {}
+//	operator int() { return n_; }
+//	CInt& operator=(int n) {
+//		n_ = n;
+//		return *this;
+//	}
+//};
+
+namespace Ambiesoft {
+	namespace stdosd {
+
+		template<typename T>
+		class CNativeValue {
+			T v_;
+		public:
+			CNativeValue() : v_(T()) {}
+			operator T() { return v_; }
+			const CNativeValue<T>& operator=(const T& v) {
+				v_ = v;
+				return *this;
+			}
+		};
+
+		typedef CNativeValue<int> CInt;
+
 	}
-};
+}

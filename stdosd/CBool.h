@@ -34,7 +34,7 @@ public:
     operator T() const {
         return value_;
     }
-    const T& operator=(const T& value) {
+	const CBoolBase<T>& operator=(const T& value) {
         value_=value;
         return *this;
     }
@@ -49,7 +49,7 @@ public:
 
 typedef CBoolBase<bool> Cbool;
 
-#if _WIN32
+#if defined(_WIN32) && defined(_WINDOWS_)
 typedef CBoolBase<BOOL> CBool;
 #endif
 

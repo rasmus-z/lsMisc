@@ -219,7 +219,7 @@ namespace Ambiesoft {
 		std::vector<size_t> offsets_;
 
 		std::vector<std::basic_string<E> > args_;
-		Ambiesoft::Cbool dirty_; // = false;
+		Ambiesoft::stdosd::Cbool dirty_; // = false;
 
 		void init(const E* pCommandLine)
 		{
