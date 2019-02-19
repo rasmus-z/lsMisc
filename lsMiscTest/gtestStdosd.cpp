@@ -478,7 +478,7 @@ TEST(stdosd, CBoolTest)
 TEST(stdosd, CNativeValueTest)
 {
 	CInt ci;
-	EXPECT_TRUE(ci== 0);
+	EXPECT_TRUE(ci == 0);
 
 	ci = 100;
 	EXPECT_TRUE(ci == 100);
@@ -489,3 +489,18 @@ TEST(stdosd, CNativeValueTest)
 	ci = ci + 100;
 	EXPECT_TRUE(ci == 200);
 }
+
+TEST(stdosd, stdAddDQIfNecessaryTest)
+{
+	EXPECT_STREQ(stdAddDQIfNecessary("").c_str(), "");
+	EXPECT_STREQ(stdAddDQIfNecessary("a").c_str(), "a");
+	EXPECT_STREQ(stdAddDQIfNecessary("aa").c_str(), "aa");
+	EXPECT_STREQ(stdAddDQIfNecessary(" a").c_str(), "\" a\"");
+	EXPECT_STREQ(stdAddDQIfNecessary("a ").c_str(), "\"a \"");
+	EXPECT_STREQ(stdAddDQIfNecessary("a b c").c_str(), "\"a b c\"");
+	EXPECT_STREQ(stdAddDQIfNecessary("\"").c_str(), "\"");
+	EXPECT_STREQ(stdAddDQIfNecessary("\"\"").c_str(), "\"\"");
+	EXPECT_STREQ(stdAddDQIfNecessary("\"abc\"").c_str(), "\"abc\"");
+	
+}
+
