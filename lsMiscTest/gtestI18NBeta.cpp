@@ -15,7 +15,7 @@
 using namespace Ambiesoft::stdwin32;
 
 #include "../UTF16toUTF8.h"
-#include "../I18N.h"
+#include "../stdosd/I18NBeta.h"
 using namespace Ambiesoft;
 
 #include "../stdosd/stdosd.h"
@@ -50,7 +50,16 @@ static void prepareLang()
 	}
 }
 
-TEST(I18N, i18nBasicTestW)
+TEST(I18N,i18nBasicTestBetaA)
+{
+	prepareLang();
+	i18nInitLangmap(NULL, "JPN");
+
+	// wchar_t aaa[] = { 0x4230, 0x4230, 0x4230, 0 };
+	//char aaa[] = "あああ";
+	//EXPECT_STREQ(I18N("AAA"), aaa);
+}
+TEST(I18N, i18nBasicTestBetaW)
 {
 	prepareLang();
 	i18nInitLangmap(NULL, L"JPN");

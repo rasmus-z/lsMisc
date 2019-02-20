@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <ProjectName>lsMiscTest</ProjectName>
     <ProjectGuid>{086AB526-37F9-465E-96DF-8229F05B4DBA}</ProjectGuid>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -316,6 +316,7 @@
     </ClCompile>
     <ClCompile Include="..\sqliteserialize.cpp" />
     <ClCompile Include="..\StartProcess.cpp" />
+    <ClCompile Include="..\stdosd\I18NBeta.cpp" />
     <ClCompile Include="..\stdosd\PathUtil_win.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
@@ -352,6 +353,7 @@
     <ClCompile Include="..\WritePrivateProfileInt.cpp" />
     <ClCompile Include="..\WritePrivateProfileWString.cpp" />
     <ClCompile Include="..\XBrowseForFolder.cpp" />
+    <ClCompile Include="gtestI18NBeta.cpp" />
     <ClCompile Include="gtestStdwin32.cpp" />
     <ClCompile Include="gtestStdosd.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
@@ -519,6 +521,7 @@
     <ClInclude Include="..\StartProcess.h" />
     <ClInclude Include="..\stdosd\CBool.h" />
     <ClInclude Include="..\stdosd\CNativeValue.h" />
+    <ClInclude Include="..\stdosd\I18NBeta.h" />
     <ClInclude Include="..\stdosd\OpParser.h" />
     <ClInclude Include="..\stdosd\PathUtil.h" />
     <ClInclude Include="..\stdosd\SetPrority.h" />

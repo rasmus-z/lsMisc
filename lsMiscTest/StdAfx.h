@@ -21,7 +21,7 @@
 #define new ::new(_NORMAL_BLOCK, __FILE__, __LINE__)
 #endif
 
-// #include <Windows.h>
+#include <Windows.h>
 #include <Tlhelp32.h>
 #include <Psapi.h>
 #include <Shlwapi.h>

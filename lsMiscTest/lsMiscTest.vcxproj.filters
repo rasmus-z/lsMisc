@@ -372,6 +372,12 @@
     <ClCompile Include="..\Profiler.cpp">
       <Filter>lsMisc</Filter>
     </ClCompile>
+    <ClCompile Include="gtestI18NBeta.cpp">
+      <Filter>GTest Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\stdosd\I18NBeta.cpp">
+      <Filter>stdosd</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\CenterWindow.h">
@@ -726,6 +732,9 @@
       <Filter>stdosd</Filter>
     </ClInclude>
     <ClInclude Include="..\stdosd\CNativeValue.h">
+      <Filter>stdosd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\stdosd\I18NBeta.h">
       <Filter>stdosd</Filter>
     </ClInclude>
   </ItemGroup>

@@ -230,29 +230,29 @@ namespace Ambiesoft {
 		}
 
 #if defined(_MSC_VER) || defined(__MINGW32__)
-		static int myStrCaseCmp(const char* left, const char* right) {
+		inline static int myStrCaseCmp(const char* left, const char* right) {
 			return _strcmpi(left, right);
 		}
-		static int myStrCaseCmpW(const wchar_t* left, const wchar_t* right) {
+		inline static int myStrCaseCmpW(const wchar_t* left, const wchar_t* right) {
 			return _wcsicmp(left, right);
 		}
-		static int myStrNCaseCmp(const char* left, const char* right, size_t len) {
+		inline static int myStrNCaseCmp(const char* left, const char* right, size_t len) {
 			return _strnicmp(left, right, len);
 		}
-		static int myStrNCaseCmpW(const wchar_t* left, const wchar_t* right, size_t len) {
+		inline static int myStrNCaseCmpW(const wchar_t* left, const wchar_t* right, size_t len) {
 			return _wcsnicmp(left, right, len);
 		}
 #else
-		static int myStrCaseCmp(const char* left, const char* right) {
+		inline static int myStrCaseCmp(const char* left, const char* right) {
 			return strcasecmp(left, right);
 		}
-		static int myStrCaseCmpW(const wchar_t* left, const wchar_t* right) {
+		inline static int myStrCaseCmpW(const wchar_t* left, const wchar_t* right) {
 			return wcscasecmp(left, right);
 		}
-		static int myStrNCaseCmp(const char* left, const char* right, size_t len) {
+		inline static int myStrNCaseCmp(const char* left, const char* right, size_t len) {
 			return strncasecmp(left, right, len);
 		}
-		static int myStrNCaseCmpW(const wchar_t* left, const wchar_t* right, size_t len) {
+		inline static int myStrNCaseCmpW(const wchar_t* left, const wchar_t* right, size_t len) {
 			return wcsncasecmp(left, right, len);
 		}
 #endif
@@ -937,6 +937,41 @@ namespace Ambiesoft {
 		inline bool stdIsAsciiSpace(const C c) {
 			return c == stdLiterals<C>::NSpace;
 		}
+
+
+
+
+		template<typename C>
+		inline C* stdStringLower(C* pD1)
+		{
+			static_assert(false);
+			assert(false);
+		}
+		template<>
+		inline char* stdStringLower(char* pc)
+		{
+			return _strlwr(pc);
+		}
+		template<>
+		inline wchar_t* stdStringLower(wchar_t* pwc)
+		{
+			return _wcslwr(pwc);
+		}
+		// not special
+		inline std::string stdStringLower(const std::string& str)
+		{
+			std::unique_ptr<char[]> ptr(new char[str.size() + 1]);
+			strcpy(ptr.get(), str.c_str());
+			return _strlwr(ptr.get());
+		}
+		// not special
+		inline std::wstring stdStringLower(const std::wstring& wstr)
+		{
+			std::unique_ptr<wchar_t[]> ptr(new wchar_t[wstr.size() + 1]);
+			wcscpy(ptr.get(), wstr.c_str());
+			return _wcslwr(ptr.get());
+		}
+
 
 	}
 }
