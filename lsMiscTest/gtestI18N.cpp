@@ -26,26 +26,31 @@ using namespace std;
 
 static void prepareLang()
 {
-	wstring langdir = stdCombinePath(stdGetParentDirectory(stdGetModuleFileName()), L"lang");
-	CreateDirectory(langdir.c_str(), NULL);
+	static auto once = false;
+	if(!once)
+	{
+		once = true;
 
-	wstring langfile = stdCombinePath(langdir, L"jpn.txt");
-	//if (PathFileExists(langfile.c_str()))
-	//	return;
+		wstring langdir = stdCombinePath(stdGetParentDirectory(stdGetModuleFileName()), L"lang");
+		CreateDirectory(langdir.c_str(), NULL);
 
+		wstring langfile = stdCombinePath(langdir, L"jpn.txt");
+		//if (PathFileExists(langfile.c_str()))
+		//	return;
 
-	wstring data(L"\"AAA\"=\"あああ\"");
-	BYTE* pUtf8 = UTF16toUTF8(data.c_str());
+		wstring data(L"\"AAA\"=\"あああ\"");
+		BYTE* pUtf8 = UTF16toUTF8(data.c_str());
 
-	FILE* f = NULL;
-	_wfopen_s(&f, langfile.c_str(), L"wb");
-	assert(f);
-	fwrite(pUtf8, strlen((char*)pUtf8),1, f);
-	fclose(f);
-	free(pUtf8);
+		FILE* f = NULL;
+		_wfopen_s(&f, langfile.c_str(), L"wb");
+		assert(f);
+		fwrite(pUtf8, strlen((char*)pUtf8), 1, f);
+		fclose(f);
+		free(pUtf8);
+	}
 }
 
-TEST(I18N,BASIC)
+TEST(I18N,i18nBasicTestW)
 {
 	prepareLang();
 	i18nInitLangmap(NULL, L"JPN");
