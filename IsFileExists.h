@@ -25,10 +25,12 @@
 
 #include <Windows.h>
 
+namespace Ambiesoft {
 #ifdef UNICODE
 #define IsFileExists IsFileExistsW
 #else
 #define IsFileExists IsFileExistsA
 #endif
-BOOL IsFileExistsW(LPCWSTR pPath);
-BOOL IsFileExistsA(LPCSTR pPath);
+	BOOL IsFileExistsW(LPCWSTR pPath);
+	BOOL IsFileExistsA(LPCSTR pPath);
+}
