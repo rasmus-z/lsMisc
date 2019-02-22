@@ -962,14 +962,14 @@ namespace Ambiesoft {
 		inline std::string stdStringLower(const std::string& str)
 		{
 			std::unique_ptr<char[]> ptr(new char[str.size() + 1]);
-			strcpy(ptr.get(), str.c_str());
+			strcpy_s(ptr.get(), str.size() + 1, str.c_str());
 			return _strlwr(ptr.get());
 		}
 		// not special
 		inline std::wstring stdStringLower(const std::wstring& wstr)
 		{
 			std::unique_ptr<wchar_t[]> ptr(new wchar_t[wstr.size() + 1]);
-			wcscpy(ptr.get(), wstr.c_str());
+			wcscpy_s(ptr.get(), wstr.size() + 1, wstr.c_str());
 			return _wcslwr(ptr.get());
 		}
 
