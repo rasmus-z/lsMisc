@@ -92,7 +92,7 @@
 #pragma comment(lib,"shlwapi.lib")
 #endif
 
-
+#pragma comment(lib, "user32.lib")
 
 #ifdef __cplusplus_cli
 #ifndef _INC_VCCLR
