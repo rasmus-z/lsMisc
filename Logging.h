@@ -22,39 +22,19 @@
 //SUCH DAMAGE.
 
 #pragma once
-#include "StdAfx.h"
-#include <ostream>
-#include <fstream>
 
+#include <string>
+#include <fstream>
 
 namespace Ambiesoft {
 	class Logging
 	{
 		std::wofstream file_;
 	public:
-		Logging(const wstring& file) : Logging(file.c_str()){}
+		Logging(const std::wstring& file) : Logging(file.c_str()){}
 
-		Logging(const wchar_t* file)
-		{
-			if (file_.is_open())
-				return;
-			file_.open(file, std::ios::app);
-		}
-
-		~Logging()
-		{
-			file_.close();
-		}
-		void Write(const wstring& s)
-		{
-			time_t now = std::time(nullptr);
-			struct tm* localNow = std::localtime(&now);
-			wchar_t buf[64];
-			wcsftime(buf, _countof(buf), L"%c", localNow);
-			file_ << buf << L"\t";
-
-			file_ << s << std::endl;
-			file_.flush();
-		}
+		Logging(const wchar_t* file);
+		~Logging();
+		void Write(const std::wstring& s);
 	};
 }

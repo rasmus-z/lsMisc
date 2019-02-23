@@ -23,11 +23,46 @@
 
 #include "stdafx.h"
 
+#include <ostream>
+#include <fstream>
+#include <string>
+#include <cstdlib>
+#include <ctime>
+
 #include "Logging.h"
 
 #include "DebugNew.h"
 
 namespace Ambiesoft {
 
+	Logging::Logging(const wchar_t* file)
+	{
+		if (file_.is_open())
+			return;
+		file_.open(file, std::ios::app);
+	}
+
+	Logging::~Logging()
+	{
+		file_.close();
+	}
+	void Logging::Write(const std::wstring& s)
+	{
+		// time_t now = std::time(nullptr);
+		__time64_t now = 0;
+		_time64(&now);
+
+		// struct tm* localNow = std::localtime(&now);
+		struct tm localNow = { 0 };
+		_localtime64_s(&localNow, &now);
+		
+		
+		wchar_t buf[64];
+		wcsftime(buf, _countof(buf), L"%c", &localNow);
+		file_ << buf << L"\t";
+
+		file_ << s << std::endl;
+		file_.flush();
+	}
 
 }
