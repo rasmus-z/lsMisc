@@ -51,6 +51,16 @@ namespace Ambiesoft
 				&hKey_);
 			return hKey_ != nullptr;
 		}
+		bool OpenOrCreate(HKEY hRoot, LPCWSTR pSub)
+		{
+			if (Open(hRoot, pSub))
+				return true;
+
+			RegCreateKey(hRoot,
+				pSub,
+				&hKey_);
+			return hKey_ != nullptr;
+		}
 		bool Close()
 		{
 			bool ret = RegCloseKey(hKey_) == ERROR_SUCCESS;

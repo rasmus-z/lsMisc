@@ -30,18 +30,29 @@
 #include "DebugNew.h"
 
 namespace Ambiesoft {
+	namespace {
+		static const wchar_t* FEATURE_BROWSER_EMULATION = L"Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION";
+	}
+
+	bool GetBrowserEmulation(LPCWSTR pName, DWORD& mode)
+	{
+		mode = -1;
+		Registory reg;
+		if (!reg.Open(HKEY_CURRENT_USER, FEATURE_BROWSER_EMULATION))
+			return false;
+
+		return reg.Get(pName, mode);
+	}
 	bool SetBrowserEmulation(LPCWSTR pName, DWORD mode)
 	{
-		static const wchar_t* FEATURE_BROWSER_EMULATION = L"Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION";
 		Registory reg;
-		reg.Open(HKEY_CURRENT_USER, FEATURE_BROWSER_EMULATION);
+		reg.OpenOrCreate(HKEY_CURRENT_USER, FEATURE_BROWSER_EMULATION);
 		if (!reg)
 			return false;
 		return reg.Set(pName, mode);
 	}
 	bool UnsetBrowserEmulation(LPCWSTR pName)
 	{
-		static const wchar_t* FEATURE_BROWSER_EMULATION = L"Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION";
 		Registory reg;
 		reg.Open(HKEY_CURRENT_USER, FEATURE_BROWSER_EMULATION);
 		return reg.Delete(pName);
