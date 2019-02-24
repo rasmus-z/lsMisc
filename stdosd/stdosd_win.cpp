@@ -28,8 +28,11 @@
 #pragma comment(lib, "Shlwapi.lib")
 
 #include <winioctl.h>
-#include <regex>
 
+#include <regex>
+#include <locale>
+#include <codecvt>
+#include <string>
 #include "stdosd.h"
 
 #if !defined(REPARSE_DATA_BUFFER_HEADER_SIZE)
@@ -184,5 +187,151 @@ namespace Ambiesoft {
 
 			return resultdir;
 		}
+
+
+
+        static wstring toWstring(const string& s)
+        {
+            std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+            // std::string narrow = converter.to_bytes(wide_utf16_source_string);
+            return converter.from_bytes(s);
+        }
+        static string toString(const wstring& w)
+        {
+            std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+            return converter.to_bytes(w);
+        }
+
+        class CFileIteratorInternal
+        {
+            HANDLE hFF_ = INVALID_HANDLE_VALUE;
+            WIN32_FIND_DATA* pFindData_ = nullptr;
+            public:
+            CFileIteratorInternal(HANDLE h, const WIN32_FIND_DATA* wfd) :
+                hFF_(h)
+            {
+                if(wfd)
+                {
+                    pFindData_ = new WIN32_FIND_DATA;
+                    *pFindData_ = *wfd;
+                }
+            }
+            ~CFileIteratorInternal()
+            {
+                Close();
+            }
+            void Close()
+            {
+                if(hFF_ != INVALID_HANDLE_VALUE)
+                {
+                    FindClose(hFF_);
+                    hFF_ = INVALID_HANDLE_VALUE;
+                }
+                if(pFindData_)
+                {
+                    delete pFindData_;
+                    pFindData_=nullptr;
+                }
+            }
+
+            bool valid() const {
+                return hFF_ != INVALID_HANDLE_VALUE && !!pFindData_;
+            }
+            bool next()
+            {
+                if(!valid())
+                    return false;
+
+                bool nexted=false;
+                while( (pFindData_->cFileName[0]==L'.' && pFindData_->cFileName[1]==0) ||
+                        (pFindData_->cFileName[0]==L'.' && pFindData_->cFileName[1]==L'.' &&  pFindData_->cFileName[2]==0) )
+                {
+                    if(!FindNextFile(hFF_, pFindData_))
+                    {
+                        Close();
+                        return false;
+                    }
+                    nexted=true;
+                }
+
+                if(!nexted)
+                {
+                    if(!FindNextFile(hFF_, pFindData_))
+                    {
+                        Close();
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+            std::string name() const {
+                std::string ret;
+                if(!valid())
+                    return ret;
+                return toString(pFindData_->cFileName);
+            }
+            bool isDir() const {
+                if(!valid())
+                    return false;
+                return (pFindData_->dwFileAttributes != 0xFFFFFFFF) &&
+                        (0 != (pFindData_->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY));
+            }
+            unsigned long long size() const {
+                ULARGE_INTEGER size;
+                size.HighPart = pFindData_->nFileSizeHigh;
+                size.LowPart = pFindData_->nFileSizeLow;
+                return size.QuadPart;
+            }
+        };
+
+        HFILEITERATOR stdCreateFileIterator(const std::string& directory)
+        {
+            wstring directoryW = toWstring(directory);
+            directoryW.erase(directoryW.find_last_not_of(L"/\\")+1);
+            directoryW += L"\\*";
+
+            WIN32_FIND_DATA wfd;
+            HANDLE hFF = FindFirstFile(directoryW.c_str(), &wfd);
+            if(hFF==INVALID_HANDLE_VALUE)
+            {
+                return nullptr;
+            }
+
+            return new CFileIteratorInternal(hFF, &wfd);
+        }
+
+//        bool stdHasFileNext(HFILEITERATOR hFileIterator)
+//        {
+//            if(!hFileIterator)
+//                return false;
+//            CFileIteratorInternal* pIterator = (CFileIteratorInternal*)hFileIterator;
+//            return pIterator->hasNext();
+//        }
+
+        bool stdFileNext(HFILEITERATOR hFileIterator, FileInfo* fi)
+        {
+            if(!hFileIterator)
+                return false;
+
+            CFileIteratorInternal* pIterator = (CFileIteratorInternal*)hFileIterator;
+            if(!pIterator->next())
+                return false;
+
+            fi->setAll(pIterator->isDir(),
+                       pIterator->name(),
+                       pIterator->size());
+
+            return true;
+        }
+        bool stdCloseFileIterator(HFILEITERATOR hFileIterator)
+        {
+            if(!hFileIterator)
+                return false;
+            CFileIteratorInternal* pIterator = (CFileIteratorInternal*)hFileIterator;
+            pIterator->Close();
+
+            return true;
+        }
 	}
 }

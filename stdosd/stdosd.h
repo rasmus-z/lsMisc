@@ -74,7 +74,39 @@ namespace Ambiesoft {
 #define STDOSD_NEWLINE "\n"
 #endif
 
-		template<typename C>
+
+        typedef void* HFILEITERATOR;
+        class FileInfo
+        {
+            unsigned long long size_ = 0;
+            std::string name_;
+            std::string path_;
+            bool isDir_ = false;
+        public:
+            unsigned long long size() const {
+                return size_;
+            }
+            std::string name() const {
+                return name_;
+            }
+//            std::string path() const {
+//                return path_;
+//            }
+            bool isDirectory() const {
+                return isDir_;
+            }
+
+            void setAll(bool isDir,
+                        const std::string& name,
+                        const unsigned long long& size)
+            {
+                isDir_ = isDir;
+                name_ = name;
+                size_=size;
+            }
+        };
+
+        template<typename C>
 		struct stdLiterals
 		{
 			// static STDOSD_CONSTEXPR C period = '.';
@@ -945,7 +977,7 @@ namespace Ambiesoft {
 		template<typename C>
 		inline C* stdStringLower(C* pD1)
 		{
-			static_assert(false);
+                        // static_assert(false, "false");
 			assert(false);
 		}
 		template<>
@@ -974,5 +1006,10 @@ namespace Ambiesoft {
 		}
 
 
+
+        HFILEITERATOR stdCreateFileIterator(const std::string& directory);
+        // bool stdHasFileNext(HFILEITERATOR hFileIterator);
+        bool stdFileNext(HFILEITERATOR hFileIterator, FileInfo* fi);
+        bool stdCloseFileIterator(HFILEITERATOR hFileIterator);
 	}
 }
