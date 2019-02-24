@@ -11,7 +11,7 @@ using namespace std;
 
 
 
-TEST(stdosd, stdIsDigit)
+TEST(stdosd, stdIsDigitTest)
 {
 	// "１２３"
     const wchar_t* zenNum = L"１２３";
@@ -504,3 +504,33 @@ TEST(stdosd, stdAddDQIfNecessaryTest)
 	
 }
 
+TEST(stdosd, stdStringLowerTest)
+{
+	{
+		char szT[] = "abc";
+		EXPECT_STREQ(stdStringLower(szT, _countof(szT) - 1), szT);
+
+		char szT1[] = "ABC";
+		EXPECT_STREQ(stdStringLower(szT1, _countof(szT) - 1), "abc");
+
+		string str = " xyz ";
+		EXPECT_STREQ(stdStringLower(str).c_str(), str.c_str());
+
+		str = " xyz Z";
+		EXPECT_STREQ(stdStringLower(str).c_str(), " xyz z");
+	}
+
+	{
+		wchar_t szT[] = L"abc";
+		EXPECT_STREQ(stdStringLower(szT, _countof(szT) - 1), szT);
+
+		wchar_t szT1[] = L"ABC";
+		EXPECT_STREQ(stdStringLower(szT1, _countof(szT) - 1), L"abc");
+
+		wstring str = L" xyz ";
+		EXPECT_EQ(stdStringLower(str), str);
+
+		str = L" xyz Z";
+		EXPECT_STREQ(stdStringLower(str).c_str(), L" xyz z");
+	}
+}

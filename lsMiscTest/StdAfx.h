@@ -1,12 +1,12 @@
 #define NOMINMAX
 
-#if _MSC_VER <= 1800
-// Basically gtest leaks, so turn it off
-#ifndef NDEBUG
-// include only in DEBUG mode
-#include <vld.h>
-#endif
-#endif // _MSC_VER <= 1800
+//#if _MSC_VER <= 1800
+//// Basically gtest leaks, so turn it off
+//#ifndef NDEBUG
+//// include only in DEBUG mode
+//#include <vld.h>
+//#endif
+//#endif // _MSC_VER <= 1800
 
 #include "../PragmaShowVersions.h"
 
@@ -44,6 +44,8 @@
 #include <vector>
 #include <iostream>
 #include <memory>
+
+#include <time.h>
 
 // In lsMisc directory, run the following command
 // git submodule init

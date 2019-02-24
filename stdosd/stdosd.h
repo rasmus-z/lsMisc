@@ -972,43 +972,43 @@ namespace Ambiesoft {
 		}
 
 
-
+		inline void stdCopyString(char *pDst, size_t size, const char *pSrc)
+		{
+			strcpy_s(pDst, size, pSrc);
+		}
+		inline void stdCopyString(wchar_t *pDst, size_t size, const wchar_t *pSrc)
+		{
+			wcscpy_s(pDst, size, pSrc);
+		}
 
 		template<typename C>
-		inline C* stdStringLower(C* pD1)
+		inline C* stdStringLower(C* pD1, size_t size)
 		{
                         // static_assert(false, "false");
 			assert(false);
 		}
 		template<>
-		inline char* stdStringLower(char* pc)
+		inline char* stdStringLower(char* pc, size_t size)
 		{
-			return _strlwr(pc);
+			_strlwr_s(pc, size + 1);
+			return pc;
 		}
 		template<>
-		inline wchar_t* stdStringLower(wchar_t* pwc)
+		inline wchar_t* stdStringLower(wchar_t* pwc, size_t size)
 		{
-			return _wcslwr(pwc);
+			_wcslwr_s(pwc, size + 1);
+			return pwc;
 		}
-		// not special
-		inline std::string stdStringLower(const std::string& str)
+		
+		template<class C>
+		inline std::basic_string<C> stdStringLower(const std::basic_string<C>& str)
 		{
-			std::unique_ptr<char[]> ptr(new char[str.size() + 1]);
-			strcpy_s(ptr.get(), str.size() + 1, str.c_str());
-			return _strlwr(ptr.get());
+			std::unique_ptr<C[]> ptr(new C[str.size() + 1]);
+			stdCopyString(ptr.get(), str.size() + 1, str.c_str());
+			return stdStringLower(ptr.get(), str.size());
 		}
-		// not special
-		inline std::wstring stdStringLower(const std::wstring& wstr)
-		{
-			std::unique_ptr<wchar_t[]> ptr(new wchar_t[wstr.size() + 1]);
-			wcscpy_s(ptr.get(), wstr.size() + 1, wstr.c_str());
-			return _wcslwr(ptr.get());
-		}
-
-
 
         HFILEITERATOR stdCreateFileIterator(const std::string& directory);
-        // bool stdHasFileNext(HFILEITERATOR hFileIterator);
         bool stdFileNext(HFILEITERATOR hFileIterator, FileInfo* fi);
         bool stdCloseFileIterator(HFILEITERATOR hFileIterator);
 	}
