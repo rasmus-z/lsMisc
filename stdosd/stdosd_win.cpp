@@ -196,23 +196,27 @@ namespace Ambiesoft {
             // std::string narrow = converter.to_bytes(wide_utf16_source_string);
             return converter.from_bytes(s);
         }
-        static string toString(const wstring& w)
-        {
-            std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-            return converter.to_bytes(w);
-        }
+		static string toString(const wstring& w)
+		{
+			std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+			return converter.to_bytes(w);
+		}
+		static string toString(const string& s)
+		{
+			return s;
+		}
 
         class CFileIteratorInternal
         {
             HANDLE hFF_ = INVALID_HANDLE_VALUE;
-            WIN32_FIND_DATA* pFindData_ = nullptr;
+            WIN32_FIND_DATAW* pFindData_ = nullptr;
             public:
-            CFileIteratorInternal(HANDLE h, const WIN32_FIND_DATA* wfd) :
+            CFileIteratorInternal(HANDLE h, const WIN32_FIND_DATAW* wfd) :
                 hFF_(h)
             {
                 if(wfd)
                 {
-                    pFindData_ = new WIN32_FIND_DATA;
+                    pFindData_ = new WIN32_FIND_DATAW;
                     *pFindData_ = *wfd;
                 }
             }
@@ -246,7 +250,7 @@ namespace Ambiesoft {
                 while( (pFindData_->cFileName[0]==L'.' && pFindData_->cFileName[1]==0) ||
                         (pFindData_->cFileName[0]==L'.' && pFindData_->cFileName[1]==L'.' &&  pFindData_->cFileName[2]==0) )
                 {
-                    if(!FindNextFile(hFF_, pFindData_))
+                    if(!FindNextFileW(hFF_, pFindData_))
                     {
                         Close();
                         return false;
@@ -256,7 +260,7 @@ namespace Ambiesoft {
 
                 if(!nexted)
                 {
-                    if(!FindNextFile(hFF_, pFindData_))
+                    if(!FindNextFileW(hFF_, pFindData_))
                     {
                         Close();
                         return false;
@@ -291,8 +295,8 @@ namespace Ambiesoft {
             directoryW.erase(directoryW.find_last_not_of(L"/\\")+1);
             directoryW += L"\\*";
 
-            WIN32_FIND_DATA wfd;
-            HANDLE hFF = FindFirstFile(directoryW.c_str(), &wfd);
+            WIN32_FIND_DATAW wfd;
+            HANDLE hFF = FindFirstFileW(directoryW.c_str(), &wfd);
             if(hFF==INVALID_HANDLE_VALUE)
             {
                 return nullptr;
