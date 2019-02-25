@@ -22,23 +22,47 @@
 //SUCH DAMAGE.
 
 
+//
+//#define STRING2(x) #x
+//#define STRING(x) STRING2(x)
+//#pragma message("WINVER        : " STRING(WINVER))
+//#pragma message("_WIN32_WINNT  : " STRING(_WIN32_WINNT))
+//#pragma message("_WIN32_WINDOWS: " STRING(_WIN32_WINDOWS)) // Windows9x only
+//#pragma message("_WIN32_IE     : " STRING(_WIN32_IE))
+//#pragma message("_MSC_VER      : " STRING(_MSC_VER))
+//#pragma message("__cplusplus   : " STRING(__cplusplus))
+//#pragma message("SDK_VER      : " STRING(SDK_VER))
+//#undef STRING
+//#undef STRING2
+//
+//#ifdef UNICODE
+//#pragma message("UNICODE defined")
+//#else
+//#pragma message("UNICODE not defined")
+//#endif
+
+
+
 
 #define STRING2(x) #x
 #define STRING(x) STRING2(x)
-#pragma message("WINVER        : " STRING(WINVER))
-#pragma message("_WIN32_WINNT  : " STRING(_WIN32_WINNT))
-// #pragma message("_WIN32_WINDOWS: " STRING(_WIN32_WINDOWS)) // Windows9x only
-#pragma message("_WIN32_IE     : " STRING(_WIN32_IE))
-#pragma message("_MSC_VER      : " STRING(_MSC_VER))
-#pragma message("__cplusplus   : " STRING(__cplusplus))
+#define TOMESSAGE(S) #S ":" STRING(S)
+
+//#pragma message("_MSC_VER      : " STRING(_MSC_VER))
+
+#pragma message(TOMESSAGE(WINVER))
+#pragma message(TOMESSAGE(_WIN32_WINNT))
+#pragma message(TOMESSAGE(_WIN32_WINDOWS))
+#pragma message(TOMESSAGE(_WIN32_IE))
+#pragma message(TOMESSAGE(_MSC_VER))
+#pragma message(TOMESSAGE(_MSC_FULL_VER))
+#pragma message(TOMESSAGE(_MSC_BUILD))
+#pragma message(TOMESSAGE(_MSVC_LANG))
+#pragma message(TOMESSAGE(__cplusplus))
+#pragma message(TOMESSAGE(__CLR_VER ))
+#pragma message(TOMESSAGE(_ATL_VER))
+#pragma message(TOMESSAGE(_MFC_VER))
+
+#undef TOMESSAGE
 #undef STRING
 #undef STRING2
-
-#ifdef UNICODE
-#pragma message("UNICODE defined")
-#else
-#pragma message("UNICODE not defined")
-#endif
-
-
-

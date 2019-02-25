@@ -1,9 +1,5 @@
-//#include "stdafx.h"
+#include "stdafx.h"
 
-#include <memory>
-
-
-#include <gtest/gtest.h>
 
 using namespace std;
 
