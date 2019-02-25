@@ -8,7 +8,7 @@
 //#endif
 //#endif // _MSC_VER <= 1800
 
-#include "../PragmaShowVersions.h"
+
 
 #include <afxwin.h>
 
@@ -51,3 +51,5 @@
 // git submodule init
 // git submodule update
 #include "gtest/gtest.h"
+
+#include "../PragmaShowVersions.h"
