@@ -1,14 +1,13 @@
-﻿// #include "stdafx.h"
-
-#include <gtest/gtest.h>
+﻿#include "stdafx.h"
 
 #include "../stdosd/stdosd.h"
 #include "../stdosd/CBool.h"
 #include "../stdosd/CNativeValue.h"
+#include "../stdwin32/stdwin32.h"
 
 using namespace Ambiesoft::stdosd;
+using namespace Ambiesoft::stdwin32;
 using namespace std;
-
 
 
 TEST(stdosd, stdIsDigitTest)
@@ -534,3 +533,40 @@ TEST(stdosd, stdStringLowerTest)
 		EXPECT_STREQ(stdStringLower(str).c_str(), L" xyz z");
 	}
 }
+
+TEST(stdosd, stdFileIteratorTest)
+{
+	{
+		HFILEITERATOR hI = stdCreateFileIterator(stdGetParentDirectory(stdGetModuleFileNameA()));
+		EXPECT_NE(hI, nullptr);
+		EXPECT_TRUE(stdCloseFileIterator(hI));
+	}
+
+	{
+		HFILEITERATOR hI = stdCreateFileIterator(stdGetParentDirectory(stdGetModuleFileNameA()));
+		EXPECT_NE(hI, nullptr);
+
+		bool found = false;
+		string targetName = stdGetFileName(stdGetModuleFileNameA());
+		FileInfo fi;
+		while (stdFileNext(hI, &fi))
+		{
+			if (fi.name() == targetName)
+			{
+				found = true;
+				break;
+			}
+		}
+		EXPECT_TRUE(found);
+		EXPECT_TRUE(stdCloseFileIterator(hI));
+	}
+
+	{
+		EXPECT_FALSE(stdCloseFileIterator(nullptr));
+	}
+
+	{
+		EXPECT_DEATH(stdCloseFileIterator((HFILEITERATOR)1), "");
+	}
+}
+
