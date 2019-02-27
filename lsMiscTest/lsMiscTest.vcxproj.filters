@@ -378,6 +378,9 @@
     <ClCompile Include="..\stdosd\I18NBeta.cpp">
       <Filter>stdosd</Filter>
     </ClCompile>
+    <ClCompile Include="gtestWindowMessageInfo.cpp">
+      <Filter>GTest Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\CenterWindow.h">
@@ -736,6 +739,9 @@
     </ClInclude>
     <ClInclude Include="..\stdosd\I18NBeta.h">
       <Filter>stdosd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WindowMessageInfo.h">
+      <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

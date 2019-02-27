@@ -374,6 +374,7 @@
     </ClCompile>
     <ClCompile Include="gtestSetPriority.cpp" />
     <ClCompile Include="gtestUtf8toUtf16.cpp" />
+    <ClCompile Include="gtestWindowMessageInfo.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="gtestCommandLineParser.cpp" />
     <ClCompile Include="gtestCommnadLineString.cpp" />
@@ -530,6 +531,7 @@
     <ClInclude Include="..\verify.h" />
     <ClInclude Include="..\WaitCursor.h" />
     <ClInclude Include="..\WaitWindowClose.h" />
+    <ClInclude Include="..\WindowMessageInfo.h" />
     <ClInclude Include="..\WritePrivateProfileInt.h" />
     <ClInclude Include="..\WritePrivateProfileWString.h" />
     <ClInclude Include="..\XBrowseForFolder.h" />
