@@ -38,7 +38,7 @@ namespace Ambiesoft {
 	class WindowMessageInfo<WM_MOUSEWHEEL>
 	{
 	public:
-		static WORD delta(const WPARAM& w, const LPARAM& l)
+		static short delta(const WPARAM& w, const LPARAM& l)
 		{
 			return GET_WHEEL_DELTA_WPARAM(w);
 		}
