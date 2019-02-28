@@ -107,10 +107,8 @@ namespace Ambiesoft {
         };
 
         template<typename C>
-		struct stdLiterals
-		{
-			// static STDOSD_CONSTEXPR C period = '.';
-		};
+		struct stdLiterals;
+
 		template<>
 		struct stdLiterals<char>
 		{
@@ -154,6 +152,9 @@ namespace Ambiesoft {
 			}
 			static STDOSD_CONSTEXPR char* CRLF() {
 				return "\r\n";
+			}
+			static STDOSD_CONSTEXPR char* WHITESPACE() {
+				return " \t\r\n";
 			}
 		};
 		template<>
@@ -200,7 +201,9 @@ namespace Ambiesoft {
 			static STDOSD_CONSTEXPR wchar_t* CRLF() {
 				return L"\r\n";
 			}
-
+			static STDOSD_CONSTEXPR wchar_t* WHITESPACE() {
+				return L" \t\r\n";
+			}
 		};
 #if defined(CHAR16T_AVAILABLE)
 		template<>
@@ -246,6 +249,9 @@ namespace Ambiesoft {
 			}
 			static STDOSD_CONSTEXPR char16_t* CRLF() {
 				return u"\r\n";
+			}
+			static STDOSD_CONSTEXPR char16_t* WHITESPACE() {
+				return u" \t\r\n";
 			}
 		};
 #endif // #if defined(CHAR16T_AVAILABLE)
@@ -982,11 +988,11 @@ namespace Ambiesoft {
 		}
 
 		template<typename C>
-		inline C* stdStringLower(C* pD1, size_t size)
-		{
-                        // static_assert(false, "false");
-			assert(false);
-		}
+		inline C* stdStringLower(C* pD1, size_t size);
+		//{
+  //                      // static_assert(false, "false");
+		//	assert(false);
+		//}
 		template<>
 		inline char* stdStringLower(char* pc, size_t size)
 		{
@@ -1011,5 +1017,33 @@ namespace Ambiesoft {
         HFILEITERATOR stdCreateFileIterator(const std::string& directory);
         bool stdFileNext(HFILEITERATOR hFileIterator, FileInfo* fi);
         bool stdCloseFileIterator(HFILEITERATOR hFileIterator);
+
+
+		template<typename C>
+		inline std::basic_string<C> stdTrim(
+			const std::basic_string<C>& str,
+			const C* whitespace = stdLiterals<C>::WHITESPACE())
+		{
+			using ST = std::basic_string<C>;
+
+			if (whitespace == nullptr || whitespace[0] == 0)
+				return str;
+
+			const ST::size_type strBegin = str.find_first_not_of(whitespace);
+			if (strBegin == ST::npos)
+				return ST(); // no content
+
+			const ST::size_type strEnd = str.find_last_not_of(whitespace);
+			const ST::size_type strRange = strEnd - strBegin + 1;
+
+			return str.substr(strBegin, strRange);
+		}
+		template<typename C>
+		inline std::basic_string<C> stdTrim(
+			const std::basic_string<C>& str,
+			const std::basic_string<C>& whitespace)
+		{
+			return stdTrim(str, whitespace.c_str());
+		}
 	}
 }

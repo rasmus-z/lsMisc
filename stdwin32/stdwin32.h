@@ -32,11 +32,13 @@ namespace Ambiesoft {
 	namespace stdwin32 {
 
 		template<typename T>
-		struct StdCharTraits
+		struct StdCharTraits;
+		template<>
+		struct StdCharTraits<char>
 		{
 			static DWORD ssGetModuleFileName(
 				HMODULE hModule,
-				T* lpFilename,
+				char* lpFilename,
 				DWORD nSize
 				)
 			{
@@ -128,16 +130,16 @@ namespace Ambiesoft {
 		//#endif
 		//#endif // __cplusplus_cli
 
-
-		std::string trimA(const std::string& str,
-			const std::string& whitespace = " \t\r\n");
-		std::wstring trimW(const std::wstring& str,
-			const std::wstring& whitespace = L" \t\r\n");
-#ifdef UNICODE
-#define trim trimW
-#else
-#define trim trimA
-#endif
+		// // moved to stdTrim
+//		std::string trimA(const std::string& str,
+//			const std::string& whitespace = " \t\r\n");
+//		std::wstring trimW(const std::wstring& str,
+//			const std::wstring& whitespace = L" \t\r\n");
+//#ifdef UNICODE
+//#define trim trimW
+//#else
+//#define trim trimA
+//#endif
 
 
 
@@ -208,12 +210,12 @@ namespace Ambiesoft {
 
 
 
-		std::wstring stdSplitCommandLineW(int argc, int startargc, LPCWSTR* argv);
-#ifdef UNICODE
-#define stdSplitCommandLine stdSplitCommandLineW
-#else
-#define stdSplitCommandLine stdSplitCommandLineA
-#endif
+//		std::wstring stdSplitCommandLineW(int argc, int startargc, LPCWSTR* argv);
+//#ifdef UNICODE
+//#define stdSplitCommandLine stdSplitCommandLineW
+//#else
+//#define stdSplitCommandLine stdSplitCommandLineA
+//#endif
 
 
 		std::wstring stdAddBackSlash(const std::wstring& d);

@@ -311,31 +311,31 @@ namespace Ambiesoft {
 
 
 
+		// moved to stdTrim
+		//std::string trimA(const std::string& str,
+		//	const std::string& whitespace)
+		//{
+		//	const std::string::size_type strBegin = str.find_first_not_of(whitespace);
+		//	if (strBegin == std::string::npos)
+		//		return ""; // no content
 
-		std::string trimA(const std::string& str,
-			const std::string& whitespace)
-		{
-			const std::string::size_type strBegin = str.find_first_not_of(whitespace);
-			if (strBegin == std::string::npos)
-				return ""; // no content
+		//	const std::string::size_type strEnd = str.find_last_not_of(whitespace);
+		//	const std::string::size_type strRange = strEnd - strBegin + 1;
 
-			const std::string::size_type strEnd = str.find_last_not_of(whitespace);
-			const std::string::size_type strRange = strEnd - strBegin + 1;
+		//	return str.substr(strBegin, strRange);
+		//}
+		//std::wstring trimW(const std::wstring& str,
+		//	const std::wstring& whitespace)
+		//{
+		//	const std::wstring::size_type strBegin = str.find_first_not_of(whitespace);
+		//	if (strBegin == std::string::npos)
+		//		return L""; // no content
 
-			return str.substr(strBegin, strRange);
-		}
-		std::wstring trimW(const std::wstring& str,
-			const std::wstring& whitespace)
-		{
-			const std::wstring::size_type strBegin = str.find_first_not_of(whitespace);
-			if (strBegin == std::string::npos)
-				return L""; // no content
+		//	const std::wstring::size_type strEnd = str.find_last_not_of(whitespace);
+		//	const std::wstring::size_type strRange = strEnd - strBegin + 1;
 
-			const std::wstring::size_type strEnd = str.find_last_not_of(whitespace);
-			const std::wstring::size_type strRange = strEnd - strBegin + 1;
-
-			return str.substr(strBegin, strRange);
-		}
+		//	return str.substr(strBegin, strRange);
+		//}
 
 
 
@@ -565,38 +565,38 @@ namespace Ambiesoft {
 		}
 
 
-		wstring stdSplitCommandLineW(int argc, int startargc, LPCWSTR* argv)
-		{
-			wstring ret;
-			if (argc < 1)
-				return ret;
+		//wstring stdSplitCommandLineW(int argc, int startargc, LPCWSTR* argv)
+		//{
+		//	wstring ret;
+		//	if (argc < 1)
+		//		return ret;
 
-			for (int i = startargc; i < argc; ++i)
-			{
-				LPCWSTR p = argv[i];
-				if (!p || !p[0])
-					return L"";
+		//	for (int i = startargc; i < argc; ++i)
+		//	{
+		//		LPCWSTR p = argv[i];
+		//		if (!p || !p[0])
+		//			return L"";
 
-				if (p[0] == L'"')
-				{
-					ret += p;
-				}
-				else if (wcschr(p, L' ') || wcschr(p, L'\t'))
-				{
-					ret += L"\"";
-					ret += p;
-					ret += L"\"";
-				}
-				else
-				{
-					ret += p;
-				}
-				ret += L" ";
-			}
+		//		if (p[0] == L'"')
+		//		{
+		//			ret += p;
+		//		}
+		//		else if (wcschr(p, L' ') || wcschr(p, L'\t'))
+		//		{
+		//			ret += L"\"";
+		//			ret += p;
+		//			ret += L"\"";
+		//		}
+		//		else
+		//		{
+		//			ret += p;
+		//		}
+		//		ret += L" ";
+		//	}
 
-			ret = trimW(ret);
-			return ret;
-		}
+		//	ret = trimW(ret);
+		//	return ret;
+		//}
 
 		wstring stdAddBackSlash(const wstring& d)
 		{
