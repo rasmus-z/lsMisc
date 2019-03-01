@@ -1,3 +1,5 @@
+// this should not be included
+// because Qt project can not include MFC
 // #include "stdafx.h"
 
 #include <memory>

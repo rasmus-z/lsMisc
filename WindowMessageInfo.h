@@ -27,12 +27,12 @@
 
 namespace Ambiesoft {
 	template<DWORD M>
-	class WindowMessageInfo
-	{
-		WindowMessageInfo(){}
-	public:
+	class WindowMessageInfo;
+	//{
+	//	WindowMessageInfo(){}
+	//public:
 
-	};
+	//};
 
 	template<>
 	class WindowMessageInfo<WM_MOUSEWHEEL>

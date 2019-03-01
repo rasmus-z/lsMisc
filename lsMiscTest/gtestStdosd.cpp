@@ -1,12 +1,22 @@
-﻿#include "stdafx.h"
+﻿// this should not be included
+// because Qt project can not include MFC
+// #include "stdafx.h"
+
+#if defined(_WIN32)
+#include <Windows.h>
+#endif
+
+#include "gtest/gtest.h"
 
 #include "../stdosd/stdosd.h"
 #include "../stdosd/CBool.h"
 #include "../stdosd/CNativeValue.h"
-#include "../stdwin32/stdwin32.h"
+
+// Don't do this
+// #include "../stdwin32/stdwin32.h"
 
 using namespace Ambiesoft::stdosd;
-using namespace Ambiesoft::stdwin32;
+// using namespace Ambiesoft::stdwin32;
 using namespace std;
 
 
@@ -537,17 +547,17 @@ TEST(stdosd, stdStringLowerTest)
 TEST(stdosd, stdFileIteratorTest)
 {
 	{
-		HFILEITERATOR hI = stdCreateFileIterator(stdGetParentDirectory(stdGetModuleFileNameA()));
+		HFILEITERATOR hI = stdCreateFileIterator(stdGetParentDirectory(stdGetModuleFileName<char>()));
 		EXPECT_NE(hI, nullptr);
 		EXPECT_TRUE(stdCloseFileIterator(hI));
 	}
 
 	{
-		HFILEITERATOR hI = stdCreateFileIterator(stdGetParentDirectory(stdGetModuleFileNameA()));
+		HFILEITERATOR hI = stdCreateFileIterator(stdGetParentDirectory(stdGetModuleFileName<char>()));
 		EXPECT_NE(hI, nullptr);
 
 		bool found = false;
-		string targetName = stdGetFileName(stdGetModuleFileNameA());
+		string targetName = stdGetFileName(stdGetModuleFileName<char>());
 		FileInfo fi;
 		while (stdFileNext(hI, &fi))
 		{
@@ -601,3 +611,18 @@ TEST(stdosd, stdTrimTest)
 		EXPECT_STREQ(L"xxx", stdTrim(wstring(L"abcxxxabc"), L"abc").c_str());
 	}
 }
+
+#if defined(_WIN32)
+TEST(stdosd, GetModuleFileNameTest)
+{
+	char szT[MAX_PATH];
+    GetModuleFileNameA(nullptr, szT, _countof(szT));
+	string s = stdGetModuleFileName<char>();
+	EXPECT_STREQ(szT, s.c_str());
+
+	wchar_t szTW[MAX_PATH];
+    GetModuleFileNameW(nullptr, szTW, _countof(szTW));
+	wstring ws = stdGetModuleFileName<wchar_t>();
+	EXPECT_STREQ(szTW, ws.c_str());
+}
+#endif // _WIN32

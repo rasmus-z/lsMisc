@@ -57,7 +57,7 @@ namespace Ambiesoft {
 
 	bool CLogger::Prepare()
 	{
-		tstring file = stdGetFileName(stdGetModuleFileName()) + _T(".log");
+		tstring file = stdGetFileName(stdGetModuleFileName<TCHAR>()) + _T(".log");
 
 		m_hLog = CreateFile(file.c_str(),
 			FILE_APPEND_DATA,

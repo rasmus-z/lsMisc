@@ -18,7 +18,7 @@ TEST(GetProcessList, Basic)
 	
 	bool ok = false;
 	DWORD thisid = GetCurrentProcessId();
-	wstring thisexefilename = stdGetFileName(stdGetModuleFileName());
+	wstring thisexefilename = stdGetFileName(stdGetModuleFileName<wchar_t>());
 	for (PROCESSENTRY32& entry : ret)
 	{
 		if (thisid == entry.th32ProcessID)

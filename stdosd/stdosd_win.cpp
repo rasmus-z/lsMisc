@@ -33,7 +33,10 @@
 #include <locale>
 #include <codecvt>
 #include <string>
+#include <functional>
 #include "stdosd.h"
+
+
 
 #if !defined(REPARSE_DATA_BUFFER_HEADER_SIZE)
 typedef struct _REPARSE_DATA_BUFFER {
@@ -189,21 +192,89 @@ namespace Ambiesoft {
 		}
 
 
+		static unsigned short* utf8toutf16(const LPBYTE pIN, size_t cbLen)
+		{
+			int nReqSize = MultiByteToWideChar(
+				CP_UTF8,
+				0,
+				(const char*)pIN,
+				(int)cbLen,
+				NULL,
+				0);
 
-        static wstring toWstring(const string& s)
-        {
-            std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-            // std::string narrow = converter.to_bytes(wide_utf16_source_string);
-            return converter.from_bytes(s);
-        }
-		static string toString(const wstring& w)
-		{
-			std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-			return converter.to_bytes(w);
+			if (nReqSize == 0)
+				return NULL;
+
+			// unsigned short* pOut = (unsigned short*)malloc(nReqSize * sizeof(unsigned short));
+			unsigned short* pOut = new unsigned short[nReqSize+1];
+			int nRet = MultiByteToWideChar(
+				CP_UTF8,
+				0,
+				(const char*)pIN,
+				(int)cbLen,
+				(LPWSTR)pOut,
+				nReqSize);
+
+			if (nRet == 0 || nRet != nReqSize)
+			{
+				delete pOut;
+				return NULL;
+			}
+			pOut[nReqSize] = 0;
+			return pOut;
 		}
-		static string toString(const string& s)
+  //      static wstring toWstring(const string& s)
+  //      {
+  //          std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+  //          // std::string narrow = converter.to_bytes(wide_utf16_source_string);
+  //          return converter.from_bytes(s);
+  //      }
+  //      static string toString(const wstring& w)
+		//{
+  //          std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+		//	return converter.to_bytes(w);
+		//}
+		//static string toString(const char* p)
+		//{
+		//	return p;
+		//}
+
+		static unsigned short* toWstring2(const string& str)
 		{
-			return s;
+			return (unsigned short*)utf8toutf16((const LPBYTE)str.c_str(), str.size());
+		}
+		static string toString(const unsigned short* p)
+		{
+			int nReqSize = WideCharToMultiByte(
+				CP_UTF8,
+				0,
+				(LPCWCH)p,
+				-1,
+				NULL,
+				0,
+				NULL,
+				NULL);
+
+			if (nReqSize == 0)
+				return NULL;
+
+			BYTE* pOut = new BYTE[nReqSize];
+			int nRet = WideCharToMultiByte(CP_UTF8,
+				0,
+				(LPCWCH)p,
+				-1,
+				(char*)pOut,
+				nReqSize,
+				NULL,
+				NULL);
+
+			if (nRet == 0 || nRet != nReqSize)
+			{
+				delete pOut;
+				return NULL;
+			}
+
+			return string((char*)pOut);
 		}
 
         class CFileIteratorInternal
@@ -273,7 +344,7 @@ namespace Ambiesoft {
                 std::string ret;
                 if(!valid())
                     return ret;
-                return toString(pFindData_->cFileName);
+                return toString((unsigned short*)pFindData_->cFileName);
             }
             bool isDir() const {
                 if(!valid())
@@ -291,16 +362,21 @@ namespace Ambiesoft {
 
         HFILEITERATOR stdCreateFileIterator(const std::string& directory)
         {
-            wstring directoryW = toWstring(directory);
-            directoryW.erase(directoryW.find_last_not_of(L"/\\")+1);
-            directoryW += L"\\*";
-
+            //wstring directoryW = toWstring(directory);
+            //directoryW.erase(directoryW.find_last_not_of(L"/\\")+1);
+            //directoryW += L"\\*";
+			std::string d(directory);
+			d.erase(d.find_last_not_of("/\\")+1);
+			d += "\\*";
+			// d = "a";
+			unique_ptr<unsigned short[]> pW(toWstring2(d));
+			// LPCWSTR ppp = (LPCWSTR)pW.get();
             WIN32_FIND_DATAW wfd;
-            HANDLE hFF = FindFirstFileW(directoryW.c_str(), &wfd);
-            if(hFF==INVALID_HANDLE_VALUE)
-            {
-                return nullptr;
-            }
+            HANDLE hFF = FindFirstFileW((LPCWSTR)pW.get(), &wfd);
+			if (hFF == INVALID_HANDLE_VALUE)
+			{
+				return nullptr;
+			}
 
             return new CFileIteratorInternal(hFF, &wfd);
         }
@@ -337,5 +413,15 @@ namespace Ambiesoft {
 
             return true;
         }
+
+		size_t stdGetModuleFileNameImpl(HMODULEINSTANCE hInst, char* p, size_t size)
+		{
+			return GetModuleFileNameA((HINSTANCE)hInst, p, (DWORD)size);
+		}
+		size_t stdGetModuleFileNameImpl(HMODULEINSTANCE hInst, wchar_t* p, size_t size)
+		{
+			return GetModuleFileNameW((HINSTANCE)hInst, p, (DWORD)size);
+		}
+
 	}
 }

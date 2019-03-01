@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <ProjectName>lsMiscTest</ProjectName>
     <ProjectGuid>{086AB526-37F9-465E-96DF-8229F05B4DBA}</ProjectGuid>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>7.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -355,7 +355,12 @@
     <ClCompile Include="..\XBrowseForFolder.cpp" />
     <ClCompile Include="gtestI18NBeta.cpp" />
     <ClCompile Include="gtestStdwin32.cpp" />
-    <ClCompile Include="gtestStdosd.cpp" />
+    <ClCompile Include="gtestStdosd.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="gtestGtest.cpp" />
     <ClCompile Include="gtestChangeFilenamable.cpp" />
     <ClCompile Include="gtestOpParser.cpp">
@@ -375,7 +380,12 @@
     <ClCompile Include="gtestSetPriority.cpp" />
     <ClCompile Include="gtestUtf8toUtf16.cpp" />
     <ClCompile Include="gtestWindowMessageInfo.cpp" />
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="main.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="gtestCommandLineParser.cpp" />
     <ClCompile Include="gtestCommnadLineString.cpp" />
     <ClCompile Include="prepare_vc.cpp">

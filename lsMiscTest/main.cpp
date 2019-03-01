@@ -1,5 +1,11 @@
-#include "stdafx.h"
 
+// this should not be included
+// because Qt project can not include MFC
+// #include "stdafx.h"
+
+#include <memory>
+
+#include "gtest/gtest.h"
 
 using namespace std;
 

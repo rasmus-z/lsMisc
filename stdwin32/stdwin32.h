@@ -31,68 +31,68 @@
 namespace Ambiesoft {
 	namespace stdwin32 {
 
-		template<typename T>
-		struct StdCharTraits;
-		template<>
-		struct StdCharTraits<char>
-		{
-			static DWORD ssGetModuleFileName(
-				HMODULE hModule,
-				char* lpFilename,
-				DWORD nSize
-				)
-			{
-				return GetModuleFileNameA(hModule, lpFilename, nSize);
-			}
-		};
-		template<>
-		struct StdCharTraits<wchar_t>
-		{
-			static DWORD ssGetModuleFileName(
-				HMODULE hModule,
-				wchar_t* lpFilename,
-				DWORD nSize
-				)
-			{
-				return GetModuleFileNameW(hModule, lpFilename, nSize);
-			}
-		};
-
-		template<typename ST>
-		ST stdGetModuleFileNameTmplate(HINSTANCE hInst = NULL)
-		{
-			typename ST::traits_type::char_type* p = NULL;
-			DWORD size = 64;
-			for (;;)
-			{
-				p = (typename ST::traits_type::char_type*)realloc(p, size * sizeof(ST::traits_type::char_type));
-				if (StdCharTraits<ST::traits_type::char_type>::ssGetModuleFileName(hInst, p, size) < size)
-					break;
-
-				// Make double the size of required memory
-				size *= 2;
-			}
-
-			ST ret = p;
-			free((void*)p);
-			return ret;
-		}
-
-		inline std::string stdGetModuleFileNameA() {
-			return stdGetModuleFileNameTmplate<std::string>();
-		}
-		inline std::wstring stdGetModuleFileNameW() {
-			return stdGetModuleFileNameTmplate<std::wstring>();
-		}
-#ifdef UNICODE
-		inline std::wstring stdGetModuleFileName() {
-			return stdGetModuleFileNameW();
-		}
-#else
-		inline std::string stdGetModuleFileName() {
-			return stdGetModuleFileNameA();
-		}
-#endif
+//		template<typename T>
+//		struct StdCharTraits;
+//		template<>
+//		struct StdCharTraits<char>
+//		{
+//			static DWORD ssGetModuleFileName(
+//				HMODULE hModule,
+//				char* lpFilename,
+//				DWORD nSize
+//				)
+//			{
+//				return GetModuleFileNameA(hModule, lpFilename, nSize);
+//			}
+//		};
+//		template<>
+//		struct StdCharTraits<wchar_t>
+//		{
+//			static DWORD ssGetModuleFileName(
+//				HMODULE hModule,
+//				wchar_t* lpFilename,
+//				DWORD nSize
+//				)
+//			{
+//				return GetModuleFileNameW(hModule, lpFilename, nSize);
+//			}
+//		};
+//
+//		template<typename ST>
+//		ST stdGetModuleFileNameTmplate(HINSTANCE hInst = NULL)
+//		{
+//			typename ST::traits_type::char_type* p = NULL;
+//			DWORD size = 64;
+//			for (;;)
+//			{
+//                                p = (typename ST::traits_type::char_type*)realloc(p, size * sizeof(typename ST::traits_type::char_type));
+//                                if (StdCharTraits<typename ST::traits_type::char_type>::ssGetModuleFileName(hInst, p, size) < size)
+//					break;
+//
+//				// Make double the size of required memory
+//				size *= 2;
+//			}
+//
+//			ST ret = p;
+//			free((void*)p);
+//			return ret;
+//		}
+//
+//		inline std::string stdGetModuleFileNameA() {
+//			return stdGetModuleFileNameTmplate<std::string>();
+//		}
+//		inline std::wstring stdGetModuleFileNameW() {
+//			return stdGetModuleFileNameTmplate<std::wstring>();
+//		}
+//#ifdef UNICODE
+//		inline std::wstring stdGetModuleFileName() {
+//			return stdGetModuleFileNameW();
+//		}
+//#else
+//		inline std::string stdGetModuleFileName() {
+//			return stdGetModuleFileNameA();
+//		}
+//#endif
 
 
 

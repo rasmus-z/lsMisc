@@ -1024,17 +1024,17 @@ namespace Ambiesoft {
 			const std::basic_string<C>& str,
 			const C* whitespace = stdLiterals<C>::WHITESPACE())
 		{
-			using ST = std::basic_string<C>;
+            using ST = std::basic_string<C>;
 
 			if (whitespace == nullptr || whitespace[0] == 0)
 				return str;
 
-			const ST::size_type strBegin = str.find_first_not_of(whitespace);
+            const typename ST::size_type strBegin = str.find_first_not_of(whitespace);
 			if (strBegin == ST::npos)
 				return ST(); // no content
 
-			const ST::size_type strEnd = str.find_last_not_of(whitespace);
-			const ST::size_type strRange = strEnd - strBegin + 1;
+            const typename ST::size_type strEnd = str.find_last_not_of(whitespace);
+            const typename ST::size_type strRange = strEnd - strBegin + 1;
 
 			return str.substr(strBegin, strRange);
 		}
@@ -1044,6 +1044,33 @@ namespace Ambiesoft {
 			const std::basic_string<C>& whitespace)
 		{
 			return stdTrim(str, whitespace.c_str());
+		}
+
+		typedef void* HMODULEINSTANCE;
+
+		
+		size_t stdGetModuleFileNameImpl(HMODULEINSTANCE hInst, char* p, size_t size);
+		size_t stdGetModuleFileNameImpl(HMODULEINSTANCE hInst, wchar_t* p, size_t size);
+
+
+		template<typename C>
+		std::basic_string<C> stdGetModuleFileName(HMODULEINSTANCE hInst = NULL)
+		{
+			C* p = nullptr;
+			size_t size = 64;
+			for (;;)
+			{
+				p = (C*)realloc(p, size * sizeof(C));
+				if (stdGetModuleFileNameImpl(hInst, p, size) < size)
+					break;
+
+				// Make double the size of required memory
+				size *= 2;
+			}
+
+			std::basic_string<C> ret = p;
+			free((void*)p);
+			return ret;
 		}
 	}
 }

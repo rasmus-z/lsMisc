@@ -8,8 +8,10 @@
 #include "../stdwin32/stdwin32.h"
 #include "../GetVersionString.h"
 
+#include "../stdosd/stdosd.h"
 using namespace std;
 using namespace Ambiesoft::stdwin32;
+using namespace Ambiesoft::stdosd;
 using namespace Ambiesoft;
 
 TEST(GetVersionString, Explorer)
@@ -22,7 +24,7 @@ TEST(GetVersionString, Explorer)
 
 TEST(GetVersionString, ThisExe)
 {
-	wstring exe = stdGetModuleFileName();
+	wstring exe = stdGetModuleFileName<wchar_t>();
 	wstring ver = GetVersionString(exe.c_str());
 
 	EXPECT_TRUE(std::regex_match(ver, std::wregex(L"\\d+\\.\\d+\\.\\d+\\.\\d+")));

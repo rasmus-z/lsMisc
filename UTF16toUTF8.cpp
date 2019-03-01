@@ -98,13 +98,13 @@ LPWSTR UTF16_convertEndian(LPCWSTR pIN)
 
 
 
-LPWSTR MultiBytetoUTF16(UINT cp, const LPBYTE pIN, size_t cbLen)
+LPWSTR MultiBytetoUTF16(UINT cp, const LPBYTE pIN)
 {
 	int nReqSize = MultiByteToWideChar(
 		cp,
 		0,
 		(const char*)pIN,
-		(int)cbLen,
+		-1,
 		NULL,
 		0);
 
@@ -115,7 +115,7 @@ LPWSTR MultiBytetoUTF16(UINT cp, const LPBYTE pIN, size_t cbLen)
 	int nRet = MultiByteToWideChar(cp,
 		0,
 		(const char*)pIN,
-		(int)cbLen,
+		-1,
 		pOut,
 		nReqSize);
 

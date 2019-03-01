@@ -31,7 +31,7 @@ static void prepareLang()
 	{
 		once = true;
 
-		wstring langdir = stdCombinePath(stdGetParentDirectory(stdGetModuleFileName()), L"lang");
+		wstring langdir = stdCombinePath(stdGetParentDirectory(stdGetModuleFileName<wchar_t>()), L"lang");
 		CreateDirectory(langdir.c_str(), NULL);
 
 		wstring langfile = stdCombinePath(langdir, L"jpn.txt");
