@@ -29,6 +29,7 @@
 
 #include <vector>
 #include <limits>
+#include <cassert>
 
 #include "GetChildWindowBy.h"
 
@@ -36,10 +37,48 @@ using namespace std;
 
 namespace Ambiesoft{
 	namespace {
-		struct ContextData {
-			size_t maxcount;
-			LPCWSTR pName;
-			vector<HWND> results;
+		enum EnumBy {
+			ENUM_BY_NOTHING,
+			ENUM_BY_TEXT,
+			ENUM_BY_CLASSNAME,
+			ENUM_BY_ALL,
+		};
+		class ContextData {
+			size_t maxcount_;
+			EnumBy enumBy_;
+			LPCWSTR pName_;
+			vector<HWND> results_;
+			ContextData(){}
+		public:
+			ContextData(const size_t& maxcount,
+				EnumBy enumBy,
+				LPCWSTR pName) : 
+				maxcount_(maxcount), enumBy_(enumBy), pName_(pName){}
+
+			LPCWSTR name() const {
+				return pName_;
+			}
+			EnumBy enumBy() const {
+				return enumBy_;
+			}
+			void addResult(HWND h) {
+				results_.push_back(h);
+			}
+			size_t resultSize() const {
+				return results_.size();
+			}
+			size_t maxcount() const {
+				return maxcount_;
+			}
+			bool isResultEmpty() const{
+				return results_.empty();
+			}
+			HWND getFirstResult() const {
+				return results_[0];
+			}
+			vector<HWND> getResults() const {
+				return results_;
+			}
 		};
 
 		static BOOL CALLBACK enumProc(
@@ -48,22 +87,27 @@ namespace Ambiesoft{
 			)
 		{
 			ContextData* pCxt = (ContextData*)lParam;
-
-			if (pCxt->pName)
+			
+			if (pCxt->name())
 			{
 				TCHAR szT[1024]; szT[0] = 0;
-				GetWindowText(hwnd, szT, 1024);
-				if (lstrcmp(szT, pCxt->pName) == 0)
+				if (pCxt->enumBy() == ENUM_BY_TEXT)
+					GetWindowText(hwnd, szT, _countof(szT));
+				else if (pCxt->enumBy() == ENUM_BY_CLASSNAME)
+					GetClassName(hwnd, szT, _countof(szT));
+				else
+					assert(false);
+				if (lstrcmp(szT, pCxt->name()) == 0)
 				{
-					pCxt->results.push_back(hwnd);
+					pCxt->addResult(hwnd);
 				}
 			}
 			else
 			{
-				pCxt->results.push_back(hwnd);
+				pCxt->addResult(hwnd);
 			}
 
-			if (pCxt->results.size() >= pCxt->maxcount)
+			if (pCxt->resultSize() >= pCxt->maxcount())
 			{
 				// no continue;
 				return FALSE;
@@ -73,25 +117,28 @@ namespace Ambiesoft{
 			return TRUE;
 		}
 	}
-	HWND GetChildWindowByName(HWND hwndParent, LPCWSTR pName)
+	HWND GetChildWindowByText(HWND hwndParent, LPCWSTR pName)
 	{
-		ContextData context = {};
-		context.maxcount = 1;
-		context.pName = pName;
+		ContextData context(1, ENUM_BY_TEXT, pName);
 
 		EnumChildWindows(hwndParent, enumProc, (LPARAM)&context);
 
-		return context.results.empty() ? NULL : context.results[0];
+		return context.isResultEmpty() ? NULL : context.getFirstResult();
 	}
+	HWND GetChildWindowByClassName(HWND hwndParent, LPCWSTR pName)
+	{
+		ContextData context(1, ENUM_BY_CLASSNAME, pName);
 
+		EnumChildWindows(hwndParent, enumProc, (LPARAM)&context);
+
+		return context.isResultEmpty() ? NULL : context.getFirstResult();
+	}
 	vector<HWND> GetChildWindows(HWND hwndParent)
 	{
-		ContextData context = {};
-		context.maxcount = std::numeric_limits<size_t>::max();
-		context.pName = NULL;
+		ContextData context(std::numeric_limits<size_t>::max(), ENUM_BY_ALL, nullptr);
 
 		EnumChildWindows(hwndParent, enumProc, (LPARAM)&context);
 
-		return context.results;
+		return context.getResults();
 	}
 } // namespace

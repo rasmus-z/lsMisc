@@ -28,11 +28,6 @@
 namespace Ambiesoft {
 	template<DWORD M>
 	class WindowMessageInfo;
-	//{
-	//	WindowMessageInfo(){}
-	//public:
-
-	//};
 
 	template<>
 	class WindowMessageInfo<WM_MOUSEWHEEL>
@@ -41,6 +36,17 @@ namespace Ambiesoft {
 		static short delta(const WPARAM& w, const LPARAM& l)
 		{
 			return GET_WHEEL_DELTA_WPARAM(w);
+		}
+		static short delta(System::Windows::Forms::Message^ message)
+		{
+			return GET_WHEEL_DELTA_WPARAM((WPARAM)message->WParam.ToPointer());
+		}
+		static System::Drawing::Point point(System::Windows::Forms::Message^ message)
+		{
+			return System::Drawing::Point(
+				(LOWORD((LPARAM)message->LParam.ToPointer())),
+				(HIWORD((LPARAM)message->LParam.ToPointer()))
+				);
 		}
 	};
 }

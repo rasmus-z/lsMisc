@@ -23,6 +23,7 @@
 #pragma once
 
 namespace Ambiesoft{
-	HWND GetChildWindowByName(HWND hwndParent, LPCWSTR pName);
+	HWND GetChildWindowByText(HWND hwndParent, LPCWSTR pName);
+	HWND GetChildWindowByClassName(HWND hwndParent, LPCWSTR pName);
 	std::vector<HWND> GetChildWindows(HWND hwndParent);
 }
