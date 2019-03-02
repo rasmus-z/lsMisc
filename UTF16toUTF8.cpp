@@ -98,7 +98,7 @@ LPWSTR UTF16_convertEndian(LPCWSTR pIN)
 
 
 
-LPWSTR MultiBytetoUTF16(UINT cp, const LPBYTE pIN)
+LPWSTR MultiBytetoUTF16(UINT cp, LPCSTR pIN)
 {
 	int nReqSize = MultiByteToWideChar(
 		cp,
@@ -130,16 +130,21 @@ LPWSTR MultiBytetoUTF16(UINT cp, const LPBYTE pIN)
 
 LPWSTR UTF8toUTF16(const LPBYTE pIN)
 {
-	return MultiBytetoUTF16(CP_UTF8, pIN);
+	return MultiBytetoUTF16(CP_UTF8, (LPCSTR)pIN);
 }
 
 bool UTF8toUTF16(const LPBYTE pIN, std::wstring& w)
 {
-	LPCWSTR pOut = UTF8toUTF16(pIN);
-	if(!pOut)
+	return MultiBytetoUTF16(CP_UTF8, (LPCSTR)pIN, w);
+}
+
+bool MultiBytetoUTF16(UINT cp, LPCSTR pIN, std::wstring& wstr)
+{
+	LPCWSTR pOut = MultiBytetoUTF16(cp, pIN);
+	if (!pOut)
 		return false;
 
-	w = pOut;
+	wstr = pOut;
 	free((void*)pOut);
 	return true;
 }
