@@ -42,8 +42,12 @@ namespace Ambiesoft {
 			T v_;
 		public:
 			CNativeValue() : v_(T()) {}
-			operator T() { return v_; }
-			const CNativeValue<T>& operator=(const T& v) {
+			operator T() const 
+			{
+				return v_; 
+			}
+			const CNativeValue<T>& operator=(const T& v) 
+			{
 				v_ = v;
 				return *this;
 			}
