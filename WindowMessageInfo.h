@@ -37,6 +37,7 @@ namespace Ambiesoft {
 		{
 			return GET_WHEEL_DELTA_WPARAM(w);
 		}
+#ifdef __cplusplus_cli
 		static short delta(System::Windows::Forms::Message^ message)
 		{
 			return GET_WHEEL_DELTA_WPARAM((WPARAM)message->WParam.ToPointer());
@@ -48,5 +49,6 @@ namespace Ambiesoft {
 				(HIWORD((LPARAM)message->LParam.ToPointer()))
 				);
 		}
+#endif // __cplusplus_cli
 	};
 }
