@@ -1072,5 +1072,13 @@ namespace Ambiesoft {
 			free((void*)p);
 			return ret;
 		}
+
+		typedef void* HWINDOWHANDLE;
+		template<typename C>
+		bool stdGetClipboardText(HWINDOWHANDLE hWindow, std::basic_string<C>& result)
+		{
+			// TODO: implement
+		}
+
 	}
 }

@@ -423,5 +423,7 @@ namespace Ambiesoft {
 			return GetModuleFileNameW((HINSTANCE)hInst, p, (DWORD)size);
 		}
 
+
+
 	}
 }
