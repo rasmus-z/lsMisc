@@ -35,44 +35,57 @@ using namespace std;
 
 namespace Ambiesoft {
 
-BYTE* UTF16toMultiByte(UINT cp, LPCWSTR pIN, size_t* pLenOut)
+BYTE* UTF16toMultiByte(UINT cp, LPCWSTR pIN, int inLen, int* pOutLen)
 {
+	if (pIN == nullptr)
+	{
+		if (pOutLen)
+			*pOutLen = 0;
+		return nullptr;
+	}
+
+	if (inLen == -1)
+	{
+		inLen = (int)wcslen(pIN);
+	}
 	int nReqSize = WideCharToMultiByte(cp,
 		0,
 		pIN,
-		-1,
+		inLen,
 		NULL,
 		0,
 		NULL,
 		NULL);
 
-	if ( nReqSize == 0 )
-		return NULL;
 
-	BYTE* pOut = (BYTE*)malloc(nReqSize);
+	BYTE* pOut = (BYTE*)malloc(nReqSize + 1);
 	int nRet = WideCharToMultiByte(cp,
 		0,
 		pIN,
-		-1,
+		inLen,
 		(char*)pOut,
 		nReqSize,
 		NULL,
 		NULL);
 
-	if ( nRet==0 || nRet != nReqSize )
+	if ((nRet != nReqSize) || (nRet == 0 && inLen != 0))
 	{
 		free(pOut);
+		if (pOutLen)
+			*pOutLen = 0;
 		return NULL;
 	}
 
-	if(pLenOut)
-		*pLenOut = nRet;
+	pOut[nRet] = 0;
+
+	if(pOutLen)
+		*pOutLen = nRet;
 	return pOut;
 
 }
-BYTE* UTF16toUTF8(LPCWSTR pIN)
+BYTE* UTF16toUTF8(LPCWSTR pIN, int inLen, int* pOutLen)
 {
-	return UTF16toMultiByte(CP_UTF8, pIN);
+	return UTF16toMultiByte(CP_UTF8, pIN, inLen, pOutLen);
 }
 
 
@@ -98,60 +111,78 @@ LPWSTR UTF16_convertEndian(LPCWSTR pIN)
 
 
 
-LPWSTR MultiBytetoUTF16(UINT cp, LPCSTR pIN)
+LPWSTR MultiBytetoUTF16(UINT cp, LPCSTR pIN, int inByteLen, int* pOutLen)
 {
+	if (pIN == nullptr)
+	{
+		if (pOutLen)
+			*pOutLen = 0;
+		return nullptr;
+	}
+
+	int inLen = inByteLen;
+	if (inLen == -1)
+	{
+		inLen = (int)strlen(pIN);
+	}
+
 	int nReqSize = MultiByteToWideChar(
 		cp,
 		0,
 		(const char*)pIN,
-		-1,
+		inLen,
 		NULL,
 		0);
 
-	if ( nReqSize == 0 )
-		return NULL;
-
-	LPWSTR pOut = (LPWSTR)malloc(nReqSize*sizeof(WCHAR));
+	LPWSTR pOut = (LPWSTR)malloc((nReqSize+1)*sizeof(WCHAR));
 	int nRet = MultiByteToWideChar(cp,
 		0,
 		(const char*)pIN,
-		-1,
+		inLen,
 		pOut,
 		nReqSize);
 
-	if ( nRet==0 || nRet != nReqSize )
+	if ( (nRet != nReqSize) || (nRet==0 && inLen != 0))
 	{
 		free(pOut);
+		if (pOutLen)
+			*pOutLen = 0;
 		return NULL;
 	}
 
+	pOut[nRet] = 0;
+
+	if (pOutLen)
+	{
+		*pOutLen = nRet;
+	}
 	return pOut;
 }
 
-LPWSTR UTF8toUTF16(const LPBYTE pIN)
+LPWSTR UTF8toUTF16(const LPBYTE pIN, int inByteLen, int* pOutLen)
 {
-	return MultiBytetoUTF16(CP_UTF8, (LPCSTR)pIN);
+	return MultiBytetoUTF16(CP_UTF8, (LPCSTR)pIN, inByteLen, pOutLen);
 }
 
-bool UTF8toUTF16(const LPBYTE pIN, std::wstring& w)
-{
-	return MultiBytetoUTF16(CP_UTF8, (LPCSTR)pIN, w);
-}
+//bool UTF8toUTF16(const LPBYTE pIN, std::wstring& w)
+//{
+//	return MultiBytetoUTF16(CP_UTF8, (LPCSTR)pIN, w);
+//}
 
-bool MultiBytetoUTF16(UINT cp, LPCSTR pIN, std::wstring& wstr)
-{
-	LPCWSTR pOut = MultiBytetoUTF16(cp, pIN);
-	if (!pOut)
-		return false;
-
-	wstr = pOut;
-	free((void*)pOut);
-	return true;
-}
+//bool MultiBytetoUTF16(UINT cp, LPCSTR pIN, std::wstring& wstr)
+//{
+//	LPCWSTR pOut = MultiBytetoUTF16(cp, pIN);
+//	if (!pOut)
+//		return false;
+//
+//	wstr = pOut;
+//	free((void*)pOut);
+//	return true;
+//}
 
 string toStdString(const wstring& w)
 {
-	BYTE* p = UTF16toUTF8(w.c_str());
+	BYTE* p = UTF16toUTF8(w.c_str(), (int)w.size());
 	string ret = (char* )p;
 	free((void*)p);
 	return ret;
@@ -159,9 +190,14 @@ string toStdString(const wstring& w)
 
 wstring toStdWstringFromUtf8(const string& s)
 {
+	return toStdWstringFromUtf8(s.c_str(), (int)s.size());
+}
+std::wstring toStdWstringFromUtf8(const char* pUtf8, int inByteLen)
+{
 	wstring ret;
-	UTF8toUTF16((const LPBYTE)s.c_str(), ret);
-		
+	LPCWSTR p = UTF8toUTF16((const LPBYTE)pUtf8, inByteLen);
+	ret = p;
+	free((void*)p);
 	return ret;
 }
 

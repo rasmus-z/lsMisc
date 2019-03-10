@@ -138,7 +138,7 @@ static BYTE* UTF16toUTF8(LPCWSTR pIN)
 
 	return pOut;;
 }
-static LPWSTR UTF8toUTF16(const LPBYTE pIN)
+static LPWSTR UTF8_2_UTF16(const LPBYTE pIN)
 {
 	
 	int nReqSize = MultiByteToWideChar(
@@ -398,7 +398,7 @@ LPCWSTR i18nInitLangmap(HINSTANCE hInst, LPCWSTR pLang, LPCWSTR pAppName)
 						pB[count-1]=0;
 
 						
-						WCHAR* pA = (WCHAR*)UTF8toUTF16(pB);
+						WCHAR* pA = (WCHAR*)UTF8_2_UTF16(pB);
 						free(pB);
 						CFreer pAFreer(pA);
 

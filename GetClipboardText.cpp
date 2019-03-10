@@ -166,8 +166,9 @@ namespace Ambiesoft {
 		if (!GetClipboardHtmlA(hWnd, strU8))
 			return FALSE;
 
-		if (!UTF8toUTF16((const LPBYTE)strU8.c_str(), strData))
-			return FALSE;
+		strData = toStdWstringFromUtf8(strU8);
+		//if (!UTF8toUTF16((const LPBYTE)strU8.c_str(), strData))
+		//	return FALSE;
 
 		return TRUE;
 	}

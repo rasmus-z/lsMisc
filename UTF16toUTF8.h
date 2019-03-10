@@ -27,16 +27,17 @@
 namespace Ambiesoft {
 
 
-BYTE* UTF16toMultiByte(UINT cp, LPCWSTR pIN, size_t* pLenOut=NULL);
-BYTE* UTF16toUTF8(LPCWSTR pIN);
+BYTE* UTF16toMultiByte(UINT cp, LPCWSTR pIN, int inLen = -1, int* pOutLen = nullptr);
+BYTE* UTF16toUTF8(LPCWSTR pIN, int inLen = -1, int* pOutLen = nullptr);
 LPWSTR UTF16_convertEndian(LPCWSTR pIN);
-LPWSTR MultiBytetoUTF16(UINT cp, LPCSTR pIN);
-bool MultiBytetoUTF16(UINT cp, LPCSTR pIN, std::wstring& wstr);
-LPWSTR UTF8toUTF16(const LPBYTE pIN);
-bool UTF8toUTF16(const LPBYTE pIN, std::wstring& w);
+LPWSTR MultiBytetoUTF16(UINT cp, LPCSTR pIN, int inByteLen = -1, int* pOutLen = nullptr);
+// bool MultiBytetoUTF16(UINT cp, LPCSTR pIN, std::wstring& wstr);
+LPWSTR UTF8toUTF16(const LPBYTE pIN, int inByteLen = -1, int* pOutLen = nullptr);
+// bool UTF8toUTF16(const LPBYTE pIN, std::wstring& w);
 
 std::string toStdString(const std::wstring& w);
 std::wstring toStdWstringFromUtf8(const std::string& s);
+std::wstring toStdWstringFromUtf8(const char* pUtf8, int inByteLen = -1);
 
 
 #ifdef __cplusplus_cli  

@@ -169,7 +169,8 @@ std::wstring UrlEncodeWstd(const wchar_t *pstr)
 	//stlsoft::scoped_handle<void*> ma2(pRet8, free);
 	std::unique_ptr<char, void(*)(void*)> pRet8(UrlEncode(p8.get()), free);
 
-	UTF8toUTF16((BYTE*)pRet8.get(), ret);
+	//UTF8toUTF16((BYTE*)pRet8.get(), ret);
+	ret = toStdWstringFromUtf8((const char*)pRet8.get());
 	return ret;
 }
 
@@ -289,7 +290,7 @@ std::wstring UrlDecodeWstd(const char* penc)
 	//stlsoft::scoped_handle<void*> ma(p8, free);
 	std::unique_ptr<BYTE, void(*)(void*)> p8(UrlDecode(penc), free);
 
-	UTF8toUTF16(p8.get(), ret);
+	ret = toStdWstringFromUtf8((const char*)p8.get());
 	return ret;
 }
 
@@ -303,9 +304,8 @@ std::wstring UrlDecodeWstd(const std::wstring& wenc)
 	//stlsoft::scoped_handle<void*> map8dec(p8dec, free);
 	std::unique_ptr<BYTE, void(*)(void*)> p8dec(UrlDecode((LPCSTR)p8.get()), free);
 
-	std::wstring ret;
-	UTF8toUTF16(p8dec.get(), ret);
-	return ret;
+	
+	return toStdWstringFromUtf8((const char*)p8dec.get());
 }
 
 
@@ -314,10 +314,7 @@ wstring Utf8UrlEncode(const wstring& input)
 	unique_ptr<BYTE, void(*)(void*)> p8(UTF16toUTF8(input.c_str()), free);
 	unique_ptr<char, void(*)(void*)> p8u(UrlEncode(p8.get()), free);
 
-	wstring ret;
-	UTF8toUTF16((LPBYTE)p8u.get(), ret);
-	
-	return ret;
+	return toStdWstringFromUtf8(p8u.get());
 }
 
 
