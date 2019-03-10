@@ -21,64 +21,28 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
+#include "StdAfx.h"
+#include <Windows.h>
+#include "Lock.h"
 
 namespace Ambiesoft {
-	class CLock
-	{
-	public:
-		CLock(LPCRITICAL_SECTION pSection) {
-			assert(pSection);
-			m_pSection = pSection;
-			EnterCriticalSection(pSection);
-		}
 
-		~CLock() {
-			LeaveCriticalSection(m_pSection);
-		}
-	protected:
-		LPCRITICAL_SECTION m_pSection;
-	};
+	CReadWriteLock::CReadWriteLock() {
+		InitializeSRWLock(&lock_);
+	}
+	void CReadWriteLock::acRead() {
+		AcquireSRWLockShared(&lock_);
+	}
+	void CReadWriteLock::acReadWrite() {
+		AcquireSRWLockExclusive(&lock_);
+	}
+	void CReadWriteLock::rlRead() {
+		ReleaseSRWLockShared(&lock_);
+	}
+	void CReadWriteLock::rlReadWrite() {
+		ReleaseSRWLockExclusive(&lock_);
+	}
 
-	class CReadWriteLock
-	{
-		SRWLOCK lock_;
-	public:
-		CReadWriteLock();
-		void acRead();
-		void acReadWrite();
-		void rlRead();
-		void rlReadWrite();
-	};
 
-	class CReadWriteLocker
-	{
-		CReadWriteLock& lock_;
-	public:
-		enum class LockType {
-			READ_LOCK,
-			READWRITE_LOCK,
-		} lockType_;
-		CReadWriteLocker(CReadWriteLock& lock, LockType lt) :
-			lock_(lock), lockType_(lt){
-			if (lt == LockType::READ_LOCK)
-				lock_.acRead();
-			else if (lt == LockType::READWRITE_LOCK)
-				lock_.acReadWrite();
-			else
-				assert(false);
-		}
-		~CReadWriteLocker()
-		{
-			if (lockType_ == LockType::READ_LOCK)
-				lock_.rlRead();
-			else if (lockType_ == LockType::READWRITE_LOCK)
-				lock_.rlReadWrite();
-			else
-				assert(false);
-		}
-	};
 
 } // namespace Ambiesoft
