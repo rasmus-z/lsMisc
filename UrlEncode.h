@@ -34,8 +34,8 @@ namespace Ambiesoft {
 //						char** pOut,
 //						int bUseMalloc = 0);
 
-char *UrlEncode(const unsigned char *pstr, size_t size = -1);
-std::string UrlEncodeStd(const unsigned char *pstr, size_t size = -1);
+char *UrlEncode(const char *pstr, size_t size = -1);
+std::string UrlEncodeStd(const char *pstr, size_t size = -1);
 std::wstring UrlEncodeWstd(const wchar_t *pstr);
 
 

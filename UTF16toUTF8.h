@@ -27,21 +27,27 @@
 namespace Ambiesoft {
 
 
-BYTE* UTF16toMultiByte(UINT cp, LPCWSTR pIN, int inLen = -1, int* pOutLen = nullptr);
-BYTE* UTF16toUTF8(LPCWSTR pIN, int inLen = -1, int* pOutLen = nullptr);
-LPWSTR UTF16_convertEndian(LPCWSTR pIN);
-LPWSTR MultiBytetoUTF16(UINT cp, LPCSTR pIN, int inByteLen = -1, int* pOutLen = nullptr);
-// bool MultiBytetoUTF16(UINT cp, LPCSTR pIN, std::wstring& wstr);
-LPWSTR UTF8toUTF16(const LPBYTE pIN, int inByteLen = -1, int* pOutLen = nullptr);
-// bool UTF8toUTF16(const LPBYTE pIN, std::wstring& w);
+char* UTF16toMultiByte_new(UINT cp, LPCWSTR pIN, int inLen = -1, int* pOutLen = nullptr);
+char* UTF16toUTF8_new(LPCWSTR pIN, int inLen = -1, int* pOutLen = nullptr);
+LPWSTR UTF16_convertEndian_new(LPCWSTR pIN);
+LPWSTR MultiBytetoUTF16_new(UINT cp, LPCSTR pIN, int inByteLen = -1, int* pOutLen = nullptr);
 
-std::string toStdString(const std::wstring& w);
+LPWSTR UTF8toUTF16_new(const char* pIN, int inByteLen = -1, int* pOutLen = nullptr);
+
+
+std::string toStdString(int acp, const std::wstring& w);
+std::string toStdUtf8String(const std::wstring& w);
+std::string toStdAcpString(const std::wstring& w);
+
+std::wstring toStdWstring(int acp, const char* pString, int inByteLen);
 std::wstring toStdWstringFromUtf8(const std::string& s);
 std::wstring toStdWstringFromUtf8(const char* pUtf8, int inByteLen = -1);
+std::wstring toStdWstringFromACP(const std::string& s);
+std::wstring toStdWstringFromACP(const char* pApcString, int inByteLen = -1);
 
 
 #ifdef __cplusplus_cli  
-BYTE* UTF16toUTF8(System::String^ s);
+char* UTF16toUTF8_new(System::String^ s);
 #endif //__cplusplus_cli  
 
 

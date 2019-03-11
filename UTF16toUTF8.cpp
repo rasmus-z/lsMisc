@@ -28,185 +28,206 @@
 #include <vcclr.h>
 #endif
 
+#include <memory>
 #include <string>
 #include "UTF16toUTF8.h"
 
 using namespace std;
+//#define malloc noooooooooooomalloc
+//#define free noooooooooooofree
 
 namespace Ambiesoft {
 
-BYTE* UTF16toMultiByte(UINT cp, LPCWSTR pIN, int inLen, int* pOutLen)
-{
-	if (pIN == nullptr)
+	char* UTF16toMultiByte_new(UINT cp, LPCWSTR pIN, int inLen, int* pOutLen)
 	{
+		if (pIN == nullptr)
+		{
+			if (pOutLen)
+				*pOutLen = 0;
+			return nullptr;
+		}
+
+		if (inLen == -1)
+		{
+			inLen = (int)wcslen(pIN);
+		}
+		int nReqSize = WideCharToMultiByte(cp,
+			0,
+			pIN,
+			inLen,
+			NULL,
+			0,
+			NULL,
+			NULL);
+
+
+		char* pOut = new char[nReqSize + 1]; // (char*)malloc(nReqSize + 1);
+		int nRet = WideCharToMultiByte(cp,
+			0,
+			pIN,
+			inLen,
+			pOut,
+			nReqSize,
+			NULL,
+			NULL);
+
+		if ((nRet != nReqSize) || (nRet == 0 && inLen != 0))
+		{
+			// free(pOut);
+			delete[] pOut;
+			if (pOutLen)
+				*pOutLen = 0;
+			return NULL;
+		}
+
+		pOut[nRet] = 0;
+
 		if (pOutLen)
-			*pOutLen = 0;
-		return nullptr;
-	}
+			*pOutLen = nRet;
+		return pOut;
 
-	if (inLen == -1)
+	}
+	char* UTF16toUTF8_new(LPCWSTR pIN, int inLen, int* pOutLen)
 	{
-		inLen = (int)wcslen(pIN);
+		return UTF16toMultiByte_new(CP_UTF8, pIN, inLen, pOutLen);
 	}
-	int nReqSize = WideCharToMultiByte(cp,
-		0,
-		pIN,
-		inLen,
-		NULL,
-		0,
-		NULL,
-		NULL);
 
 
-	BYTE* pOut = (BYTE*)malloc(nReqSize + 1);
-	int nRet = WideCharToMultiByte(cp,
-		0,
-		pIN,
-		inLen,
-		(char*)pOut,
-		nReqSize,
-		NULL,
-		NULL);
-
-	if ((nRet != nReqSize) || (nRet == 0 && inLen != 0))
+	LPWSTR UTF16_convertEndian_new(LPCWSTR pIN)
 	{
-		free(pOut);
-		if (pOutLen)
-			*pOutLen = 0;
-		return NULL;
-	}
-
-	pOut[nRet] = 0;
-
-	if(pOutLen)
-		*pOutLen = nRet;
-	return pOut;
-
-}
-BYTE* UTF16toUTF8(LPCWSTR pIN, int inLen, int* pOutLen)
-{
-	return UTF16toMultiByte(CP_UTF8, pIN, inLen, pOutLen);
-}
-
-
-LPWSTR UTF16_convertEndian(LPCWSTR pIN)
-{
-	if (pIN == NULL)
-		return NULL;
+		if (pIN == NULL)
+			return NULL;
 
 #if 0
-	LPWSTR p = wcsdup(pIN);
+		LPWSTR p = wcsdup(pIN);
 #else
-	LPWSTR p = _wcsdup(pIN);
+		LPWSTR p = _wcsdup(pIN);
 #endif
-	LPWSTR pRet = p;
-	for (; *pIN; ++pIN, ++p)
-	{
-		*p = ((*pIN & 0xFF) << 8) | ((*pIN & 0xFF00) >> 8);
+		LPWSTR pRet = p;
+		for (; *pIN; ++pIN, ++p)
+		{
+			*p = ((*pIN & 0xFF) << 8) | ((*pIN & 0xFF00) >> 8);
+		}
+		*p = 0;
+		return pRet;
 	}
-	*p = 0;
-	return pRet;
-}
 
 
 
 
-LPWSTR MultiBytetoUTF16(UINT cp, LPCSTR pIN, int inByteLen, int* pOutLen)
-{
-	if (pIN == nullptr)
+	LPWSTR MultiBytetoUTF16_new(UINT cp, LPCSTR pIN, int inByteLen, int* pOutLen)
 	{
+		if (pIN == nullptr)
+		{
+			if (pOutLen)
+				*pOutLen = 0;
+			return nullptr;
+		}
+
+		int inLen = inByteLen;
+		if (inLen == -1)
+		{
+			inLen = (int)strlen(pIN);
+		}
+
+		int nReqSize = MultiByteToWideChar(
+			cp,
+			0,
+			pIN,
+			inLen,
+			NULL,
+			0);
+
+		LPWSTR pOut = new wchar_t[nReqSize + 1];  // (LPWSTR)malloc((nReqSize + 1)*sizeof(WCHAR));
+		int nRet = MultiByteToWideChar(cp,
+			0,
+			pIN,
+			inLen,
+			pOut,
+			nReqSize);
+
+		if ((nRet != nReqSize) || (nRet == 0 && inLen != 0))
+		{
+			// free(pOut);
+			delete[] pOut;
+			if (pOutLen)
+				*pOutLen = 0;
+			return NULL;
+		}
+
+		pOut[nRet] = 0;
+
 		if (pOutLen)
-			*pOutLen = 0;
-		return nullptr;
+		{
+			*pOutLen = nRet;
+		}
+		return pOut;
 	}
 
-	int inLen = inByteLen;
-	if (inLen == -1)
+	LPWSTR UTF8toUTF16_new(const char* pIN, int inByteLen, int* pOutLen)
 	{
-		inLen = (int)strlen(pIN);
+		return MultiBytetoUTF16_new(CP_UTF8, pIN, inByteLen, pOutLen);
 	}
 
-	int nReqSize = MultiByteToWideChar(
-		cp,
-		0,
-		(const char*)pIN,
-		inLen,
-		NULL,
-		0);
-
-	LPWSTR pOut = (LPWSTR)malloc((nReqSize+1)*sizeof(WCHAR));
-	int nRet = MultiByteToWideChar(cp,
-		0,
-		(const char*)pIN,
-		inLen,
-		pOut,
-		nReqSize);
-
-	if ( (nRet != nReqSize) || (nRet==0 && inLen != 0))
+	string toStdString(int acp, const wstring& w)
 	{
-		free(pOut);
-		if (pOutLen)
-			*pOutLen = 0;
-		return NULL;
+		// BYTE* p = UTF16toUTF8(w.c_str(), (int)w.size());
+		// char* p = UTF16toMultiByte(acp, w.c_str(), (int)w.size());
+		unique_ptr<char> p(UTF16toMultiByte_new(acp, w.c_str(), (int)w.size()));
+		if (!p)
+			return string();
+		//string ret = (char* )p;
+		//free((void*)p);
+		return p.get();
 	}
-
-	pOut[nRet] = 0;
-
-	if (pOutLen)
+	std::string toStdUtf8String(const std::wstring& w)
 	{
-		*pOutLen = nRet;
+		return toStdString(CP_UTF8, w);
 	}
-	return pOut;
-}
+	std::string toStdAcpString(const std::wstring& w)
+	{
+		return toStdString(CP_ACP, w);
+	}
 
-LPWSTR UTF8toUTF16(const LPBYTE pIN, int inByteLen, int* pOutLen)
-{
-	return MultiBytetoUTF16(CP_UTF8, (LPCSTR)pIN, inByteLen, pOutLen);
-}
 
-//bool UTF8toUTF16(const LPBYTE pIN, std::wstring& w)
-//{
-//	return MultiBytetoUTF16(CP_UTF8, (LPCSTR)pIN, w);
-//}
+	wstring toStdWstring(int acp, const char* pString, int inByteLen)
+	{
+		// LPCWSTR p = MultiBytetoUTF16(acp, pString, inByteLen);
+		unique_ptr<wchar_t> p(MultiBytetoUTF16_new(acp, pString, inByteLen));
+		if (!p)
+			return wstring();
+		//wstring ret = p;
+		//free((void*)p);
+		return p.get();
+	}
 
-//bool MultiBytetoUTF16(UINT cp, LPCSTR pIN, std::wstring& wstr)
-//{
-//	LPCWSTR pOut = MultiBytetoUTF16(cp, pIN);
-//	if (!pOut)
-//		return false;
-//
-//	wstr = pOut;
-//	free((void*)pOut);
-//	return true;
-//}
 
-string toStdString(const wstring& w)
-{
-	BYTE* p = UTF16toUTF8(w.c_str(), (int)w.size());
-	string ret = (char* )p;
-	free((void*)p);
-	return ret;
-}
 
-wstring toStdWstringFromUtf8(const string& s)
-{
-	return toStdWstringFromUtf8(s.c_str(), (int)s.size());
-}
-std::wstring toStdWstringFromUtf8(const char* pUtf8, int inByteLen)
-{
-	wstring ret;
-	LPCWSTR p = UTF8toUTF16((const LPBYTE)pUtf8, inByteLen);
-	ret = p;
-	free((void*)p);
-	return ret;
-}
+	std::wstring toStdWstringFromUtf8(const char* pUtf8, int inByteLen)
+	{
+		return toStdWstring(CP_UTF8, pUtf8, inByteLen);
+	}
+	wstring toStdWstringFromUtf8(const string& s)
+	{
+		return toStdWstringFromUtf8(s.c_str(), (int)s.size());
+	}
+
+	std::wstring toStdWstringFromACP(const char* pACP, int inByteLen)
+	{
+		return toStdWstring(CP_ACP, pACP, inByteLen);
+	}
+	wstring toStdWstringFromACP(const string& s)
+	{
+		return toStdWstringFromACP(s.c_str(), (int)s.size());
+	}
+
 
 #ifdef __cplusplus_cli  
-BYTE* UTF16toUTF8(System::String^ s)
-{
-	pin_ptr<const wchar_t> p = PtrToStringChars(s);
-	return UTF16toUTF8(p);
-}
+	BYTE* UTF16toUTF8_new(System::String^ s)
+	{
+		pin_ptr<const wchar_t> p = PtrToStringChars(s);
+		return UTF16toUTF8(p);
+	}
 #endif //__cplusplus_cli  
 
 

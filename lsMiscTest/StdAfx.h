@@ -12,6 +12,11 @@
 
 #include <afxwin.h>
 
+// In lsMisc directory, run the following command
+// git submodule init
+// git submodule update
+#include "gtest/gtest.h"
+
 #ifdef _DEBUG
 #include <crtdbg.h>
 #define malloc(size) _malloc_dbg(size, _NORMAL_BLOCK, __FILE__, __LINE__ )
@@ -47,9 +52,6 @@
 
 #include <time.h>
 
-// In lsMisc directory, run the following command
-// git submodule init
-// git submodule update
-#include "gtest/gtest.h"
+
 
 #include "../PragmaShowVersions.h"

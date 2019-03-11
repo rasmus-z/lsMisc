@@ -14,8 +14,8 @@ using namespace std;
 using namespace Ambiesoft;
 TEST(UrlEncode, BasicWithChar)
 {
-	EXPECT_STREQ(UrlEncodeStd((LPBYTE)"aaa").c_str(), "aaa");
-	EXPECT_STREQ(UrlEncodeStd((LPBYTE)"aaa a").c_str(), "aaa+a");
+	EXPECT_STREQ(UrlEncodeStd("aaa").c_str(), "aaa");
+	EXPECT_STREQ(UrlEncodeStd("aaa a").c_str(), "aaa+a");
 }
 TEST(UrlEncode, BasicWithWchar)
 {
@@ -26,7 +26,7 @@ TEST(UrlEncode, Complex)
 {
 	{
 		LPCSTR p = "https://social.msdn.microsoft.com/Search/en-US?query=isalnum&beta=0&ac=8";
-		LPSTR penc = UrlEncode((LPBYTE)p);
+		LPSTR penc = UrlEncode(p);
 		stlsoft::scoped_handle<void*> mapenc(penc, free);
 
 		LPBYTE pdec = UrlDecode(penc);
@@ -36,7 +36,7 @@ TEST(UrlEncode, Complex)
 
 	{
 		LPCSTR p = "https://social.msdn.microsoft.com/Search/en-US?query=%e3%81%82%e3%81%b0%e3%81%b0%e3%81%b0%ef%bd%82%e3%81%98%e3%81%88%e3%81%88%ef%bd%97%e3%82%8c%ef%bd%97&beta=0&ac=8";
-		LPSTR penc = UrlEncode((LPBYTE)p);
+		LPSTR penc = UrlEncode(p);
 		stlsoft::scoped_handle<void*> mapenc(penc, free);
 		
 		LPBYTE pdec = UrlDecode(penc);

@@ -39,14 +39,14 @@ static void prepareLang()
 		//	return;
 
 		wstring data(L"\"AAA\"=\"あああ\"");
-		BYTE* pUtf8 = UTF16toUTF8(data.c_str());
+		unique_ptr<char> pUtf8(UTF16toUTF8_new(data.c_str()));
 
 		FILE* f = NULL;
 		_wfopen_s(&f, langfile.c_str(), L"wb");
 		assert(f);
-		fwrite(pUtf8, strlen((char*)pUtf8), 1, f);
+		fwrite(pUtf8.get(), strlen((char*)pUtf8.get()), 1, f);
 		fclose(f);
-		free(pUtf8);
+		
 	}
 }
 

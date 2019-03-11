@@ -111,7 +111,7 @@ static char i2aA(char code) {
 //}
 
 
-char *UrlEncode(const unsigned char *pstr, size_t size)
+char *UrlEncode(const char *pstr, size_t size)
 {
 	char
 		*buf,
@@ -148,7 +148,7 @@ char *UrlEncode(const unsigned char *pstr, size_t size)
 
 	return buf;
 }
-std::string UrlEncodeStd(const unsigned char *pstr, size_t size)
+std::string UrlEncodeStd(const char *pstr, size_t size)
 {
 	std::unique_ptr<char, void(*)(void*)> pEncoded(UrlEncode(pstr, size), free);
 	if (!pEncoded)
@@ -163,11 +163,11 @@ std::wstring UrlEncodeWstd(const wchar_t *pstr)
 
 	//BYTE* p8 = UTF16toUTF8(pstr);
 	//stlsoft::scoped_handle<void*> ma(p8, free);
-	std::unique_ptr<BYTE, void(*)(void*)> p8(UTF16toUTF8(pstr), free);
+	std::unique_ptr<char> p8(UTF16toUTF8_new(pstr));
 
 	//char* pRet8 = UrlEncode(p8);
 	//stlsoft::scoped_handle<void*> ma2(pRet8, free);
-	std::unique_ptr<char, void(*)(void*)> pRet8(UrlEncode(p8.get()), free);
+	std::unique_ptr<char> pRet8(UrlEncode(p8.get()));
 
 	//UTF8toUTF16((BYTE*)pRet8.get(), ret);
 	ret = toStdWstringFromUtf8((const char*)pRet8.get());
@@ -298,7 +298,7 @@ std::wstring UrlDecodeWstd(const std::wstring& wenc)
 {
 	//BYTE* p8 = UTF16toUTF8(wenc.c_str());
 	//stlsoft::scoped_handle<void*> ma(p8, free);
-	std::unique_ptr<BYTE, void(*)(void*)> p8(UTF16toUTF8(wenc.c_str()), free);
+	std::unique_ptr<char> p8(UTF16toUTF8_new(wenc.c_str()));
 
 	//BYTE* p8dec = UrlDecode((LPCSTR)p8);
 	//stlsoft::scoped_handle<void*> map8dec(p8dec, free);
@@ -311,7 +311,7 @@ std::wstring UrlDecodeWstd(const std::wstring& wenc)
 
 wstring Utf8UrlEncode(const wstring& input)
 {
-	unique_ptr<BYTE, void(*)(void*)> p8(UTF16toUTF8(input.c_str()), free);
+	unique_ptr<char> p8(UTF16toUTF8_new(input.c_str()));
 	unique_ptr<char, void(*)(void*)> p8u(UrlEncode(p8.get()), free);
 
 	return toStdWstringFromUtf8(p8u.get());

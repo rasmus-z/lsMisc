@@ -39,6 +39,7 @@
 #include <codecvt>
 #include <string>
 
+#include "../UTF16toUTF8.h"
 #include "stdosd.h"
 
 namespace Ambiesoft {
@@ -318,7 +319,7 @@ namespace Ambiesoft {
 								pB[count - 1] = 0;
 
 
-								unique_ptr<WCHAR, void (__cdecl*)(void*)> pA((WCHAR*)UTF8toUTF16(pB), free);
+								unique_ptr<wchar_t> pA(UTF8toUTF16_new((char*)pB));
 								free(pB);
 								// CFreer pAFreer(pA);
 
