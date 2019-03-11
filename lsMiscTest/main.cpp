@@ -4,7 +4,7 @@
 // #include "stdafx.h"
 
 #include <memory>
-
+#include "../DebugNew.h"
 #include "gtest/gtest.h"
 
 using namespace std;
@@ -100,6 +100,14 @@ struct CBeforeMain
 int main(int argc, char* argv[])
 {
 	mysandbox();
+
+#ifdef _DEBUG
+	// leak test
+	malloc(17);
+	calloc(1,18);
+	realloc(nullptr, 28);
+	new char[33];
+#endif
 
     testing::InitGoogleTest(&argc, argv);
 	int gret = RUN_ALL_TESTS();
