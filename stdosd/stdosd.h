@@ -989,10 +989,6 @@ namespace Ambiesoft {
 
 		template<typename C>
 		inline C* stdStringLower(C* pD1, size_t size);
-		//{
-  //                      // static_assert(false, "false");
-		//	assert(false);
-		//}
 		template<>
 		inline char* stdStringLower(char* pc, size_t size)
 		{
