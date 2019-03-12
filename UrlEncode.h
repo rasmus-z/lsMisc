@@ -29,28 +29,16 @@
 #pragma once
 
 namespace Ambiesoft {
-//void UrlEncode_SJIS_Obsolete(const unsigned char	*csource,
-//						size_t	nSize,
-//						char** pOut,
-//						int bUseMalloc = 0);
 
-char *UrlEncode(const char *pstr, size_t size = -1);
-std::string UrlEncodeStd(const char *pstr, size_t size = -1);
-std::wstring UrlEncodeWstd(const wchar_t *pstr);
+	char *UrlEncode_new(const char *pstr, int size = -1);
+	std::string UrlEncodeStd(const char *pstr, int size = -1);
+	std::wstring UrlEncodeWstd(const wchar_t *pstr);
+	std::wstring Utf8UrlEncode(const std::wstring& input);
 
 
 
+	char* UrlDecode_new(const char* penc, int* psize = NULL);
 
-
-
-// utf8 retuns
-unsigned char* UrlDecode(const char* penc, size_t* psize=NULL);
-
-
-std::wstring UrlDecodeWstd(const char* penc);
-std::wstring UrlDecodeWstd(const std::wstring& wenc);
-
-
-std::wstring Utf8UrlEncode(const std::wstring& input);
-
+	std::wstring UrlDecodeWstd(const char* penc);
+	std::wstring UrlDecodeWstd(const std::wstring& wenc);
 } // namespace
