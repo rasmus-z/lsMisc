@@ -391,25 +391,25 @@ namespace Ambiesoft {
 		bool SyntaxEqual(const CommandLineStringType& that) const {
 			return args_ == that.args_;
 		}
-		int getIndex(const E* p) const
+		size_t getIndex(const E* p) const
 		{
-			for (unsigned int i = 0; i < args_.size(); ++i)
+			for (size_t i = 0; i < args_.size(); ++i)
 			{
 				if (args_[i] == p)
 					return i;
 			}
 			return -1;
 		}
-		int getCount() const {
-			return (int)args_.size();
+		size_t getCount() const {
+			return args_.size();
 		}
-		myS getArg(size_t i) const {
+		const myS& getArg(size_t i) const {
 			return args_[i];
 		}
-		myS operator[](int i) const {
+		const myS& operator[](size_t i) const {
 			return args_[i];
 		}
-		void remove(int i, size_t size=1) {
+		void remove(size_t i, size_t size = 1) {
 			assert(offsets_.size() == args_.size());
 			while (size > 0)
 			{
