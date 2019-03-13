@@ -223,10 +223,10 @@ namespace Ambiesoft {
 
 
 #ifdef __cplusplus_cli  
-	BYTE* UTF16toUTF8_new(System::String^ s)
+	char* UTF16toUTF8_new(System::String^ s)
 	{
 		pin_ptr<const wchar_t> p = PtrToStringChars(s);
-		return UTF16toUTF8(p);
+		return UTF16toUTF8_new(p);
 	}
 #endif //__cplusplus_cli  
 
