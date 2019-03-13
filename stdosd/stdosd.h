@@ -973,6 +973,19 @@ namespace Ambiesoft {
 
 
 		template<typename C>
+		inline bool stdIsAsciiAlpha(const C c) {
+			// Lowercase
+			if (stdLiterals<C>::Na <= c && c <= stdLiterals<C>::Nz)
+				return true;
+
+			// Uppercase
+			if (stdLiterals<C>::NA <= c &&c <= stdLiterals<C>::NZ)
+				return true;
+
+			return false;
+		}
+
+		template<typename C>
 		inline bool stdIsAsciiSpace(const C c) {
 			return c == stdLiterals<C>::NSpace;
 		}
