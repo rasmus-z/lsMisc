@@ -369,9 +369,6 @@
     <ClCompile Include="gtestPathUtil_win.cpp">
       <Filter>GTest Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Profiler.cpp">
-      <Filter>lsMisc</Filter>
-    </ClCompile>
     <ClCompile Include="gtestI18NBeta.cpp">
       <Filter>GTest Files</Filter>
     </ClCompile>
@@ -380,6 +377,15 @@
     </ClCompile>
     <ClCompile Include="gtestWindowMessageInfo.cpp">
       <Filter>GTest Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gtestLocker.cpp">
+      <Filter>GTest Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Lock.cpp">
+      <Filter>lsMisc\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Profiler.cpp">
+      <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -728,9 +734,6 @@
     <ClInclude Include="..\stdosd\OpParser.h">
       <Filter>stdosd</Filter>
     </ClInclude>
-    <ClInclude Include="..\Profiler.h">
-      <Filter>lsMisc</Filter>
-    </ClInclude>
     <ClInclude Include="..\stdosd\CBool.h">
       <Filter>stdosd</Filter>
     </ClInclude>
@@ -741,6 +744,9 @@
       <Filter>stdosd</Filter>
     </ClInclude>
     <ClInclude Include="..\WindowMessageInfo.h">
+      <Filter>lsMisc\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Profiler.h">
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
   </ItemGroup>

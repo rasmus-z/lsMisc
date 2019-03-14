@@ -290,6 +290,7 @@
     <ClCompile Include="..\IsValidString.cpp" />
     <ClCompile Include="..\IsWindowsNT.cpp" />
     <ClCompile Include="..\LCMapCommon.cpp" />
+    <ClCompile Include="..\Lock.cpp" />
     <ClCompile Include="..\md5.cpp" />
     <ClCompile Include="..\MFCHelper.cpp" />
     <ClCompile Include="..\myStrStrI.cpp" />
@@ -354,6 +355,7 @@
     <ClCompile Include="..\WritePrivateProfileWString.cpp" />
     <ClCompile Include="..\XBrowseForFolder.cpp" />
     <ClCompile Include="gtestI18NBeta.cpp" />
+    <ClCompile Include="gtestLocker.cpp" />
     <ClCompile Include="gtestStdwin32.cpp" />
     <ClCompile Include="gtestStdosd.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
