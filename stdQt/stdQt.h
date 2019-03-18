@@ -4,6 +4,7 @@
 
 #include <QString>
 #include <QApplication>
+#include <QMessageBox>
 
 namespace AmbiesoftQt {
 
