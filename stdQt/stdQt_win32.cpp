@@ -3,7 +3,11 @@
 #include <QString>
 #include <QDir>
 
+#include "../../lsMisc/GetLastErrorString.h"
+
 #include "stdQt.h"
+
+using namespace Ambiesoft;
 
 namespace AmbiesoftQt {
 
@@ -19,7 +23,7 @@ namespace AmbiesoftQt {
                       replaced.toStdWString().c_str()))
             {
                 if(pError)
-                    *pError = QString::fromStdWString(std::to_wstring(GetLastError()));
+                    *pError = QString::fromStdWString(GetLastErrorString(GetLastError()));
                 return false;
             }
             return true;
@@ -32,7 +36,7 @@ namespace AmbiesoftQt {
                     ))
         {
             if(pError)
-                *pError = QString::fromStdWString(std::to_wstring(GetLastError()));
+                *pError = QString::fromStdWString(GetLastErrorString(GetLastError()));
             return false;
         }
         return true;
