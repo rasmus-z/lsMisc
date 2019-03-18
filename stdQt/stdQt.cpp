@@ -1,5 +1,8 @@
+#include <QApplication>
 #include <QString>
 #include <QDir>
+#include <QMessageBox>
+#include <QTextCodec>
 
 namespace AmbiesoftQt {
 
@@ -67,4 +70,56 @@ QString undoublequoteIfNecessary(QString s)
     return s;
 }
 
+void Info(QWidget* parent, QString message)
+{
+    QMessageBox msgBox(parent && parent->isVisible() ? parent:nullptr);
+
+    msgBox.setWindowTitle(qAppName());
+    // msgBox.setInformativeText(message);
+    msgBox.setText(message);
+    msgBox.setStandardButtons(QMessageBox::Ok);
+    msgBox.setIcon(QMessageBox::Information);
+    msgBox.exec();
 }
+void Alert(QWidget* parent, QString message)
+{
+    QMessageBox msgBox(parent && parent->isVisible() ? parent:nullptr);
+
+    // msgBox.setInformativeText(message);
+    msgBox.setText(message);
+    msgBox.setStandardButtons(QMessageBox::Ok);
+    msgBox.setIcon(QMessageBox::Warning);
+    msgBox.exec();
+}
+
+
+bool YesNo(QWidget* parent,
+           QString message,
+           QMessageBox::Icon icon)
+{
+    QMessageBox msgBox(parent && parent->isVisible() ? parent:nullptr);
+
+    msgBox.setWindowTitle(qAppName());
+    msgBox.setText(message);
+    msgBox.setStandardButtons(QMessageBox::Yes);
+    msgBox.addButton(QMessageBox::No);
+    msgBox.setDefaultButton(QMessageBox::No);
+    msgBox.setIcon(icon);
+    return msgBox.exec() == QMessageBox::Yes;
+}
+
+bool HasModalWindow()
+{
+//    QWidget* focus = QApplication::focusWidget();
+//    qDebug() << "focus widget" << focus;
+//    qDebug() << "activeModalWidget" << QApplication::activeModalWidget();
+
+    return // (focus == nullptr) && // || !focus->isAncestorOf(this))
+        QApplication::activeModalWidget() != nullptr;
+}
+QTextCodec* GetUtf8Codec()
+{
+    return QTextCodec::codecForName("UTF-8");
+}
+
+} // namespace AmbiesoftQt

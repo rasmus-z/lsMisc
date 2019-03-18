@@ -34,6 +34,16 @@ public:
     }
 };
 
+
+void Info(QWidget* parent, QString message);
+void Alert(QWidget* parent, QString message);
+bool YesNo(QWidget* parent,
+           QString message,
+           QMessageBox::Icon = QMessageBox::Question);
+
+bool HasModalWindow();
+QTextCodec* GetUtf8Codec();
+
 }
 
 #endif // STDQT_H
