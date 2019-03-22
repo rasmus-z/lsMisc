@@ -4,6 +4,8 @@
 #include <QMessageBox>
 #include <QTextCodec>
 
+#include "stdQt.h"
+
 namespace AmbiesoftQt {
 
 
