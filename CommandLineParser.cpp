@@ -23,7 +23,7 @@
 
 #include "stdafx.h"
 
-#include <windows.h>
+#include <Windows.h>
 #include <tchar.h>
 #include <vector>
 #include <string>
@@ -31,11 +31,9 @@
 
 #include "CommandLineParser.h"
 
-#ifdef __linux__ 
-#elif _WIN32
-#include <Shellapi.h>
-#pragma comment(lib,"Shell32.lib")
-#else
+#if defined(_WIN32) && defined(_MSC_VER)
+#include <shellapi.h>
+#pragma comment(lib,"shell32.lib")
 #endif
 
 #include "UrlEncode.h"
@@ -43,6 +41,7 @@
 using std::vector;
 using std::find;
 using std::wstring;
+
 namespace Ambiesoft {
 
 

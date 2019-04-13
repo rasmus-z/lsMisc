@@ -943,7 +943,7 @@ typedef BasicOption<std::string> COptionA;
 			}
 		}
 #else
-		void check(MyO_* cli){}
+        void check(MyO_*){}
 #endif
 		
 		// Iterator option strings
