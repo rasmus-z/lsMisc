@@ -53,7 +53,9 @@ namespace Ambiesoft {
 		HANDLE* pPHandle,
 		LPCWSTR pVerb)
 	{
-		SHELLEXECUTEINFOW sei = { 0 };
+        SHELLEXECUTEINFOW sei;
+        memset(&sei,0,sizeof(sei));
+
 		sei.cbSize = sizeof(sei);
 		sei.fMask = 0;
 		if (pPHandle)
@@ -86,7 +88,9 @@ namespace Ambiesoft {
 		HANDLE* pPHandle,
 		LPCSTR pVerb)
 	{
-		SHELLEXECUTEINFOA sei = { 0 };
+        SHELLEXECUTEINFOA sei;
+        memset(&sei,0,sizeof(sei));
+
 		sei.cbSize = sizeof(sei);
 		sei.fMask = 0;
 		if (pPHandle)
