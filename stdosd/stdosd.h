@@ -1062,7 +1062,7 @@ namespace Ambiesoft {
 		size_t stdGetModuleFileNameImpl(HMODULEINSTANCE hInst, wchar_t* p, size_t size);
 
 
-		template<typename C>
+		template<typename C = wchar_t>
 		std::basic_string<C> stdGetModuleFileName(HMODULEINSTANCE hInst = NULL)
 		{
 			C* p = nullptr;
