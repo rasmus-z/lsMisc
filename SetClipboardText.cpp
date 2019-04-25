@@ -28,7 +28,7 @@
 #include "SetClipboardText.h"
 
 namespace Ambiesoft {
-	BOOL SetClipboardTextA(HWND hWnd, LPCSTR pSTR)
+	BOOL SetClipboardText(HWND hWnd, LPCSTR pSTR)
 	{
 		if (!pSTR || pSTR[0] == 0)
 		{
@@ -64,7 +64,7 @@ namespace Ambiesoft {
 		return bRet;
 	}
 
-	BOOL SetClipboardTextW(HWND hWnd, LPCWSTR pSTR)
+	BOOL SetClipboardText(HWND hWnd, LPCWSTR pSTR)
 	{
 		if (!pSTR || pSTR[0] == 0)
 		{

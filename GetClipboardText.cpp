@@ -32,7 +32,7 @@
 using namespace std;
 
 namespace Ambiesoft {
-	static BOOL getClipboardTextDataA(HWND hWnd, int cf, string& strData)
+	static BOOL getClipboardTextData(HWND hWnd, int cf, string& strData)
 	{
 		if (!IsClipboardFormatAvailable(cf))
 			return FALSE;
@@ -57,9 +57,9 @@ namespace Ambiesoft {
 
 		return TRUE;
 	}
-	BOOL GetClipboardTextA(HWND hWnd, string& strData)
+	BOOL GetClipboardText(HWND hWnd, string& strData)
 	{
-		return getClipboardTextDataA(hWnd, CF_TEXT, strData);
+		return getClipboardTextData(hWnd, CF_TEXT, strData);
 	}
 
 	static BOOL getHtmlPosition(LPCSTR pStr, LPCSTR pKey, int& val)
@@ -96,12 +96,12 @@ namespace Ambiesoft {
 		return TRUE;
 	}
 
-	BOOL GetClipboardHtmlA(HWND hWnd, string& strData)
+	BOOL GetClipboardHtml(HWND hWnd, string& strData)
 	{
 		static int cf = RegisterClipboardFormatA("HTML Format");
 
 		string strT;
-		if (!getClipboardTextDataA(hWnd, cf, strT))
+		if (!getClipboardTextData(hWnd, cf, strT))
 			return FALSE;
 
 		int start = -1;
@@ -131,7 +131,7 @@ namespace Ambiesoft {
 
 
 
-	static BOOL getClipboardTextDataW(HWND hWnd, int cf, wstring& strData)
+	static BOOL getClipboardTextData(HWND hWnd, int cf, wstring& strData)
 	{
 		if (!IsClipboardFormatAvailable(cf))
 			return FALSE;
@@ -156,14 +156,14 @@ namespace Ambiesoft {
 
 		return TRUE;
 	}
-	BOOL GetClipboardTextW(HWND hWnd, wstring& strData)
+	BOOL GetClipboardText(HWND hWnd, wstring& strData)
 	{
-		return getClipboardTextDataW(hWnd, CF_UNICODETEXT, strData);
+		return getClipboardTextData(hWnd, CF_UNICODETEXT, strData);
 	}
-	BOOL GetClipboardHtmlW(HWND hWnd, wstring& strData)
+	BOOL GetClipboardHtml(HWND hWnd, wstring& strData)
 	{
 		string strU8;
-		if (!GetClipboardHtmlA(hWnd, strU8))
+		if (!GetClipboardHtml(hWnd, strU8))
 			return FALSE;
 
 		strData = toStdWstringFromUtf8(strU8);
