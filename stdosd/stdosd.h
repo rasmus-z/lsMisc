@@ -1028,8 +1028,10 @@ namespace Ambiesoft {
         bool stdCloseFileIterator(HFILEITERATOR hFileIterator);
 
 
+
+
 		template<typename C>
-		inline std::basic_string<C> stdTrim(
+		inline std::basic_string<C> stdTrimStart(
 			const std::basic_string<C>& str,
 			const C* whitespace = stdLiterals<C>::WHITESPACE())
 		{
@@ -1042,8 +1044,53 @@ namespace Ambiesoft {
 			if (strBegin == ST::npos)
 				return ST(); // no content
 
-            const typename ST::size_type strEnd = str.find_last_not_of(whitespace);
-            const typename ST::size_type strRange = strEnd - strBegin + 1;
+			return str.substr(strBegin);
+		}
+		template<typename C>
+		inline std::basic_string<C> stdTrimStart(
+			const std::basic_string<C>& str,
+			const std::basic_string<C>& whitespace)
+		{
+			return stdTrimStart(str, whitespace.c_str());
+		}
+
+		template<typename C>
+		inline std::basic_string<C> stdTrimEnd(
+			const std::basic_string<C>& str,
+			const C* whitespace = stdLiterals<C>::WHITESPACE())
+		{
+			using ST = std::basic_string<C>;
+
+			if (whitespace == nullptr || whitespace[0] == 0)
+				return str;
+
+			const typename ST::size_type strEnd = str.find_last_not_of(whitespace);
+			return str.substr(0, strEnd + 1);
+		}
+		template<typename C>
+		inline std::basic_string<C> stdTrimEnd(
+			const std::basic_string<C>& str,
+			const std::basic_string<C>& whitespace)
+		{
+			return stdTrimEnd(str, whitespace.c_str());
+		}
+
+		template<typename C>
+		inline std::basic_string<C> stdTrim(
+			const std::basic_string<C>& str,
+			const C* whitespace = stdLiterals<C>::WHITESPACE())
+		{
+			using ST = std::basic_string<C>;
+
+			if (whitespace == nullptr || whitespace[0] == 0)
+				return str;
+
+			const typename ST::size_type strBegin = str.find_first_not_of(whitespace);
+			if (strBegin == ST::npos)
+				return ST(); // no content
+
+			const typename ST::size_type strEnd = str.find_last_not_of(whitespace);
+			const typename ST::size_type strRange = strEnd - strBegin + 1;
 
 			return str.substr(strBegin, strRange);
 		}
@@ -1055,9 +1102,10 @@ namespace Ambiesoft {
 			return stdTrim(str, whitespace.c_str());
 		}
 
-		typedef void* HMODULEINSTANCE;
 
-		
+
+
+		typedef void* HMODULEINSTANCE;
 		size_t stdGetModuleFileNameImpl(HMODULEINSTANCE hInst, char* p, size_t size);
 		size_t stdGetModuleFileNameImpl(HMODULEINSTANCE hInst, wchar_t* p, size_t size);
 

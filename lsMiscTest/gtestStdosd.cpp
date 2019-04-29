@@ -580,6 +580,38 @@ TEST(stdosd, stdFileIteratorTest)
 	}
 }
 
+TEST(stdosd, stdTrimStartTest)
+{
+	EXPECT_STREQ("aaa", stdTrimStart(string("aaa")).c_str());
+	EXPECT_STREQ("aaa ", stdTrimStart(string("aaa ")).c_str());
+	EXPECT_STREQ("aaa", stdTrimStart(string(" aaa")).c_str());
+	EXPECT_STREQ("aaa ", stdTrimStart(string(" aaa ")).c_str());
+
+	EXPECT_STREQ("aaa aaa      ", stdTrimStart(string("          aaa aaa      ")).c_str());
+	EXPECT_STREQ("aaa  aaa      ", stdTrimStart(string("          aaa  aaa      ")).c_str());
+	EXPECT_STREQ("aaa\taaa      ", stdTrimStart(string("          aaa\taaa      ")).c_str());
+	EXPECT_STREQ("aaa\taaa   \t   ", stdTrimStart(string(" \t         aaa\taaa   \t   ")).c_str());
+
+	EXPECT_STREQ("bbbaaa", stdTrimStart(string("aaabbbaaa"), "a").c_str());
+	EXPECT_STREQ("xxxabc", stdTrimStart(string("abcxxxabc"), "abc").c_str());
+
+}
+TEST(stdosd, stdTrimEndTest)
+{
+	EXPECT_STREQ("aaa", stdTrimEnd(string("aaa")).c_str());
+	EXPECT_STREQ("aaa", stdTrimEnd(string("aaa ")).c_str());
+	EXPECT_STREQ(" aaa", stdTrimEnd(string(" aaa")).c_str());
+	EXPECT_STREQ(" aaa", stdTrimEnd(string(" aaa ")).c_str());
+
+	EXPECT_STREQ("          aaa aaa", stdTrimEnd(string("          aaa aaa      ")).c_str());
+	EXPECT_STREQ("          aaa  aaa", stdTrimEnd(string("          aaa  aaa      ")).c_str());
+	EXPECT_STREQ("          aaa\taaa", stdTrimEnd(string("          aaa\taaa      ")).c_str());
+	EXPECT_STREQ(" \t         aaa\taaa", stdTrimEnd(string(" \t         aaa\taaa   \t   ")).c_str());
+
+	EXPECT_STREQ("aaabbb", stdTrimEnd(string("aaabbbaaa"), "a").c_str());
+	EXPECT_STREQ("abcxxx", stdTrimEnd(string("abcxxxabc"), "abc").c_str());
+}
+
 TEST(stdosd, stdTrimTest)
 {
 	{
