@@ -35,9 +35,10 @@ TEST(CommandLineParser, IterateOur)
 	outvalue(wss, vs.begin(), vs.end());
 	EXPECT_TRUE(wss.str() == L"-a-b-c");
 }
-#define ACTULAPATH L"c:\\aaa\ttt bbb\aa"
+#define ACTULAPATHA "c:\\aaa\ttt bbb\aa"
+#define ACTULAPATHW L"c:\\aaa\ttt bbb\aa"
 
-TEST(CommandLineParser, Basic)
+TEST(CommandLineParser, BasicWchar)
 {
 	vector<wstring> vs;
 	vs.push_back(L"-a");
@@ -65,7 +66,7 @@ TEST(CommandLineParser, Basic)
 		L"-h",
 		L"-b",
 		L"-path",
-		ACTULAPATH,
+		ACTULAPATHW,
 		L"file1.txt",
 		L"file2.txt",
 		L"file3.txt",
@@ -76,7 +77,7 @@ TEST(CommandLineParser, Basic)
 
 	EXPECT_TRUE(isHelp);
 	EXPECT_TRUE(isABC);
-	EXPECT_STREQ(path.c_str(), ACTULAPATH);
+	EXPECT_STREQ(path.c_str(), ACTULAPATHW);
 	
 	EXPECT_EQ(opMain.getValueCount(), 4);
 	EXPECT_STREQ(opMain.getFirstValue().c_str(), L"file1.txt");
@@ -85,6 +86,57 @@ TEST(CommandLineParser, Basic)
 	EXPECT_STREQ(opMain.getValue(2).c_str(), L"file3.txt");
 	EXPECT_STREQ(opMain.getValue(3).c_str(), L"space file.txt");
 	EXPECT_STREQ(opMain.getValueStrings().c_str(), L"file1.txt file2.txt file3.txt \"space file.txt\"");
+}
+
+
+TEST(CommandLineParser, BasicChar)
+{
+	vector<string> vs;
+	vs.push_back("-a");
+	vs.push_back("-b");
+	vs.push_back("-c");
+
+	char* opXYZ[] = {
+		"-xyz",
+		"-bbb",
+	};
+
+	bool isHelp = false;
+	bool isABC = false;
+	bool isXYZ = false;
+	string path;
+	COptionA opMain("", ArgCount::ArgCount_Infinite);
+	CCommandLineParserA clp;
+	clp.AddOption("-h", "/?", 0, &isHelp);
+	clp.AddOptionRange(vs.begin(), vs.end(), 0, &isABC);
+	clp.AddOptionRange(opXYZ, opXYZ + _countof(opXYZ), 0, &isXYZ);
+	clp.AddOption("-path", 1, &path);
+	clp.AddOption(&opMain);
+	char* argv[] = {
+		"exe.exe",
+		"-h",
+		"-b",
+		"-path",
+		ACTULAPATHA,
+		"file1.txt",
+		"file2.txt",
+		"file3.txt",
+		"space file.txt",
+		NULL
+	};
+	clp.Parse(_countof(argv) - 1, argv);
+
+	EXPECT_TRUE(isHelp);
+	EXPECT_TRUE(isABC);
+	EXPECT_STREQ(path.c_str(), ACTULAPATHA);
+
+	EXPECT_EQ(opMain.getValueCount(), 4);
+	EXPECT_STREQ(opMain.getFirstValue().c_str(), "file1.txt");
+	EXPECT_STREQ(opMain.getValue(0).c_str(), "file1.txt");
+	EXPECT_STREQ(opMain.getValue(1).c_str(), "file2.txt");
+	EXPECT_STREQ(opMain.getValue(2).c_str(), "file3.txt");
+	EXPECT_STREQ(opMain.getValue(3).c_str(), "space file.txt");
+	EXPECT_STREQ(opMain.getValueStrings().c_str(), "file1.txt file2.txt file3.txt \"space file.txt\"");
 }
 
 TEST(CommandLineParser, OptionConstructorAll)
@@ -100,7 +152,7 @@ TEST(CommandLineParser, OptionConstructorAll)
 			L"-h",
 			L"-b",
 			L"-path",
-			ACTULAPATH,  // Main arg starts here
+			ACTULAPATHW,  // Main arg starts here
 			L"file1.txt",
 			L"file2.txt",
 			L"file3.txt",
@@ -131,7 +183,7 @@ TEST(CommandLineParser, Bool)
 			L"-h",
 			L"-b",
 			L"-path",
-			ACTULAPATH,  // Main arg starts here
+			ACTULAPATHW,  // Main arg starts here
 			L"file1.txt",
 			L"file2.txt",
 			L"file3.txt",
@@ -154,7 +206,7 @@ TEST(CommandLineParser, Bool)
 			L"-h",
 			L"-cb",
 			L"-path",
-			ACTULAPATH,  // Main arg starts here
+			ACTULAPATHW,  // Main arg starts here
 			L"file1.txt",
 			L"file2.txt",
 			L"file3.txt",
@@ -182,7 +234,7 @@ TEST(CommandLineParser, Int)
 			L"-i",
 			L"1001",
 			L"-path",
-			ACTULAPATH,  // Main arg starts here
+			ACTULAPATHW,  // Main arg starts here
 			L"file1.txt",
 			L"file2.txt",
 			L"file3.txt",
@@ -206,7 +258,7 @@ TEST(CommandLineParser, Int)
 			L"-fi",
 			L"1001",
 			L"-path",
-			ACTULAPATH,  // Main arg starts here
+			ACTULAPATHW,  // Main arg starts here
 			L"file1.txt",
 			L"file2.txt",
 			L"file3.txt",
@@ -320,6 +372,6 @@ TEST(CommandLineParser, Dicregate)
 	DWORD dwHostPID = _wtol(hostpid.getFirstValue().c_str());
 	EXPECT_EQ(54321, dwHostPID);
 
-	EXPECT_STREQ(UrlDecodeWstd(page.getFirstValue()).c_str(), L"http://example.com/");
-	EXPECT_STREQ(UrlDecodeWstd(url.getFirstValue()).c_str(), L"http://example.com/my file.zip");
+	EXPECT_STREQ(UrlDecodeStd<wstring>(page.getFirstValue().c_str()).c_str(), L"http://example.com/");
+	EXPECT_STREQ(UrlDecodeStd<wstring>(url.getFirstValue().c_str()).c_str(), L"http://example.com/my file.zip");
 }

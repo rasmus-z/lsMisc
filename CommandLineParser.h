@@ -35,7 +35,7 @@
 #include <string>
 #include <algorithm>
 
-
+#include "UrlEncode.h"
 
 namespace Ambiesoft {
 
@@ -58,7 +58,20 @@ namespace Ambiesoft {
 	}
 
 
-	inline static bool StringCompare(const std::wstring& left, const std::wstring& right, bool ignoreCase=false)
+	inline static bool StringCompare(
+		const std::string& left,
+		const std::string& right,
+		bool ignoreCase = false)
+	{
+		if (ignoreCase)
+			return _stricmp(left.c_str(), right.c_str()) == 0;
+		else
+			return _stricmp(left.c_str(), right.c_str()) == 0;
+	}
+	inline static bool StringCompare(
+		const std::wstring& left,
+		const std::wstring& right,
+		bool ignoreCase = false)
 	{
 		if (ignoreCase)
 			return _wcsicmp(left.c_str(), right.c_str()) == 0;
@@ -140,92 +153,6 @@ namespace Ambiesoft {
 		return L"\"" + s + L"\"";
 	}
 
-	std::wstring Utf8UrlDecode(const std::wstring& ws);
-
-	//// explicit_specialization.cpp  
-	//template<class T> void f(T t)
-	//{
-	//};
-
-	//// Explicit specialization of f with 'char' with the  
-	//// template argument explicitly specified:  
-	////  
-	//template<> void f<char>(char c)
-	//{
-	//}
-
-	//// Explicit specialization of f with 'double' with the  
-	//// template argument deduced:  
-	////  
-	//template<> void f(double d)
-	//{
-	//}
-
-
-
-
-	//inline std::string StoSTD(LPCSTR p)
-	//{
-	//	return p;
-	//}
-	//inline std::wstring StoSTD(LPCWSTR p)
-	//{
-	//	return p;
-	//}
-
-	//inline std::string WStringToString(const std::wstring& w)
-	//{
-	//	std::string ret;
-	//	if (w.empty())
-	//		return ret;
-
-	//	size_t len = (w.length() + 1) * sizeof(wchar_t);
-	//	char* pT = (char*)malloc(len);
-	//	size_t retutrnvalue;
-
-	//	if (0 != wcstombs_s(&retutrnvalue,
-	//		pT,
-	//		len,
-	//		w.c_str(),
-	//		len))
-	//	{
-	//		free(pT);
-	//		return ret;
-	//	}
-	//	ret = pT;
-	//	free(pT);
-	//	return ret;
-	//}
-	//inline std::wstring StringToWString(const std::string& s)
-	//{
-	//	int nReqSize = MultiByteToWideChar(
-	//		CP_UTF8,
-	//		0,
-	//		(const char*)s.c_str(),
-	//		(int)-1,
-	//		NULL,
-	//		0);
-
-	//	if ( nReqSize == 0 )
-	//		return NULL;
-
-	//	LPWSTR pOut = (LPWSTR)malloc(nReqSize*sizeof(WCHAR));
-	//	int nRet = MultiByteToWideChar(
-	//		CP_UTF8,
-	//		0,
-	//		(const char*)s.c_str(),
-	//		(int)-1,
-	//		pOut,
-	//		nReqSize);
-
-	//	if ( nRet==0 || nRet != nReqSize )
-	//	{
-	//		free(pOut);
-	//		return NULL;
-	//	}
-
-	//	return pOut;
-	//}
 
 	enum class ExactCount : short
 	{
@@ -329,9 +256,9 @@ namespace Ambiesoft {
 				if(pBool_)
 				{
 					if(
-						StringCompare(mys, L"0") ||
-						StringCompare(mys,L"off",true) ||
-						StringCompare(mys,L"false",true)
+						StringCompare(mys, Literals<Elem>::zeroString()) ||
+						StringCompare(mys, Literals<Elem>::offString(),true) ||
+						StringCompare(mys, Literals<Elem>::falseString(),true)
 						)
 					{
 						*pBool_=false;
@@ -381,7 +308,8 @@ namespace Ambiesoft {
 		void AddValue(const MyS_& value)
 		{
 			setHadOption();
-			userTarget_.setMys(encoding_ == ArgEncodingFlags_UTF8UrlEncode ? Utf8UrlDecode(value) : value);
+			userTarget_.setMys(encoding_ == ArgEncodingFlags_UTF8UrlEncode ? 
+				UrlDecodeStd<MyS_>(value.c_str()) : value);
 
 			values_.push_back(value);
 		}
@@ -601,7 +529,7 @@ namespace Ambiesoft {
 			{
 				if (looped)
 				{
-					ret += _T(" ");
+					ret += Literals<Elem>::spaceString();
 				}
 				looped = true;
 				ret += dq(*it);
@@ -664,7 +592,51 @@ typedef BasicOption<std::string> COptionA;
 
 	
 
+	template<typename C>
+	struct Literals;
 
+	template<> struct Literals<char>
+	{
+		static const char period = '.';
+		static const char N0 = '0';
+		static const char N1 = '1';
+		static const char* nulString() {
+			return "";
+		}
+		static const char* zeroString() {
+			return "0";
+		}
+		static const char* offString() {
+			return "off";
+		}
+		static const char* falseString() {
+			return "false";
+		}
+		static const char* spaceString() {
+			return " ";
+		}
+	};
+	template<> struct Literals<wchar_t>
+	{
+		static const char period = L'.';
+		static const char N0 = L'0';
+		static const char N1 = L'1';
+		static const wchar_t* nulString() {
+			return L"";
+		}
+		static const wchar_t* zeroString() {
+			return L"0";
+		}
+		static const wchar_t* offString() {
+			return L"off";
+		}
+		static const wchar_t* falseString() {
+			return L"false";
+		}
+		static const wchar_t* spaceString() {
+			return L" ";
+		}
+	};
 
 	template <class myStringType, class myOptionType> 
 	class BasicCommandLineParser
@@ -673,7 +645,7 @@ typedef BasicOption<std::string> COptionA;
 		typedef typename myStringType::traits_type::char_type Elem;
 		typedef typename myOptionType::MyS_ MyOS_;
 
-		static MyS_ GetToken(LPCWSTR p)
+		static MyS_ GetToken(const Elem* p)
 		{
 			MyS_ ret;
 			if (!p || !p[0])
@@ -994,92 +966,6 @@ typedef BasicOption<std::string> COptionA;
 			AddOptionRange(ops, ops + _countof(ops), exactCount, pTarget, arf, helpstring);
 		}
 
-		//void AddOption(
-		//	const Elem* p1,
-		//	const Elem* p2,
-		//	int exactCount,
-		//	bool* pTarget)
-		//{
-		//	const Elem* ops[] = { p1, p2 };
-		//	AddOption(ops, ops + _countof(ops), exactCount, pTarget);
-		//}
-
-
-		//// int target
-		//void AddOption(
-		//	MyS_ optionString1,
-		//	int exactCount,
-		//	int* pTarget)
-		//{
-		//	MyS_* first = &optionString1;
-		//	MyS_* last = first + 1;
-		//	AddOption(first, last, exactCount, pTarget);
-		//}
-		//template<class InputIterator>
-		//void AddOption(
-		//	InputIterator first,
-		//	InputIterator last,
-		//	int exactCount,
-		//	int* pTarget)
-		//{
-		//	MyO_ option(first, last, exactCount);
-		//	option.case_ = case_;
-		//	check(&option);
-		//	// *pTarget = false;
-		//	option.setTarget(pTarget);
-		//	inneroptions_.push_back(option);
-		//}
-  //              // template<>
-		//void AddOption(
-		//	MyS_ optionString1,
-		//	MyS_ optionString2,
-		//	int exactCount,
-		//	int* pTarget)
-		//{
-		//	const MyS_ ops[] = { optionString1, optionString2 };
-		//	AddOption(ops, ops + _countof(ops), exactCount, pTarget);
-		//}
-
-		//void AddOption(
-		//	const Elem* p1,
-		//	const Elem* p2,
-		//	int exactCount,
-		//	int* pTarget)
-		//{
-		//	const Elem* ops[] = { p1, p2 };
-		//	AddOption(ops, ops + _countof(ops), exactCount, pTarget);
-		//}
-
-
-		//template<class TARGET>
-		//void AddOption(
-		//	const MyS_& optionString1,
-		//	int exactCount,
-		//	TARGET* pTarget,
-		//	ArgEncodingFlags arf,
-		//	const MyS_& helpstring)
-		//{
-		//	MyO_ option(optionString1, exactCount);
-		//	option.case_ = case_;
-		//	option.encoding_ = arf;
-		//	check(&option);
-		//	*pTarget = TARGET();
-		//	option.setTarget(pTarget);
-		//	option.helpString_ = helpstring;
-		//	inneroptions_.push_back(option);
-		//}
-		//void AddOption(
-		//	const MyS_& optionString1,
-		//	int exactCount,
-		//	MyS_* pTarget,
-		//	ArgEncodingFlags arf = ArgEncodingFlags_Default)
-		//{
-		//	AddOption(optionString1,
-		//		exactCount,
-		//		pTarget,
-		//		arf,
-		//		L"");
-		//}
 
 #ifdef _WIN32
 #ifdef UNICODE
@@ -1098,16 +984,9 @@ typedef BasicOption<std::string> COptionA;
 		}
 #endif
 #endif
-		//void Parse(LPCWSTR pArg)
-		//{
-		//	for(LPCTSTR p = pArg; *p ; p=_tcsinc(p))
-		//	{
-		//	
-		//	}
-		//}
 
 	private:
-		size_t ParseParam(size_t i, size_t argc, LPWSTR* targv, MyO_* pMyO)
+		size_t ParseParam(size_t i, size_t argc, const Elem* const targv[], MyO_* pMyO)
 		{
 			if (pMyO->argcountflag_ == ArgCount::ArgCount_Zero)
 				return i;
@@ -1120,7 +999,7 @@ typedef BasicOption<std::string> COptionA;
 					return i;
 				}
 
-				LPCTSTR pArgv = targv[i];
+				const Elem* pArgv = targv[i];
 				pMyO->AddValue(pArgv);
 				return i;
 			}
@@ -1130,7 +1009,7 @@ typedef BasicOption<std::string> COptionA;
 			return 1044410;
 		}
 	public:
-		void Parse(size_t argc, LPWSTR* targv)
+		void Parse(size_t argc, const Elem* const targv[])
 		{
 			assert(!parsed_);  // already parsed
 			parsed_ = true;
@@ -1142,7 +1021,7 @@ typedef BasicOption<std::string> COptionA;
 
 			for (size_t i = 1; i < argc; ++i)
 			{
-				LPCWSTR pArgv = targv[i];
+				const Elem* pArgv = targv[i];
 				if (!pArgv || !pArgv[0])
 					continue;
 
@@ -1163,13 +1042,9 @@ typedef BasicOption<std::string> COptionA;
 				}
 				else 
 				{ // value argument
-					myOptionType* pA = FindOption((L""));
+					myOptionType* pA = FindOption(Literals<Elem>::nulString());
 					if (!pA)
 					{
-						//CInputCommandLineInfo icli;
-						//icli.nID_ = -2;
-						//icli.option_ = _T("");
-						//icli.value_ = pArgv;
 						unknowns_.push_back(MyO_((pArgv)));
 						continue;
 					}
@@ -1177,7 +1052,6 @@ typedef BasicOption<std::string> COptionA;
 					{
 						pA->AddValue((pArgv));
 						continue;
-
 					}
 				}
 			}

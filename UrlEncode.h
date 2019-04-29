@@ -26,18 +26,64 @@
 
 #pragma once
 #include <string>
+#include <memory>
+
+#include "UTF16toUTF8.h"
 
 namespace Ambiesoft {
 
 	char *UrlEncode_new(const char *pstr, int size = -1);
-	std::string UrlEncodeStd(const char *pstr, int size = -1);
-	std::wstring UrlEncodeWstd(const wchar_t *pstr);
-	std::wstring Utf8UrlEncode(const std::wstring& input);
-
-
-
 	char* UrlDecode_new(const char* penc, int* psize = NULL);
 
-	std::wstring UrlDecodeWstd(const char* penc);
-	std::wstring UrlDecodeWstd(const std::wstring& wenc);
+
+	inline std::string UrlEncodeStd(const char *pstr, int size = -1)
+	{
+		std::unique_ptr<char> pEncoded(UrlEncode_new(pstr, size));
+		if (!pEncoded)
+			return std::string();
+		return pEncoded.get();
+	}
+	inline std::wstring UrlEncodeStd(const wchar_t *pstr, int size = -1)
+	{
+		if (pstr == NULL || pstr[0] == 0)
+			return std::wstring();
+
+		int outsize = 0;
+		std::unique_ptr<char> p8(UTF16toUTF8_new(pstr, size, &outsize));
+		std::unique_ptr<char> pRet8(UrlEncode_new(p8.get(), outsize));
+		return toStdWstringFromUtf8(pRet8.get());
+	}
+
+	template<typename RETTYPE> inline RETTYPE UrlDecodeStd(const char* penc);
+	template<typename RETTYPE> inline RETTYPE UrlDecodeStd(const wchar_t* penc);
+
+	// string
+	template<> inline std::string UrlDecodeStd<std::string>(const char* penc)
+	{
+		std::unique_ptr<char> p8(UrlDecode_new(penc));
+		return p8.get();
+	}
+	template<> inline std::string UrlDecodeStd<std::string>(const wchar_t* penc)
+	{
+		std::unique_ptr<char> p8(UTF16toUTF8_new(penc));
+		std::unique_ptr<char> p8dec(UrlDecode_new(p8.get()));
+
+		return p8dec.get();
+	}
+	// wstring
+	template<> inline std::wstring UrlDecodeStd<std::wstring>(const char* penc)
+	{
+		std::unique_ptr<char> p8(UrlDecode_new(penc));
+		return toStdWstringFromUtf8((const char*)p8.get());
+	}
+	template<> inline std::wstring UrlDecodeStd<std::wstring>(const wchar_t* penc)
+	{
+		std::unique_ptr<char> p8(UTF16toUTF8_new(penc));
+		std::unique_ptr<char> p8dec(UrlDecode_new(p8.get()));
+
+		return toStdWstringFromUtf8((const char*)p8dec.get());
+	}
+
+
+	// std::wstring Utf8UrlEncode(const std::wstring& input);
 } // namespace

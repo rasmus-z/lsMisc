@@ -47,10 +47,10 @@ namespace Ambiesoft {
 
 
 
-	wstring Utf8UrlDecode(const wstring& ws)
-	{
-		return UrlDecodeWstd(ws);
-	}
+	//wstring Utf8UrlDecode(const wstring& ws)
+	//{
+	//	return UrlDecodeWstd(ws);
+	//}
 
 
 

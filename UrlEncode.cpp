@@ -178,30 +178,7 @@ namespace Ambiesoft {
 
 		return buf;
 	}
-	std::string UrlEncodeStd(const char *pstr, int size)
-	{
-		std::unique_ptr<char> pEncoded(UrlEncode_new(pstr, size));
-		if (!pEncoded)
-			return std::string();
-		return pEncoded.get();
-	}
-	wstring UrlEncodeWstd(const wchar_t *pstr)
-	{
-		if (pstr == NULL || pstr[0] == 0)
-			return wstring();
 
-		std::unique_ptr<char> p8(UTF16toUTF8_new(pstr));
-		std::unique_ptr<char> pRet8(UrlEncode_new(p8.get()));
-		return toStdWstringFromUtf8(pRet8.get());
-	}
-
-	wstring Utf8UrlEncode(const wstring& input)
-	{
-		unique_ptr<char> p8(UTF16toUTF8_new(input.c_str()));
-		unique_ptr<char> p8u(UrlEncode_new(p8.get()));
-
-		return toStdWstringFromUtf8(p8u.get());
-	}
 
 
 
@@ -262,19 +239,7 @@ namespace Ambiesoft {
 
 
 
-	std::wstring UrlDecodeWstd(const char* penc)
-	{
-		std::unique_ptr<char> p8(UrlDecode_new(penc));
-		return toStdWstringFromUtf8((const char*)p8.get());
-	}
 
-	std::wstring UrlDecodeWstd(const std::wstring& wenc)
-	{
-		std::unique_ptr<char> p8(UTF16toUTF8_new(wenc.c_str()));
-		std::unique_ptr<char> p8dec(UrlDecode_new(p8.get()));
-
-		return toStdWstringFromUtf8((const char*)p8dec.get());
-	}
 
 
 
