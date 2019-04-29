@@ -27,6 +27,14 @@
 
 namespace Ambiesoft {
 	BOOL RunCommandGetResult(
+		LPCSTR pExe,
+		LPCSTR pArg,
+		DWORD* pIRetCommand,
+		std::string* pStrOutCommand,
+		std::string* pStrErrCommand,
+		DWORD* pdwLastError);
+
+	BOOL RunCommandGetResult(
 		LPCWSTR pExe,
 		LPCWSTR pArg,
 		DWORD* pIRetCommand,

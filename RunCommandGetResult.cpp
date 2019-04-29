@@ -25,9 +25,9 @@
 
 #include <cassert>
 #include <string>
-#include <stlsoft/smartptr/scoped_handle.hpp>
+#include <codecvt>
+#include <process.h>
 
-#include "stlScopedClear.h"
 #include "RunCommandGetResult.h"
 #include "DebugNew.h"
 
@@ -159,6 +159,16 @@ namespace Ambiesoft {
 		h = NULL;
 		return bRet;
 	}
+	static wchar_t* wcsnew(const wchar_t* p)
+	{
+		if (!p)
+			return nullptr;
+
+		size_t size = wcslen(p) + 1;
+		wchar_t* pRet = new wchar_t[size];
+		wcscpy_s(pRet, size, p);
+		return pRet;
+	}
 	BOOL RunCommandGetResult(
 		LPCWSTR pExe,
 		LPCWSTR pArg,
@@ -189,10 +199,12 @@ namespace Ambiesoft {
 		HandleFreer h6(&hPipeStdErrWrite);
 
 		// createprocess
-		LPWSTR pArgCP = pArg ? _wcsdup(pArg) : NULL;
-		STLSOFT_SCODEDFREE_CRT(pArgCP);
+		// LPWSTR pArgCP = pArg ? _wcsdup(pArg) : NULL;
+		// STLSOFT_SCODEDFREE_CRT(pArgCP);
+		wstring argCP = pArg ? pArg : wstring();
+		
 
-		STARTUPINFO siStartInfo = { 0 };
+		STARTUPINFOW siStartInfo = { 0 };
 		siStartInfo.cb = sizeof(STARTUPINFO);
 		siStartInfo.hStdInput = hPipeStdInRead;
 		siStartInfo.hStdOutput = hPipeStdOutWrite;
@@ -205,12 +217,17 @@ namespace Ambiesoft {
 		sa.lpSecurityDescriptor = NULL;
 		sa.bInheritHandle = TRUE;
 
-		wstring cmd = dq(pExe) + L" " + pArgCP;
-		LPWSTR pCmd = _wcsdup(cmd.c_str());
+		wstring cmd = dq(pExe);
+		if (!argCP.empty())
+		{
+			cmd += L" ";
+			cmd += argCP;
+		}
+		unique_ptr<wchar_t[]> pCmd(wcsnew(cmd.c_str()));
 		PROCESS_INFORMATION pi = { 0 };
-		if(!CreateProcess(
+		if(!CreateProcessW(
 			NULL,
-			pCmd,
+			pCmd.get(),
 			&sa, // sec
 			nullptr, // sec thread
 			TRUE, // inherit
@@ -231,14 +248,6 @@ namespace Ambiesoft {
 		ClearHandle(hPipeStdOutWrite);
 		ClearHandle(hPipeStdErrWrite);
 
-
-
-
-		//BYTE buffOut, buffErr;
-		//DWORD readedOut = 1;
-		//DWORD readedErr = 1;
-		//DWORD d;
-		//WriteFile(hPipeStdInWrite, "", 1, &d, NULL);
 		WorkerStruct wsOut;
 		wsOut.h_ = hPipeStdOutRead;
 		HANDLE hWorkerOut = (HANDLE)_beginthreadex(NULL,
@@ -247,7 +256,7 @@ namespace Ambiesoft {
 			&wsOut,
 			CREATE_SUSPENDED,
 			NULL);
-		STLSOFT_SCOPEDFREE_HANDLE(hWorkerOut);
+		HandleFreer hWorkerOut_Free(&hWorkerOut);
 
 		WorkerStruct wsErr;
 		wsErr.h_ = hPipeStdErrRead;
@@ -257,7 +266,8 @@ namespace Ambiesoft {
 			&wsErr,
 			CREATE_SUSPENDED,
 			NULL);
-		STLSOFT_SCOPEDFREE_HANDLE(hWorkerErr);
+		HandleFreer hWorkerErr_Free(&hWorkerErr);
+
 		
 		ResumeThread(hWorkerOut);
 		ResumeThread(hWorkerErr);
@@ -273,5 +283,30 @@ namespace Ambiesoft {
 			GetExitCodeProcess(pi.hProcess, pIRetCommand);
 
 		return TRUE;
+	}
+
+	static wstring toWstring(const char* pIN)
+	{
+		if (!pIN || pIN[0] == 0)
+			return wstring();
+
+		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+		return converter.from_bytes(pIN);
+	}
+	BOOL RunCommandGetResult(
+		LPCSTR pExe,
+		LPCSTR pArg,
+		DWORD* pIRetCommand,
+		std::string* pStrOutCommand,
+		std::string* pStrErrCommand,
+		DWORD* pdwLastError)
+	{
+		return RunCommandGetResult(
+			toWstring(pExe).c_str(),
+			toWstring(pArg).c_str(),
+			pIRetCommand,
+			pStrOutCommand,
+			pStrErrCommand,
+			pdwLastError);
 	}
 }
