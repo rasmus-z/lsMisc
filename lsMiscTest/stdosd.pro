@@ -9,6 +9,7 @@ INCLUDEPATH += \
 
 
 SOURCES += \
+    gtestStdosd_literal.cpp \
         main.cpp \
     googletest/googletest/src/gtest-all.cc \
     gtestStdosd.cpp \

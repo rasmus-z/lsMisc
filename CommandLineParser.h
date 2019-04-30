@@ -36,6 +36,7 @@
 #include <algorithm>
 
 #include "UrlEncode.h"
+#include "stdosd/stdosd_literal.h"
 
 namespace Ambiesoft {
 
@@ -256,9 +257,9 @@ namespace Ambiesoft {
 				if(pBool_)
 				{
 					if(
-						StringCompare(mys, Literals<Elem>::zeroString()) ||
-						StringCompare(mys, Literals<Elem>::offString(),true) ||
-						StringCompare(mys, Literals<Elem>::falseString(),true)
+						StringCompare(mys, stdosd::stdLiterals<Elem>::num0String()) ||
+						StringCompare(mys, stdosd::stdLiterals<Elem>::offString(),true) ||
+						StringCompare(mys, stdosd::stdLiterals<Elem>::falseString(),true)
 						)
 					{
 						*pBool_=false;
@@ -529,7 +530,7 @@ namespace Ambiesoft {
 			{
 				if (looped)
 				{
-					ret += Literals<Elem>::spaceString();
+					ret += stdosd::stdLiterals<Elem>::spaceString();
 				}
 				looped = true;
 				ret += dq(*it);
@@ -592,51 +593,6 @@ typedef BasicOption<std::string> COptionA;
 
 	
 
-	template<typename C>
-	struct Literals;
-
-	template<> struct Literals<char>
-	{
-		static const char period = '.';
-		static const char N0 = '0';
-		static const char N1 = '1';
-		static const char* nulString() {
-			return "";
-		}
-		static const char* zeroString() {
-			return "0";
-		}
-		static const char* offString() {
-			return "off";
-		}
-		static const char* falseString() {
-			return "false";
-		}
-		static const char* spaceString() {
-			return " ";
-		}
-	};
-	template<> struct Literals<wchar_t>
-	{
-		static const char period = L'.';
-		static const char N0 = L'0';
-		static const char N1 = L'1';
-		static const wchar_t* nulString() {
-			return L"";
-		}
-		static const wchar_t* zeroString() {
-			return L"0";
-		}
-		static const wchar_t* offString() {
-			return L"off";
-		}
-		static const wchar_t* falseString() {
-			return L"false";
-		}
-		static const wchar_t* spaceString() {
-			return L" ";
-		}
-	};
 
 	template <class myStringType, class myOptionType> 
 	class BasicCommandLineParser
@@ -1042,7 +998,7 @@ typedef BasicOption<std::string> COptionA;
 				}
 				else 
 				{ // value argument
-					myOptionType* pA = FindOption(Literals<Elem>::nulString());
+					myOptionType* pA = FindOption(stdosd::stdLiterals<Elem>::nulString());
 					if (!pA)
 					{
 						unknowns_.push_back(MyO_((pArgv)));

@@ -21,7 +21,12 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
-#include "stdafx.h"
+// do not include "stdafx.h" for Qt causes error
+/*
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\ATLMFC\include\afx.h(24): fatal error C1189: #error:  Building MFC application with /MD[d] (CRT dll version) requires MFC shared dll version. Please #define _AFXDLL or do not use /MD[d]
+Generating Code...
+*/
+// #include "stdafx.h"
 
 #include <Windows.h>
 #include <Shlwapi.h>

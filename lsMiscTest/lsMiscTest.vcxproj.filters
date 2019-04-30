@@ -387,6 +387,9 @@
     <ClCompile Include="..\Profiler.cpp">
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
+    <ClCompile Include="gtestStdosd_literal.cpp">
+      <Filter>GTest Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\CenterWindow.h">
