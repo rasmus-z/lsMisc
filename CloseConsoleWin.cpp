@@ -24,6 +24,7 @@
 #include "stdafx.h"
 #include <windows.h>
 
+#include "CHandle.h"
 #include "CloseConsoleWin.h"
 
 namespace Ambiesoft {
@@ -55,7 +56,7 @@ namespace Ambiesoft {
 				TCHAR szT[256];
 				if (0 != GetClassName(hwnd, szT, sizeof(szT) / sizeof(szT[0])))
 				{
-					if (lstrcmp(szT, _T("ConsoleWindowClass")) == 0)
+					if (lstrcmp(szT, L"ConsoleWindowClass") == 0)
 					{
 						DWORD pid = 0;
 						GetWindowThreadProcessId(hwnd, &pid);
@@ -71,8 +72,13 @@ namespace Ambiesoft {
 		}
 	} // namespace
 
-	BOOL CloseConsoleWin(DWORD pid)
+
+	BOOL CloseConsoleWin(DWORD pid, DWORD maxwait)
 	{
+		CHandle process(OpenProcess(SYNCHRONIZE, FALSE, pid));
+		if (!process)
+			return FALSE;
+
 		stEP step(pid);
 
 		EnumWindows(EnumWindowsProc, (LPARAM)&step);
@@ -83,7 +89,18 @@ namespace Ambiesoft {
 		if (!IsWindow(step.hwnd()))
 			return FALSE;
 
-		::PostMessage(step.hwnd(), WM_CLOSE, 0, 0);
-		return TRUE;
+		if (!::PostMessage(step.hwnd(), WM_CLOSE, 0, 0))
+			return FALSE;
+
+		switch (WaitForSingleObject(process, maxwait))
+		{
+		case WAIT_OBJECT_0: // signaled
+		case WAIT_ABANDONED:
+			return TRUE;
+		case WAIT_TIMEOUT:
+		case WAIT_FAILED:
+			break;
+		}
+		return FALSE;
 	}
 }

@@ -25,5 +25,23 @@
 #include <Windows.h>
 
 namespace Ambiesoft {
-	BOOL CloseConsoleWin(DWORD pid, DWORD maxwait = INFINITE);
+	class CHandle
+	{
+		HANDLE h_;
+	public:
+		CHandle(HANDLE h) :h_(h) {
+
+		}
+		~CHandle() {
+			if (h_ == nullptr || h_ == INVALID_HANDLE_VALUE)
+				return;
+			CloseHandle(h_);
+		}
+		operator bool() const {
+			return h_ != nullptr && h_ != INVALID_HANDLE_VALUE;
+		}
+		operator HANDLE() const {
+			return h_;
+		}
+	};
 }
