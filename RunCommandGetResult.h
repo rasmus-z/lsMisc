@@ -22,23 +22,50 @@
 //SUCH DAMAGE.
 
 #pragma once
-#include <string>
 #include <Windows.h>
+
+#include <functional>
+#include <string>
+
 
 namespace Ambiesoft {
 	BOOL RunCommandGetResult(
 		LPCSTR pExe,
 		LPCSTR pArg,
 		DWORD* pIRetCommand,
+		DWORD* pdwLastError,
 		std::string* pStrOutCommand,
-		std::string* pStrErrCommand,
-		DWORD* pdwLastError);
+		std::string* pStrErrCommand);
 
 	BOOL RunCommandGetResult(
 		LPCWSTR pExe,
 		LPCWSTR pArg,
 		DWORD* pIRetCommand,
+		DWORD* pdwLastError,
 		std::string* pStrOutCommand,
-		std::string* pStrErrCommand,
-		DWORD* pdwLastError = nullptr);
+		std::string* pStrErrCommand);
+
+	BOOL RunCommandGetResultCallBack(
+		LPCSTR pExe,
+		LPCSTR pArg,
+		DWORD* pIRetCommand,
+		DWORD* pdwLastError,
+		std::function<BOOL(STARTUPINFOW*, SECURITY_ATTRIBUTES*, DWORD* pdwCreationFlags)> fnBeforeCreateProcess,
+		std::function<void(PROCESS_INFORMATION* ppi)> fnAfterCreateProcess,
+		std::function<void(const char*, void* pUserData)> fnOnOut,
+		void* pOutUserData,
+		std::function<void(const char*, void* pUserData)> fnOnErr,
+		void* pErrUserData);
+	BOOL RunCommandGetResultCallBack(
+		LPCWSTR pExe,
+		LPCWSTR pArg,
+		DWORD* pIRetCommand,
+		DWORD* pdwLastError,
+		std::function<BOOL(STARTUPINFOW*, SECURITY_ATTRIBUTES*, DWORD* pdwCreationFlags)> fnBeforeCreateProcess,
+		std::function<void(PROCESS_INFORMATION* ppi)> fnAfterCreateProcess,
+		std::function<void(const char*, void* pUserData)> fnOnOut,
+		void* pOutUserData,
+		std::function<void(const char*, void* pUserData)> fnOnErr,
+		void* pErrUserData);
+
 }

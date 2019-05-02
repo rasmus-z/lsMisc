@@ -99,22 +99,40 @@ namespace Ambiesoft {
 		return p;
 	}
 	struct WorkerStruct {
+	private:
 		HANDLE h_;
-		string s_;
+		string* s_;
+		using OutFunc = std::function<void(const char* pOutput, void* pUserData)>;
+		OutFunc fnOut_;
+		void* pUserData_;
+	public:
+		WorkerStruct(HANDLE h, string* s, OutFunc of, void* pUD) :
+			h_(h), s_(s), fnOut_(of), pUserData_(pUD)
+		{}
+		HANDLE handle() {
+			return h_;
+		}
+		void OnOut(const char* p) {
+			if (s_)
+				*s_ += p;
+			if (fnOut_)
+				fnOut_(p, pUserData_);
+		}
 	};
+
 	static UINT __stdcall workerThread(LPVOID pParam)
 	{
 		WorkerStruct* pWorker = (WorkerStruct*)pParam;
 		DWORD d = 0;
-		BYTE szB[4096] = { 0 };
-		while (ReadFile(pWorker->h_,
+		char szB[4096] = { 0 };
+		while (ReadFile(pWorker->handle(),
 			szB,
 			sizeof(szB) - 1,
 			&d,
 			NULL))
 		{
-			
-			pWorker->s_ += (char*)szB;
+			pWorker->OnOut(szB);
+			//pWorker->s_ += (char*)szB;
 			ZeroMemory(szB, sizeof(szB));
 		}
 		return 0;
@@ -169,13 +187,20 @@ namespace Ambiesoft {
 		wcscpy_s(pRet, size, p);
 		return pRet;
 	}
-	BOOL RunCommandGetResult(
+
+	static BOOL RunCommandGetResultImple(
 		LPCWSTR pExe,
 		LPCWSTR pArg,
-		DWORD* pIRetCommand, 
+		DWORD* pIRetCommand,
+		DWORD* pdwLastError,
 		std::string* pStrOutCommand,
 		std::string* pStrErrCommand,
-		DWORD* pdwLastError)
+		std::function<BOOL(STARTUPINFOW*, SECURITY_ATTRIBUTES*, DWORD* pdwCreationFlags)> fnBeforeCreateProcess,
+		std::function<void(PROCESS_INFORMATION* ppi)> fnAfterCreateProcess,
+		std::function<void(const char*, void* pUserData)> fnOnOut,
+		void* pOutUserData,
+		std::function<void(const char*, void* pUserData)> fnOnErr,
+		void* pErrUserData)
 	{
 		HANDLE hPipeStdInRead = NULL;
 		HANDLE hPipeStdInWrite = NULL;
@@ -204,7 +229,7 @@ namespace Ambiesoft {
 		wstring argCP = pArg ? pArg : wstring();
 		
 
-		STARTUPINFOW siStartInfo = { 0 };
+		STARTUPINFOW siStartInfo = {};
 		siStartInfo.cb = sizeof(STARTUPINFO);
 		siStartInfo.hStdInput = hPipeStdInRead;
 		siStartInfo.hStdOutput = hPipeStdOutWrite;
@@ -212,7 +237,7 @@ namespace Ambiesoft {
 		siStartInfo.dwFlags = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
 		siStartInfo.wShowWindow = SW_HIDE;
 
-		SECURITY_ATTRIBUTES sa = { 0 };
+		SECURITY_ATTRIBUTES sa = {};
 		sa.nLength = sizeof(SECURITY_ATTRIBUTES);
 		sa.lpSecurityDescriptor = NULL;
 		sa.bInheritHandle = TRUE;
@@ -224,14 +249,18 @@ namespace Ambiesoft {
 			cmd += argCP;
 		}
 		unique_ptr<wchar_t[]> pCmd(wcsnew(cmd.c_str()));
-		PROCESS_INFORMATION pi = { 0 };
+		PROCESS_INFORMATION pi = {};
+		DWORD dwCreationFlags = 0;
+		if (fnBeforeCreateProcess)
+			if (!fnBeforeCreateProcess(&siStartInfo, &sa, &dwCreationFlags))
+				return FALSE;
 		if(!CreateProcessW(
 			NULL,
 			pCmd.get(),
 			&sa, // sec
 			nullptr, // sec thread
 			TRUE, // inherit
-			0, // flags
+			dwCreationFlags, // flags
 			nullptr, // env
 			nullptr, // dir
 			&siStartInfo,
@@ -241,6 +270,12 @@ namespace Ambiesoft {
 				*pdwLastError = GetLastError();
 			return FALSE;
 		}
+		if (pdwLastError)
+			*pdwLastError = GetLastError();
+
+		if (fnAfterCreateProcess)
+			fnAfterCreateProcess(&pi);
+
 		HandleFreer h7(&pi.hProcess);
 		HandleFreer h8(&pi.hThread);
 
@@ -248,8 +283,7 @@ namespace Ambiesoft {
 		ClearHandle(hPipeStdOutWrite);
 		ClearHandle(hPipeStdErrWrite);
 
-		WorkerStruct wsOut;
-		wsOut.h_ = hPipeStdOutRead;
+		WorkerStruct wsOut(hPipeStdOutRead, pStrOutCommand, fnOnOut, pOutUserData);
 		HANDLE hWorkerOut = (HANDLE)_beginthreadex(NULL,
 			0,
 			workerThread,
@@ -258,8 +292,7 @@ namespace Ambiesoft {
 			NULL);
 		HandleFreer hWorkerOut_Free(&hWorkerOut);
 
-		WorkerStruct wsErr;
-		wsErr.h_ = hPipeStdErrRead;
+		WorkerStruct wsErr(hPipeStdErrRead, pStrErrCommand, fnOnErr, pErrUserData);
 		HANDLE hWorkerErr = (HANDLE)_beginthreadex(NULL,
 			0,
 			workerThread,
@@ -274,10 +307,10 @@ namespace Ambiesoft {
 		HANDLE hWaits[] = { pi.hProcess, hWorkerOut, hWorkerErr };
 		WaitForMultipleObjects(sizeof(hWaits) / sizeof(hWaits[0]), hWaits, TRUE, INFINITE);
 
-		if (pStrOutCommand)
-			*pStrOutCommand = wsOut.s_;
-		if (pStrErrCommand)
-			*pStrErrCommand = wsErr.s_;
+		//if (pStrOutCommand)
+		//	*pStrOutCommand = wsOut.s_;
+		//if (pStrErrCommand)
+		//	*pStrErrCommand = wsErr.s_;
 
 		if (pIRetCommand)
 			GetExitCodeProcess(pi.hProcess, pIRetCommand);
@@ -293,20 +326,94 @@ namespace Ambiesoft {
 		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
 		return converter.from_bytes(pIN);
 	}
+
+	BOOL RunCommandGetResultCallBack(
+		LPCSTR pExe,
+		LPCSTR pArg,
+		DWORD* pIRetCommand,
+		DWORD* pdwLastError,
+		std::function<BOOL(STARTUPINFOW*, SECURITY_ATTRIBUTES*, DWORD* pdwCreationFlags)> fnBeforeCreateProcess,
+		std::function<void(PROCESS_INFORMATION* ppi)> fnAfterCreateProcess,
+		std::function<void(const char*, void* pUserData)> fnOnOut,
+		void* pOutUserData,
+		std::function<void(const char*, void* pUserData)> fnOnErr,
+		void* pErrUserData)
+	{
+		return RunCommandGetResultCallBack(
+			toWstring(pExe).c_str(),
+			toWstring(pArg).c_str(),
+			pIRetCommand,
+			pdwLastError,
+			fnBeforeCreateProcess,
+			fnAfterCreateProcess,
+			fnOnOut,
+			pOutUserData,
+			fnOnErr,
+			pErrUserData);
+	}
+	BOOL RunCommandGetResultCallBack(
+		LPCWSTR pExe,
+		LPCWSTR pArg,
+		DWORD* pIRetCommand,
+		DWORD* pdwLastError,
+		std::function<BOOL(STARTUPINFOW*, SECURITY_ATTRIBUTES*, DWORD* pdwCreationFlags)> fnBeforeCreateProcess,
+		std::function<void(PROCESS_INFORMATION* ppi)> fnAfterCreateProcess,
+		std::function<void(const char*, void* pUserData)> fnOnOut,
+		void* pOutUserData,
+		std::function<void(const char*, void* pUserData)> fnOnErr,
+		void* pErrUserData)
+	{
+		return RunCommandGetResultImple(
+			pExe,
+			pArg,
+			pIRetCommand,
+			pdwLastError,
+			nullptr,
+			nullptr,
+			fnBeforeCreateProcess,
+			fnAfterCreateProcess,
+			fnOnOut,
+			pOutUserData,
+			fnOnErr,
+			pErrUserData);
+	}
+	BOOL RunCommandGetResult(
+		LPCWSTR pExe,
+		LPCWSTR pArg,
+		DWORD* pIRetCommand,
+		DWORD* pdwLastError,
+		std::string* pStrOutCommand,
+		std::string* pStrErrCommand)
+	{
+		return RunCommandGetResultImple(
+			pExe,
+			pArg,
+			pIRetCommand,
+			pdwLastError,
+			pStrOutCommand,
+			pStrErrCommand,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr);
+	}
 	BOOL RunCommandGetResult(
 		LPCSTR pExe,
 		LPCSTR pArg,
 		DWORD* pIRetCommand,
+		DWORD* pdwLastError,
 		std::string* pStrOutCommand,
-		std::string* pStrErrCommand,
-		DWORD* pdwLastError)
+		std::string* pStrErrCommand)
 	{
 		return RunCommandGetResult(
 			toWstring(pExe).c_str(),
 			toWstring(pArg).c_str(),
 			pIRetCommand,
+			pdwLastError,
 			pStrOutCommand,
-			pStrErrCommand,
-			pdwLastError);
+			pStrErrCommand
+		);
 	}
 }
