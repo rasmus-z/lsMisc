@@ -261,6 +261,7 @@
     <ClCompile Include="..\GetFormattedTime.cpp" />
     <ClCompile Include="..\GetFromHtmlLikeDataW.cpp" />
     <ClCompile Include="..\GetHotkeyString.cpp" />
+    <ClCompile Include="..\CloseConsoleWin.cpp" />
     <ClCompile Include="..\GetLastErrorString.cpp" />
     <ClCompile Include="..\GetModuleDirectory.cpp" />
     <ClCompile Include="..\GetOpenFile.cpp" />
@@ -303,6 +304,7 @@
     <ClCompile Include="..\RemoveLastInValidURLChar.cpp" />
     <ClCompile Include="..\ReplaceFileHelper.cpp" />
     <ClCompile Include="..\RevealFolder.cpp" />
+    <ClCompile Include="..\RunCommandGetResult.cpp" />
     <ClCompile Include="..\SetClipboardText.cpp" />
     <ClCompile Include="..\SetCSIDLtoEnv.cpp" />
     <ClCompile Include="..\SetFileOntoClipboard.cpp" />
@@ -356,6 +358,7 @@
     <ClCompile Include="..\XBrowseForFolder.cpp" />
     <ClCompile Include="gtestI18NBeta.cpp" />
     <ClCompile Include="gtestLocker.cpp" />
+    <ClCompile Include="gtestRunCommandGetResult.cpp" />
     <ClCompile Include="gtestStdosd_literal.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
@@ -474,6 +477,7 @@
     <ClInclude Include="..\GetFromHtmlLikeDataW.h" />
     <ClInclude Include="..\GetHotkeyString.h" />
     <ClInclude Include="..\GetIETempFile.h" />
+    <ClInclude Include="..\CloseConsoleWin.h" />
     <ClInclude Include="..\GetLastErrorString.h" />
     <ClInclude Include="..\GetModuleDirectory.h" />
     <ClInclude Include="..\GetOpenFile.h" />
@@ -519,6 +523,7 @@
     <ClInclude Include="..\RemoveLastInValidURLChar.h" />
     <ClInclude Include="..\ReplaceFileHelper.h" />
     <ClInclude Include="..\RevealFolder.h" />
+    <ClInclude Include="..\RunCommandGetResult.h" />
     <ClInclude Include="..\SetClipboardText.h" />
     <ClInclude Include="..\SetCSIDLtoEnv.h" />
     <ClInclude Include="..\SetFileOntoClipboard.h" />

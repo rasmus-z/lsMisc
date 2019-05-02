@@ -390,6 +390,15 @@
     <ClCompile Include="gtestStdosd_literal.cpp">
       <Filter>GTest Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\RunCommandGetResult.cpp">
+      <Filter>lsMisc\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="gtestRunCommandGetResult.cpp">
+      <Filter>GTest Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CloseConsoleWin.cpp">
+      <Filter>lsMisc\2 Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\CenterWindow.h">
@@ -750,6 +759,12 @@
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
     <ClInclude Include="..\Profiler.h">
+      <Filter>lsMisc\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RunCommandGetResult.h">
+      <Filter>lsMisc\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CloseConsoleWin.h">
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
   </ItemGroup>
