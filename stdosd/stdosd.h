@@ -844,11 +844,11 @@ namespace Ambiesoft {
 		}
 
 
-		inline void stdCopyString(char *pDst, size_t size, const char *pSrc)
+		inline void stdCopyString(char* pDst, size_t size, const char* pSrc)
 		{
 			strcpy_s(pDst, size, pSrc);
 		}
-		inline void stdCopyString(wchar_t *pDst, size_t size, const wchar_t *pSrc)
+		inline void stdCopyString(wchar_t* pDst, size_t size, const wchar_t* pSrc)
 		{
 			wcscpy_s(pDst, size, pSrc);
 		}
@@ -990,5 +990,16 @@ namespace Ambiesoft {
 			// TODO: implement
 		}
 
+
+		template<typename C>
+		C* stdStrDup(const C* p)
+		{
+			if (!p)
+				return nullptr;
+			size_t count = getCharLength(p) + 1;
+			C* ret = new C[count];
+			stdCopyString(ret, count, p);
+			return ret;
+		}
 	}
 }
