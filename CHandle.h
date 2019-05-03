@@ -44,4 +44,42 @@ namespace Ambiesoft {
 			return h_;
 		}
 	};
+	class CHWnd
+	{
+		HWND h_;
+	public:
+		CHWnd(HWND h) :h_(h) {
+
+		}
+		~CHWnd() {
+			if (h_ == nullptr)
+				return;
+			DestroyWindow(h_);
+		}
+		operator bool() const {
+			return !!IsWindow(h_);
+		}
+		operator HWND() const {
+			return h_;
+		}
+	};
+	class CHMenu
+	{
+		HMENU h_;
+	public:
+		CHMenu(HMENU h) :h_(h) {
+
+		}
+		~CHMenu() {
+			if (h_ == nullptr)
+				return;
+			DestroyMenu(h_);
+		}
+		operator bool() const {
+			return !!IsMenu(h_);
+		}
+		operator HMENU() const {
+			return h_;
+		}
+	};
 }
