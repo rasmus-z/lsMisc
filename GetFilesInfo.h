@@ -43,7 +43,7 @@ namespace Ambiesoft {
 		size_t GetCount() const {
 			return wfds_.size();
 		}
-		const WIN32_FIND_DATA& operator[](int i) const
+		const WIN32_FIND_DATA& operator[](size_t i) const
 		{
 			return wfds_[i];
 		}
