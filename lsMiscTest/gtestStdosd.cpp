@@ -648,13 +648,23 @@ TEST(stdosd, stdTrimTest)
 TEST(stdosd, GetModuleFileNameTest)
 {
 	char szT[MAX_PATH];
-    GetModuleFileNameA(nullptr, szT, _countof(szT));
+	GetModuleFileNameA(nullptr, szT, _countof(szT));
 	string s = stdGetModuleFileName<char>();
 	EXPECT_STREQ(szT, s.c_str());
 
 	wchar_t szTW[MAX_PATH];
-    GetModuleFileNameW(nullptr, szTW, _countof(szTW));
+	GetModuleFileNameW(nullptr, szTW, _countof(szTW));
 	wstring ws = stdGetModuleFileName<wchar_t>();
 	EXPECT_STREQ(szTW, ws.c_str());
+}
+TEST(stdosd, stdExpandEnvironmentStringsTest)
+{
+	EXPECT_STREQ("AAABBBCCCDDDEEEXXX", stdExpandEnvironmentStrings("AAABBBCCCDDDEEEXXX").c_str());
+
+	wstring envkey = L"MYENV";
+	wstring envval = L"fjowjefowjefojwefjowej2482384-skfjlsj=jjwerrwfjowjefowjefojwefjowej2482384-skfjlsj=jjwerrwfjowjefowjefojwefjowej2482384-skfjlsj=jjwerrwfjowjefowjefojwefjowej2482384-skfjlsj=jjwerrwfjowjefowjefojwefjowej2482384-skfjlsj=jjwerrwfjowjefowjefojwefjowej2482384-skfjlsj=jjwerrwfjowjefowjefojwefjowej2482384-skfjlsj=jjwerrwfjowjefowjefojwefjowej2482384-skfjlsj=jjwerrwfjowjefowjefojwefjowej2482384-skfjlsj=jjwerrw";
+	EXPECT_TRUE(!!SetEnvironmentVariable(envkey.c_str(), envval.c_str()));
+	wstring expect = L"111" + envval + L"222";
+	EXPECT_EQ(expect, stdExpandEnvironmentStrings(L"111%MYENV%222"));
 }
 #endif // _WIN32

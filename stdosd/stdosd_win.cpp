@@ -429,6 +429,13 @@ namespace Ambiesoft {
 		}
 
 
-
+		size_t stdExpandEnvironmentStringsImpl(const char* pIN, char* p, size_t size)
+		{
+			return ExpandEnvironmentStringsA(pIN, p, size);
+		}
+		size_t stdExpandEnvironmentStringsImpl(const wchar_t* pIN, wchar_t* p, size_t size)
+		{
+			return ExpandEnvironmentStringsW(pIN, p, size);
+		}
 	}
 }

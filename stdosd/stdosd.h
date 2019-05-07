@@ -962,7 +962,6 @@ namespace Ambiesoft {
 		size_t stdGetModuleFileNameImpl(HMODULEINSTANCE hInst, char* p, size_t size);
 		size_t stdGetModuleFileNameImpl(HMODULEINSTANCE hInst, wchar_t* p, size_t size);
 
-
 		template<typename C = wchar_t>
 		std::basic_string<C> stdGetModuleFileName(HMODULEINSTANCE hInst = NULL)
 		{
@@ -1001,5 +1000,31 @@ namespace Ambiesoft {
 			stdCopyString(ret, count, p);
 			return ret;
 		}
+
+
+
+		size_t stdExpandEnvironmentStringsImpl(const char* pIN, char* p, size_t size);
+		size_t stdExpandEnvironmentStringsImpl(const wchar_t* pIN, wchar_t* p, size_t size);
+
+		template<typename C = wchar_t>
+		std::basic_string<C> stdExpandEnvironmentStrings(const C* pIN)
+		{
+			C* p = nullptr;
+			size_t size = 64;
+			for (;;)
+			{
+				p = (C*)realloc(p, size * sizeof(C));
+				if (stdExpandEnvironmentStringsImpl(pIN, p, size) < size)
+					break;
+
+				// Make double the size of required memory
+				size *= 2;
+			}
+
+			std::basic_string<C> ret = p;
+			free((void*)p);
+			return ret;
+		}
+
 	}
 }
