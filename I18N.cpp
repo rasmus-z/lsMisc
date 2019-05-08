@@ -30,7 +30,6 @@
 #error UNICODE required
 #endif
 
-
 #include <windows.h>
 #include <tchar.h>
 #include <assert.h>
@@ -42,9 +41,9 @@ using namespace std;
 
 #include "I18N.h"
 
-#ifdef _DEBUG
-#include "DebugNew.h"
-#endif
+
+
+
 
 #ifndef countof
 #define countof(a) (sizeof(a)/sizeof(a[0]))
@@ -53,6 +52,11 @@ using namespace std;
 namespace Ambiesoft {
 
 static HINSTANCE ghInst;
+
+#ifdef _DEBUG
+static std::set<wstring> nai;
+static std::set<wstring> aru;
+#endif
 
 static CRITICAL_SECTION cs;
 static void UninitCS()
@@ -94,7 +98,8 @@ struct FileFreer {
 	FILE* f_;
 	FileFreer(FILE* f) : f_(f) {}
 	~FileFreer() {
-		fclose(f_);
+		if(f_)
+			fclose(f_);
 	}
 };
 
@@ -165,9 +170,8 @@ static LPWSTR UTF8_2_UTF16(const LPBYTE pIN)
 
 	return pOut;;
 }
+
 #ifdef _DEBUG
-static std::set<wstring> nai;
-static std::set<wstring> aru;
 void shownai()
 {
 	WCHAR szModule[MAX_PATH] = {0};
@@ -230,17 +234,26 @@ static void ClearMap()
 		free((void*)it->first);
 	}
 	i18map.clear();
+
+#ifdef _DEBUG
+	aru.clear();
+	nai.clear();
+#endif
+
+	stLang[0] = 0;
 }
 
 static errno_t mywcslwr(TCHAR* str, size_t size) 
 {
 	return _tcslwr_s(str, size);
 }
-
+void i18nClearLangmap()
+{
+	ClearMap();
+}
 LPCWSTR i18nInitLangmap(HINSTANCE hInst, LPCWSTR pLang, LPCWSTR pAppName)
 {
 	ghInst = hInst;
-
 	WCHAR szLang[4];
 	if(!pLang || pLang[0]==0)
 	{
@@ -253,21 +266,13 @@ LPCWSTR i18nInitLangmap(HINSTANCE hInst, LPCWSTR pLang, LPCWSTR pAppName)
 	}
 
 	assert(pLang[0]==0 || lstrlen(pLang)==3);
-	if(lstrcmpiW(pLang,stLang)!=0)
+	if (lstrcmpiW(pLang, stLang) != 0)
 	{
 		langinit = false;
-		lstrcpyW(stLang, pLang);
 		ClearMap();
+		lstrcpyW(stLang, pLang);
 	}
 	
-	//WCHAR szAppName[MAX_PATH]; szAppName[0]=0;
-	//if(pAppName == NULL)
-	//{
-	//	GetModuleFileNameW(hInst, szAppName, countof(szAppName));
-	//	*_tcsrchr(szAppName, L'.')=0;
-	//	pAppName = _tcsrchr(szAppName, L'\\')+1;
-	//}
-
 	if(!atexitinit)
 	{
 		i18nlock lock;
@@ -280,6 +285,7 @@ LPCWSTR i18nInitLangmap(HINSTANCE hInst, LPCWSTR pLang, LPCWSTR pAppName)
 #endif
 		}
 	}
+
 	if(!langinit)
 	{
 		{
@@ -306,6 +312,7 @@ LPCWSTR i18nInitLangmap(HINSTANCE hInst, LPCWSTR pLang, LPCWSTR pAppName)
 						
 						FILE* f = NULL;
 						errno_t  err = _tfopen_s(&f, szTry, _T("rb"));
+						FileFreer ffreer(f);
 						if (err || !f)
 						{
 #ifdef _DEBUG
@@ -331,7 +338,7 @@ LPCWSTR i18nInitLangmap(HINSTANCE hInst, LPCWSTR pLang, LPCWSTR pAppName)
 							OutputDebugString(message.c_str());
 						}
 #endif
-						FileFreer ffreer(f);
+						
 
 						BYTE* pB=NULL;
 						BYTE b;

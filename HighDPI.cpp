@@ -27,6 +27,7 @@
 
 #pragma comment(lib, "user32.lib")
 
+
 EXTERN_C IMAGE_DOS_HEADER __ImageBase;
 
 #ifndef WM_DPICHANGED

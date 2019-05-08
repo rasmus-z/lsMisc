@@ -28,6 +28,7 @@
 #include <vector>
 #include "GetProcessList.h"
 
+
 BOOL GetProcessList(std::vector<PROCESSENTRY32>& ret)
 {
 	HANDLE hSnapshot=CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS,0);

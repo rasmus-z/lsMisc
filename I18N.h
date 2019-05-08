@@ -49,4 +49,6 @@ namespace Ambiesoft {
 	void i18nChangeWindowText(HWND hwnd);
 	void i18nChangeChildWindowText(HWND hwnd);
 	void i18nChangeMenuText(HMENU menu);
+
+	void i18nClearLangmap();
 } // namespace Ambiesoft

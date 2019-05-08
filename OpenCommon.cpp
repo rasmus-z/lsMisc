@@ -44,6 +44,8 @@
 
 #include "OpenCommon.h"
 
+
+
 namespace Ambiesoft {
 
 	BOOL OpenCommonW(HWND hWnd,
