@@ -45,6 +45,14 @@ bool YesNo(QWidget* parent,
 bool HasModalWindow();
 QTextCodec* GetUtf8Codec();
 
+QString getInifile(bool& bExit,
+                   const QString& company,
+                   const QString& appname);
+QString getInifile(bool& bExit);
+
+QString GetUserDocumentDirectory();
+
+QString GetSystemDefaultLang();
 }
 
 #endif // STDQT_H

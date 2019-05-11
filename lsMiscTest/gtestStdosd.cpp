@@ -667,4 +667,13 @@ TEST(stdosd, stdExpandEnvironmentStringsTest)
 	wstring expect = L"111" + envval + L"222";
 	EXPECT_EQ(expect, stdExpandEnvironmentStrings(L"111%MYENV%222"));
 }
+TEST(stdosd, stdGetComputerNameTest)
+{
+	wstring w = stdGetComputerName();
+	EXPECT_FALSE(w.empty());
+
+	string a = stdGetComputerName<char>();
+	EXPECT_FALSE(a.empty());
+
+}
 #endif // _WIN32

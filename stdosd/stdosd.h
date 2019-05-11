@@ -1026,5 +1026,47 @@ namespace Ambiesoft {
 			return ret;
 		}
 
+
+
+		bool GetComputerNameT(char* p, size_t* pnLength);
+		bool GetComputerNameT(wchar_t* p, size_t* pnLength);
+
+		template<class C>
+		bool stdGetComputerNameImpl(C* p, size_t size, size_t& outsize)
+		{
+			if (!GetComputerNameT(p, &size))
+			{
+				if (GetLastError() != ERROR_BUFFER_OVERFLOW)
+					return false;
+			}
+			outsize = size;
+			return true;
+		}
+
+		template<typename C = wchar_t>
+		std::basic_string<C> stdGetComputerName()
+		{
+			C* p = nullptr;
+			size_t size = 16;
+			for (;;)
+			{
+				p = (C*)realloc(p, size * sizeof(C));
+				size_t outsize;
+				if (!stdGetComputerNameImpl(p, size, outsize))
+					return std::basic_string<C>();
+				if (size > outsize)
+					break;
+
+				// Make double the size of required memory
+				size *= 2;
+			}
+
+			std::basic_string<C> ret = p;
+			free((void*)p);
+			return ret;
+		}
+
+
+		
 	}
 }

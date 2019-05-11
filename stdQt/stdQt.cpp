@@ -124,4 +124,9 @@ QTextCodec* GetUtf8Codec()
     return QTextCodec::codecForName("UTF-8");
 }
 
+QString GetSystemDefaultLang()
+{
+    return QLocale::languageToString(QLocale::system().language());
+}
+
 } // namespace AmbiesoftQt

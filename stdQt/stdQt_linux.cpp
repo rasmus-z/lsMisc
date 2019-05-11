@@ -47,3 +47,29 @@ namespace AmbiesoftQt {
         return true;
     }
 }
+
+QString getInifile(bool& bExit,
+                   const QString& company,
+                   const QString& appname)
+{
+    return QString();
+}
+QString getInifile(bool& bExit)
+{
+    const QString company = QApplication::organizationName();
+    const QString appname = QApplication::applicationName();
+    Q_ASSERT(!company.isEmpty());
+    Q_ASSERT(!appname.isEmpty());
+
+    return getInifile(bExit,company,appname);
+}
+
+
+QString GetUserDocumentDirectory()
+{
+    QString result = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+    if(!result.isEmpty())
+        return result;
+
+    return QDir::homePath();
+}

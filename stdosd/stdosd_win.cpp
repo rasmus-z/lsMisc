@@ -437,5 +437,22 @@ namespace Ambiesoft {
 		{
 			return ExpandEnvironmentStringsW(pIN, p, size);
 		}
+
+		bool GetComputerNameT(char* p, size_t* pnLength)
+		{
+			DWORD dw = (DWORD)*pnLength;
+			bool ret = !!GetComputerNameA(p, &dw);
+			*pnLength = dw;
+			return ret;
+		}
+		bool GetComputerNameT(wchar_t* p, size_t* pnLength)
+		{
+			DWORD dw = (DWORD)*pnLength;
+			bool ret = !!GetComputerNameW(p, &dw);
+			*pnLength = dw;
+			return ret;
+		}
+
+
 	}
 }
