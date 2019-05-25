@@ -40,7 +40,8 @@ namespace Process {
 
 static inline int ioprio_set(int which, int who, int ioprio)
 {
-    return syscall(SYS_ioprio_set, which, who, ioprio);
+  return 0;
+  //return syscall(SYS_ioprio_set, which, who, ioprio);
 }
 
 enum {
@@ -145,7 +146,8 @@ static int setpriorityStuff(id_t pid,
                 firstError=err;
         }
     }
-    return firstError;
+    return 0;
+    //return firstError;
 }
 int SetProirity(uint64_t  pid,
                 CPUPRIORITY cpuPriority,

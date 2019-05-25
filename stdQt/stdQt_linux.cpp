@@ -5,6 +5,7 @@
 #include <QStandardPaths>
 
 #include "stdQt.h"
+#include <errno.h>
 
 namespace AmbiesoftQt {
 
@@ -13,6 +14,7 @@ namespace AmbiesoftQt {
         Q_ASSERT(!replaced.isEmpty());
         Q_ASSERT(!replacement.isEmpty());
 
+	//int errno = EACCESS;
         // maybe first save, original file not exist
         if(!QFile(replaced).exists())
         {
